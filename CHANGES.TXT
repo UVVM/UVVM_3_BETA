@@ -9,7 +9,7 @@ CHANGES.TXT in each module's sub-directory.
 
 ----------------------------------------------------------------------
 
-v3.0 BETA 2022.07.xx
+v3.0 BETA 2022.07.04
 --------------------
  - Change from ordinary shared variables to protected shared variables throughout UVVM.
 
