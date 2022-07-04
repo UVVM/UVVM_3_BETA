@@ -1,0 +1,5 @@
+# library bitvis_irqc
+../src/irqc_pif_pkg.vhd
+../src/irqc_pif.vhd
+../src/irqc_core.vhd
+../src/irqc.vhd

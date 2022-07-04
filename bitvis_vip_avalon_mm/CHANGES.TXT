@@ -1,0 +1,181 @@
+Bitvis VIP Avalon MM (Memory Mapped) - Overview of Versions and Changes
+==============================================================
+----------------------------------------------------------------------
+
+
+v2.8.1
+----------
+Released: 2021-05-26
+- Corrected message ID for check_value() in BFM.
+
+
+v2.8.0
+----------
+Released: 2020-10-06
+- Added AVALON_MM_VVC_SB scoreboard and pad_avalon_mm_sb() method.
+
+v2.7.1
+----------
+Released: 2020-06-23
+- Added match_strictness to BFM config and use it in check/expect procedures. Also print HEX
+  or BIN value in BFM check/expect alert logs depending on what kind of error it is. Updated BFM QR.
+
+v2.7.0
+----------
+Released: 2020-05-19
+- Fixed avalon_mm_read_request waiting on a negative delay when bfm_sync=SYNC_ON_CLOCK_ONLY
+  and clock_period was not configured.
+- Added shared_avalon_mm_vvc_transaction_info information to quick reference.
+- Changed VVC activity methods parameters and default scope.
+- Updated activity_watchdog_register_vvc_state() call with new t_activity parameter and 
+  other minor improvements.
+- Updated quick reference Activity Watchdog section and BFM config record description.
+
+v2.6.1
+----------
+Released: 2020-04-20
+- Added reference to verbosity control in VVC QR.
+
+v2.6.0
+----------
+Released: 2020-03-30
+- Replaced use_provided_msg_id_panel and msg_id_panel for parent_msg_id_panel in
+  vvc_cmd_pkg. Added parent_msg_id_panel optional parameter to all VVC procedures
+  for future HVVC support.
+- Renamed Direct Transaction Transfer to transaction info.
+- Added data_routing parameter to VVC read procedure for sending data to scoreboard.
+
+v2.5.1
+----------
+Released: 2020-02-16
+- Fixed wrong order of parameters in wait_on_bfm_exit call.
+- Added missing DTT commands.
+
+v2.5.0
+----------
+Released: 2020-01-24
+- Added bfm_sync to the BFM configuration record.
+- Added new BFM synchronisation methods with default SYNC_ON_CLOCK_ONLY.
+  The BFM will synchronise and start with falling edge, detect clock period, and
+  exit after a quarter clock period.
+- BFM config defaults setup_time, hold_time and clock_period are now 
+  default -1 ns, i.e. will require user configuration if BFM synchronisation is
+  used with other than SYNC_ON_CLOCK_ONLY.
+- VVC command insert_delay() will raise a TB_ERROR when called if the 
+  bfm_config.clock_period has not been set.  
+- Direct Transaction Transfer (DTT) is divided in a global trigger signal and 
+  shared variable with transfer related information.
+
+
+v2.4.0
+----------
+Released: 2019-12-04
+- Added transaction package.
+- Updated VVC src and quick reference with activity watchdog name changes. 
+- Added a set of new features, see UVVM VVC Framework Essential Mechanisms document.
+
+
+v2.3.0
+----------
+Released: 2019-11-21
+- Added activity watchdog to VVC.
+- Added scoreboard to VVC.
+- Updated LICENSE.TXT
+
+v2.2.0
+----------
+Released: 2019-06-06
+- Added optional scope to all CDMs.
+- Updated documentation.
+
+v2.1.3
+----------
+Released: 2018-12-03
+- Updated documentation
+
+v2.1.2
+----------
+Released: 2018-08-30
+- Added VVC context file
+- Updated documentation
+- Compile script changed according to new structure
+
+v2.1.1
+----------
+Released: 2018-04-09
+- Fixed an issue where read response could sample read data immediately,
+  reading wrong data from a previous access.
+- Updated VVC quick reference with multicast information.
+
+v2.1.0
+----------
+Released: 2017-10-16
+- Added compile library name to compile_order.txt for use in compile_src.do
+  script and GHDL compile scripts.
+- Changed compile_src.do script to use compile_order.txt for compilation.
+- Reduced terminal output from Modelsim when running compile script.
+- Added support for input argument number 2 to compile_src.do script for
+  specifying output directory.
+- Added clock_period_margin, clock_margin_severity, setup_time and hold_time
+  to BFM configuration record.
+- Added clock period checking and configurable setup and hold times for
+  BFM generated signals.
+- Fixed bug that made insert_delay() override inter_bfm_delay in VVC executor.
+- Updated VVC and BFM quick reference PDFs.
+
+v2.0.7
+----------
+Released: 2017-06-07
+- Changed variable name in compile script to fix error with Aldec Active-HDL
+- Added compile order file to script folder
+
+v2.0.6
+----------
+Released: 2017-04-28
+- Updated formatting in documentation
+
+v2.0.5
+----------
+Released: 2017-04-04
+- Updated the BFM init functions to fix compile error in GHDL
+
+v2.0.4
+----------
+Released: 2017-03-16
+- Updated documentation
+
+v2.0.3
+----------
+Released: 2017-02-13
+- Applied minor bugfixes and updated documentation for v2.0.x
+
+
+v2.0.2
+----------
+Released: 2017-02-01
+- Applied minor bugfixes after beta testing
+
+v2.0.1
+----------
+Released: 2017-01-27
+
+- Changed order of BFM-check methods. "alert_level" moved to first optional parameter.
+- Changed name to Avalon_MM
+- Changed ID_BFM to ID_INSERTED_DELAY in INSERT_DELAY method
+- Added AWAIT_ANY_COMPLETION.
+- Due to updates in store_result and fetch_result() in uvvm_vvc_framework:
+-  - added definition of t_vvc_result, t_vvc_result_queue_element, t_vvc_response, shared_vvc_response
+-  - updated call to store_result()
+- Removed the use of INSERT_DELAY_IN_TIME. Merged with INSERT_DELAY.
+
+----------------------------------------------------------------------
+VVC changes
+----------
+- Renamed transaction_info_for_waveview to transaction_info
+
+----------------------------------------------------------------------
+v1.0.0
+----------
+Released: 2016-12-20
+
+Initial version of full access Avalon Memory Mapped (MM) VIP

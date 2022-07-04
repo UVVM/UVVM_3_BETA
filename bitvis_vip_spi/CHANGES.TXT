@@ -1,0 +1,138 @@
+Bitvis VIP SPI - Overview on Versions and Changes
+==============================================================
+
+v3.9.2
+----------
+Released: 2021-05-26
+- Corrected message ID for check_value() in BFM.
+
+
+v3.9.1
+----------
+Released: 2020-12-08
+- Added C_SPI_VVC_DATA_ARRAY_WIDTH as default value for GC_DATA_ARRAY_WIDTH in
+  VVC entity generic and C_VVC_CMD_MAX_WORDS in transaction_pkg.
+
+v3.9.0
+----------
+Released: 2020-10-06
+- Added SPI_VVC_SB scoreboard and pad_spi_sb() method.
+
+v3.8.2
+----------
+Released: 2020-08-18
+- Added section with required local defined BFM configuration in BFM QR.
+
+v3.8.1
+----------
+Released: 2020-06-23
+- Added match_strictness to BFM config and use it in check/expect procedures. Also print HEX
+  or BIN value in BFM check/expect alert logs depending on what kind of error it is. Updated BFM QR.
+
+v3.8.0
+----------
+Released: 2020-05-19
+- Added shared_spi_vvc_transaction_info information to quick reference.
+- Changed VVC activity methods parameters and default scope.
+- Updated quick reference Activity Watchdog section.
+- Updated activity_watchdog_register_vvc_state() call with new t_activity parameter and 
+  other minor improvements.
+
+v3.7.1
+----------
+Released: 2020-04-20
+- Added reference to verbosity control in VVC QR.
+
+v3.7.0
+----------
+Released: 2020-03-30
+- Replaced use_provided_msg_id_panel and msg_id_panel for parent_msg_id_panel in
+  vvc_cmd_pkg. Added parent_msg_id_panel optional parameter to all VVC procedures
+  for future HVVC support.
+- Renamed Direct Transaction Transfer to transaction info.
+- Added data_routing parameter to VVC receive procedure for sending data to scoreboard.
+
+v3.6.0
+----------
+Released: 2020-01-24
+- Direct Transaction Transfer (DTT) is divided in a global trigger signal and 
+  shared variable with transfer related information.
+
+v3.5.0
+----------
+Released: 2019-12-04
+- Added transaction package. 
+- Updated VVC src and quick reference with activity watchdog name changes.
+- Added a set of new features, see UVVM VVC Framework Essential Mechanisms document.
+
+v3.4.0
+----------
+Released: 2019-11-21
+- Added activity watchdog to VVC.
+- Added scoreboard to VVC.
+- Updated LICENSE.TXT
+
+v3.3.0
+----------
+Released: 2019-06-06
+- Added optional scope to all CDMs.
+- Updated documentation.
+
+v3.2.2
+----------
+Released: 2018-12-03
+- Updated documentation
+
+v3.2.1
+----------
+Released: 2018-08-30
+- Added VVC context file
+- Updated documentation
+- Compile script changed according to new structure
+- Added support allowing the first clock edge to come at the same time or
+  before chip select is enabled for SPI slave BFM.
+
+v3.2.0
+----------
+Released: 2018-07-02
+- Fixed bug in receive_only methods by adding parameter num_words.
+
+v3.1.0
+----------
+Released: 2018-04-16
+- Added inter_word_delay option in BFM configuration.
+- Fixed a for multiword access of variable lengths.
+- Made some changes to logging in BFM.
+
+v3.0.0
+----------
+Released: 2017-10-16
+- Added compile library name to compile_order.txt for use in compile_src.do
+  script and GHDL compile scripts.
+- Changed compile_src.do script to use compile_order.txt for compilation.
+- Reduced terminal output from Modelsim when running compile script.
+- Removed protocol checking from SPI slave BFM.
+- Added multi-word functionality to SPI master and slave.
+- Added support for selecting when to start transfer for SPI slave.
+- Added support for selecting SPI master action on SS signal bewteen words in
+  a multi-word transfer and when a transfer is done.
+- Fixed bug that made insert_delay() override inter_bfm_delay in VVC executor.
+- Updated VVC and BFM quick reference PDFs.
+
+v2.0.3
+----------
+Released: 2017-06-08
+- Changed variable name in compile script to fix error with Aldec Active-HDL
+- Added compile order file to script folder
+
+v2.0.2
+----------
+Released: 2017-04-28
+- Updated formatting in documentation
+
+v2.0.1
+----------
+Released: 2017-04-18
+Initial release to Github
+
+----------------------------------------------------------------------

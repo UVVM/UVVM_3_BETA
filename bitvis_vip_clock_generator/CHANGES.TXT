@@ -1,0 +1,77 @@
+Bitvis VIP Clock Generator - Overview on Versions and Changes
+==============================================================
+
+v1.5.0
+----------
+Released: 2021-04-08
+- Improved log messages from VVC.
+- Improved set_clock_period() method description in the QR.
+
+v1.4.0
+----------
+Released: 2020-05-19
+- Removed await_completion and await_any_completion() from VVC commands.
+- Changed VVC activity methods parameters and default scope.
+- Corrected assertion report msg for GC_CLOCK_NAME check.
+- Updated quick reference Activity Watchdog section.
+
+v1.3.4
+----------
+Released: 2020-04-20
+- Added reference to verbosity control in VVC QR.
+
+
+v1.3.3
+----------
+Released: 2020-03-30
+- Replaced use_provided_msg_id_panel and msg_id_panel for parent_msg_id_panel in
+  vvc_cmd_pkg.
+
+v1.3.2
+----------
+Released: 2020-02-16
+- Removed unused code from Clock Generator VVC executor.
+
+v1.3.1
+----------
+Released: 2020-01-24
+- Fixed an issue with clock generator VIP would use one clock period
+  of the default clock period setting before using the configured setting.
+
+v1.3.0
+----------
+Released: 2019-12-04
+- Updated VVC src and quick reference with activity watchdog name changes.
+- Added a set of new features, see UVVM VVC Framework Essential Mechanisms document.
+
+v1.2.0
+----------
+Released: 2019-11-21
+- Fixed an issue with clock generator VVC documentation 
+  not matching implementation.
+- Added activity watchdog.
+- Updated LICENSE.TXT
+
+v1.1.0
+----------
+Released: 2019-06-06
+- Added optional scope to all CDMs.
+- Updated documentation.
+
+v1.0.2
+----------
+Released: 2018-12-03
+- Updated documentation
+
+v1.0.1
+----------
+Released: 2018-08-30
+- Added VVC context file
+- Updated documentation
+- Compile script changed according to new structure
+
+v1.0.0
+----------
+Released: 2018-07-02
+
+Initial version of Clock Generator VIP
