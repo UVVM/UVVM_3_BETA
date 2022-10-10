@@ -43,17 +43,17 @@ package monitor_cmd_pkg is
   -- - Record type which holds the configurations of the UART interface
   --===============================================================================================
   type t_uart_interface_config is record
-    bit_time         : time;
-    num_data_bits    : positive range 7 to 8;
-    parity           : t_parity;
-    num_stop_bits    : t_stop_bits;
+    bit_time      : time;
+    num_data_bits : positive range 7 to 8;
+    parity        : t_parity;
+    num_stop_bits : t_stop_bits;
   end record t_uart_interface_config;
 
   constant C_UART_MONITOR_INTERFACE_CONFIG_DEFAULT : t_uart_interface_config := (
-    bit_time         => 0 ns,
-    num_data_bits    => 8,
-    parity           => PARITY_ODD,
-    num_stop_bits    => STOP_BITS_ONE
+    bit_time      => 0 ns,
+    num_data_bits => 8,
+    parity        => PARITY_ODD,
+    num_stop_bits => STOP_BITS_ONE
   );
 
   --===============================================================================================
@@ -77,8 +77,8 @@ package monitor_cmd_pkg is
   );
 
   -- procedure monitor_constructor(
-    -- constant monitor_config        : in  t_uart_monitor_config;
-    -- variable shared_monitor_config : out t_uart_monitor_config
+  -- constant monitor_config        : in  t_uart_monitor_config;
+  -- variable shared_monitor_config : out t_uart_monitor_config
   -- );
 
   -- Monitor
@@ -90,19 +90,18 @@ package monitor_cmd_pkg is
     generic map(
       t_generic_element => t_uart_monitor_config,
       c_generic_default => C_UART_MONITOR_CONFIG_DEFAULT);
-    use protected_uart_monitor_config_pkg.all;
+  use protected_uart_monitor_config_pkg.all;
 
-  shared variable shared_uart_monitor_config : protected_uart_monitor_config_pkg.t_protected_generic_array; --v3
-
+  shared variable shared_uart_monitor_config : protected_uart_monitor_config_pkg.t_prot_generic_array; --v3
 
   ----------------------------------------------------------------------
   -- Procedures for setting elements of the shared_uart_monitor_config
   ----------------------------------------------------------------------
 
   procedure set_uart_monitor_config_scope_name(
-    constant scope_name   : in string(1 to C_LOG_SCOPE_WIDTH);
-    constant index        : in integer;
-    constant channel      : in t_channel
+    constant scope_name : in string(1 to C_LOG_SCOPE_WIDTH);
+    constant index      : in integer;
+    constant channel    : in t_channel
   );
 
   procedure set_uart_monitor_config_msg_id_panel(
@@ -136,9 +135,9 @@ package monitor_cmd_pkg is
   );
 
   procedure set_uart_monitor_config_num_stop_bits(
-    constant num_stop_bits  : in t_stop_bits;
-    constant index          : in integer;
-    constant channel        : in t_channel
+    constant num_stop_bits : in t_stop_bits;
+    constant index         : in integer;
+    constant channel       : in t_channel
   );
 
 end package monitor_cmd_pkg;
@@ -146,11 +145,11 @@ end package monitor_cmd_pkg;
 package body monitor_cmd_pkg is
 
   -- procedure monitor_constructor(
-    -- constant monitor_config        : in  t_uart_monitor_config;
-    -- variable shared_monitor_config : out t_uart_monitor_config
+  -- constant monitor_config        : in  t_uart_monitor_config;
+  -- variable shared_monitor_config : out t_uart_monitor_config
   -- ) is
   -- begin
-    -- shared_monitor_config := monitor_config;
+  -- shared_monitor_config := monitor_config;
   -- end procedure monitor_constructor;
 
   ----------------------------------------------------------------------
@@ -158,13 +157,13 @@ package body monitor_cmd_pkg is
   ----------------------------------------------------------------------
 
   procedure set_uart_monitor_config_scope_name(
-    constant scope_name   : in string(1 to C_LOG_SCOPE_WIDTH);
-    constant index        : in integer;
-    constant channel      : in t_channel
+    constant scope_name : in string(1 to C_LOG_SCOPE_WIDTH);
+    constant index      : in integer;
+    constant channel    : in t_channel
   ) is
     variable v_local_monitor_config : t_uart_monitor_config;
   begin
-    v_local_monitor_config := shared_uart_monitor_config.get(index, channel);
+    v_local_monitor_config            := shared_uart_monitor_config.get(index, channel);
     v_local_monitor_config.scope_name := scope_name;
     shared_uart_monitor_config.set(v_local_monitor_config, index, channel);
   end procedure set_uart_monitor_config_scope_name;
@@ -176,7 +175,7 @@ package body monitor_cmd_pkg is
   ) is
     variable v_local_monitor_config : t_uart_monitor_config;
   begin
-    v_local_monitor_config := shared_uart_monitor_config.get(index, channel);
+    v_local_monitor_config              := shared_uart_monitor_config.get(index, channel);
     v_local_monitor_config.msg_id_panel := msg_id_panel;
     shared_uart_monitor_config.set(v_local_monitor_config, index, channel);
   end procedure set_uart_monitor_config_msg_id_panel;
@@ -188,7 +187,7 @@ package body monitor_cmd_pkg is
   ) is
     variable v_local_monitor_config : t_uart_monitor_config;
   begin
-    v_local_monitor_config := shared_uart_monitor_config.get(index, channel);
+    v_local_monitor_config                          := shared_uart_monitor_config.get(index, channel);
     v_local_monitor_config.transaction_display_time := transaction_display_time;
     shared_uart_monitor_config.set(v_local_monitor_config, index, channel);
   end procedure set_uart_monitor_config_transaction_display_time;
@@ -200,7 +199,7 @@ package body monitor_cmd_pkg is
   ) is
     variable v_local_monitor_config : t_uart_monitor_config;
   begin
-    v_local_monitor_config := shared_uart_monitor_config.get(index, channel);
+    v_local_monitor_config                           := shared_uart_monitor_config.get(index, channel);
     v_local_monitor_config.interface_config.bit_time := bit_time;
     shared_uart_monitor_config.set(v_local_monitor_config, index, channel);
   end procedure set_uart_monitor_config_bit_time;
@@ -212,7 +211,7 @@ package body monitor_cmd_pkg is
   ) is
     variable v_local_monitor_config : t_uart_monitor_config;
   begin
-    v_local_monitor_config := shared_uart_monitor_config.get(index, channel);
+    v_local_monitor_config                                := shared_uart_monitor_config.get(index, channel);
     v_local_monitor_config.interface_config.num_data_bits := num_data_bits;
     shared_uart_monitor_config.set(v_local_monitor_config, index, channel);
   end procedure set_uart_monitor_config_num_data_bits;
@@ -224,22 +223,21 @@ package body monitor_cmd_pkg is
   ) is
     variable v_local_monitor_config : t_uart_monitor_config;
   begin
-    v_local_monitor_config := shared_uart_monitor_config.get(index, channel);
+    v_local_monitor_config                         := shared_uart_monitor_config.get(index, channel);
     v_local_monitor_config.interface_config.parity := parity;
     shared_uart_monitor_config.set(v_local_monitor_config, index, channel);
   end procedure set_uart_monitor_config_parity;
 
   procedure set_uart_monitor_config_num_stop_bits(
-    constant num_stop_bits  : in t_stop_bits;
-    constant index          : in integer;
-    constant channel        : in t_channel
+    constant num_stop_bits : in t_stop_bits;
+    constant index         : in integer;
+    constant channel       : in t_channel
   ) is
     variable v_local_monitor_config : t_uart_monitor_config;
   begin
-    v_local_monitor_config := shared_uart_monitor_config.get(index, channel);
+    v_local_monitor_config                                := shared_uart_monitor_config.get(index, channel);
     v_local_monitor_config.interface_config.num_stop_bits := num_stop_bits;
     shared_uart_monitor_config.set(v_local_monitor_config, index, channel);
   end procedure set_uart_monitor_config_num_stop_bits;
-
 
 end package body monitor_cmd_pkg;

@@ -24,136 +24,136 @@ use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 --========================================================================================================================
 package vvc_cmd_pkg is
 
-    --========================================================================================================================
-    -- t_operation
-    -- - VVC and BFM operations
-    --========================================================================================================================
-    type t_operation is (
-        NO_OPERATION,
-        AWAIT_COMPLETION,
-        AWAIT_ANY_COMPLETION,
-        ENABLE_LOG_MSG,
-        DISABLE_LOG_MSG,
-        FLUSH_COMMAND_QUEUE,
-        FETCH_RESULT,
-        INSERT_DELAY,
-        TERMINATE_CURRENT_COMMAND,
-        -- VVC local
-        WRITE, READ, CHECK
-    );
+  --========================================================================================================================
+  -- t_operation
+  -- - VVC and BFM operations
+  --========================================================================================================================
+  type t_operation is (
+    NO_OPERATION,
+    AWAIT_COMPLETION,
+    AWAIT_ANY_COMPLETION,
+    ENABLE_LOG_MSG,
+    DISABLE_LOG_MSG,
+    FLUSH_COMMAND_QUEUE,
+    FETCH_RESULT,
+    INSERT_DELAY,
+    TERMINATE_CURRENT_COMMAND,
+    -- VVC local
+    WRITE, READ, CHECK
+  );
 
-    --<USER_INPUT> Create constants for the maximum sizes to use in this VVC.
-    -- You can create VVCs with smaller sizes than these constants, but not larger.
-    -- For example, given a VVC with parallel data bus and address bus, constraints should be added for maximum data length
-    -- and address length 
-    -- Example:
-    constant C_VVC_CMD_DATA_MAX_LENGTH   : natural := 1024;
-    constant C_VVC_CMD_ADDR_MAX_LENGTH   : natural := 64;
-    constant C_VVC_CMD_STRING_MAX_LENGTH : natural := 300;
+  --<USER_INPUT> Create constants for the maximum sizes to use in this VVC.
+  -- You can create VVCs with smaller sizes than these constants, but not larger.
+  -- For example, given a VVC with parallel data bus and address bus, constraints should be added for maximum data length
+  -- and address length 
+  -- Example:
+  constant C_VVC_CMD_DATA_MAX_LENGTH   : natural := 1024;
+  constant C_VVC_CMD_ADDR_MAX_LENGTH   : natural := 64;
+  constant C_VVC_CMD_STRING_MAX_LENGTH : natural := 300;
 
-    --========================================================================================================================
-    -- t_vvc_cmd_record
-    -- - Record type used for communication with the VVC
-    --========================================================================================================================
-    type t_vvc_cmd_record is record
-        -- VVC dedicated fields
-        addr                : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0);
-        data                : std_logic_vector(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
-        max_receptions      : integer;
-        -- Common VVC fields
-        operation           : t_operation;
-        proc_call           : string(1 to C_VVC_CMD_STRING_MAX_LENGTH);
-        msg                 : string(1 to C_VVC_CMD_STRING_MAX_LENGTH);
-        data_routing        : t_data_routing;
-        cmd_idx             : natural;
-        command_type        : t_immediate_or_queued;
-        msg_id              : t_msg_id;
-        gen_integer_array   : t_integer_array(0 to 1); -- Increase array length if needed
-        gen_boolean         : boolean;  -- Generic boolean
-        timeout             : time;
-        alert_level         : t_alert_level;
-        delay               : time;
-        quietness           : t_quietness;
-        parent_msg_id_panel : t_msg_id_panel;
-    end record;
+  --========================================================================================================================
+  -- t_vvc_cmd_record
+  -- - Record type used for communication with the VVC
+  --========================================================================================================================
+  type t_vvc_cmd_record is record
+    -- VVC dedicated fields
+    addr                : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0);
+    data                : std_logic_vector(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
+    max_receptions      : integer;
+    -- Common VVC fields
+    operation           : t_operation;
+    proc_call           : string(1 to C_VVC_CMD_STRING_MAX_LENGTH);
+    msg                 : string(1 to C_VVC_CMD_STRING_MAX_LENGTH);
+    data_routing        : t_data_routing;
+    cmd_idx             : natural;
+    command_type        : t_immediate_or_queued;
+    msg_id              : t_msg_id;
+    gen_integer_array   : t_integer_array(0 to 1); -- Increase array length if needed
+    gen_boolean         : boolean;      -- Generic boolean
+    timeout             : time;
+    alert_level         : t_alert_level;
+    delay               : time;
+    quietness           : t_quietness;
+    parent_msg_id_panel : t_msg_id_panel;
+  end record;
 
-    constant C_VVC_CMD_DEFAULT : t_vvc_cmd_record := (
-        addr                => (others => '0'),
-        data                => (others => '0'),
-        max_receptions      => 1,
-        -- Common VVC fields
-        operation           => NO_OPERATION,
-        proc_call           => (others => NUL),
-        msg                 => (others => NUL),
-        data_routing        => NA,
-        cmd_idx             => 0,
-        command_type        => NO_COMMAND_TYPE,
-        msg_id              => NO_ID,
-        gen_integer_array   => (others => -1),
-        gen_boolean         => false,
-        timeout             => 0 ns,
-        alert_level         => FAILURE,
-        delay               => 0 ns,
-        quietness           => NON_QUIET,
-        parent_msg_id_panel => C_UNUSED_MSG_ID_PANEL
-    );
+  constant C_VVC_CMD_DEFAULT : t_vvc_cmd_record := (
+    addr                => (others => '0'),
+    data                => (others => '0'),
+    max_receptions      => 1,
+    -- Common VVC fields
+    operation           => NO_OPERATION,
+    proc_call           => (others => NUL),
+    msg                 => (others => NUL),
+    data_routing        => NA,
+    cmd_idx             => 0,
+    command_type        => NO_COMMAND_TYPE,
+    msg_id              => NO_ID,
+    gen_integer_array   => (others => -1),
+    gen_boolean         => false,
+    timeout             => 0 ns,
+    alert_level         => FAILURE,
+    delay               => 0 ns,
+    quietness           => NON_QUIET,
+    parent_msg_id_panel => C_UNUSED_MSG_ID_PANEL
+  );
 
-    --========================================================================================================================
-    -- shared_vvc_cmd
-    -- - Shared variable used for transmitting VVC commands
-    --========================================================================================================================
-    -- v3
-    package protected_vvc_cmd_pkg is new uvvm_util.protected_generic_types_pkg
-        generic map(t_generic_element => t_vvc_cmd_record,
-                    c_generic_default           => C_VVC_CMD_DEFAULT);
-    use protected_vvc_cmd_pkg.all;
-    shared variable shared_vvc_cmd : protected_vvc_cmd_pkg.t_protected_generic_array;
+  --========================================================================================================================
+  -- shared_vvc_cmd
+  -- - Shared variable used for transmitting VVC commands
+  --========================================================================================================================
+  -- v3
+  package protected_vvc_cmd_pkg is new uvvm_util.protected_generic_types_pkg
+    generic map(t_generic_element => t_vvc_cmd_record,
+                c_generic_default => C_VVC_CMD_DEFAULT);
+  use protected_vvc_cmd_pkg.all;
+  shared variable shared_vvc_cmd : protected_vvc_cmd_pkg.t_prot_generic_array;
 
-    --===============================================================================================
-    -- t_vvc_result, t_vvc_result_queue_element, t_vvc_response and shared_vvc_response :
-    --
-    -- - These are used for storing the result of the read/receive BFM commands issued by the VVC,
-    -- - so that the result can be transported from the VVC to the sequencer via a
-    --   a fetch_result() call as described in VVC_Framework_common_methods_QuickRef
-    --
-    -- - t_vvc_result matches the return value of read/receive procedure in the BFM.
-    --   It can also be defined as a record if multiple return values shall be transported from the BFM
-    --===============================================================================================
-    subtype t_vvc_result is std_logic_vector(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
-    type t_vvc_result_queue_element is record
-        cmd_idx : natural;              -- from UVVM handshake mechanism
-        result  : t_vvc_result;
-    end record;
+  --===============================================================================================
+  -- t_vvc_result, t_vvc_result_queue_element, t_vvc_response and shared_vvc_response :
+  --
+  -- - These are used for storing the result of the read/receive BFM commands issued by the VVC,
+  -- - so that the result can be transported from the VVC to the sequencer via a
+  --   a fetch_result() call as described in VVC_Framework_common_methods_QuickRef
+  --
+  -- - t_vvc_result matches the return value of read/receive procedure in the BFM.
+  --   It can also be defined as a record if multiple return values shall be transported from the BFM
+  --===============================================================================================
+  subtype t_vvc_result is std_logic_vector(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
+  type t_vvc_result_queue_element is record
+    cmd_idx : natural;                  -- from UVVM handshake mechanism
+    result  : t_vvc_result;
+  end record;
 
-    type t_vvc_response is record
-        fetch_is_accepted  : boolean;
-        transaction_result : t_transaction_result;
-        result             : t_vvc_result;
-    end record;
+  type t_vvc_response is record
+    fetch_is_accepted  : boolean;
+    transaction_result : t_transaction_result;
+    result             : t_vvc_result;
+  end record;
 
-    constant C_VVC_RESPONSE_DEFAULT : t_vvc_response := (
-        fetch_is_accepted  => false,
-        transaction_result => ACK,
-        result             => (others => '0')
-    );
+  constant C_VVC_RESPONSE_DEFAULT : t_vvc_response := (
+    fetch_is_accepted  => false,
+    transaction_result => ACK,
+    result             => (others => '0')
+  );
 
-    package protected_vvc_response_pkg is new uvvm_util.protected_generic_types_pkg
-        generic map(
-            t_generic_element => t_vvc_response,
-            c_generic_default           => C_VVC_RESPONSE_DEFAULT);
-    use protected_vvc_response_pkg.all;
-    shared variable shared_vvc_response : protected_vvc_response_pkg.t_protected_generic_array;
+  package protected_vvc_response_pkg is new uvvm_util.protected_generic_types_pkg
+    generic map(
+      t_generic_element => t_vvc_response,
+      c_generic_default => C_VVC_RESPONSE_DEFAULT);
+  use protected_vvc_response_pkg.all;
+  shared variable shared_vvc_response : protected_vvc_response_pkg.t_prot_generic_array;
 
-    --===============================================================================================
-    -- shared_vvc_last_received_cmd_idx
-    --  - Shared variable used to get last queued index from vvc to sequencer
-    --===============================================================================================
-    package protected_vvc_last_received_cmd_idx_pkg is new uvvm_util.protected_generic_types_pkg
-        generic map(t_generic_element => integer,
-                    c_generic_default           => -1);
-    use protected_vvc_last_received_cmd_idx_pkg.all;
+  --===============================================================================================
+  -- shared_vvc_last_received_cmd_idx
+  --  - Shared variable used to get last queued index from vvc to sequencer
+  --===============================================================================================
+  package protected_vvc_last_received_cmd_idx_pkg is new uvvm_util.protected_generic_types_pkg
+    generic map(t_generic_element => integer,
+                c_generic_default => -1);
+  use protected_vvc_last_received_cmd_idx_pkg.all;
 
-    shared variable shared_vvc_last_received_cmd_idx : protected_vvc_last_received_cmd_idx_pkg.t_protected_generic_array;
+  shared variable shared_vvc_last_received_cmd_idx : protected_vvc_last_received_cmd_idx_pkg.t_prot_generic_array;
 
 end package vvc_cmd_pkg;
 

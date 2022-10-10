@@ -29,71 +29,70 @@ package protected_generic_types_pkg is
   generic(type t_generic_element;
           c_generic_default : t_generic_element);
 
-  type t_protected_generic_array is protected
+  type t_prot_generic_array is protected
 
     procedure set(
       constant element : in t_generic_element;
       constant index   : in integer;
       constant channel : in t_channel
-      );
+    );
 
     procedure set(
       constant element : in t_generic_element;
       constant channel : in t_channel
-      );
+    );
 
     procedure set(
       constant element : in t_generic_element;
       constant index   : in integer
-      );
+    );
 
     procedure set(
       constant element : in t_generic_element
-      );
+    );
 
     impure function get(
       constant index   : in integer;
       constant channel : in t_channel
-      ) return t_generic_element;
+    ) return t_generic_element;
 
     impure function get(
       constant channel : t_channel
-      ) return t_generic_element;
+    ) return t_generic_element;
 
     impure function get(
       constant index : integer
-      ) return t_generic_element;
+    ) return t_generic_element;
 
     impure function get(
       VOID : t_void
-      ) return t_generic_element;
+    ) return t_generic_element;
 
-  end protected t_protected_generic_array;
+  end protected t_prot_generic_array;
 
-  type t_protected_generic is protected
+  type t_prot_generic is protected
 
     procedure set(
       constant element : in t_generic_element
-      );
+    );
 
     impure function get(
       VOID : t_void
-      ) return t_generic_element;
+    ) return t_generic_element;
 
-  end protected t_protected_generic;
+  end protected t_prot_generic;
 
 end package protected_generic_types_pkg;
 
 package body protected_generic_types_pkg is
 
-  type t_protected_generic_array is protected body
+  type t_prot_generic_array is protected body
 
     constant C_SCOPE               : string    := "PROTECTED_GENERIC";
     constant C_DEFAULT_ARRAY_INDEX : integer   := 0;
     constant C_DEFAULT_VVC_CHANNEL : t_channel := NA;
 
-
-    type t_queue_is_initialized_array is array(C_MAX_VVC_INSTANCE_NUM - 1 downto ALL_INSTANCES) of boolean;
+    type t_queue_is_initialized_array is array (C_MAX_VVC_INSTANCE_NUM - 1 downto ALL_INSTANCES) of boolean;
     variable vr_queue_is_initialized    : t_queue_is_initialized_array := (others => false);
     variable vr_rx_queue_is_initialized : t_queue_is_initialized_array := (others => false);
     variable vr_tx_queue_is_initialized : t_queue_is_initialized_array := (others => false);
@@ -103,14 +102,13 @@ package body protected_generic_types_pkg is
     variable vr_vvc_rx_ch_element : t_generic_element_array(C_MAX_VVC_INSTANCE_NUM - 1 downto ALL_INSTANCES);
     variable vr_vvc_tx_ch_element : t_generic_element_array(C_MAX_VVC_INSTANCE_NUM - 1 downto ALL_INSTANCES);
 
-
     ------------------------------------------------------------
     -- Queue initialization helper methods
     ------------------------------------------------------------
     impure function is_queue_initialized(
       constant index   : integer;
       constant channel : t_channel
-      ) return boolean is
+    ) return boolean is
     begin
       if (index < C_MAX_VVC_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
         case channel is
@@ -131,7 +129,7 @@ package body protected_generic_types_pkg is
     procedure initialize_queue(
       constant index   : integer;
       constant channel : t_channel
-      ) is
+    ) is
     begin
       if (index < C_MAX_VVC_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
 
@@ -155,7 +153,7 @@ package body protected_generic_types_pkg is
       constant element : in t_generic_element;
       constant index   : in integer;
       constant channel : in t_channel
-      ) is
+    ) is
     begin
       if (index < C_MAX_VVC_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
         initialize_queue(index, channel);
@@ -175,28 +173,28 @@ package body protected_generic_types_pkg is
       end if;
     end procedure set;
 
-                                        -- Set() overload without index
+    -- Set() overload without index
     procedure set(
       constant element : in t_generic_element;
       constant channel : in t_channel
-      ) is
+    ) is
     begin
       set(element, C_DEFAULT_ARRAY_INDEX, channel);
     end procedure set;
 
-                                        -- Set() overload without channel
+    -- Set() overload without channel
     procedure set(
       constant element : in t_generic_element;
       constant index   : in integer
-      ) is
+    ) is
     begin
       set(element, index, C_DEFAULT_VVC_CHANNEL);
     end procedure set;
 
-                                        -- Set() overload without index and channel
+    -- Set() overload without index and channel
     procedure set(
       constant element : in t_generic_element
-      ) is
+    ) is
     begin
       set(element, C_DEFAULT_ARRAY_INDEX, C_DEFAULT_VVC_CHANNEL);
     end procedure set;
@@ -207,7 +205,7 @@ package body protected_generic_types_pkg is
     impure function get(
       constant index   : in integer;
       constant channel : in t_channel
-      ) return t_generic_element is
+    ) return t_generic_element is
 
       constant queue_is_initialized : boolean := is_queue_initialized(index, channel);
     begin
@@ -217,7 +215,7 @@ package body protected_generic_types_pkg is
             return vr_vvc_rx_ch_element(index);
           when TX =>
             return vr_vvc_tx_ch_element(index);
-                                        -- TODO: Decide how to handle get() being called with ALL_CHANNELS. Treat as invalid input and give error?
+          -- TODO: Decide how to handle get() being called with ALL_CHANNELS. Treat as invalid input and give error?
           when others =>
             return vr_element(index);
         end case;
@@ -226,52 +224,51 @@ package body protected_generic_types_pkg is
       end if;
     end function get;
 
-                                        -- Get() overload without channel
+    -- Get() overload without channel
     impure function get(
       constant index : integer
-      ) return t_generic_element is
+    ) return t_generic_element is
     begin
       return get(index, C_DEFAULT_VVC_CHANNEL);
     end function get;
 
-                                        -- Get() overload without index
+    -- Get() overload without index
     impure function get(
       constant channel : t_channel
-      ) return t_generic_element is
+    ) return t_generic_element is
     begin
       return get(C_DEFAULT_ARRAY_INDEX, channel);
     end function get;
 
-                                        -- Get() overload without index and channel
+    -- Get() overload without index and channel
     impure function get(
       VOID : t_void
-      ) return t_generic_element is
+    ) return t_generic_element is
     begin
       return get(C_DEFAULT_ARRAY_INDEX, C_DEFAULT_VVC_CHANNEL);
     end function get;
 
+  end protected body t_prot_generic_array;
 
-  end protected body t_protected_generic_array;
-
-                                        -- Protected type that holds a single, non-array element. v3
-  type t_protected_generic is protected body
+  -- Protected type that holds a single, non-array element. v3
+  type t_prot_generic is protected body
 
     variable vr_element : t_generic_element := c_generic_default;
 
     procedure set(
       constant element : in t_generic_element
-      ) is
+    ) is
     begin
       vr_element := element;
     end procedure set;
 
     impure function get(
       VOID : t_void
-      ) return t_generic_element is
+    ) return t_generic_element is
     begin
       return vr_element;
     end function get;
 
-  end protected body t_protected_generic;
+  end protected body t_prot_generic;
 
 end package body protected_generic_types_pkg;

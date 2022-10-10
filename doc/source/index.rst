@@ -1,33 +1,38 @@
-.. UVVM documentation master file, created by
-   sphinx-quickstart on Wed Jun 16 13:56:26 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
+##################################################################################################################################
+UVVM
+##################################################################################################################################
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
    :caption: Contents:
 
+   uvvm_intro.rst
    uvvm_getting_started.rst
    utility_library.rst
+   rand_pkg_overview.rst
+   func_cov_pkg_overview.rst
+   optimized_rand.rst
    vvc_framework.rst
+   protected_types.rst
    fifo_collection.rst
    generic_queue.rst
-   sbi_vip.rst
-   uart_vip.rst
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-
-#######################################################################################################################
-UVVM
-#######################################################################################################################
-
-.. include:: uvvm_intro.rst
+   vip_avalon_mm.rst
+   vip_avalon_st.rst
+   vip_axi.rst
+   vip_axilite.rst
+   vip_axistream.rst
+   vip_clock_generator.rst
+   vip_error_injection.rst
+   vip_ethernet.rst
+   vip_gmii.rst
+   vip_gpio.rst
+   vip_hvvc_to_vvc_bridge.rst
+   vip_i2c.rst
+   vip_rgmii.rst
+   vip_sbi.rst
+   vip_scoreboard.rst
+   vip_spec_cov.rst
+   vip_spi.rst
+   vip_uart.rst
+   vip_wishbone.rst

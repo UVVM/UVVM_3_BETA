@@ -26,7 +26,7 @@ use std.textio.all;
 use work.csv_file_reader_pkg.all;
 use work.local_adaptations_pkg.all;
 
-package spec_cov_pkg is  
+package spec_cov_pkg is
 
   file RESULT_FILE : text;
 
@@ -40,7 +40,6 @@ package spec_cov_pkg is
     constant testcase         : string;
     constant partial_cov_file : string
   );
-
 
   procedure tick_off_req_cov(
     constant requirement    : string;
@@ -59,32 +58,27 @@ package spec_cov_pkg is
   );
 
   procedure disable_cond_tick_off_req_cov(
-    constant requirement    : string
+    constant requirement : string
   );
 
   procedure enable_cond_tick_off_req_cov(
-    constant requirement    : string
+    constant requirement : string
   );
-
-
 
   procedure finalize_req_cov(
     constant VOID : t_void
   );
-  
-  
 
   --=================================================================================================  
   -- Functions and procedures declared below this line are intended as private internal functions
   --=================================================================================================  
-
 
   procedure priv_log_entry(
     constant index : natural
   );
 
   procedure priv_read_and_parse_csv_file(
-    constant req_list_file  : string
+    constant req_list_file : string
   );
 
   procedure priv_initialize_result_file(
@@ -105,20 +99,20 @@ package spec_cov_pkg is
 
   procedure priv_inc_num_requirement_tick_offs(
     requirement : string
-  ); 
+  );
 
   function priv_test_status_to_string(
     constant test_status : t_test_status
   ) return string;
 
-  impure function priv_get_summary_string 
-    return string;
+  impure function priv_get_summary_string
+  return string;
 
   procedure priv_set_default_testcase_name(
     constant testcase : string
   );
 
-  impure function priv_get_default_testcase_name 
+  impure function priv_get_default_testcase_name
   return string;
 
   impure function priv_find_string_length(
@@ -126,16 +120,14 @@ package spec_cov_pkg is
   ) return natural;
 
   impure function priv_get_requirement_name_length(
-    requirement : string) 
+    requirement : string)
   return natural;
 
   impure function priv_req_listed_in_disabled_tick_off_array(
     constant requirement : string
   ) return boolean;
 
-
 end package spec_cov_pkg;
-
 
 --=================================================================================================
 --=================================================================================================
@@ -143,19 +135,19 @@ end package spec_cov_pkg;
 
 package body spec_cov_pkg is
 
-  constant C_FAIL_STRING                : string := "FAIL";
-  constant C_PASS_STRING                : string := "PASS";
+  constant C_FAIL_STRING : string := "FAIL";
+  constant C_PASS_STRING : string := "PASS";
 
   --type t_line_vector is array(0 to shared_spec_cov_config.max_testcases_per_req-1) of line;
-  type t_line_vector is array(0 to get_max_testcases_per_req(VOID)-1) of line; --v3
-    type t_requirement_entry is record
-      valid         : boolean;
-      requirement   : line;
-      description   : line;
-      num_tcs       : natural;
-      tc_list       : t_line_vector;
-      num_tickoffs  : natural;
-    end record;
+  type t_line_vector is array (0 to get_max_testcases_per_req(VOID) - 1) of line; --v3
+  type t_requirement_entry is record
+    valid        : boolean;
+    requirement  : line;
+    description  : line;
+    num_tcs      : natural;
+    tc_list      : t_line_vector;
+    num_tickoffs : natural;
+  end record;
   type t_requirement_entry_array is array (natural range <>) of t_requirement_entry;
 
   package protected_testcase_name_pkg is new uvvm_util.protected_generic_types_pkg
@@ -163,21 +155,20 @@ package body spec_cov_pkg is
       t_generic_element => string(1 to C_CSV_FILE_MAX_LINE_LENGTH),
       c_generic_default => (others => NUL));
   use protected_testcase_name_pkg.all;
-  
+
   package protected_testcase_passed_pkg is new uvvm_util.protected_generic_types_pkg
     generic map(
       t_generic_element => boolean,
-      c_generic_default           => false);
+      c_generic_default => false);
   use protected_testcase_passed_pkg.all;
 
   package protected_requirement_file_exists_pkg is new uvvm_util.protected_generic_types_pkg
     generic map(
       t_generic_element => boolean,
-      c_generic_default           => false);
+      c_generic_default => false);
   use protected_requirement_file_exists_pkg.all;
 
-
-  type t_protected_requirement_array is protected
+  type t_prot_requirement_array is protected
 
     procedure deallocate_requirement(
       constant index : in natural
@@ -248,10 +239,9 @@ package body spec_cov_pkg is
       constant index : natural
     ) return natural;
 
-  end protected t_protected_requirement_array;
+  end protected t_prot_requirement_array;
 
-
-  type t_protected_requirements_in_array is protected
+  type t_prot_requirements_in_array is protected
 
     procedure set(
       constant value : in natural
@@ -260,10 +250,9 @@ package body spec_cov_pkg is
     impure function get(
       VOID : t_void
     ) return natural;
-  end protected t_protected_requirements_in_array;
+  end protected t_prot_requirements_in_array;
 
-
-  type t_protected_disabled_tick_off_array is protected
+  type t_prot_disabled_tick_off_array is protected
     procedure set(
       constant index : in natural;
       constant value : in string(1 to C_CSV_FILE_MAX_LINE_LENGTH)
@@ -279,10 +268,9 @@ package body spec_cov_pkg is
 
   end protected;
 
+  type t_prot_requirement_array is protected body
 
-  type t_protected_requirement_array is protected body
-
-    variable vr_requirement_array     : t_requirement_entry_array(0 to get_max_requirements(VOID));
+    variable vr_requirement_array : t_requirement_entry_array(0 to get_max_requirements(VOID));
 
     --
     -- Deallocation of requirement_array entry elements
@@ -407,10 +395,9 @@ package body spec_cov_pkg is
       return vr_requirement_array(index).num_tickoffs;
     end function get_num_tickoffs;
 
-  end protected body t_protected_requirement_array;
+  end protected body t_prot_requirement_array;
 
-
-  type t_protected_requirements_in_array is protected body
+  type t_prot_requirements_in_array is protected body
 
     variable vr_requirements_in_array : natural := 0;
 
@@ -428,25 +415,24 @@ package body spec_cov_pkg is
       return vr_requirements_in_array;
     end function get;
 
-  end protected body t_protected_requirements_in_array;
-
+  end protected body t_prot_requirements_in_array;
 
   -- Shared variables used internally in this context
-  shared variable priv_csv_file                 : csv_file_reader_type;
+  shared variable priv_csv_file                : t_prot_csv_file_reader;
   --shared variable priv_requirement_array        : t_requirement_entry_array(0 to get_max_requirements(VOID));
   --shared variable priv_requirements_in_array    : natural := 0;
-  shared variable priv_requirement_array        : t_protected_requirement_array;
-  shared variable priv_requirements_in_array    : t_protected_requirements_in_array;
+  shared variable priv_requirement_array       : t_prot_requirement_array;
+  shared variable priv_requirements_in_array   : t_prot_requirements_in_array;
   --shared variable priv_testcase_name            : string(1 to C_CSV_FILE_MAX_LINE_LENGTH) := (others => NUL);
-  shared variable priv_testcase_name            : protected_testcase_name_pkg.t_protected_generic;
+  shared variable priv_testcase_name           : protected_testcase_name_pkg.t_prot_generic;
   --shared variable priv_testcase_passed          : boolean;
-  shared variable priv_testcase_passed          : protected_testcase_passed_pkg.t_protected_generic;
+  shared variable priv_testcase_passed         : protected_testcase_passed_pkg.t_prot_generic;
   --shared variable priv_requirement_file_exists  : boolean;
-  shared variable priv_requirement_file_exists  : protected_requirement_file_exists_pkg.t_protected_generic;
-  
-  type t_disabled_tick_off_array is array(0 to get_max_requirements(VOID)) of string(1 to C_CSV_FILE_MAX_LINE_LENGTH);
-  
-  type t_protected_disabled_tick_off_array is protected body
+  shared variable priv_requirement_file_exists : protected_requirement_file_exists_pkg.t_prot_generic;
+
+  type t_disabled_tick_off_array is array (0 to get_max_requirements(VOID)) of string(1 to C_CSV_FILE_MAX_LINE_LENGTH);
+
+  type t_prot_disabled_tick_off_array is protected body
 
     variable vr_disabled_tick_off_array : t_disabled_tick_off_array := (others => (others => NUL));
 
@@ -474,8 +460,7 @@ package body spec_cov_pkg is
 
   end protected body;
 
-  shared variable priv_disabled_tick_off_array : t_protected_disabled_tick_off_array;
-
+  shared variable priv_disabled_tick_off_array : t_prot_disabled_tick_off_array;
 
   --
   -- Initialize testcase requirement coverage
@@ -491,7 +476,7 @@ package body spec_cov_pkg is
     priv_testcase_passed.set(true);
     priv_requirement_file_exists.set(true);
 
-    priv_read_and_parse_csv_file(req_list_file);    
+    priv_read_and_parse_csv_file(req_list_file);
     priv_initialize_result_file(partial_cov_file);
   end procedure initialize_req_cov;
   -- Overloading procedure
@@ -507,23 +492,22 @@ package body spec_cov_pkg is
     priv_requirement_file_exists.set(false);
 
     priv_initialize_result_file(partial_cov_file);
-    end procedure initialize_req_cov;
-  
+  end procedure initialize_req_cov;
 
   --
   -- Log the requirement and testcase
   --
   procedure tick_off_req_cov(
-    constant requirement      : string;
-    constant test_status      : t_test_status    := NA;
-    constant msg              : string           := "";
-    constant tickoff_extent   : t_extent_tickoff := LIST_SINGLE_TICKOFF;
-    constant scope            : string           := C_SCOPE
+    constant requirement    : string;
+    constant test_status    : t_test_status    := NA;
+    constant msg            : string           := "";
+    constant tickoff_extent : t_extent_tickoff := LIST_SINGLE_TICKOFF;
+    constant scope          : string           := C_SCOPE
   ) is
     variable v_requirement_to_file_line : line;
     variable v_requirement_status       : t_test_status;
     variable v_prev_test_status         : t_test_status;
-		variable v_uvvm_status							: t_uvvm_status := shared_uvvm_status.get(VOID);
+    variable v_uvvm_status              : t_uvvm_status := shared_uvvm_status.get(VOID);
   begin
     if priv_requirements_in_array.get(VOID) = 0 and priv_requirement_file_exists.get(VOID) = true then
       alert(TB_ERROR, "Requirements have not been parsed. Please use initialize_req_cov() with a requirement file before calling tick_off_req_cov().", scope);
@@ -552,11 +536,9 @@ package body spec_cov_pkg is
     end if;
 
     -- Check if requirement tick-off should be written
-    if (tickoff_extent = LIST_EVERY_TICKOFF) or (priv_get_num_requirement_tick_offs(requirement) = 0) or 
-      (v_prev_test_status = PASS and test_status = FAIL) then
+    if (tickoff_extent = LIST_EVERY_TICKOFF) or (priv_get_num_requirement_tick_offs(requirement) = 0) or (v_prev_test_status = PASS and test_status = FAIL) then
       -- Log result to transcript
-      log(ID_SPEC_COV, "Logging requirement " & requirement & " [" & priv_test_status_to_string(v_requirement_status) & "]. '" & 
-                        priv_get_description(requirement) & "'. " & msg, scope);
+      log(ID_SPEC_COV, "Logging requirement " & requirement & " [" & priv_test_status_to_string(v_requirement_status) & "]. '" & priv_get_description(requirement) & "'. " & msg, scope);
       -- Log to file
       write(v_requirement_to_file_line, requirement & C_CSV_DELIMITER & priv_get_default_testcase_name & C_CSV_DELIMITER & priv_test_status_to_string(v_requirement_status));
       writeline(RESULT_FILE, v_requirement_to_file_line);
@@ -564,7 +546,6 @@ package body spec_cov_pkg is
       priv_inc_num_requirement_tick_offs(requirement);
     end if;
   end procedure tick_off_req_cov;
-
 
   --
   -- Conditional tick_off_req_cov() for selected requirement.
@@ -585,15 +566,14 @@ package body spec_cov_pkg is
     end if;
   end procedure cond_tick_off_req_cov;
 
-
   --
   -- Disable conditional tick_off_req_cov() setting for
   --   selected requirement.
   --
   procedure disable_cond_tick_off_req_cov(
-    constant requirement    : string
-  ) is 
-    constant c_requirement_length : natural := priv_get_requirement_name_length(requirement);
+    constant requirement : string
+  ) is
+    constant c_requirement_length              : natural := priv_get_requirement_name_length(requirement);
     variable v_disabled_tick_off_array_element : string(1 to C_CSV_FILE_MAX_LINE_LENGTH);
   begin
     -- Check: is requirement already tracked?
@@ -602,14 +582,14 @@ package body spec_cov_pkg is
       alert(TB_WARNING, "Requirement " & requirement & " is already listed in the conditional tick off array.", C_SCOPE);
       return;
     end if;
-      
+
     -- add requirement to conditional tick off array.
-    for idx in 0 to priv_disabled_tick_off_array.get_length(VOID)-1 loop
+    for idx in 0 to priv_disabled_tick_off_array.get_length(VOID) - 1 loop
       -- find a free entry, add requirement and exit loop
       if priv_disabled_tick_off_array.get(idx)(1) = NUL then
         --priv_disabled_tick_off_array.(idx)(1 to c_requirement_length) := to_upper(requirement);
         -- Altering disabled_tick_off_array element via a local variable in order to set only a slice of the array element.
-        v_disabled_tick_off_array_element := priv_disabled_tick_off_array.get(idx);
+        v_disabled_tick_off_array_element                            := priv_disabled_tick_off_array.get(idx);
         v_disabled_tick_off_array_element(1 to c_requirement_length) := to_upper(requirement);
         priv_disabled_tick_off_array.set(idx, v_disabled_tick_off_array_element);
         exit;
@@ -617,13 +597,12 @@ package body spec_cov_pkg is
     end loop;
   end procedure disable_cond_tick_off_req_cov;
 
-
   --
   -- Enable conditional tick_off_req_cov() setting for
   --   selected requirement.
   --
   procedure enable_cond_tick_off_req_cov(
-    constant requirement    : string
+    constant requirement : string
   ) is
     constant c_requirement_length : natural := priv_get_requirement_name_length(requirement);
   begin
@@ -632,9 +611,9 @@ package body spec_cov_pkg is
     if priv_req_listed_in_disabled_tick_off_array(requirement) = false then
       alert(TB_WARNING, "Requirement " & requirement & " is not listed in the conditional tick off array.", C_SCOPE);
 
-    else -- requirement is tracked
+    else                                -- requirement is tracked
       -- find the requirement and wipe it out from conditional tick off array
-      for idx in 0 to priv_disabled_tick_off_array.get_length(VOID)-1 loop
+      for idx in 0 to priv_disabled_tick_off_array.get_length(VOID) - 1 loop
         -- found requirement, wipe the entry and exit
         if priv_disabled_tick_off_array.get(idx)(1 to c_requirement_length) = to_upper(requirement) then
           priv_disabled_tick_off_array.set(idx, (others => NUL));
@@ -643,8 +622,6 @@ package body spec_cov_pkg is
       end loop;
     end if;
   end procedure enable_cond_tick_off_req_cov;
-
-
 
   --
   -- Deallocate memory usage and write summary line to partial_cov file
@@ -657,10 +634,10 @@ package body spec_cov_pkg is
     -- Free used memory
     log(ID_SPEC_COV, "Freeing stored requirements from memory", C_SCOPE);
 
-    for i in 0 to priv_requirements_in_array.get(VOID)-1 loop
+    for i in 0 to priv_requirements_in_array.get(VOID) - 1 loop
       priv_requirement_array.deallocate_requirement(i);
       priv_requirement_array.deallocate_description(i);
-      for tc in 0 to priv_requirement_array.get_num_tcs(i)-1 loop
+      for tc in 0 to priv_requirement_array.get_num_tcs(i) - 1 loop
         priv_requirement_array.deallocate_tc_list(i, tc);
       end loop;
       priv_requirement_array.set_num_tcs(i, 0);
@@ -678,14 +655,10 @@ package body spec_cov_pkg is
     file_close(RESULT_FILE);
     log(ID_SPEC_COV, "Requirement coverage finalized.", C_SCOPE);
   end procedure finalize_req_cov;
-  
 
-
-  
   --=================================================================================================  
   -- Functions and procedures declared below this line are intended as private internal functions
   --=================================================================================================  
-
 
   --
   -- Initialize the partial_cov result file
@@ -707,13 +680,12 @@ package body spec_cov_pkg is
     writeline(RESULT_FILE, v_settings_to_file_line);
   end procedure priv_initialize_result_file;
 
-
   --
   -- Read requirement CSV file
   --
   procedure priv_read_and_parse_csv_file(
-      constant req_list_file  : string
-  ) is 
+    constant req_list_file : string
+  ) is
     variable v_tc_valid : boolean;
     variable v_file_ok  : boolean;
   begin
@@ -763,32 +735,30 @@ package body spec_cov_pkg is
       --priv_requirements_in_array := priv_requirements_in_array + 1;
       priv_requirements_in_array.set(priv_requirements_in_array.get(VOID) + 1);
     end loop;
-        
+
     log(ID_SPEC_COV, "Closing requirement file", C_SCOPE);
     priv_csv_file.dispose;
   end procedure priv_read_and_parse_csv_file;
-
 
   --
   -- Log CSV readout to terminal
   --
   procedure priv_log_entry(
-      constant index : natural
-    ) is
+    constant index : natural
+  ) is
   begin
     if priv_requirement_array.get_valid(index) then
       -- log requirement and description to terminal
       log(ID_SPEC_COV, "Requirement: " & priv_requirement_array.get_requirement(index), C_SCOPE);
       log(ID_SPEC_COV, "Description: " & priv_requirement_array.get_description(index), C_SCOPE);
       -- log testcases to terminal
-      for i in 0 to priv_requirement_array.get_num_tcs(index)-1 loop
+      for i in 0 to priv_requirement_array.get_num_tcs(index) - 1 loop
         log(ID_SPEC_COV, "  TC: " & priv_requirement_array.get_tc_list_element(index, i), C_SCOPE);
       end loop;
     else
       log(ID_SPEC_COV, "Requirement entry was not valid", C_SCOPE);
     end if;
   end procedure priv_log_entry;
-
 
   --
   -- Check if requirement exists, return boolean
@@ -797,7 +767,7 @@ package body spec_cov_pkg is
     requirement : string
   ) return boolean is
   begin
-    for i in 0 to priv_requirements_in_array.get(VOID)-1 loop
+    for i in 0 to priv_requirements_in_array.get(VOID) - 1 loop
       if priv_get_requirement_name_length(priv_requirement_array.get_requirement(i)) = requirement'length then
         if to_upper(priv_requirement_array.get_requirement(i)(1 to requirement'length)) = to_upper(requirement(1 to requirement'length)) then
           return true;
@@ -807,7 +777,6 @@ package body spec_cov_pkg is
     return false;
   end function priv_requirement_exists;
 
-
   --
   -- Get number of tick offs for requirement
   --
@@ -815,7 +784,7 @@ package body spec_cov_pkg is
     requirement : string
   ) return natural is
   begin
-    for i in 0 to priv_requirements_in_array.get(VOID)-1 loop
+    for i in 0 to priv_requirements_in_array.get(VOID) - 1 loop
       if priv_get_requirement_name_length(priv_requirement_array.get_requirement(i)) = requirement'length then
         if to_upper(priv_requirement_array.get_requirement(i)(1 to requirement'length)) = to_upper(requirement(1 to requirement'length)) then
           return priv_requirement_array.get_num_tickoffs(i);
@@ -825,15 +794,14 @@ package body spec_cov_pkg is
     return 0;
   end function priv_get_num_requirement_tick_offs;
 
-
   --
   -- Increment number of tick offs for requirement
   --
   procedure priv_inc_num_requirement_tick_offs(
     requirement : string
-  ) is 
+  ) is
   begin
-    for i in 0 to priv_requirements_in_array.get(VOID)-1 loop
+    for i in 0 to priv_requirements_in_array.get(VOID) - 1 loop
       if priv_get_requirement_name_length(priv_requirement_array.get_requirement(i)) = requirement'length then
         if to_upper(priv_requirement_array.get_requirement(i)(1 to requirement'length)) = to_upper(requirement(1 to requirement'length)) then
           priv_requirement_array.set_num_tickoffs(i, priv_requirement_array.get_num_tickoffs(i) + 1);
@@ -842,15 +810,14 @@ package body spec_cov_pkg is
     end loop;
   end procedure priv_inc_num_requirement_tick_offs;
 
-
   --
   -- Get description of requirement
   --
   impure function priv_get_description(
-      requirement : string
+    requirement : string
   ) return string is
   begin
-    for i in 0 to priv_requirements_in_array.get(VOID)-1 loop
+    for i in 0 to priv_requirements_in_array.get(VOID) - 1 loop
       if priv_requirement_array.get_requirement(i)(1 to requirement'length) = requirement(1 to requirement'length) then
         -- Found requirement
         return priv_requirement_array.get_description(i);
@@ -864,7 +831,6 @@ package body spec_cov_pkg is
     end if;
   end function priv_get_description;
 
-
   --
   -- Get the t_test_status parameter as string
   --
@@ -874,18 +840,17 @@ package body spec_cov_pkg is
   begin
     if test_status = PASS then
       return C_PASS_STRING;
-    else -- test_status = FAIL
+    else                                -- test_status = FAIL
       return C_FAIL_STRING;
     end if;
   end function priv_test_status_to_string;
 
-
   --
   -- Get a string for finalize summary in the partial_cov CSV file.
   --
-  impure function priv_get_summary_string 
-    return string is
-		variable v_uvvm_status : t_uvvm_status := shared_uvvm_status.get(VOID);
+  impure function priv_get_summary_string
+  return string is
+    variable v_uvvm_status : t_uvvm_status := shared_uvvm_status.get(VOID);
   begin
     -- Create a CSV coverage file summary string
     if (priv_testcase_passed.get(VOID) = true) and (v_uvvm_status.found_unexpected_simulation_errors_or_worse = 0) then
@@ -895,7 +860,6 @@ package body spec_cov_pkg is
     end if;
   end function priv_get_summary_string;
 
-
   --
   -- Set the default testcase name.
   --
@@ -904,23 +868,21 @@ package body spec_cov_pkg is
   ) is
     variable v_priv_testcase_name : string(1 to C_CSV_FILE_MAX_LINE_LENGTH) := priv_testcase_name.get(VOID);
   begin
-    v_priv_testcase_name(1 to testcase'length)  := testcase;
+    v_priv_testcase_name(1 to testcase'length) := testcase;
     priv_testcase_name.set(v_priv_testcase_name);
   end procedure priv_set_default_testcase_name;
-
 
   --
   -- Return the default testcase name set when initialize_req_cov() was called.
   --
-  impure function priv_get_default_testcase_name 
-    return string is
+  impure function priv_get_default_testcase_name
+  return string is
     variable v_testcase_length : natural := priv_find_string_length(priv_testcase_name.get(VOID));
-    variable v_testcase_name : string(1 to C_CSV_FILE_MAX_LINE_LENGTH);
-  begin 
+    variable v_testcase_name   : string(1 to C_CSV_FILE_MAX_LINE_LENGTH);
+  begin
     v_testcase_name := priv_testcase_name.get(VOID);
     return v_testcase_name(1 to v_testcase_length);
   end function priv_get_default_testcase_name;
-
 
   --
   -- Find the length of a string which will contain NUL characters.
@@ -945,7 +907,7 @@ package body spec_cov_pkg is
   -- Get length of requirement name
   --
   impure function priv_get_requirement_name_length(
-    requirement : string) 
+    requirement : string)
   return natural is
     variable v_length : natural := 0;
   begin
@@ -973,7 +935,7 @@ package body spec_cov_pkg is
     end if;
 
     -- Check if requirement is listed in priv_disabled_tick_off_array() array
-    for idx in 0 to priv_disabled_tick_off_array.get_length(VOID)-1 loop
+    for idx in 0 to priv_disabled_tick_off_array.get_length(VOID) - 1 loop
       -- found
       if priv_disabled_tick_off_array.get(idx)(1 to c_requirement_length) = to_upper(requirement(1 to c_requirement_length)) then
         return true;
