@@ -41,9 +41,10 @@ package global_signals_and_shared_variables_pkg is
   use protected_positive_pkg.all;
 
   -- Protected type: string
+  constant C_PROTECTED_STRING_DEFAULT : string := "";
   package protected_string_pkg is new work.protected_generic_types_pkg
     generic map(t_generic_element => string,
-                c_generic_default => "");
+                c_generic_default => C_PROTECTED_STRING_DEFAULT);
   use protected_string_pkg.all;
 
   -- Protected type: t_sync_flag_record_array
@@ -110,9 +111,10 @@ package global_signals_and_shared_variables_pkg is
   use protected_log_destination_pkg.all;
 
   -- Protected type: t_log_deprecate_list
+  constant C_DEPRECATE_LIST_DEFAULT : t_deprecate_list := (others => (others => ' '));
   package protected_deprecate_list_pkg is new work.protected_generic_types_pkg
     generic map(t_generic_element => t_deprecate_list,
-                c_generic_default => (others => (others => ' ')));
+                c_generic_default => C_DEPRECATE_LIST_DEFAULT);
   use protected_deprecate_list_pkg.all;
 
   -------------------------------------------------------------------------

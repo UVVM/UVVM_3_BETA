@@ -108,14 +108,13 @@ begin
       wait until hvvc_to_bridge.trigger = true;
 
       v_sbi_vvc_msg_id_panel := shared_sbi_vvc_msg_id_panel.get(GC_PHY_VVC_INSTANCE_IDX); -- v3
-      v_hvvc_msg_id_panel    := hvvc_to_bridge.msg_id_panel; --shared_ethernet_vvc_msg_id_panel.get(GC_HVVC_INSTANCE_IDX);    -- v3
+      v_hvvc_msg_id_panel    := hvvc_to_bridge.msg_id_panel; -- v3
 
       -- Check the field position in the packet
       v_dut_if_field_pos_is_first := hvvc_to_bridge.dut_if_field_pos = FIRST or hvvc_to_bridge.dut_if_field_pos = FIRST_AND_LAST;
       v_dut_if_field_pos_is_last  := hvvc_to_bridge.dut_if_field_pos = LAST or hvvc_to_bridge.dut_if_field_pos = FIRST_AND_LAST;
 
       if v_dut_if_field_pos_is_first then
-        --log(ID_NEW_HVVC_CMD_SEQ, "VVC is busy while executing an HVVC command", "SBI_VVC," & to_string(GC_PHY_VVC_INSTANCE_IDX), shared_sbi_vvc_config(GC_PHY_VVC_INSTANCE_IDX).msg_id_panel);
         log(ID_NEW_HVVC_CMD_SEQ, "VVC is busy while executing an HVVC command", "SBI_VVC," & to_string(GC_PHY_VVC_INSTANCE_IDX), v_sbi_vvc_msg_id_panel); -- v3
 
         -- Disable the interpreter and executor waiting logs during the HVVC command
@@ -144,19 +143,14 @@ begin
 
           -- Loop through transfers
           for i in 0 to v_num_transfers - 1 loop
-            --sbi_write(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_dut_address, v_data_slv(v_dut_data_width*(i+1)-1 downto v_dut_data_width*i),
-            --  "HVVC: Write data via SBI.", GC_SCOPE, hvvc_to_bridge.msg_id_panel);
-
             sbi_write(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_dut_address, v_data_slv(v_dut_data_width * (i + 1) - 1 downto v_dut_data_width * i),
                       "HVVC: Write data via SBI.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 
             -- Enable the executor waiting log after receiving its last command
             if v_disabled_msg_id_exe_wait and v_dut_if_field_pos_is_last and i = v_num_transfers - 1 then
-              --shared_sbi_vvc_config(GC_PHY_VVC_INSTANCE_IDX).msg_id_panel(ID_CMD_EXECUTOR_WAIT) := ENABLED;
               enable_sbi_vvc_msg_id(ID_CMD_EXECUTOR_WAIT); -- v3
             end if;
             v_cmd_idx     := get_last_received_cmd_idx(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, NA, GC_SCOPE);
-            --await_completion(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, GC_MAX_NUM_WORDS*GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for write to finish.", GC_SCOPE, hvvc_to_bridge.msg_id_panel);
             await_completion(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, GC_MAX_NUM_WORDS * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for write to finish.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
             v_dut_address := v_dut_address + v_dut_address_increment;
           end loop;
@@ -164,19 +158,15 @@ begin
         when RECEIVE =>
           -- Loop through transfers
           for i in 0 to v_num_transfers - 1 loop
-            --sbi_read(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_dut_address, "HVVC: Read data via SBI.", GC_SCOPE, hvvc_to_bridge.msg_id_panel);
             sbi_read(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_dut_address, "HVVC: Read data via SBI.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 
             -- Enable the executor waiting log after receiving its last command
             if v_disabled_msg_id_exe_wait and v_dut_if_field_pos_is_last and i = v_num_transfers - 1 then
-              --shared_sbi_vvc_config(GC_PHY_VVC_INSTANCE_IDX).msg_id_panel(ID_CMD_EXECUTOR_WAIT) := ENABLED;
               enable_sbi_vvc_msg_id(ID_CMD_EXECUTOR_WAIT); -- v3
             end if;
             v_cmd_idx := get_last_received_cmd_idx(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, NA, GC_SCOPE);
-            --await_completion(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, GC_MAX_NUM_WORDS*GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for read to finish.", GC_SCOPE, hvvc_to_bridge.msg_id_panel);
             await_completion(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, GC_MAX_NUM_WORDS * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for read to finish.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 
-            --fetch_result(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, v_sbi_received_data, "HVVC: Fetching received data.", TB_ERROR, GC_SCOPE, hvvc_to_bridge.msg_id_panel);
             fetch_result(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, v_sbi_received_data, "HVVC: Fetching received data.", TB_ERROR, GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 
             v_data_slv(v_dut_data_width * (i + 1) - 1 downto v_dut_data_width * i) := v_sbi_received_data(v_dut_data_width - 1 downto 0);
@@ -193,7 +183,6 @@ begin
 
       -- Enable the interpreter waiting log after receiving its last command
       if v_disabled_msg_id_int_wait and v_dut_if_field_pos_is_last then
-        --shared_sbi_vvc_config(GC_PHY_VVC_INSTANCE_IDX).msg_id_panel(ID_CMD_INTERPRETER_WAIT) := ENABLED;
         enable_sbi_vvc_msg_id(ID_CMD_INTERPRETER_WAIT); -- v3
       end if;
 

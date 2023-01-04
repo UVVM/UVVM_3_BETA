@@ -92,20 +92,20 @@ architecture behave of avalon_mm_vvc is
   signal avalon_mm_vvc_master_if_pd : t_avalon_mm_if(address(GC_ADDR_WIDTH - 1 downto 0),
                                                      byte_enable((GC_DATA_WIDTH / 8) - 1 downto 0),
                                                      writedata(GC_DATA_WIDTH - 1 downto 0),
-                                                     readdata(GC_DATA_WIDTH - 1 downto 0)) := avalon_mm_vvc_master_if;
+                                                     readdata(GC_DATA_WIDTH - 1 downto 0)) := init_avalon_mm_if_signals(GC_ADDR_WIDTH, GC_DATA_WIDTH);
 
   impure function get_vvc_status(
     constant void : t_void
   ) return t_vvc_status is
   begin
-    return shared_avalon_mm_vvc_status.get(GC_INSTANCE_IDX);
+    return shared_vvc_status.get(GC_INSTANCE_IDX);
   end function get_vvc_status;
 
   procedure set_vvc_status(
     constant vvc_status : t_vvc_status
   ) is
   begin
-    shared_avalon_mm_vvc_status.set(vvc_status, GC_INSTANCE_IDX);
+    shared_vvc_status.set(vvc_status, GC_INSTANCE_IDX);
   end procedure set_vvc_status;
 
 begin
@@ -115,7 +115,7 @@ begin
   -- - Set up the defaults and show constructor if enabled
   --===============================================================================================
   -- v3
-  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_avalon_mm_vvc_config, shared_avalon_mm_vvc_msg_id_panel.get(GC_INSTANCE_IDX), command_queue, result_queue, GC_AVALON_MM_CONFIG,
+  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_vvc_config, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX), command_queue, result_queue, GC_AVALON_MM_CONFIG,
                   GC_CMD_QUEUE_COUNT_MAX, GC_CMD_QUEUE_COUNT_THRESHOLD, GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
                   GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY);
   --===============================================================================================
@@ -143,7 +143,7 @@ begin
     -- Then for every single command from the sequencer
     loop                                -- basically as long as new commands are received
 
-      v_msg_id_panel := shared_avalon_mm_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- 1. wait until command targeted at this VVC. Must match VVC name, instance and channel (if applicable)
       --    releases global semaphore
@@ -208,7 +208,7 @@ begin
 
         end case;
 
-        shared_avalon_mm_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX); -- v3
+        shared_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX); -- v3
 
       else
         tb_error("command_type is not IMMEDIATE or QUEUED", C_SCOPE);
@@ -258,13 +258,13 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_avalon_mm_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- update vvc activity
       v_cmd_queues_are_empty := (command_queue.is_empty(VOID) and command_response_queue.is_empty(VOID));
       if not (read_response_is_busy) and v_cmd_queues_are_empty then
         update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                     shared_avalon_mm_vvc_status,
+                                     shared_vvc_status,
                                      GC_INSTANCE_IDX,
                                      NA,
                                      INACTIVE,
@@ -276,12 +276,12 @@ begin
 
       -- 1. Set defaults, fetch command and log
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, v_msg_id_panel, shared_avalon_mm_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS); -- v3
 
       -- update vvc activity
       v_cmd_queues_are_empty := (command_queue.is_empty(VOID) and command_response_queue.is_empty(VOID));
       update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                   shared_avalon_mm_vvc_status,
+                                   shared_vvc_status,
                                    GC_INSTANCE_IDX,
                                    NA,
                                    ACTIVE,
@@ -290,11 +290,11 @@ begin
                                    v_cmd_queues_are_empty,
                                    C_SCOPE);
 
-      v_vvc_config := shared_avalon_mm_vvc_config.get(GC_INSTANCE_IDX);
+      v_vvc_config := shared_vvc_config.get(GC_INSTANCE_IDX);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Check if command is a BFM access
       v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for insert_bfm_delay
@@ -529,8 +529,9 @@ begin
     variable v_vvc_config           : t_vvc_config;
 
   begin
+    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
-    v_vvc_config := shared_avalon_mm_vvc_config.get(GC_INSTANCE_IDX);
+    v_vvc_config := shared_vvc_config.get(GC_INSTANCE_IDX);
     command_response_queue.set_scope(C_SCOPE & ":RQ");
     command_response_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
     command_response_queue.set_queue_count_threshold(v_vvc_config.cmd_queue_count_threshold);
@@ -541,13 +542,13 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_avalon_mm_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- update vvc activity
       v_cmd_queues_are_empty := command_queue.is_empty(VOID) and command_response_queue.is_empty(VOID);
       if not (executor_is_busy) and v_cmd_queues_are_empty then
         update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                     shared_avalon_mm_vvc_status,
+                                     shared_vvc_status,
                                      GC_INSTANCE_IDX,
                                      NA,
                                      INACTIVE,
@@ -558,12 +559,12 @@ begin
       end if;
 
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_response_queue, v_msg_id_panel, shared_avalon_mm_vvc_status, response_queue_is_increasing, read_response_is_busy, C_VVC_LABELS); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_response_queue, shared_vvc_status, response_queue_is_increasing, read_response_is_busy, C_VVC_LABELS); -- v3
 
       ---- response executor follows executor, thus VVC activity is already set to ACTIVE
       --v_cmd_queues_are_empty := (command_queue.is_empty(VOID) and command_response_queue.is_empty(VOID));
       --update_vvc_activity_register(global_trigger_vvc_activity_register,
-      --                             shared_avalon_mm_vvc_status,
+      --                             shared_vvc_status,
       --                             GC_INSTANCE_IDX,
       --                             NA,
       --                             ACTIVE,
@@ -572,11 +573,11 @@ begin
       --                             v_cmd_queues_are_empty,
       --                             C_SCOPE);
 
-      v_vvc_config := shared_avalon_mm_vvc_config.get(GC_INSTANCE_IDX);
+      v_vvc_config := shared_vvc_config.get(GC_INSTANCE_IDX);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Normalise address and data
       v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "Function called with to wide address. " & v_cmd.msg);

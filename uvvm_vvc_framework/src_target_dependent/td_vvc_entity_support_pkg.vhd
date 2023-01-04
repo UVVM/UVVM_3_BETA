@@ -261,7 +261,6 @@ package td_vvc_entity_support_pkg is
   procedure fetch_command_and_prepare_executor(
     variable command             : inout t_vvc_cmd_record;
     variable command_queue       : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
-    constant msg_id_panel        : in t_msg_id_panel;
     variable vvc_status          : inout protected_vvc_status_pkg.t_prot_generic_array; -- v3
     signal   queue_is_increasing : in boolean;
     signal   executor_is_busy    : inout boolean;
@@ -902,7 +901,6 @@ package body td_vvc_entity_support_pkg is
   procedure fetch_command_and_prepare_executor(
     variable command             : inout t_vvc_cmd_record;
     variable command_queue       : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
-    constant msg_id_panel        : in t_msg_id_panel; -- v3
     variable vvc_status          : inout protected_vvc_status_pkg.t_prot_generic_array; -- v3
     signal   queue_is_increasing : in boolean;
     signal   executor_is_busy    : inout boolean;
@@ -920,7 +918,7 @@ package body td_vvc_entity_support_pkg is
 
     wait for 0 ns;                      -- to allow delta updates in other processes.
     if command_queue.is_empty(VOID) then
-      log(executor_wait_id, "Executor: Waiting for command", to_string(vvc_labels.scope), msg_id_panel);
+      log(executor_wait_id, "Executor: Waiting for command", to_string(vvc_labels.scope), shared_vvc_msg_id_panel.get(vvc_labels.instance_idx, vvc_labels.channel));
       wait until queue_is_increasing;
     end if;
 
@@ -929,7 +927,7 @@ package body td_vvc_entity_support_pkg is
     wait until executor_is_busy;
     command          := command_queue.get(VOID);
 
-    v_msg_id_panel               := get_msg_id_panel(command, msg_id_panel); -- v3
+    v_msg_id_panel               := get_msg_id_panel(command, shared_vvc_msg_id_panel.get(vvc_labels.instance_idx, vvc_labels.channel)); -- v3
     log(executor_id, to_string(command.proc_call) & " - Will be executed " & format_command_idx(command), to_string(vvc_labels.scope), v_msg_id_panel); -- Get and ack the new command -- v3
     v_vvc_status                 := vvc_status.get(vvc_labels.instance_idx, vvc_labels.channel);
     v_vvc_status.pending_cmd_cnt := command_queue.get_count(VOID);

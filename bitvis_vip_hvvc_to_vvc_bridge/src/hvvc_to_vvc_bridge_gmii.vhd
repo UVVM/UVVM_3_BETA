@@ -100,10 +100,9 @@ begin
       end if;
 
       v_gmii_vvc_msg_id_panel := shared_gmii_vvc_msg_id_panel.get(GC_PHY_VVC_INSTANCE_IDX, v_channel); -- v3
-      v_hvvc_msg_id_panel     := hvvc_to_bridge.msg_id_panel; -- shared_ethernet_vvc_msg_id_panel.get(GC_HVVC_INSTANCE_IDX);              -- v3
+      v_hvvc_msg_id_panel     := hvvc_to_bridge.msg_id_panel; -- v3
 
       if v_dut_if_field_pos_is_first then
-        --log(ID_NEW_HVVC_CMD_SEQ, "VVC is busy while executing an HVVC command", "GMII_VVC," & to_string(GC_INSTANCE_IDX), shared_gmii_vvc_config(v_channel, GC_INSTANCE_IDX).msg_id_panel);
         log(ID_NEW_HVVC_CMD_SEQ, "VVC is busy while executing an HVVC command", "GMII_VVC," & to_string(GC_PHY_VVC_INSTANCE_IDX), v_gmii_vvc_msg_id_panel); -- v3
 
         -- Disable the interpreter and executor waiting logs during the HVVC command
@@ -135,28 +134,22 @@ begin
           gmii_write(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, TX, v_data_bytes(0 to v_num_data_bytes - 1), "HVVC: Write data via GMII.", v_action_when_transfer_is_done, GC_SCOPE, v_hvvc_msg_id_panel);
           -- Enable the executor waiting log after receiving its last command
           if v_disabled_msg_id_exe_wait and v_dut_if_field_pos_is_last then
-            --shared_gmii_vvc_config(TX, GC_INSTANCE_IDX).msg_id_panel(ID_CMD_EXECUTOR_WAIT) := ENABLED;
             enable_gmii_vvc_msg_id(TX, ID_CMD_EXECUTOR_WAIT); -- v3
           end if;
           v_cmd_idx := get_last_received_cmd_idx(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, TX, GC_SCOPE);
-          --await_completion(GMII_VVCT, GC_INSTANCE_IDX, TX, v_cmd_idx, (GC_MAX_NUM_WORDS+v_num_transfers)*GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for write to finish.", GC_SCOPE, hvvc_to_bridge.msg_id_panel);
           await_completion(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, TX, v_cmd_idx, (GC_MAX_NUM_WORDS + v_num_transfers) * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for write to finish.", GC_SCOPE, v_hvvc_msg_id_panel);
 
         when RECEIVE =>
-          --gmii_read(GMII_VVCT, GC_INSTANCE_IDX, RX, v_num_data_bytes, "HVVC: Read data via GMII.", GC_SCOPE, hvvc_to_bridge.msg_id_panel);
           gmii_read(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, v_num_data_bytes, "HVVC: Read data via GMII.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 
           -- Enable the executor waiting log after receiving its last command
           if v_disabled_msg_id_exe_wait and v_dut_if_field_pos_is_last then
-            --shared_gmii_vvc_config(RX, GC_INSTANCE_IDX).msg_id_panel(ID_CMD_EXECUTOR_WAIT) := ENABLED;
             enable_gmii_vvc_msg_id(RX, ID_CMD_EXECUTOR_WAIT); -- v3
           end if;
 
           v_cmd_idx := get_last_received_cmd_idx(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, GC_SCOPE);
-          --await_completion(GMII_VVCT, GC_INSTANCE_IDX, RX, v_cmd_idx, (GC_MAX_NUM_WORDS+v_num_transfers)*GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for read to finish.", GC_SCOPE, hvvc_to_bridge.msg_id_panel);
           await_completion(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, v_cmd_idx, (GC_MAX_NUM_WORDS + v_num_transfers) * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for read to finish.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 
-          --fetch_result(GMII_VVCT, GC_INSTANCE_IDX, RX, v_cmd_idx, v_gmii_received_data, "HVVC: Fetching received data.", TB_ERROR, GC_SCOPE, hvvc_to_bridge.msg_id_panel);
           fetch_result(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, v_cmd_idx, v_gmii_received_data, "HVVC: Fetching received data.", TB_ERROR, GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 
           -- Convert from t_byte_array back to t_slv_array
@@ -169,7 +162,6 @@ begin
 
       -- Enable the interpreter waiting log after receiving its last command
       if v_disabled_msg_id_int_wait and v_dut_if_field_pos_is_last then
-        --shared_gmii_vvc_config(v_channel, GC_INSTANCE_IDX).msg_id_panel(ID_CMD_INTERPRETER_WAIT) := ENABLED;
         enable_gmii_vvc_msg_id(v_channel, ID_CMD_INTERPRETER_WAIT); -- v3
       end if;
 

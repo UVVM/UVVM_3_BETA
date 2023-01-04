@@ -643,7 +643,7 @@ begin
 
       log("Verifying that attempting to enable ID_NEVER triggers an alert.");
       increment_expected_alerts(TB_WARNING, 1);
-      enable_log_msg(ID_NEVER, "This shall trigger a TB_WARNING.");
+      enable_log_msg(ID_NEVER, "This shall trigger a TB_WARNING.", NON_QUIET);
 
       log("Testing ID_LOG_MSG_CTRL and ALL_MESSAGES");
       disable_log_msg(ALL_MESSAGES);

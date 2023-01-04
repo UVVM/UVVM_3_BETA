@@ -116,21 +116,21 @@ architecture behave of axilite_vvc is
     constant void : t_void
   ) return t_vvc_config is
   begin
-    return shared_axilite_vvc_config.get(GC_INSTANCE_IDX);
+    return shared_vvc_config.get(GC_INSTANCE_IDX);
   end function get_vvc_config;
 
   impure function get_vvc_status(
     constant void : t_void
   ) return t_vvc_status is
   begin
-    return shared_axilite_vvc_status.get(GC_INSTANCE_IDX);
+    return shared_vvc_status.get(GC_INSTANCE_IDX);
   end function get_vvc_status;
 
   procedure set_vvc_status(
     constant vvc_status : t_vvc_status
   ) is
   begin
-    shared_axilite_vvc_status.set(vvc_status, GC_INSTANCE_IDX);
+    shared_vvc_status.set(vvc_status, GC_INSTANCE_IDX);
   end procedure set_vvc_status;
 
 begin
@@ -140,7 +140,7 @@ begin
   -- - Set up the defaults and show constructor if enabled
   --===============================================================================================
   -- v3
-  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_axilite_vvc_config, shared_axilite_vvc_msg_id_panel.get(GC_INSTANCE_IDX), command_queue, result_queue, GC_AXILITE_CONFIG,
+  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_vvc_config, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX), command_queue, result_queue, GC_AXILITE_CONFIG,
                   GC_CMD_QUEUE_COUNT_MAX, GC_CMD_QUEUE_COUNT_THRESHOLD, GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
                   GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY);
   --===============================================================================================
@@ -175,7 +175,7 @@ begin
     -- Then for every single command from the sequencer
     loop                                -- basically as long as new commands are received
 
-      v_msg_id_panel := shared_axilite_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- 1. wait until command targeted at this VVC. Must match VVC name, instance and channel (if applicable)
       --    releases global semaphore
@@ -242,7 +242,7 @@ begin
 
         end case;
 
-        shared_axilite_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX); -- v3
+        shared_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX); -- v3
 
       else
         tb_error("command_type is not IMMEDIATE or QUEUED", C_SCOPE);
@@ -270,7 +270,7 @@ begin
     end if;
     v_cmd_queues_are_empty := queues_are_empty(VOID);
     update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                 shared_axilite_vvc_status,
+                                 shared_vvc_status,
                                  GC_INSTANCE_IDX,
                                  NA,
                                  ACTIVE,
@@ -284,7 +284,7 @@ begin
     end if;
     v_cmd_queues_are_empty := queues_are_empty(VOID);
     update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                 shared_axilite_vvc_status,
+                                 shared_vvc_status,
                                  GC_INSTANCE_IDX,
                                  NA,
                                  INACTIVE,
@@ -326,17 +326,17 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_axilite_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- 1. Set defaults, fetch command and log
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, v_msg_id_panel, shared_axilite_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS); -- v3
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Check if command is a BFM access
       v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay
@@ -462,6 +462,7 @@ begin
     constant C_CHANNEL_VVC_LABELS   : t_vvc_labels                         := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
   begin
+    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     read_address_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
     read_address_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
@@ -473,16 +474,16 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_axilite_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, read_address_channel_queue, v_msg_id_panel, shared_axilite_vvc_status, read_address_channel_queue_is_increasing, read_address_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, read_address_channel_queue, shared_vvc_status, read_address_channel_queue_is_increasing, read_address_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Normalise address
       v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "Function called with to wide address. " & v_cmd.msg);
@@ -527,6 +528,7 @@ begin
     constant C_CHANNEL_SCOPE        : string                                       := C_VVC_NAME & "_R" & "," & to_string(GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS   : t_vvc_labels                                 := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
+    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     read_data_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
     read_data_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
@@ -538,17 +540,17 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_axilite_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, read_data_channel_queue, v_msg_id_panel, shared_axilite_vvc_status, read_data_channel_queue_is_increasing, read_data_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, read_data_channel_queue, shared_vvc_status, read_data_channel_queue_is_increasing, read_data_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
 
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Normalise data
       v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "Function called with to wide data. " & v_cmd.msg);
@@ -619,6 +621,7 @@ begin
     constant C_CHANNEL_SCOPE        : string                               := C_VVC_NAME & "_AW" & "," & to_string(GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS   : t_vvc_labels                         := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
+    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     write_address_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
     write_address_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
@@ -630,16 +633,16 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_axilite_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_address_channel_queue, v_msg_id_panel, shared_axilite_vvc_status, write_address_channel_queue_is_increasing, write_address_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_address_channel_queue, shared_vvc_status, write_address_channel_queue_is_increasing, write_address_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Normalise address
       v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "Function called with to wide address. " & v_cmd.msg);
@@ -678,6 +681,7 @@ begin
     constant C_CHANNEL_SCOPE        : string                                       := C_VVC_NAME & "_W" & "," & to_string(GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS   : t_vvc_labels                                 := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
+    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     write_data_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
     write_data_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
@@ -689,16 +693,16 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_axilite_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_data_channel_queue, v_msg_id_panel, shared_axilite_vvc_status, write_data_channel_queue_is_increasing, write_data_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_data_channel_queue, shared_vvc_status, write_data_channel_queue_is_increasing, write_data_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Normalise data
       v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "Function called with to wide data. " & v_cmd.msg);
@@ -738,6 +742,7 @@ begin
     constant C_CHANNEL_SCOPE        : string                                       := C_VVC_NAME & "_B" & "," & to_string(GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS   : t_vvc_labels                                 := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
+    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     write_response_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
     write_response_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
@@ -749,16 +754,16 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_axilite_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_response_channel_queue, v_msg_id_panel, shared_axilite_vvc_status, write_response_channel_queue_is_increasing, write_response_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_response_channel_queue, shared_vvc_status, write_response_channel_queue_is_increasing, write_response_channel_executor_is_busy, C_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Set vvc transaction info
       set_b_vvc_transaction_info(vvc_transaction_info_trigger, shared_axilite_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);

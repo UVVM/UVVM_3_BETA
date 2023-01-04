@@ -136,18 +136,21 @@ package vvc_methods_pkg is
                 c_generic_default => C_VVC_STATUS_DEFAULT);
   use protected_vvc_status_pkg.all;
   shared variable shared_uart_vvc_status : protected_vvc_status_pkg.t_prot_generic_array;
+  alias shared_vvc_status is shared_uart_vvc_status; -- This alias is for internal use in the VVC
 
   package protected_vvc_config_pkg is new uvvm_util.protected_generic_types_pkg
     generic map(t_generic_element => t_vvc_config,
                 c_generic_default => C_UART_VVC_CONFIG_DEFAULT);
   use protected_vvc_config_pkg.all;
   shared variable shared_uart_vvc_config : protected_vvc_config_pkg.t_prot_generic_array;
+  alias shared_vvc_config is shared_uart_vvc_config; -- This alias is for internal use in the VVC
 
   package protected_msg_id_panel_pkg is new uvvm_util.protected_generic_types_pkg
     generic map(t_generic_element => t_msg_id_panel,
                 c_generic_default => C_VVC_MSG_ID_PANEL_DEFAULT);
   use protected_msg_id_panel_pkg.all;
   shared variable shared_uart_vvc_msg_id_panel : protected_msg_id_panel_pkg.t_prot_generic_array;
+  alias shared_vvc_msg_id_panel is shared_uart_vvc_msg_id_panel; -- This alias is for internal use in the VVC
 
   -- Scoreboard
   package uart_sb_pkg is new bitvis_vip_scoreboard.generic_sb_pkg
@@ -411,7 +414,7 @@ package body vvc_methods_pkg is
     v_local_vvc_cmd.alert_level    := alert_level;
     v_local_vvc_cmd.max_receptions := max_receptions;
 
-    v_vvc_config := shared_uart_vvc_config.get(vvc_instance_idx, channel);
+    v_vvc_config := shared_vvc_config.get(vvc_instance_idx, channel);
     if timeout = -1 ns then
       v_local_vvc_cmd.timeout := v_vvc_config.bfm_config.timeout;
     else

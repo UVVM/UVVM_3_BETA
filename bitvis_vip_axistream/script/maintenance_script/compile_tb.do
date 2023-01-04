@@ -35,17 +35,11 @@ eval vcom  $compdirectives  $tb_path/axis_fifo.vhd
 echo "eval vcom  $compdirectives  $tb_path/axistream_th.vhd"
 eval vcom  $compdirectives  $tb_path/axistream_th.vhd
 
-echo "eval vcom  $compdirectives  $tb_path/axistream_bfm_slv_array_tb.vhd"
-eval vcom  $compdirectives  $tb_path/axistream_bfm_slv_array_tb.vhd
+echo "eval vcom  $compdirectives  $tb_path/axistream_bfm_tb.vhd"
+eval vcom  $compdirectives  $tb_path/axistream_bfm_tb.vhd
 
 echo "eval vcom  $compdirectives  $tb_path/axistream_multiple_vvc_tb.vhd"
 eval vcom  $compdirectives  $tb_path/axistream_multiple_vvc_tb.vhd
 
-echo "eval vcom  $compdirectives  $tb_path/axistream_simple_tb.vhd"
-eval vcom  $compdirectives  $tb_path/axistream_simple_tb.vhd
-
-echo "eval vcom  $compdirectives  $tb_path/axistream_vvc_simple_tb.vhd"
-eval vcom  $compdirectives  $tb_path/axistream_vvc_simple_tb.vhd
-
-echo "eval vcom  $compdirectives  $tb_path/axistream_vvc_slv_array_tb.vhd"
-eval vcom  $compdirectives  $tb_path/axistream_vvc_slv_array_tb.vhd
+echo "eval vcom  $compdirectives  $tb_path/axistream_vvc_tb.vhd"
+eval vcom  $compdirectives  $tb_path/axistream_vvc_tb.vhd

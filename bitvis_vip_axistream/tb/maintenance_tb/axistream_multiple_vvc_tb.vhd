@@ -50,8 +50,8 @@ architecture func of axistream_multiple_vvc_tb is
   constant C_CLK_PERIOD : time   := 10 ns;
   constant C_SCOPE      : string := C_TB_SCOPE_DEFAULT;
 
-  constant c_max_bytes       : natural   := 200; -- max bytes per packet to send
-  constant GC_DUT_FIFO_DEPTH : natural   := 4;
+  constant C_MAX_BYTES      : natural   := 200; -- max bytes per packet to send
+  constant C_DUT_FIFO_DEPTH : natural   := 4;
   --------------------------------------------------------------------------------
   -- Signal declarations
   --------------------------------------------------------------------------------
@@ -59,7 +59,6 @@ architecture func of axistream_multiple_vvc_tb is
   signal areset              : std_logic := '0';
   signal clock_ena           : boolean   := false;
 
-  -- signals
   -- The axistream interface is gathered in one record, so procedures that use the
   -- axistream interface have less arguments
   signal axistream_if_m : t_axistream_if(tdata(GC_DATA_WIDTH - 1 downto 0),
@@ -77,10 +76,6 @@ architecture func of axistream_multiple_vvc_tb is
                                          tdest(GC_DEST_WIDTH - 1 downto 0)
                                         );
 
-  --------------------------------------------------------------------------------
-  -- Component declarations
-  --------------------------------------------------------------------------------
-  --------------------------------------------------------------------------------
 begin
   -----------------------------
   -- Instantiate Testharness
@@ -91,7 +86,7 @@ begin
       GC_USER_WIDTH     => GC_USER_WIDTH,
       GC_ID_WIDTH       => GC_ID_WIDTH,
       GC_DEST_WIDTH     => GC_DEST_WIDTH,
-      GC_DUT_FIFO_DEPTH => GC_DUT_FIFO_DEPTH,
+      GC_DUT_FIFO_DEPTH => C_DUT_FIFO_DEPTH,
       GC_INCLUDE_TUSER  => GC_INCLUDE_TUSER
     )
     port map(
@@ -110,17 +105,15 @@ begin
   -- PROCESS: p_main
   ------------------------------------------------
   p_main : process
-    -- BFM config
-    variable axistream_bfm_config     : t_axistream_bfm_config           := C_AXISTREAM_BFM_CONFIG_DEFAULT;
     constant C_NUM_VVCS               : natural                          := 8;
+    variable v_axistream_bfm_config   : t_axistream_bfm_config           := C_AXISTREAM_BFM_CONFIG_DEFAULT;
     variable v_start_time, v_end_time : time;
     variable v_elapsed_time           : time;
     variable v_elapsed_clk_cycles     : natural;
-    variable v_cnt                    : integer                          := 0;
     variable v_idx                    : integer                          := 0;
-    variable v_numBytes               : integer                          := 0;
-    variable v_numWords               : integer                          := 0;
-    variable v_data_array             : t_slv_array(0 to c_max_bytes - 1)(7 downto 0);
+    variable v_num_bytes              : integer                          := 0;
+    variable v_num_words              : integer                          := 0;
+    variable v_data_array             : t_slv_array(0 to C_MAX_BYTES - 1)(7 downto 0);
     variable v_user_array             : t_user_array(v_data_array'range) := (others => (others => '0'));
     variable v_strb_array             : t_strb_array(v_data_array'range) := (others => (others => '0'));
     variable v_id_array               : t_id_array(v_data_array'range)   := (others => (others => '0'));
@@ -141,15 +134,15 @@ begin
     await_uvvm_initialization(VOID);
 
     -- override default config with settings for this testbench
-    axistream_bfm_config.clock_period             := C_CLK_PERIOD;
-    axistream_bfm_config.max_wait_cycles          := 1000;
-    axistream_bfm_config.max_wait_cycles_severity := error;
-    axistream_bfm_config.check_packet_length      := true;
+    v_axistream_bfm_config.clock_period             := C_CLK_PERIOD;
+    v_axistream_bfm_config.max_wait_cycles          := 1000;
+    v_axistream_bfm_config.max_wait_cycles_severity := error;
+    v_axistream_bfm_config.check_packet_length      := true;
 
     -- Default: use same config for both the master and slave VVC
     for i in 0 to c_num_vvcs - 1 loop
       v_vvc_config            := shared_axistream_vvc_config.get(i);
-      v_vvc_config.bfm_config := axistream_bfm_config; -- vvc_methods_pkg
+      v_vvc_config.bfm_config := v_axistream_bfm_config;
       shared_axistream_vvc_config.set(v_vvc_config, i);
     end loop;
 
@@ -157,90 +150,72 @@ begin
     report_global_ctrl(VOID);
     report_msg_id_panel(VOID);
 
-    disable_log_msg(ALL_MESSAGES);
-    enable_log_msg(ID_LOG_HDR);
-    enable_log_msg(ID_SEQUENCER);
-
-    for i in 0 to c_num_vvcs - 1 loop
-      disable_log_msg(AXISTREAM_VVCT, i, ALL_MESSAGES);
-      enable_log_msg(AXISTREAM_VVCT, i, ID_SEQUENCER);
-    end loop;
-
-    --    enable_log_msg(AXISTREAM_VVCT, 0, ID_BFM);
-    --    enable_log_msg(AXISTREAM_VVCT, 1, ID_BFM);
-    enable_log_msg(AXISTREAM_VVCT, 0, ID_SEQUENCER);
-    enable_log_msg(AXISTREAM_VVCT, 1, ID_SEQUENCER);
-    enable_log_msg(AXISTREAM_VVCT, 2, ID_SEQUENCER);
-    enable_log_msg(AXISTREAM_VVCT, 3, ID_SEQUENCER);
-
-    --    enable_log_msg(AXISTREAM_VVCT, 0, ID_PACKET_INITIATE);
-    --    enable_log_msg(AXISTREAM_VVCT, 1, ID_PACKET_INITIATE);
-    --    enable_log_msg(AXISTREAM_VVCT, 0, ID_PACKET_DATA);
-    --    enable_log_msg(AXISTREAM_VVCT, 1, ID_PACKET_DATA);
-    --    enable_log_msg(AXISTREAM_VVCT, 0, ID_PACKET_COMPLETE);
-    --    enable_log_msg(AXISTREAM_VVCT, 1, ID_PACKET_COMPLETE);
-    enable_log_msg(AXISTREAM_VVCT, 0, ID_IMMEDIATE_CMD);
-    enable_log_msg(AXISTREAM_VVCT, 1, ID_IMMEDIATE_CMD);
-    enable_log_msg(AXISTREAM_VVCT, 2, ID_IMMEDIATE_CMD);
-    enable_log_msg(AXISTREAM_VVCT, 3, ID_IMMEDIATE_CMD);
+    -- Configure logging
+    disable_log_msg(ID_POS_ACK);
+    disable_log_msg(ID_UVVM_SEND_CMD);
+    disable_log_msg(ID_UVVM_CMD_ACK);
+    disable_log_msg(ID_AWAIT_COMPLETION);
+    disable_log_msg(ID_AWAIT_COMPLETION_WAIT);
+    disable_log_msg(ID_AWAIT_COMPLETION_END);
+    disable_log_msg(AXISTREAM_VVCT, ALL_INSTANCES, ALL_MESSAGES);
+    enable_log_msg(AXISTREAM_VVCT, ALL_INSTANCES, ID_PACKET_INITIATE);
+    enable_log_msg(AXISTREAM_VVCT, ALL_INSTANCES, ID_PACKET_COMPLETE);
 
     log(ID_LOG_HDR, "Start Simulation of AXI-Stream");
     ------------------------------------------------------------
-    clock_ena <= true;                  -- the axistream_reset routine assumes the clock is running
+    clock_ena <= true;
     gen_pulse(areset, 10 * C_CLK_PERIOD, "Pulsing reset for 10 clock periods");
 
     ------------------------------------------------------------
     -- Generate some packets for later
     ------------------------------------------------------------
-    v_numBytes := 40;
-    v_numWords := integer(ceil(real(v_numBytes) / (real(GC_DATA_WIDTH) / 8.0)));
-    v_cnt      := 0;
-    for byte in 0 to v_data_array'high loop
-      v_data_array(byte) := std_logic_vector(to_unsigned(v_cnt, v_data_array(0)'length));
-      v_user_array(byte) := std_logic_vector(to_unsigned(v_cnt, v_user_array(0)'length));
-      v_strb_array(byte) := std_logic_vector(to_unsigned(v_cnt, v_strb_array(0)'length));
-      v_id_array(byte)   := std_logic_vector(to_unsigned(v_cnt, v_id_array(0)'length));
-      v_dest_array(byte) := std_logic_vector(to_unsigned(v_cnt, v_dest_array(0)'length));
-      v_cnt              := v_cnt + 1;
+    v_num_bytes := 40;
+    v_num_words := integer(ceil(real(v_num_bytes) / (real(GC_DATA_WIDTH) / 8.0)));
+    for word in 0 to v_data_array'high loop
+      v_data_array(word) := std_logic_vector(to_unsigned(word, v_data_array(0)'length));
+      v_user_array(word) := std_logic_vector(to_unsigned(word, v_user_array(0)'length));
+      v_strb_array(word) := std_logic_vector(to_unsigned(word, v_strb_array(0)'length));
+      v_id_array(word)   := std_logic_vector(to_unsigned(word, v_id_array(0)'length));
+      v_dest_array(word) := std_logic_vector(to_unsigned(word mod 16, v_dest_array(0)'length));
     end loop;
-    ------------------------------------------------------------
 
     ------------------------------------------------------------
-    log("TC: insert_delay : time ");
+    log(ID_LOG_HDR, "TC: insert_delay : time ");
     ------------------------------------------------------------
     v_start_time := now;
-    log("start.");
+    log(ID_SEQUENCER, "start.");
 
     insert_delay(AXISTREAM_VVCT, 0, 100 ns, "insert_delay (time)");
 
-    log("command sent.");
+    log(ID_SEQUENCER, "command sent.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
-    log("await is done .");
+    log(ID_SEQUENCER, "await is done .");
     check_value((now - v_start_time), 100 ns, ERROR, "check insert_delay '", C_SCOPE, ID_SEQUENCER);
+
     ------------------------------------------------------------
-    log("TC: insert_delay : integer ");
+    log(ID_LOG_HDR, "TC: insert_delay : integer ");
     ------------------------------------------------------------
     v_start_time := now;
-    log("start.");
+    log(ID_SEQUENCER, "start.");
 
     insert_delay(AXISTREAM_VVCT, 0, 100, "insert_delay (integer)");
 
-    log("command sent.");
+    log(ID_SEQUENCER, "command sent.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
-    log("await is done .");
+    log(ID_SEQUENCER, "await is done .");
     check_value((now - v_start_time), 100 * C_CLK_PERIOD, ERROR, "check insert_delay '", C_SCOPE, ID_SEQUENCER);
 
     ------------------------------------------------------------
-    log("TC: await_any_completion: 2 VVCs");
+    log(ID_LOG_HDR, "TC: await_any_completion: 2 VVCs");
     ------------------------------------------------------------
-    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to v_numBytes), "transmit short packte");
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to 2 * v_numBytes), "transmit long packet");
+    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to v_num_bytes), "transmit short packte");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to 2 * v_num_bytes), "transmit long packet");
 
     v_start_time := now;
     await_any_completion(AXISTREAM_VVCT, 0, NOT_LAST, 1 ms);
@@ -248,20 +223,19 @@ begin
 
     v_elapsed_clk_cycles := (now - v_start_time) / (C_CLK_PERIOD);
 
-    check_value(v_elapsed_clk_cycles, 1 + v_numWords, ERROR, "2 vvcs: checking that we waited long enough for the quickest VVC to finish", C_SCOPE, ID_SEQUENCER);
+    check_value(v_elapsed_clk_cycles, 1 + v_num_words, ERROR, "2 vvcs: checking that we waited long enough for the quickest VVC to finish", C_SCOPE, ID_SEQUENCER);
 
     -- Cleanup
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
-    ------------------------------------------------------------
-    log("TC: await_any_completion: 3 VVCs");
-    ------------------------------------------------------------
 
-    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_numBytes), "transmit long packte");
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_numBytes), "transmit short packet");
-    axistream_transmit(AXISTREAM_VVCT, 2, v_data_array(0 to 3 * v_numBytes), "transmit long packet");
+    ------------------------------------------------------------
+    log(ID_LOG_HDR, "TC: await_any_completion: 3 VVCs");
+    ------------------------------------------------------------
+    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_num_bytes), "transmit long packte");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_num_bytes), "transmit short packet");
+    axistream_transmit(AXISTREAM_VVCT, 2, v_data_array(0 to 3 * v_num_bytes), "transmit long packet");
 
     v_start_time := now;
     await_any_completion(AXISTREAM_VVCT, 0, NOT_LAST, 1 ms);
@@ -270,19 +244,17 @@ begin
 
     v_elapsed_clk_cycles := (now - v_start_time) / (C_CLK_PERIOD);
 
-    check_value(v_elapsed_clk_cycles, 1 + v_numWords, ERROR, "3 vvcs: checking that we waited long enough for the quickest VVC to finish", C_SCOPE, ID_SEQUENCER);
+    check_value(v_elapsed_clk_cycles, 1 + v_num_words, ERROR, "3 vvcs: checking that we waited long enough for the quickest VVC to finish", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
     ------------------------------------------------------------
-    log("TC: await_any_completion: 3 VVCs, one of the NOT_LAST is already complete");
+    log(ID_LOG_HDR, "TC: await_any_completion: 3 VVCs, one of the NOT_LAST is already complete");
     ------------------------------------------------------------
-
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_numBytes), "transmit packet");
-    axistream_transmit(AXISTREAM_VVCT, 2, v_data_array(0 to 3 * v_numBytes), "transmit long packet");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_num_bytes), "transmit packet");
+    axistream_transmit(AXISTREAM_VVCT, 2, v_data_array(0 to 3 * v_num_bytes), "transmit long packet");
 
     v_start_time := now;
     await_any_completion(AXISTREAM_VVCT, 0, NOT_LAST, 1 ms);
@@ -293,16 +265,14 @@ begin
 
     check_value(v_elapsed_clk_cycles, 0, ERROR, "3 vvcs: checking that we waited 0 time", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
     ------------------------------------------------------------
-    log("TC: await_any_completion: 2 VVCs, the LAST is already complete");
+    log(ID_LOG_HDR, "TC: await_any_completion: 2 VVCs, the LAST is already complete");
     ------------------------------------------------------------
-
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_numBytes), "transmit packet");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_num_bytes), "transmit packet");
 
     v_start_time := now;
     await_any_completion(AXISTREAM_VVCT, 1, NOT_LAST, 1 ms);
@@ -312,16 +282,15 @@ begin
 
     check_value(v_elapsed_clk_cycles, 0, ERROR, "2 vvcs: checking that we waited 0 time", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
-    ------------------------------------------------------------
-    log("TC: await_any_completion: 3 VVCs, the LAST is already complete");
-    ------------------------------------------------------------
 
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_numBytes), "transmit packet");
-    axistream_transmit(AXISTREAM_VVCT, 2, v_data_array(0 to 3 * v_numBytes), "transmit long packet");
+    ------------------------------------------------------------
+    log(ID_LOG_HDR, "TC: await_any_completion: 3 VVCs, the LAST is already complete");
+    ------------------------------------------------------------
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_num_bytes), "transmit packet");
+    axistream_transmit(AXISTREAM_VVCT, 2, v_data_array(0 to 3 * v_num_bytes), "transmit long packet");
 
     v_start_time := now;
     await_any_completion(AXISTREAM_VVCT, 1, NOT_LAST, 1 ms);
@@ -332,17 +301,16 @@ begin
 
     check_value(v_elapsed_clk_cycles, 0, ERROR, "3 vvcs: checking that we waited 0 time", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
-    ------------------------------------------------------------
-    log("TC: await_any_completion: all VVCs, one of the NOT_LAST is already complete");
-    ------------------------------------------------------------
 
+    ------------------------------------------------------------
+    log(ID_LOG_HDR, "TC: await_any_completion: all VVCs, one of the NOT_LAST is already complete");
+    ------------------------------------------------------------
     -- All but one VVC :
     for i in 1 to C_NUM_VVCS - 1 loop
-      axistream_transmit(AXISTREAM_VVCT, i, v_data_array(0 to 2 * v_numBytes), "transmit long packte");
+      axistream_transmit(AXISTREAM_VVCT, i, v_data_array(0 to 2 * v_num_bytes), "transmit long packte");
     end loop;
 
     v_start_time := now;
@@ -358,15 +326,13 @@ begin
 
     check_value(v_elapsed_clk_cycles, 0, ERROR, "all vvcs: checking that we waited 0 time", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
     ------------------------------------------------------------
-    log("TC: await_any_completion: all VVCs, all are already complete");
+    log(ID_LOG_HDR, "TC: await_any_completion: all VVCs, all are already complete");
     ------------------------------------------------------------
-
     v_start_time := now;
 
     -- All but one VVC :
@@ -380,18 +346,16 @@ begin
 
     check_value(v_elapsed_clk_cycles, 0, ERROR, "all vvcs: checking that we waited 0 time", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
     ------------------------------------------------------------
-    log("TC: await_any_completion: all VVCs, multiple VVCs complete simultaneously ");
+    log(ID_LOG_HDR, "TC: await_any_completion: all VVCs, multiple VVCs complete simultaneously ");
     ------------------------------------------------------------
-
-    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_numBytes), "transmit long packet");
+    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_num_bytes), "transmit long packet");
     for i in 1 to C_NUM_VVCS - 1 loop
-      axistream_transmit(AXISTREAM_VVCT, i, v_data_array(0 to v_numBytes), "transmit short packte");
+      axistream_transmit(AXISTREAM_VVCT, i, v_data_array(0 to v_num_bytes), "transmit short packte");
     end loop;
 
     v_start_time := now;
@@ -405,14 +369,13 @@ begin
 
     v_elapsed_clk_cycles := (now - v_start_time) / (C_CLK_PERIOD);
 
-    check_value(v_elapsed_clk_cycles, 1 + v_numWords, ERROR, "all vvcs: checking that we waited shortest time", C_SCOPE, ID_SEQUENCER);
+    check_value(v_elapsed_clk_cycles, 1 + v_num_words, ERROR, "all vvcs: checking that we waited shortest time", C_SCOPE, ID_SEQUENCER);
 
     ------------------------------------------------------------
-    log("TC: await_any_completion: all VVCs, all VVCs complete simultaneously ");
+    log(ID_LOG_HDR, "TC: await_any_completion: all VVCs, all VVCs complete simultaneously ");
     ------------------------------------------------------------
-
     for i in 0 to C_NUM_VVCS - 1 loop
-      axistream_transmit(AXISTREAM_VVCT, i, v_data_array(0 to v_numBytes), "transmit short packte");
+      axistream_transmit(AXISTREAM_VVCT, i, v_data_array(0 to v_num_bytes), "transmit short packte");
     end loop;
 
     v_start_time := now;
@@ -426,13 +389,13 @@ begin
 
     v_elapsed_clk_cycles := (now - v_start_time) / (C_CLK_PERIOD);
 
-    check_value(v_elapsed_clk_cycles, 1 + v_numWords, ERROR, "all vvcs: checking that we waited shortest time", C_SCOPE, ID_SEQUENCER);
+    check_value(v_elapsed_clk_cycles, 1 + v_num_words, ERROR, "all vvcs: checking that we waited shortest time", C_SCOPE, ID_SEQUENCER);
 
     ------------------------------------------------------------
-    log("TC: await_any_completion while VVCs are still busy from previous test, just to see what happens");
+    log(ID_LOG_HDR, "TC: await_any_completion while VVCs are still busy from previous test, just to see what happens");
     ------------------------------------------------------------
     for i in 1 to C_NUM_VVCS - 1 loop
-      axistream_transmit(AXISTREAM_VVCT, i, v_data_array(0 to 2 * v_numBytes), "transmit long packte");
+      axistream_transmit(AXISTREAM_VVCT, i, v_data_array(0 to 2 * v_num_bytes), "transmit long packte");
     end loop;
 
     v_start_time := now;
@@ -441,18 +404,17 @@ begin
     end loop;
     await_any_completion(AXISTREAM_VVCT, C_NUM_VVCs - 1, LAST, 1 ms);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
     ------------------------------------------------------------
-    log("TC: await_any_completion(cmd_idx): 2 VVCs. Wait for 1st packet only, in the LAST VVC");
+    log(ID_LOG_HDR, "TC: await_any_completion(cmd_idx): 2 VVCs. Wait for 1st packet only, in the LAST VVC");
     ------------------------------------------------------------
-    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_numBytes), "transmit long packet");
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_numBytes), "transmit short packet that shall be waited for");
+    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_num_bytes), "transmit long packet");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_num_bytes), "transmit short packet that shall be waited for");
     v_cmd_idx := get_last_received_cmd_idx(AXISTREAM_VVCT, 1);
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to 2 * v_numBytes), "transmit another packet not to be waited for");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to 2 * v_num_bytes), "transmit another packet not to be waited for");
 
     v_start_time := now;
 
@@ -461,20 +423,19 @@ begin
 
     v_elapsed_clk_cycles := (now - v_start_time) / (C_CLK_PERIOD);
 
-    check_value(v_elapsed_clk_cycles, 1 + v_numWords, ERROR, "all vvcs: checking that we waited shortest time", C_SCOPE, ID_SEQUENCER);
+    check_value(v_elapsed_clk_cycles, 1 + v_num_words, ERROR, "all vvcs: checking that we waited shortest time", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
     ------------------------------------------------------------
-    log("TC: await_any_completion(cmd_idx): 2 VVCs. Wait for 1st packet only, in the NOT_LAST VVC");
+    log(ID_LOG_HDR, "TC: await_any_completion(cmd_idx): 2 VVCs. Wait for 1st packet only, in the NOT_LAST VVC");
     ------------------------------------------------------------
-    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_numBytes), "transmit long packet");
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_numBytes), "transmit short packet that shall be waited for");
+    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_num_bytes), "transmit long packet");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_num_bytes), "transmit short packet that shall be waited for");
     v_cmd_idx := get_last_received_cmd_idx(AXISTREAM_VVCT, 1);
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to 2 * v_numBytes), "transmit another packet not to be waited for");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to 2 * v_num_bytes), "transmit another packet not to be waited for");
 
     v_start_time := now;
 
@@ -483,18 +444,17 @@ begin
 
     v_elapsed_clk_cycles := (now - v_start_time) / (C_CLK_PERIOD);
 
-    check_value(v_elapsed_clk_cycles, 1 + v_numWords, ERROR, "all vvcs: checking that we waited shortest time", C_SCOPE, ID_SEQUENCER);
+    check_value(v_elapsed_clk_cycles, 1 + v_num_words, ERROR, "all vvcs: checking that we waited shortest time", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
     ------------------------------------------------------------
-    log("TC: await_any_completion timeout in NOT_LAST, expect tb_ERROR ");
+    log(ID_LOG_HDR, "TC: await_any_completion timeout in NOT_LAST, expect tb_ERROR ");
     ------------------------------------------------------------
-    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_numBytes), "transmit long packet");
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_numBytes), "transmit short packet that shall be waited for");
+    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_num_bytes), "transmit long packet");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_num_bytes), "transmit short packet that shall be waited for");
 
     v_start_time := now;
 
@@ -504,16 +464,15 @@ begin
     increment_expected_alerts(TB_ERROR, 1);
     check_value((now - v_start_time), 1 ns, ERROR, "all vvcs: checking that we waited for 'timeout'", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
 
     ------------------------------------------------------------
-    log("TC: await_any_completion timeout in LAST, expect tb_ERROR ");
+    log(ID_LOG_HDR, "TC: await_any_completion timeout in LAST, expect tb_ERROR ");
     ------------------------------------------------------------
-    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_numBytes), "transmit long packet");
-    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_numBytes), "transmit short packet that shall be waited for");
+    axistream_transmit(AXISTREAM_VVCT, 0, v_data_array(0 to 2 * v_num_bytes), "transmit long packet");
+    axistream_transmit(AXISTREAM_VVCT, 1, v_data_array(0 to v_num_bytes), "transmit short packet that shall be waited for");
 
     v_start_time := now;
 
@@ -523,7 +482,6 @@ begin
     increment_expected_alerts(TB_ERROR, 1);
     check_value((now - v_start_time), 1 ns, ERROR, "all vvcs: checking that we waited for 'timeout'", C_SCOPE, ID_SEQUENCER);
 
-    log("Done.");
     for i in 0 to C_NUM_VVCS - 1 loop
       await_completion(AXISTREAM_VVCT, i, 1 ms);
     end loop;
@@ -540,4 +498,4 @@ begin
     wait;                               -- to stop completely
 
   end process p_main;
-end func;
+end architecture func;

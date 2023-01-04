@@ -84,7 +84,6 @@ architecture behave of sbi_vvc is
   shared variable command_queue : work.td_cmd_queue_pkg.t_prot_generic_queue;
   shared variable result_queue  : work.td_result_queue_pkg.t_prot_generic_queue;
 
-  --alias vvc_status                          : t_vvc_status is shared_sbi_vvc_status(GC_INSTANCE_IDX);
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_sbi_vvc_transaction_trigger(GC_INSTANCE_IDX);
   --alias vvc_transaction_info                : t_transaction_group is shared_sbi_vvc_transaction_info(GC_INSTANCE_IDX); -- v3
@@ -95,21 +94,21 @@ architecture behave of sbi_vvc is
     constant void : t_void
   ) return t_vvc_config is
   begin
-    return shared_sbi_vvc_config.get(GC_INSTANCE_IDX);
+    return shared_vvc_config.get(GC_INSTANCE_IDX);
   end function get_vvc_config;
 
   impure function get_vvc_status(
     constant void : t_void
   ) return t_vvc_status is
   begin
-    return shared_sbi_vvc_status.get(GC_INSTANCE_IDX);
+    return shared_vvc_status.get(GC_INSTANCE_IDX);
   end function get_vvc_status;
 
   procedure set_vvc_status(
     constant vvc_status : t_vvc_status
   ) is
   begin
-    shared_sbi_vvc_status.set(vvc_status, GC_INSTANCE_IDX);
+    shared_vvc_status.set(vvc_status, GC_INSTANCE_IDX);
   end procedure set_vvc_status;
 
 begin
@@ -119,7 +118,7 @@ begin
   -- - Set up the defaults and show constructor if enabled
   --===============================================================================================
   -- v3
-  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_sbi_vvc_config, shared_sbi_vvc_msg_id_panel.get(GC_INSTANCE_IDX), command_queue, result_queue, GC_SBI_CONFIG,
+  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_vvc_config, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX), command_queue, result_queue, GC_SBI_CONFIG,
                   GC_CMD_QUEUE_COUNT_MAX, GC_CMD_QUEUE_COUNT_THRESHOLD, GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
                   GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY);
   --===============================================================================================
@@ -146,7 +145,7 @@ begin
     -- Then for every single command from the sequencer
     loop                                -- basically as long as new commands are received
 
-      v_msg_id_panel := shared_sbi_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- 1. wait until command targeted at this VVC. Must match VVC name, instance and channel (if applicable)
       --    releases global semaphore
@@ -208,7 +207,7 @@ begin
 
         end case;
 
-        shared_sbi_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX); -- v3
+        shared_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX); -- v3
 
       else
         tb_error("command_type is not IMMEDIATE or QUEUED", C_SCOPE);
@@ -254,11 +253,11 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_sbi_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
 
       -- update vvc activity
       update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                   shared_sbi_vvc_status,
+                                   shared_vvc_status,
                                    GC_INSTANCE_IDX,
                                    NA,
                                    INACTIVE,
@@ -269,13 +268,13 @@ begin
 
       -- 1. Set defaults, fetch command and log
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, v_msg_id_panel, shared_sbi_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS); -- v3
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- update vvc activity
       update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                   shared_sbi_vvc_status,
+                                   shared_vvc_status,
                                    GC_INSTANCE_IDX,
                                    NA,
                                    ACTIVE,
@@ -286,7 +285,7 @@ begin
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, v_msg_id_panel);
+      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Check if command is a BFM access
       v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay
