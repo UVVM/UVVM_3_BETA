@@ -229,7 +229,7 @@ architecture struct_multiple_vvc of test_harness is
 
 begin
   -----------------------------
-  -- Multiple VVCs just to test await_any_completion
+  -- Multiple VVCs just to test await_completion(ANY_OF)
   -----------------------------
   gen_axistream_vvc_master : for i in 0 to 7 generate
     signal axistream_if_m_local : t_axistream_if(tdata(GC_DATA_WIDTH - 1 downto 0),

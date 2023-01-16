@@ -28,7 +28,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 -- Include Verification IPs
 library bitvis_vip_spi;
@@ -1119,7 +1119,6 @@ begin                                   -- architecture behav
         end loop;
         sbi_await_completion(50 ms);
         await_slave_rx_completion(50 ms, 2);
-        --await_slave_rx_completion(50 ms);
         for i in 1 to iteration loop
           fetch_result(SPI_VVCT, 2, v_cmd_idx, result);
           check_value(master_word_array(i - 1), result(GC_DATA_WIDTH - 1 downto 0), ERROR, "check received data");

@@ -22,20 +22,18 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_gmii;
 context bitvis_vip_gmii.vvc_context;
 
 --hdlregression:tb
--- Test case entity
 entity gmii_vvc_tb is
   generic(
     GC_TESTCASE : string := "UVVM"
   );
 end entity;
 
--- Test case architecture
 architecture func of gmii_vvc_tb is
   --------------------------------------------------------------------------------
   -- Types and constants declarations
@@ -160,7 +158,8 @@ begin
     gmii_write(GMII_VVCT, C_VVC_IDX, TX, v_data_array, "");
     gmii_read(GMII_VVCT, C_VVC_IDX, RX, "");
     v_cmd_idx := get_last_received_cmd_idx(GMII_VVCT, C_VVC_IDX, RX);
-    await_completion(GMII_VVCT, C_VVC_IDX, RX, v_cmd_idx, 10 us);
+    await_completion(GMII_VVCT, C_VVC_IDX, RX, 10 us);
+
     fetch_result(GMII_VVCT, C_VVC_IDX, RX, v_cmd_idx, v_result);
     for i in 0 to v_result.data_array_length - 1 loop
       check_value(v_result.data_array(i), v_data_array(i), ERROR, "Checking fetch result: v_data_array");

@@ -22,7 +22,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_sbi;
 context bitvis_vip_sbi.vvc_context;
@@ -31,14 +31,12 @@ library bitvis_vip_uart;
 context bitvis_vip_uart.vvc_context;
 
 --hdlregression:tb
--- Test case entity
 entity uart_vvc_new_tb is
   generic(
     GC_TESTCASE : string := "UVVM"
   );
 end entity;
 
--- Test case architecture
 architecture func of uart_vvc_new_tb is
 
   constant C_CLK_PERIOD : time := 10 ns;
@@ -74,6 +72,7 @@ begin
     variable v_alert_num_mismatch : boolean := false;
     variable v_vvc_config         : bitvis_vip_uart.vvc_methods_pkg.t_vvc_config;
     variable v_vvc_status         : bitvis_vip_uart.vvc_methods_pkg.t_vvc_status;
+    variable v_vvc_list           : t_prot_vvc_list;
 
     impure function get_vvc_status(
       constant vvc_instance : natural;
@@ -147,14 +146,16 @@ begin
     await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
     wait for 200 ns;                    -- margin
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"AA", "RX_DATA ", ERROR);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
+    add_to_vvc_list(SBI_VVCT, 1, v_vvc_list);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, KEEP_LIST);
 
     log(ID_LOG_HDR, "Check of uart_expect() as simple, instant check", C_SCOPE);
     ------------------------------------------------------------
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"55", "TX_DATA");
     uart_expect(UART_VVCT, 1, RX, x"55", "Expecting TX data");
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
+    add_to_vvc_list(UART_VVCT, 1, RX, v_vvc_list);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, KEEP_LIST);
+
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log(ID_LOG_HDR, "Check of uart_receive()", C_SCOPE);
@@ -162,13 +163,13 @@ begin
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"56", "TX_DATA");
     uart_receive(UART_VVCT, 1, RX, "Receive inside VVC", ERROR);
     v_cmd_idx := get_last_received_cmd_idx(UART_VVCT, 1, RX); -- for last read
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, CLEAR_LIST);
 
     fetch_result(UART_VVCT, 1, RX, v_cmd_idx, v_received_data, v_is_ok, "Fetching receive-result");
     check_value(v_is_ok, ERROR, "Readback OK via fetch_result()");
     check_value(v_received_data(7 downto 0), x"56", ERROR, "Readback data via fetch_result()");
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+    add_to_vvc_list(UART_VVCT, 1, RX, v_vvc_list);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, KEEP_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log(ID_LOG_HDR, "Check of uart_receive() using Scoreboard", C_SCOPE);
@@ -176,7 +177,7 @@ begin
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"38", "TX_DATA");
     UART_VVC_SB.add_expected(1, x"38");
     uart_receive(UART_VVCT, 1, RX, TO_SB, "Receive inside VVC's SB", ERROR);
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, KEEP_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     UART_VVC_SB.report_counters(ALL_INSTANCES);
@@ -188,16 +189,16 @@ begin
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"ab", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"ee", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"42", "TX_DATA");
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD * 4);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD * 4);
+    add_to_vvc_list(SBI_VVCT, 1, v_vvc_list);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD * 4, KEEP_LIST);
+
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log("Testing uart_expect with delay");
     uart_expect(UART_VVCT, 1, RX, x"af", "Expecting TX data", 0, 10000 ns);
     wait for 6000 ns;
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"af", "TX_DATA");
-    await_completion(UART_VVCT, 1, RX, 12000 ns);
-    await_completion(SBI_VVCT, 1, 12000 ns);
+    await_completion(v_vvc_list, 12000 ns, CLEAR_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     -- Testing that the UART TX buffer works correctly
@@ -206,31 +207,37 @@ begin
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"01", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"02", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"03", "TX_DATA");
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD * 4);
+    add_to_vvc_list(SBI_VVCT, 1, v_vvc_list);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD * 4, KEEP_LIST);
+
     insert_delay(SBI_VVCT, 1, 20000 ns, "Giving the DUT time to transmit");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"04", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"05", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"06", "TX_DATA");
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD * 4 + 20000 ns);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD * 4 + 20000 ns, KEEP_LIST);
+
     insert_delay(SBI_VVCT, 1, 6000 ns, "Giving the DUT time to transmit");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"07", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"08", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"09", "TX_DATA");
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD * 4);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD * 4, KEEP_LIST);
+
     insert_delay(SBI_VVCT, 1, 6000 ns, "Giving the DUT time to transmit");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"0A", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"0B", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"0C", "TX_DATA");
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD * 4);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD * 4, KEEP_LIST);
+
     insert_delay(SBI_VVCT, 1, 6000 ns, "Giving the DUT time to transmit");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"0D", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"0E", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"0F", "TX_DATA");
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD * 4);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD * 4, KEEP_LIST);
+
     insert_delay(SBI_VVCT, 1, 6000 ns, "Giving the DUT time to transmit");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"bb", "TX_DATA");
-    await_completion(SBI_VVCT, 1, 6000 ns + 13 * C_BIT_PERIOD * 2);
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD * 2);
+    add_to_vvc_list(UART_VVCT, 1, RX, v_vvc_list);
+    await_completion(v_vvc_list, 6000 ns + 13 * C_BIT_PERIOD * 2, KEEP_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log("Test detection of parity error");
@@ -243,8 +250,7 @@ begin
 
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"56", "TX_DATA");
     uart_expect(UART_VVCT, 1, RX, x"56", "Expecting TX data");
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, KEEP_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     -- Cleanup after test
@@ -272,8 +278,7 @@ begin
     increment_expected_alerts(ERROR);
     uart_expect(UART_VVCT, 1, RX, x"32", "Provoking failure by expecting wrong data.", 1, 0 ns, ERROR);
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"31", "TX_DATA");
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD * 2);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD * 2);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD * 2, KEEP_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log("Testing uart_expect with too many occurrences before expected data");
@@ -282,8 +287,7 @@ begin
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"ab", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"ee", "TX_DATA");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"42", "TX_DATA");
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD * 4);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD * 4);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD * 4, KEEP_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log("Testing uart_expect with delay and timeout error");
@@ -291,16 +295,14 @@ begin
     uart_expect(UART_VVCT, 1, RX, x"af", "Provoking failure due to timeout", 0, 4000 ns);
     wait for 6000 ns;
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"af", "TX_DATA");
-    await_completion(UART_VVCT, 1, RX, 10000 ns);
-    await_completion(SBI_VVCT, 1, 10000 ns);
+    await_completion(v_vvc_list, 1000 ns, KEEP_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log("Testing error due to timeout=0 and max_receptions=0");
     increment_expected_alerts(ERROR);
     uart_expect(UART_VVCT, 1, RX, x"01", "Provoking failure due to timeout", 0, 0 ns, ERROR);
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"01", "TX_DATA"); -- resetting
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, CLEAR_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log(ID_LOG_HDR, "Testing Terminate function");
@@ -312,14 +314,15 @@ begin
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"aa", "TX_DATA");
     await_completion(SBI_VVCT, 1, 50 * C_BIT_PERIOD);
     terminate_current_command(UART_VVCT, 1, RX);
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+    add_to_vvc_list(UART_VVCT, 1, RX, v_vvc_list);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, KEEP_LIST);
     wait for 100 * C_BIT_PERIOD;        -- margin
 
     log("Check that terminate flag has been reset");
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"55", "TX_DATA");
     uart_expect(UART_VVCT, 1, RX, x"55", "Expecting TX data");
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
-    await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
+    add_to_vvc_list(SBI_VVCT, 1, v_vvc_list);
+    await_completion(v_vvc_list, 13 * C_BIT_PERIOD, CLEAR_LIST);
     wait for 10 * C_BIT_PERIOD;         -- margin
 
     log(ID_LOG_HDR, "Check that commands are distributed to the correct VVC channel");
@@ -368,7 +371,6 @@ begin
     await_completion(UART_VVCT, 1, TX, (50 * C_BIT_PERIOD) + (11 * C_BIT_PERIOD) + (C_CLK_PERIOD));
     check_value(((now - v_timestamp) = ((50 * C_BIT_PERIOD) + (11 * C_BIT_PERIOD))), ERROR, "Checking that inter-bfm delay was upheld");
 
-    --log("\rChecking that insert_delay does not affect inter-BFM delay");
     log("\rChecking that insert_delay is added to inter-BFM delay");
     wait for C_BIT_PERIOD * 51;
     v_timestamp := now;
@@ -434,7 +436,7 @@ begin
     increment_expected_alerts(TB_ERROR);
     increment_expected_alerts(ERROR);
     uart_receive(UART_VVCT, 1, RX, "Receive inside VVC", ERROR);
-    await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+    await_completion(UART_VVCT, 1, ALL_CHANNELS, 13 * C_BIT_PERIOD);
 
     -- Cleanup after test
     v_vvc_config                    := shared_uart_vvc_config.get(1, RX);

@@ -23,7 +23,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_sbi;
 context bitvis_vip_sbi.vvc_context;

@@ -151,7 +151,9 @@ begin
               enable_sbi_vvc_msg_id(ID_CMD_EXECUTOR_WAIT); -- v3
             end if;
             v_cmd_idx     := get_last_received_cmd_idx(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, NA, GC_SCOPE);
-            await_completion(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, GC_MAX_NUM_WORDS * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for write to finish.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
+
+            await_completion(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, GC_MAX_NUM_WORDS * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for write to finish.", GC_SCOPE);
+
             v_dut_address := v_dut_address + v_dut_address_increment;
           end loop;
 
@@ -165,7 +167,8 @@ begin
               enable_sbi_vvc_msg_id(ID_CMD_EXECUTOR_WAIT); -- v3
             end if;
             v_cmd_idx := get_last_received_cmd_idx(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, NA, GC_SCOPE);
-            await_completion(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, GC_MAX_NUM_WORDS * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for read to finish.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
+
+            await_completion(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, GC_MAX_NUM_WORDS * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for read to finish.", GC_SCOPE);
 
             fetch_result(SBI_VVCT, GC_PHY_VVC_INSTANCE_IDX, v_cmd_idx, v_sbi_received_data, "HVVC: Fetching received data.", TB_ERROR, GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 

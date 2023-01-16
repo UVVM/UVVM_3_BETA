@@ -26,7 +26,7 @@ package types_pkg is
   file ALERT_FILE : text;
   file LOG_FILE   : text;
 
-  constant C_LOG_HDR_FOR_WAVEVIEW_WIDTH : natural  := 100; -- For string in waveview indicating last log header
+  constant C_LOG_HDR_FOR_WAVEVIEW_WIDTH : natural  := 100;  -- For string in waveview indicating last log header
   constant C_FLAG_NAME_LENGTH           : positive := 20;
 
   type t_void is (VOID);
@@ -49,7 +49,7 @@ package types_pkg is
 
   -- Note: Most types below have a matching to_string() in 'string_methods_pkg.vhd'
   type t_info_target is (LOG_INFO, ALERT_INFO, USER_INFO);
-  type t_alert_level is (NO_ALERT, NOTE, TB_NOTE, WARNING, TB_WARNING, MANUAL_CHECK, ERROR, TB_ERROR, FAILURE, TB_FAILURE);
+  type t_alert_level is (NO_ALERT, note, TB_NOTE, warning, TB_WARNING, MANUAL_CHECK, error, TB_ERROR, failure, TB_FAILURE);
 
   type t_enabled is (ENABLED, DISABLED, NA);
   type t_attention is (REGARD, EXPECT, IGNORE);
@@ -62,8 +62,8 @@ package types_pkg is
   type t_vvc_select is (ANY_OF, ALL_OF, ALL_VVCS);
   type t_list_action is (KEEP_LIST, CLEAR_LIST);
 
-  type t_format_zeros is (AS_IS, KEEP_LEADING_0, SKIP_LEADING_0); -- AS_IS is deprecated and will be removed. Use KEEP_LEADING_0.
-  type t_format_string is (AS_IS, TRUNCATE, SKIP_LEADING_SPACE); -- Deprecated, will be removed.
+  type t_format_zeros is (AS_IS, KEEP_LEADING_0, SKIP_LEADING_0);  -- AS_IS is deprecated and will be removed. Use KEEP_LEADING_0.
+  type t_format_string is (AS_IS, TRUNCATE, SKIP_LEADING_SPACE);  -- Deprecated, will be removed.
   type t_format_spaces is (KEEP_LEADING_SPACE, SKIP_LEADING_SPACE);
   type t_truncate_string is (ALLOW_TRUNCATE, DISALLOW_TRUNCATE);
 
@@ -74,11 +74,11 @@ package types_pkg is
 
   type t_match_strictness is (MATCH_STD, MATCH_STD_INCL_Z, MATCH_EXACT, MATCH_STD_INCL_ZXUW);
 
-  type t_alert_counters is array (NOTE to t_alert_level'right) of natural;
-  type t_alert_attention is array (NOTE to t_alert_level'right) of t_attention;
+  type t_alert_counters is array (note to t_alert_level'right) of natural;
+  type t_alert_attention is array (note to t_alert_level'right) of t_attention;
 
-  type t_attention_counters is array (t_attention'left to t_attention'right) of natural; -- Only used to build below type
-  type t_alert_attention_counters is array (NOTE to t_alert_level'right) of t_attention_counters;
+  type t_attention_counters is array (t_attention'left to t_attention'right) of natural;  -- Only used to build below type
+  type t_alert_attention_counters is array (note to t_alert_level'right) of t_attention_counters;
 
   type t_quietness is (NON_QUIET, QUIET);
 
@@ -115,10 +115,10 @@ package types_pkg is
     normal => (others => NUL),
     large  => (others => NUL),
     xl     => (others => NUL)
-  );
+    );
 
   -- type for await_unblock_flag whether the method should set the flag back to blocked or not
-  type t_flag_returning is (KEEP_UNBLOCKED, RETURN_TO_BLOCK); -- value after unblock
+  type t_flag_returning is (KEEP_UNBLOCKED, RETURN_TO_BLOCK);  -- value after unblock
 
   type t_sync_flag_record is record
     flag_name  : string(1 to C_FLAG_NAME_LENGTH);
@@ -128,7 +128,7 @@ package types_pkg is
   constant C_SYNC_FLAG_DEFAULT : t_sync_flag_record := (
     flag_name  => (others => NUL),
     is_blocked => true
-  );
+    );
 
   type t_sync_flag_record_array is array (natural range <>) of t_sync_flag_record;
 
@@ -146,34 +146,22 @@ package types_pkg is
     terminate   => false,
     extension   => 0 ns,
     new_timeout => 0 ns
-  );
-
-  -- type for identifying VVC and command index finishing await_any_completion()
-  type t_info_on_finishing_await_any_completion is record
-    vvc_name               : string(1 to 100); -- VVC name should not exceed this length
-    vvc_cmd_idx            : natural;   -- VVC command index
-    vvc_time_of_completion : time;      -- time of completion
-  end record;
+    );
 
   type t_uvvm_status is record
-    found_unexpected_simulation_warnings_or_worse     : natural range 0 to 1; -- simulation end status: 0=no unexpected, 1=unexpected
-    found_unexpected_simulation_errors_or_worse       : natural range 0 to 1; -- simulation end status: 0=no unexpected, 1=unexpected
-    mismatch_on_expected_simulation_warnings_or_worse : natural range 0 to 1; -- simulation status: 0=no mismatch, 1=mismatch
-    mismatch_on_expected_simulation_errors_or_worse   : natural range 0 to 1; -- simulation status: 0=no mismatch, 1=mismatch
-    info_on_finishing_await_any_completion            : t_info_on_finishing_await_any_completion; -- await_any_completion() trigger identifyer
+    found_unexpected_simulation_warnings_or_worse     : natural range 0 to 1;  -- simulation end status: 0=no unexpected, 1=unexpected
+    found_unexpected_simulation_errors_or_worse       : natural range 0 to 1;  -- simulation end status: 0=no unexpected, 1=unexpected
+    mismatch_on_expected_simulation_warnings_or_worse : natural range 0 to 1;  -- simulation status: 0=no mismatch, 1=mismatch
+    mismatch_on_expected_simulation_errors_or_worse   : natural range 0 to 1;  -- simulation status: 0=no mismatch, 1=mismatch
   end record t_uvvm_status;
 
-  -- defaults for t_uvvm_status and t_info_on_finishing_await_any_completion
-  constant C_INFO_ON_FINISHING_AWAIT_ANY_COMPLETION_VVC_NAME_DEFAULT : string        := "no await_any_completion() finshed yet\n";
-  constant C_UVVM_STATUS_DEFAULT                                     : t_uvvm_status := (
+  -- defaults for t_uvvm_status
+  constant C_UVVM_STATUS_DEFAULT : t_uvvm_status := (
     found_unexpected_simulation_warnings_or_worse     => 0,
     found_unexpected_simulation_errors_or_worse       => 0,
     mismatch_on_expected_simulation_warnings_or_worse => 0,
-    mismatch_on_expected_simulation_errors_or_worse   => 0,
-    info_on_finishing_await_any_completion            => (vvc_name               => (C_INFO_ON_FINISHING_AWAIT_ANY_COMPLETION_VVC_NAME_DEFAULT, others => ' '),
-                                                          vvc_cmd_idx            => 0,
-                                                          vvc_time_of_completion => 0 ns)
-  );
+    mismatch_on_expected_simulation_errors_or_worse   => 0
+    );
 
   type t_justify_center is (center);
 
@@ -181,13 +169,13 @@ package types_pkg is
     PARITY_NONE,
     PARITY_ODD,
     PARITY_EVEN
-  );
+    );
 
   type t_stop_bits is (
     STOP_BITS_ONE,
     STOP_BITS_ONE_AND_HALF,
     STOP_BITS_TWO
-  );
+    );
 
   type t_check_type is (CHECK_VALUE,
                         CHECK_VALUE_IN_RANGE,
@@ -198,9 +186,9 @@ package types_pkg is
   -------------------------------------
   -- BFMs and above
   -------------------------------------
-  type t_transaction_result is (ACK, NAK, ERROR); -- add more when needed
+  type t_transaction_result is (ACK, NAK, error);  -- add more when needed
 
-  type t_hierarchy_alert_level_print is array (NOTE to t_alert_level'right) of boolean;
+  type t_hierarchy_alert_level_print is array (note to t_alert_level'right) of boolean;
 
   type t_hierarchy_node is record
     name                     : string;
@@ -225,12 +213,12 @@ package types_pkg is
     TO_SB,
     TO_BUFFER,
     FROM_BUFFER,
-    TO_RECEIVE_BUFFER);                 -- TO_FILE and FROM_FILE may be added later on
+    TO_RECEIVE_BUFFER);  -- TO_FILE and FROM_FILE may be added later on
 
   type t_bfm_sync is (
     SYNC_ON_CLOCK_ONLY,
     SYNC_WITH_SETUP_AND_HOLD
-  );
+    );
 
   type t_test_status is (NA, PASS, FAIL);
 

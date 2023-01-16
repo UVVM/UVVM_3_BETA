@@ -22,7 +22,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_sbi;
 context bitvis_vip_sbi.vvc_context;
@@ -34,14 +34,12 @@ use work.uart_transaction_sb_pkg.all;
 use work.monitor_cmd_pkg.all;
 
 --hdlregression:tb
--- Test case entity
 entity uart_monitor_tb is
   generic(
     GC_TESTCASE : string := "UVVM"
   );
 end entity;
 
--- Test case architecture
 architecture func of uart_monitor_tb is
 
   constant C_CLK_PERIOD : time := 10 ns;
@@ -226,8 +224,7 @@ begin
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
       uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
       uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX));
-      await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
-      await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+      await_completion(UART_VVCT, 1, ALL_CHANNELS, 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX), ERROR);
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
@@ -262,8 +259,7 @@ begin
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
       uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
       uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX));
-      await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
-      await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+      await_completion(UART_VVCT, 1, ALL_CHANNELS, 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX), ERROR);
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);

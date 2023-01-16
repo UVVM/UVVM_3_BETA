@@ -23,13 +23,12 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_axistream;
 context bitvis_vip_axistream.vvc_context;
 
 --hdlregression:tb
--- Test case entity
 entity axistream_vvc_tb is
   generic(
     GC_TESTCASE           : string  := "UVVM";
@@ -42,7 +41,6 @@ entity axistream_vvc_tb is
   );
 end entity;
 
--- Test case architecture
 architecture func of axistream_vvc_tb is
 
   --------------------------------------------------------------------------------
@@ -131,6 +129,7 @@ begin
     variable v_fetch_is_accepted    : boolean;
     variable v_result_from_fetch    : bitvis_vip_axistream.vvc_cmd_pkg.t_vvc_result;
     variable v_vvc_config           : bitvis_vip_axistream.vvc_methods_pkg.t_vvc_config;
+    variable v_vvc_list             : t_prot_vvc_list;
 
     ------------------------------------------------------
     -- overloading procedure
@@ -198,8 +197,9 @@ begin
       axistream_receive(AXISTREAM_VVCT, C_VVC2VVC_SLAVE, "test axistream_receive / fetch_result (with tuser) ");
 
       v_cmd_idx := get_last_received_cmd_idx(AXISTREAM_VVCT, C_VVC2VVC_SLAVE);
-      await_completion(AXISTREAM_VVCT, C_VVC2VVC_MASTER, 1 ms);
-      await_completion(AXISTREAM_VVCT, C_VVC2VVC_SLAVE, 1 ms);
+      add_to_vvc_list(AXISTREAM_VVCT, C_VVC2VVC_MASTER, v_vvc_list);
+      add_to_vvc_list(AXISTREAM_VVCT, C_VVC2VVC_SLAVE, v_vvc_list);
+      await_completion(ALL_OF, v_vvc_list, 1 ms);
 
       -- check result
       fetch_result(AXISTREAM_VVCT, C_VVC2VVC_SLAVE, NA, v_cmd_idx, v_result_from_fetch, "Fetch result using the simple fetch_result overload");
@@ -329,11 +329,11 @@ begin
                                                          id_array   : t_id_array;
                                                          dest_array : t_dest_array;
                                                          i          : integer) is
-      variable v_num_bytes          : integer                                      := data_array'length * (data_array(data_array'low)'length / 8);
-      variable v_exp_data_array     : t_slv_array(data_array'range)(data_array(data_array'low)'range);
-      variable v_num_words          : integer                                      := user_array'length;
-      variable v_user_array         : t_user_array(user_array'length - 1 downto 0) := user_array;
-      variable v_byte_endianness    : t_byte_endianness                            := v_axistream_bfm_config.byte_endianness;
+      variable v_num_bytes       : integer                                      := data_array'length * (data_array(data_array'low)'length / 8);
+      variable v_exp_data_array  : t_slv_array(data_array'range)(data_array(data_array'low)'range);
+      variable v_num_words       : integer                                      := user_array'length;
+      variable v_user_array      : t_user_array(user_array'length - 1 downto 0) := user_array;
+      variable v_byte_endianness : t_byte_endianness                            := v_axistream_bfm_config.byte_endianness;
     begin
       -- VVC call
       -- tuser, tstrb etc = default
@@ -349,8 +349,9 @@ begin
         axistream_transmit(AXISTREAM_VVCT, C_FIFO2VVC_MASTER, data_array, user_array, "transmit before receive, Check that tuser is fetched correctly,i=" & to_string(i));
         axistream_receive(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE, "test axistream_receive / fetch_result (with tuser) ");
         v_cmd_idx := get_last_received_cmd_idx(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE);
-        await_completion(AXISTREAM_VVCT, C_FIFO2VVC_MASTER, 1 ms);
-        await_completion(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE, 1 ms);
+        add_to_vvc_list(AXISTREAM_VVCT, C_FIFO2VVC_MASTER, v_vvc_list);
+        add_to_vvc_list(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE, v_vvc_list);
+        await_completion(ALL_OF, v_vvc_list, 1 ms);
 
         fetch_result(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE, NA, v_cmd_idx, v_result_from_fetch, "Fetch result using the simple fetch_result overload");
         check_value(v_result_from_fetch.data_array, data_array, v_num_bytes, "Verifying that fetched data is as expected");
@@ -413,9 +414,9 @@ begin
     -- verify alert if data_array don't consist of N*bytes
     ------------------------------------------------------
     procedure VVC_master_to_VVC_slave_wrong_size(num_bytes : integer; num_bytes_in_word : integer; user_array : t_user_array) is
-      variable v_short_byte_array    : t_slv_array(0 to num_bytes - 1)((num_bytes_in_word * C_BYTE) - 2 downto 0); -- size byte-1
-      variable v_long_byte_array     : t_slv_array(0 to num_bytes - 1)((num_bytes_in_word * C_BYTE) downto 0);     -- size byte+1
-      variable v_normal_byte_array   : t_slv_array(0 to num_bytes - 1)((num_bytes_in_word * C_BYTE) - 1 downto 0); -- size byte
+      variable v_short_byte_array  : t_slv_array(0 to num_bytes - 1)((num_bytes_in_word * C_BYTE) - 2 downto 0); -- size byte-1
+      variable v_long_byte_array   : t_slv_array(0 to num_bytes - 1)((num_bytes_in_word * C_BYTE) downto 0); -- size byte+1
+      variable v_normal_byte_array : t_slv_array(0 to num_bytes - 1)((num_bytes_in_word * C_BYTE) - 1 downto 0); -- size byte
     begin
       for byte in 0 to num_bytes - 1 loop
         v_short_byte_array(byte)  := random(v_short_byte_array(0)'length);
@@ -678,10 +679,10 @@ begin
           v_num_words := integer(ceil(real(v_num_bytes * bytes_in_word) / (real(GC_DATA_WIDTH) / 8.0)));
           -- Generate packet data
           for word in 0 to v_num_words - 1 loop
-            v_user_array(word) := std_logic_vector(to_unsigned(i+word, v_user_array(0)'length));
-            v_strb_array(word) := std_logic_vector(to_unsigned(i+word, v_strb_array(0)'length));
-            v_id_array(word)   := std_logic_vector(to_unsigned(i+word, v_id_array(0)'length));
-            v_dest_array(word) := std_logic_vector(to_unsigned((i+word) mod 16, v_dest_array(0)'length));
+            v_user_array(word) := std_logic_vector(to_unsigned(i + word, v_user_array(0)'length));
+            v_strb_array(word) := std_logic_vector(to_unsigned(i + word, v_strb_array(0)'length));
+            v_id_array(word)   := std_logic_vector(to_unsigned(i + word, v_id_array(0)'length));
+            v_dest_array(word) := std_logic_vector(to_unsigned((i + word) mod 16, v_dest_array(0)'length));
           end loop;
 
           VVC_master_to_VVC_slave_transmit_and_check(get_slv_array(v_num_bytes, bytes_in_word),
@@ -693,8 +694,9 @@ begin
         end loop;
 
         -- Await completion on both VVCs
-        await_completion(AXISTREAM_VVCT, C_FIFO2VVC_MASTER, 1 ms);
-        await_completion(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE, 1 ms);
+        add_to_vvc_list(AXISTREAM_VVCT, C_FIFO2VVC_MASTER, v_vvc_list);
+        add_to_vvc_list(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE, v_vvc_list);
+        await_completion(ALL_OF, v_vvc_list, 1 ms);
         report_alert_counters(INTERMEDIATE); -- Report final counters and print conclusion for simulation (Success/Fail)
 
         -- verify alert if the 'tlast' is not where expected
@@ -910,6 +912,7 @@ begin
       axistream_transmit(AXISTREAM_VVCT, C_FIFO2VVC_MASTER, v_data_array_1_byte(0 to 15), "transmit 16 bytes");
       axistream_expect(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE, v_data_array_1_byte(0 to 15), "expect 16 bytes");
       await_completion(AXISTREAM_VVCT, C_FIFO2VVC_SLAVE, 1 ms);
+
       axistream_transmit(AXISTREAM_VVCT, C_VVC2VVC_MASTER, v_data_array_1_byte(0 to 15), "transmit 16 bytes");
       axistream_expect(AXISTREAM_VVCT, C_VVC2VVC_SLAVE, v_data_array_1_byte(0 to 15), "expect 16 bytes");
       await_completion(AXISTREAM_VVCT, C_VVC2VVC_SLAVE, 1 ms);

@@ -22,7 +22,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_axilite;
 context bitvis_vip_axilite.vvc_context;
@@ -103,6 +103,8 @@ begin
     variable v_is_ok         : boolean;
     variable v_data          : work.vvc_cmd_pkg.t_vvc_result;
     variable v_vvc_config    : bitvis_vip_axilite.vvc_methods_pkg.t_vvc_config;
+    variable v_vvc_list : t_prot_vvc_list;
+
   begin
     -- To avoid that log files from different test cases (run in separate
     -- simulations) overwrite each other.
@@ -149,6 +151,7 @@ begin
     axilite_write(AXILITE_VVCT, 1, x"2000", x"efbeef", "Write"); -- op1
     axilite_write(AXILITE_VVCT, 1, x"3000", x"beef", "Write"); -- op2
     axilite_write(AXILITE_VVCT, 1, x"6000", x"54321", "Write"); -- rw reg
+
     await_completion(AXILITE_VVCT, 1, 1000 ns);
 
     -- Read from VVC 1
@@ -169,6 +172,7 @@ begin
     axilite_write(AXILITE_VVCT, 2, x"0030", x"beef", "Write"); -- op2
     axilite_write(AXILITE_VVCT, 2, x"0040", x"54321", "Write"); -- op3
     axilite_write(AXILITE_VVCT, 2, x"0060", x"f00b0", "Write"); -- rw reg
+
     await_completion(AXILITE_VVCT, 2, 1000 ns);
 
     -- Read from VVC 2
@@ -178,7 +182,9 @@ begin
 
     -- verify read data on interface 2
     v_cmd_idx := get_last_received_cmd_idx(AXILITE_VVCT, 2);
-    await_completion(AXILITE_VVCT, 2, 1 us, "waiting for axilite_read() to finish");
+    add_to_vvc_list(AXILITE_VVCT, 1, v_vvc_list);
+    add_to_vvc_list(AXILITE_VVCT, 2, v_vvc_list);
+    await_completion(v_vvc_list, 1 us, CLEAR_LIST, "waiting for axilite_read() to finish");
     fetch_result(AXILITE_VVCT, 2, v_cmd_idx, v_data, v_is_ok, "Fetching read-result.");
     check_value(v_is_ok, ERROR, "Readback OK via fetch_result()");
     check_value(v_data(C_DATA_WIDTH_2 - 1 downto 0), x"f00b0", error, "verifying read data on interface 2.");
@@ -201,8 +207,9 @@ begin
     axilite_check(AXILITE_VVCT, 2, x"0000040", x"abba1972", "Check");
 
     -- Await completion on both VVCs
-    await_completion(AXILITE_VVCT, 1, 1000 ns);
-    await_completion(AXILITE_VVCT, 2, 1000 ns);
+    add_to_vvc_list(AXILITE_VVCT, 1, v_vvc_list);
+    add_to_vvc_list(AXILITE_VVCT, 2, v_vvc_list);
+    await_completion(v_vvc_list, 1000 ns);
 
     log(ID_LOG_HDR, "Test scoreboard", C_SCOPE);
     -- Write to VVC 1
@@ -212,6 +219,7 @@ begin
     axilite_write(AXILITE_VVCT, 1, x"3000", x"beef", "Write"); -- op2
     axilite_write(AXILITE_VVCT, 1, x"6000", x"54321", "Write"); -- rw reg
     AXILITE_VVC_SB.add_expected(1, pad_axilite_sb(x"54321"));
+
     await_completion(AXILITE_VVCT, 1, 1000 ns);
 
     -- Read from VVC 1
@@ -261,15 +269,16 @@ begin
 
     axilite_write(AXILITE_VVCT, 2, x"0000040", x"0", "Clearing register");
     axilite_write(AXILITE_VVCT, 2, x"0000040", x"abba1972", std_logic_vector'("00000011"), "Write to only byte 0 and 1");
+
     await_completion(AXILITE_VVCT, 2, 1000 ns);
     axilite_check(AXILITE_VVCT, 2, x"0000040", x"00001972", "Checking that only byte 0 and 1 were set");
     axilite_write(AXILITE_VVCT, 2, x"0000040", x"0", "Clearing register");
     axilite_write(AXILITE_VVCT, 2, x"0000040", x"abba1972", std_logic_vector'("00001100"), "Write to only byte 2 and 3");
+
     await_completion(AXILITE_VVCT, 2, 1000 ns);
     axilite_check(AXILITE_VVCT, 2, x"0000040", x"abba0000", "Checking that only byte 2 and 3 were set");
 
-    -- Await completion on both VVCs
-    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    -- Await completion on checking VVC
     await_completion(AXILITE_VVCT, 2, 1000 ns);
 
     log(ID_LOG_HDR, "Testing inter-bfm delay", C_SCOPE);
@@ -284,9 +293,11 @@ begin
     shared_axilite_vvc_config.set(v_vvc_config, 1);
 
     axilite_write(AXILITE_VVCT, 1, x"0000", x"1111", "First inter-bfm delay axilite write");
+
     await_completion(AXILITE_VVCT, 1, (56 * C_CLK_PERIOD));
     v_timestamp := now;
     axilite_write(AXILITE_VVCT, 1, x"0000", x"a1a1", "Second inter-bfm delay axilite write");
+
     await_completion(AXILITE_VVCT, 1, (56 * C_CLK_PERIOD));
     check_value(now - v_timestamp, C_CLK_PERIOD * 50, ERROR, "Checking that inter-bfm delay was upheld");
 
@@ -294,6 +305,7 @@ begin
     wait for C_CLK_PERIOD * 51;
     wait until rising_edge(clk);
     axilite_write(AXILITE_VVCT, 1, x"0000", x"ffff", "Third inter-bfm delay axilite write");
+
     await_completion(AXILITE_VVCT, 1, (56 * C_CLK_PERIOD));
     v_timestamp := now;
     insert_delay(AXILITE_VVCT, 1, C_CLK_PERIOD);
@@ -301,6 +313,7 @@ begin
     insert_delay(AXILITE_VVCT, 1, C_CLK_PERIOD);
     insert_delay(AXILITE_VVCT, 1, C_CLK_PERIOD);
     axilite_write(AXILITE_VVCT, 1, x"0000", x"abcd", "Fourth inter-bfm delay axilite write");
+
     await_completion(AXILITE_VVCT, 1, (56 * C_CLK_PERIOD));
     check_value(now - v_timestamp, C_CLK_PERIOD * 54, ERROR, "Checking that inter-bfm delay was upheld");
 
@@ -315,7 +328,7 @@ begin
 
     axilite_write(AXILITE_VVCT, 1, x"0000", x"0001", "First inter-bfm delay axilite write");
     axilite_write(AXILITE_VVCT, 1, x"0000", x"1000", "Second inter-bfm delay axilite write");
-    await_completion(AXILITE_VVCT, 1, 111 * C_CLK_PERIOD);
+    await_completion(AXILITE_VVCT, 1, (111 * C_CLK_PERIOD));
 
     log("Setting delay back to initial value", C_SCOPE);
     v_vvc_config                               := shared_axilite_vvc_config.get(1);
@@ -340,12 +353,14 @@ begin
     axilite_write(AXILITE_VVCT, 1, x"2000", x"efbeef", "Write"); -- op1
     axilite_write(AXILITE_VVCT, 1, x"3000", x"beef", "Write"); -- op2
     axilite_write(AXILITE_VVCT, 1, x"6000", x"54321", "Write"); -- rw reg
+
     await_completion(AXILITE_VVCT, 1, 1000 ns);
     -- Read from VVC 1
     axilite_read(AXILITE_VVCT, 1, x"3000", ""); -- just do a read
     axilite_read(AXILITE_VVCT, 1, x"6000", ""); -- do another read - should see this data
     -- verify read data on interface 1
     v_cmd_idx := get_last_received_cmd_idx(AXILITE_VVCT, 1);
+
     await_completion(AXILITE_VVCT, 1, 1 us, "waiting for axilite_read() to finish");
     fetch_result(AXILITE_VVCT, 1, v_cmd_idx, v_data, v_is_ok, "Fetching read-result.");
     check_value(v_is_ok, ERROR, "Readback OK via fetch_result()");
@@ -358,6 +373,7 @@ begin
     axilite_write(AXILITE_VVCT, 2, x"0030", x"beef", "Write"); -- op2
     axilite_write(AXILITE_VVCT, 2, x"0040", x"54321", "Write"); -- op3
     axilite_write(AXILITE_VVCT, 2, x"0060", x"f00b0", "Write"); -- rw reg
+
     await_completion(AXILITE_VVCT, 2, 1000 ns);
     -- Read from VVC 2
     axilite_read(AXILITE_VVCT, 2, x"0040", ""); -- just do a read
@@ -373,6 +389,7 @@ begin
     -- check that is was correctly written on VVC 1
     axilite_check(AXILITE_VVCT, 1, x"0006000", x"54321", "Check");
     axilite_write(AXILITE_VVCT, 1, x"0006000", x"abba1972", "Write");
+
     await_completion(AXILITE_VVCT, 1, 1000 ns);
     axilite_check(AXILITE_VVCT, 1, x"0006000", x"abba1972", "Check");
 
@@ -382,19 +399,21 @@ begin
     axilite_check(AXILITE_VVCT, 2, x"0020", x"efbeef", "Check");
     axilite_check(AXILITE_VVCT, 2, x"0030", x"beef", "Check");
     axilite_check(AXILITE_VVCT, 2, x"0040", x"54321", "Check");
+
     await_completion(AXILITE_VVCT, 2, 1000 ns);
     axilite_write(AXILITE_VVCT, 2, x"0000040", x"abba1972", "Write");
+
     await_completion(AXILITE_VVCT, 2, 1000 ns);
     axilite_check(AXILITE_VVCT, 2, x"0000040", x"abba1972", "Check");
 
-    -- Await completion on both VVCs
-    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    -- Await completion on checking VVC
     await_completion(AXILITE_VVCT, 2, 1000 ns);
 
     log(ID_LOG_HDR, "Test of timeout of check", C_SCOPE);
     -- verify that a warning arises if the data is not what is expected
     increment_expected_alerts(WARNING, 1);
     axilite_check(AXILITE_VVCT, 1, x"0006000", x"00000000", "Write", WARNING);
+
     await_completion(AXILITE_VVCT, 1, 1000 ns);
     -- verify that a warning arises if the data is not what is expected
     increment_expected_alerts(WARNING, 1);
@@ -406,10 +425,11 @@ begin
     --------------------------------------------------------------------------------------------------------------------
     log(ID_LOG_HDR, "Testing to force single pending transactions");
     -- First we measure the time it takes to perform a read and write simultaneously
-    v_timestamp     := now;
+    v_timestamp := now;
     axilite_write(AXILITE_VVCT, 2, x"0000", x"5555", "Test of axilite write");
     axilite_read(AXILITE_VVCT, 2, x"0040", "Test of axilite read");
-    await_completion(AXILITE_VVCT, 2, 100 us, "Waiting for commands to finish");
+
+    await_completion(AXILITE_VVCT, 2, 1000 ns, "Waiting for commands to finish");
     v_measured_time := now - v_timestamp;
 
     -- Then, we turn on the force_single_penging_transaction setting, and see that it takes about twice as long

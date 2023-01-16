@@ -22,21 +22,19 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 -- Include Verification IPs
 library bitvis_vip_gpio;
 context bitvis_vip_gpio.vvc_context;
 
 --hdlregression:tb
--- Test case entity
 entity gpio_vip_tb is
   generic(
     GC_TESTCASE : string := "UVVM"
   );
 end entity;
 
--- Test case architecture
 architecture func of gpio_vip_tb is
 
   constant C_CLK_PERIOD        : time    := 10 ns;
@@ -173,6 +171,7 @@ begin
     v_expect_data := v_set_data;
     gpio_set(GPIO_VVCT, 2, v_set_data, "Setting gpio 2 to 0x" & to_string(v_set_data, HEX) & " (" & to_string(v_set_data, BIN) & ").");
     await_completion(GPIO_VVCT, 2, C_GPIO_SET_MAX_TIME);
+
     check_value(gpio_2_output, v_expect_data, error, "Checking value of GPIO VVC 2");
     wait for C_CLK_PERIOD;              -- Margin
 
@@ -279,6 +278,7 @@ begin
     gpio_get(GPIO_VVCT, 1, "Readback inside VVC");
     v_cmd_idx     := get_last_received_cmd_idx(GPIO_VVCT, 1); -- for last get
     await_completion(GPIO_VVCT, 1, v_cmd_idx, 100 ns, "Wait for gpio_get to finish");
+
     -- Fetch the result from index v_cmd_idx (last index set above)
     fetch_result(GPIO_VVCT, 1, v_cmd_idx, v_received_data, v_is_ok, "Fetching get-result");
     -- Check if get was OK and that the data is correct
@@ -431,7 +431,7 @@ begin
     set_gpio(gpio_1_input, v_set_data, "Setting GPIO 1 input to 0xBB");
     wait for C_CLK_PERIOD * 5;
     gpio_expect_stable(GPIO_VVCT, 1, v_expect_data, C_CLK_PERIOD * 10, FROM_LAST_EVENT, 0 ns, "Checking GPIO 1", error);
-    v_cmd_idx     := get_last_received_cmd_idx(GPIO_VVCT, 1); -- for last get
+    v_cmd_idx     := get_last_received_cmd_idx(GPIO_VVCT, 1); -- for last get    
     await_completion(GPIO_VVCT, 1, v_cmd_idx, 100 ns, "Wait for gpio_expect_stable to finish");
 
     --

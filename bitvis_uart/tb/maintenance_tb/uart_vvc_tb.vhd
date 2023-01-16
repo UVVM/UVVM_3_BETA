@@ -22,15 +22,13 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_sbi;
-use bitvis_vip_sbi.vvc_methods_pkg.all;
-use bitvis_vip_sbi.td_vvc_framework_common_methods_pkg.all;
+context bitvis_vip_sbi.vvc_context;
 
 library bitvis_vip_uart;
-use bitvis_vip_uart.vvc_methods_pkg.all;
-use bitvis_vip_uart.td_vvc_framework_common_methods_pkg.all;
+context bitvis_vip_uart.vvc_context;
 
 library bitvis_vip_clock_generator;
 context bitvis_vip_clock_generator.vvc_context;
@@ -74,6 +72,8 @@ begin
   p_main : process
     variable v_uart_vvc_config : bitvis_vip_uart.vvc_methods_pkg.t_vvc_config;
     variable v_sbi_vvc_config  : bitvis_vip_sbi.vvc_methods_pkg.t_vvc_config;
+    variable v_vvc_list        : t_prot_vvc_list;
+
   begin
     -- To avoid that log files from different test cases (run in separate
     -- simulations) overwrite each other.
@@ -125,6 +125,7 @@ begin
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"00", "RX_DATA default");
       sbi_check(SBI_VVCT, 1, C_ADDR_TX_READY, x"01", "TX_READY default");
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA_VALID, x"00", "RX_DATA_VALID default");
+
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
 
     elsif GC_TESTCASE = "check_simple_transmit" then
@@ -136,6 +137,7 @@ begin
       -- until the UART VVC has received the data from the DUT, indicated by the await_completion method.
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"55", "TX_DATA");
       uart_expect(UART_VVCT, 1, RX, x"55", "Expecting data on UART RX");
+
       await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
 
@@ -150,6 +152,7 @@ begin
       uart_transmit(UART_VVCT, 1, TX, x"AA", "UART TX");
       await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
+
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"AA", "RX_DATA");
       await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
 
@@ -167,6 +170,7 @@ begin
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"B4", "TX_DATA");
       uart_transmit(UART_VVCT, 1, TX, x"87", "UART TX");
       uart_expect(UART_VVCT, 1, RX, x"B4", "Expecting data on UART RX");
+
       await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"87", "RX_DATA");
@@ -184,11 +188,13 @@ begin
       uart_transmit(UART_VVCT, 1, TX, x"A1", "UART TX");
       uart_transmit(UART_VVCT, 1, TX, x"A2", "UART TX");
       uart_transmit(UART_VVCT, 1, TX, x"A3", "UART TX");
+
       await_completion(UART_VVCT, 1, TX, 3 * 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"A1", "RX_DATA");
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"A2", "RX_DATA");
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"A3", "RX_DATA");
+
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
 
     elsif GC_TESTCASE = "skew_sbi_read_over_uart_receive" then
@@ -256,8 +262,9 @@ begin
         sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, std_logic_vector(to_unsigned(16#80# + i, 8)), "Reading data number " & to_string(i));
       end loop;
 
-      await_completion(UART_VVCT, 1, TX, 102 * C_TIME_OF_ONE_UART_TX + C_CLK_PERIOD);
-      await_completion(SBI_VVCT, 1, 2 * C_TIME_OF_ONE_UART_TX);
+      add_to_vvc_list(UART_VVCT, 1, TX, v_vvc_list);
+      add_to_vvc_list(SBI_VVCT, 1, v_vvc_list);
+      await_completion(ALL_OF, v_vvc_list, 104 * C_TIME_OF_ONE_UART_TX + C_CLK_PERIOD);
 
       wait for 50 ns;                   -- to assure UART RX complete internally
       -- Check the last two bytes in the DUT RX buffer.
@@ -269,6 +276,7 @@ begin
 
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, std_logic_vector(to_unsigned(16#80# + 101, 8)), "Reading data number " & to_string(101));
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, std_logic_vector(to_unsigned(16#80# + 102, 8)), "Reading data number " & to_string(102));
+
       await_completion(SBI_VVCT, 1, 2 * C_TIME_OF_ONE_UART_TX);
     end if;
 

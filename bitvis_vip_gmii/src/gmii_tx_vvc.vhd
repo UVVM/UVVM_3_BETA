@@ -110,13 +110,12 @@ begin
   -- - Interpret, decode and acknowledge commands from the central sequencer
   --==========================================================================================
   cmd_interpreter : process
-    variable v_cmd_has_been_acked : boolean; -- Indicates if acknowledge_cmd() has been called for the current shared_vvc_cmd
-    variable v_local_vvc_cmd      : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
-    variable v_msg_id_panel       : t_msg_id_panel;
-    variable v_vvc_status         : t_vvc_status;
+    variable v_local_vvc_cmd : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
+    variable v_msg_id_panel  : t_msg_id_panel;
+    variable v_vvc_status    : t_vvc_status;
   begin
     -- 0. Initialize the process prior to first command
-    work.td_vvc_entity_support_pkg.initialize_interpreter(terminate_current_cmd, global_awaiting_completion);
+    work.td_vvc_entity_support_pkg.initialize_interpreter(terminate_current_cmd);
     -- initialise shared_vvc_last_received_cmd_idx for channel and instance
     shared_vvc_last_received_cmd_idx.set(0, GC_INSTANCE_IDX, GC_CHANNEL);
 
@@ -134,8 +133,6 @@ begin
       --    releases global semaphore
       -------------------------------------------------------------------------
       work.td_vvc_entity_support_pkg.await_cmd_from_sequencer(C_VVC_LABELS, v_msg_id_panel, THIS_VVCT, VVC_BROADCAST, global_vvc_busy, global_vvc_ack, v_local_vvc_cmd); -- v3
-
-      v_cmd_has_been_acked := false;    -- Clear flag
 
       -- Update shared_vvc_last_received_cmd_idx with received command index
       shared_vvc_last_received_cmd_idx.set(v_local_vvc_cmd.cmd_idx, GC_INSTANCE_IDX, GC_CHANNEL);
@@ -156,18 +153,6 @@ begin
       elsif v_local_vvc_cmd.command_type = IMMEDIATE then
 
         case v_local_vvc_cmd.operation is
-
-          when AWAIT_COMPLETION =>
-            -- Await completion of all commands in the cmd_executor executor
-            work.td_vvc_entity_support_pkg.interpreter_await_completion(v_local_vvc_cmd, command_queue, v_msg_id_panel, executor_is_busy, C_VVC_LABELS, last_cmd_idx_executed); -- v3
-
-          when AWAIT_ANY_COMPLETION =>
-            if not v_local_vvc_cmd.gen_boolean then
-              -- Called with lastness = NOT_LAST: Acknowledge immediately to let the sequencer continue
-              work.td_target_support_pkg.acknowledge_cmd(global_vvc_ack, v_local_vvc_cmd.cmd_idx);
-              v_cmd_has_been_acked := true;
-            end if;
-            work.td_vvc_entity_support_pkg.interpreter_await_any_completion(v_local_vvc_cmd, command_queue, v_msg_id_panel, executor_is_busy, C_VVC_LABELS, last_cmd_idx_executed, global_awaiting_completion); -- v3
 
           when DISABLE_LOG_MSG =>
             uvvm_util.methods_pkg.disable_log_msg(v_local_vvc_cmd.msg_id, v_msg_id_panel, to_string(v_local_vvc_cmd.msg) & format_command_idx(v_local_vvc_cmd), C_SCOPE, v_local_vvc_cmd.quietness); -- v3
@@ -199,9 +184,7 @@ begin
 
       -- 3. Acknowledge command after runing or queuing the command
       -------------------------------------------------------------------------
-      if not v_cmd_has_been_acked then
-        work.td_target_support_pkg.acknowledge_cmd(global_vvc_ack, v_local_vvc_cmd.cmd_idx);
-      end if;
+      work.td_target_support_pkg.acknowledge_cmd(global_vvc_ack, v_local_vvc_cmd.cmd_idx);
 
     end loop;
   end process;

@@ -112,8 +112,7 @@ package td_vvc_entity_support_pkg is
   -- Initialises the VVC interpreter
   -- - Clears terminate_current_cmd.set to '0'
   procedure initialize_interpreter(
-    signal terminate_current_cmd      : out t_flag_record;
-    signal global_awaiting_completion : out std_logic_vector(C_MAX_NUM_SEQUENCERS-1 downto 0)
+    signal terminate_current_cmd      : out t_flag_record
   );
 
   -------------------------------------------
@@ -153,48 +152,6 @@ package td_vvc_entity_support_pkg is
     variable command_queue       : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
     variable vvc_status          : inout t_vvc_status;
     signal   queue_is_increasing : out boolean
-  );
-
-  -------------------------------------------
-  -- interpreter_await_completion
-  -------------------------------------------
-  -- Immediate command: await_completion (in interpreter)
-  -- - Command description in Quick reference for UVVM common methods
-  -- - Will wait until given command(s) is completed by the excutor (if not already completed)
-  -- - Log using ID_IMMEDIATE_CMD when await completed
-  -- - Log using ID_IMMEDIATE_CMD_WAIT if waiting is actually needed
-  procedure interpreter_await_completion(
-    constant command                          : in t_vvc_cmd_record;
-    variable command_queue                    : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
-    constant msg_id_panel                     : in t_msg_id_panel; -- v3
-    signal   executor_is_busy                 : in boolean;
-    constant vvc_labels                       : in t_vvc_labels;
-    signal   last_cmd_idx_executed            : in natural;
-    constant await_completion_pending_msg_id  : in t_msg_id := ID_IMMEDIATE_CMD_WAIT;
-    constant await_completion_finished_msg_id : in t_msg_id := ID_IMMEDIATE_CMD
-  );
-
-  -------------------------------------------
-  -- interpreter_await_any_completion
-  -------------------------------------------
-  -- Immediate command: await_any_completion() (in interpreter)
-  -- - This procedure is called by the interpreter if sequencer calls await_any_completion()
-  --    - It waits for the first of the following :
-  --      'await_completion' of this VVC, or
-  --      until global_awaiting_completion(idx) /= '1' (any of the other involved VVCs completed).
-  -- - Refer to description in Quick reference for UVVM common methods
-  -- - Log using ID_IMMEDIATE_CMD when the wait completed
-  -- - Log using ID_IMMEDIATE_CMD_WAIT if waiting is actually needed
-  procedure interpreter_await_any_completion(
-    constant command                          : in t_vvc_cmd_record;
-    variable command_queue                    : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
-    constant msg_id_panel                     : in t_msg_id_panel; -- v3
-    signal   executor_is_busy                 : in boolean;
-    constant vvc_labels                       : in t_vvc_labels;
-    signal   last_cmd_idx_executed            : in natural;
-    signal   global_awaiting_completion       : inout std_logic_vector; -- Handshake with other VVCs performing await_any_completion
-    constant await_completion_pending_msg_id  : in t_msg_id := ID_IMMEDIATE_CMD_WAIT;
-    constant await_completion_finished_msg_id : in t_msg_id := ID_IMMEDIATE_CMD
   );
 
   -------------------------------------------
@@ -443,14 +400,11 @@ package body td_vvc_entity_support_pkg is
   end procedure vvc_constructor;
 
   procedure initialize_interpreter(
-    signal terminate_current_cmd      : out t_flag_record;
-    signal global_awaiting_completion : out std_logic_vector(C_MAX_NUM_SEQUENCERS-1 downto 0)
+    signal terminate_current_cmd      : out t_flag_record
   ) is
   begin
     terminate_current_cmd <= (set => '0', reset => 'Z', is_active => 'Z'); -- Initialise to avoid undefineds. This process is driving param 1 only.
     wait for 0 ns;                      -- delay by 1 delta cycle to allow constructor to finish first
-
-    global_awaiting_completion <= (others => 'Z'); -- Avoid driving until the VVC is involved in await_any_completion()
   end procedure;
 
   function broadcast_cmd_to_shared_cmd(
@@ -458,7 +412,6 @@ package body td_vvc_entity_support_pkg is
   ) return t_operation is
   begin
     case broadcast_cmd is
-      when AWAIT_COMPLETION          => return AWAIT_COMPLETION;
       when ENABLE_LOG_MSG            => return ENABLE_LOG_MSG;
       when DISABLE_LOG_MSG           => return DISABLE_LOG_MSG;
       when FLUSH_COMMAND_QUEUE       => return FLUSH_COMMAND_QUEUE;
@@ -473,7 +426,6 @@ package body td_vvc_entity_support_pkg is
   ) return t_immediate_or_queued is
   begin
     case broadcast_cmd is
-      when AWAIT_COMPLETION          => return IMMEDIATE;
       when ENABLE_LOG_MSG            => return IMMEDIATE;
       when DISABLE_LOG_MSG           => return IMMEDIATE;
       when FLUSH_COMMAND_QUEUE       => return IMMEDIATE;
@@ -644,169 +596,6 @@ package body td_vvc_entity_support_pkg is
     queue_is_increasing        <= true;
     wait for 0 ns;
     queue_is_increasing        <= false;
-  end procedure;
-
-  procedure interpreter_await_completion(
-    constant command                          : in t_vvc_cmd_record;
-    variable command_queue                    : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
-    constant msg_id_panel                     : in t_msg_id_panel;
-    signal   executor_is_busy                 : in boolean;
-    constant vvc_labels                       : in t_vvc_labels;
-    signal   last_cmd_idx_executed            : in natural;
-    constant await_completion_pending_msg_id  : in t_msg_id := ID_IMMEDIATE_CMD_WAIT;
-    constant await_completion_finished_msg_id : in t_msg_id := ID_IMMEDIATE_CMD
-  ) is
-    alias wanted_idx : integer is command.gen_integer_array(0); -- generic integer used as wanted command idx to wait for
-
-  begin
-    if wanted_idx = -1 then
-      -- await completion of all commands
-      if not command_queue.is_empty(VOID) or executor_is_busy then
-        log(await_completion_pending_msg_id, "await_completion() - Pending completion " & to_string(command.msg) & " " & format_command_idx(command), to_string(vvc_labels.scope), msg_id_panel); -- Get and ack the new command -- v3
-        loop
-          if command.timeout = 0 ns then
-            wait until executor_is_busy = false;
-          else
-            wait until (executor_is_busy = false) for command.timeout;
-          end if;
-          if command_queue.is_empty(VOID) or not executor_is_busy'event then
-            exit;
-          end if;
-        end loop;
-      end if;
-      log(await_completion_finished_msg_id, "await_completion()  => Finished. " & to_string(command.msg) & " " & format_command_idx(command), to_string(vvc_labels.scope), msg_id_panel); -- Get and ack the new command -- v3
-
-    else                                -- await specific instruction
-      if last_cmd_idx_executed < wanted_idx then
-        log(await_completion_pending_msg_id, "await_completion(" & to_string(wanted_idx) & ") - Pending selected " & to_string(command.msg) & " " & format_command_idx(command), to_string(vvc_labels.scope), msg_id_panel); -- Get and ack the new command -- v3
-        loop
-          if command.timeout = 0 ns then
-            wait until executor_is_busy = false;
-          else
-            wait until executor_is_busy = false for command.timeout;
-          end if;
-          if last_cmd_idx_executed >= wanted_idx or not executor_is_busy'event then
-            exit;
-          end if;
-        end loop;
-      end if;
-      log(await_completion_finished_msg_id, "await_completion(" & to_string(wanted_idx) & ") => Finished. " & to_string(command.msg) & " " & format_command_idx(command), to_string(vvc_labels.scope), msg_id_panel); -- Get & ack the new command
-    end if;
-  end procedure;
-
-  ------------------------------------------------------------------------------------------
-  -- Wait for any of the following :
-  --   await_completion of this VVC, or
-  --   until global_awaiting_completion /= '1' (any of the other involved VVCs completed).
-  ------------------------------------------------------------------------------------------
-  procedure interpreter_await_any_completion(
-    constant command                          : in t_vvc_cmd_record;
-    variable command_queue                    : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
-    constant msg_id_panel                     : in t_msg_id_panel;
-    signal   executor_is_busy                 : in boolean;
-    constant vvc_labels                       : in t_vvc_labels;
-    signal   last_cmd_idx_executed            : in natural;
-    signal   global_awaiting_completion       : inout std_logic_vector; -- Handshake from other VVCs performing await_any_completion
-    constant await_completion_pending_msg_id  : in t_msg_id := ID_IMMEDIATE_CMD_WAIT;
-    constant await_completion_finished_msg_id : in t_msg_id := ID_IMMEDIATE_CMD
-  ) is
-    variable v_uvvm_status : t_uvvm_status := shared_uvvm_status.get(VOID);
-
-    alias wanted_idx              : integer is command.gen_integer_array(0); -- generic integer used as wanted command idx to wait for
-    alias awaiting_completion_idx : integer is command.gen_integer_array(1); -- generic integer used as awaiting_completion_idx
-    variable v_done               : boolean := false; -- Whether we're done waiting
-
-    -----------------------------------------------
-    -- Local function
-    -- Return whether if this VVC has completed
-    -----------------------------------------------
-    impure function this_vvc_completed(
-      dummy : t_void
-    ) return boolean is
-    begin
-      if wanted_idx = -1 then
-        -- All commands must be completed (i.e. not just a selected command index)
-        return (executor_is_busy = false and command_queue.is_empty(VOID));
-      else
-        -- await a SPECIFIC command in this VVC
-        return (last_cmd_idx_executed >= wanted_idx);
-      end if;
-    end;
-
-  begin
-
-    --
-    -- Signal that this VVC is participating in the await_any_completion group by driving global_awaiting_completion
-    --
-    if not command.gen_boolean then     -- NOT_LAST
-      -- If this is a NOT_LAST call: Wait for delta cycles until the LAST call sets it to '1',
-      -- then set it to '1' here.
-      -- Purpose of waiting : synchronize the LAST VVC with all the NOT_LAST VVCs, so that it doesn't have to wait a magic number of delta cycles
-      while global_awaiting_completion(awaiting_completion_idx) = 'Z' loop
-        wait for 0 ns;
-      end loop;
-      global_awaiting_completion(awaiting_completion_idx) <= '1';
-    else
-      -- If this is a LAST call: Set to '1' for at least one delta cycle, so that all NOT_LAST calls detects it.
-      global_awaiting_completion(awaiting_completion_idx) <= '1';
-      wait for 0 ns;
-    end if;
-
-    -- This VVC already completed?
-    if this_vvc_completed(VOID) then
-      v_done := true;
-    end if;
-
-    -- Any of the other involved VVCs already completed?
-    if (global_awaiting_completion(awaiting_completion_idx) = 'X' or global_awaiting_completion(awaiting_completion_idx) = '0') then
-      v_done := true;
-    end if;
-
-    if not v_done then
-      -- Start waiting for the first of this VVC or other VVC
-      log(await_completion_pending_msg_id, to_string(command.proc_call) & " - Pending completion " & to_string(command.msg) & " " & format_command_idx(command), to_string(vvc_labels.scope), msg_id_panel); -- v3
-
-      loop
-        wait until ((executor_is_busy = false) or (global_awaiting_completion(awaiting_completion_idx) /= '1')) for command.timeout;
-
-        if this_vvc_completed(VOID) then -- This VVC is done
-          log(await_completion_finished_msg_id, "This VVC initiated completion of " & to_string(command.proc_call), to_string(vvc_labels.scope), msg_id_panel); -- v3
-          -- update shared_uvvm_status with the VVC name and cmd index that initiated the completion
-          v_uvvm_status.info_on_finishing_await_any_completion.vvc_name(1 to vvc_labels.vvc_name'length) := vvc_labels.vvc_name;
-          v_uvvm_status.info_on_finishing_await_any_completion.vvc_cmd_idx                               := last_cmd_idx_executed;
-          v_uvvm_status.info_on_finishing_await_any_completion.vvc_time_of_completion                    := now;
-          shared_uvvm_status.set(v_uvvm_status);
-          exit;
-        end if;
-
-        if global_awaiting_completion(awaiting_completion_idx) = '0' or -- All other involved VVCs are done
-          global_awaiting_completion(awaiting_completion_idx) = 'X' then -- Some other involved VVCs are done
-          exit;
-        end if;
-
-        if not ((executor_is_busy'event) or (global_awaiting_completion(awaiting_completion_idx) /= '1')) then -- Indicates timeout
-          -- When NOT_LAST (command.gen_boolean = false): Timeout must be reported here instead of in send_command_to_vvc()
-          -- becuase the command is always acknowledged immediately by the VVC to allow the sequencer to continue
-          if not command.gen_boolean then
-            tb_error("Timeout during " & to_string(command.proc_call) & "=> " & format_msg(command), to_string(vvc_labels.scope));
-          end if;
-          exit;
-        end if;
-      end loop;
-    end if;
-
-    global_awaiting_completion(awaiting_completion_idx) <= '0'; -- Signal that we're done waiting
-
-    -- Handshake : Wait until every involved VVC notice the value is 'X' or '0', and all agree to being done ('0')
-    if global_awaiting_completion(awaiting_completion_idx) /= '0' then
-      wait until (global_awaiting_completion(awaiting_completion_idx) = '0');
-    end if;
-
-    global_awaiting_completion(awaiting_completion_idx) <= 'Z'; -- Idle
-
-    --log(await_completion_finished_msg_id, to_string(command.proc_call) & "=> Finished. " & format_msg(command), to_string(vvc_labels.scope), C_MSG_ID_PANEL); -- Get & ack the new command -- v3
-    log(await_completion_finished_msg_id, to_string(command.proc_call) & "=> Finished. " & format_msg(command), to_string(vvc_labels.scope), msg_id_panel); -- Get & ack the new command -- v3
-
   end procedure;
 
   procedure interpreter_flush_command_queue(

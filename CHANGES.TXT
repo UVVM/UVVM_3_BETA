@@ -9,6 +9,19 @@ CHANGES.TXT in each module's sub-directory.
 
 ----------------------------------------------------------------------
 
+v3.0 BETA 2023.01.16
+--------------------
+- Removed await_any_completion()
+
+
+v3.0 BETA 2023.01.04
+--------------------
+- Rename t_vvc_info_list to t_prot_vvc_list to better indicate the type is protected.
+- Added add_to_vvc_list() for adding VVC target to a protected t_vvc_list or use with await_completion()
+- await_completion() no longer counts as VVC command, i.e. command index is no longer incremented.
+- Removed cmd_idx from protected t_vvc_list.
+- Added clear_list(t_void) method to protected type t_prot_vvc_list.
+
 
 v3.0 BETA 2022.10.07
 --------------------

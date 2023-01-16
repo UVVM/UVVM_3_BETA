@@ -22,7 +22,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_sbi;
 context bitvis_vip_sbi.vvc_context;
@@ -35,11 +35,9 @@ library bitvis_vip_clock_generator;
 context bitvis_vip_clock_generator.vvc_context;
 
 --hdlregression:tb
--- Test bench entity
 entity uvvm_demo_tb is
 end entity uvvm_demo_tb;
 
--- Test bench architecture
 architecture func of uvvm_demo_tb is
 
   constant C_SCOPE         : string := C_TB_SCOPE_DEFAULT;
@@ -131,6 +129,7 @@ begin
       -- This test will use UART TX VVC to write data to DUT, with randomly inserted parity bit error injection.
       --   The probability of an error injection will increase with 10% for each write access.
       --   Note that DUT will alert parity bit error, and Monitor will report illegal transaction.
+
       for idx in 1 to 10 loop
         -- Get write data and error injection probability
         v_data := std_logic_vector(to_unsigned(idx, v_data'length));

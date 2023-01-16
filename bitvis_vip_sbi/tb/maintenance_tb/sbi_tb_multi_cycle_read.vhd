@@ -22,23 +22,21 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_sbi;
 context bitvis_vip_sbi.vvc_context;
 
 --hdlregression:tb
--- Test case entity
 entity sbi_tb_multi_cycle_read is
   generic(
     GC_TESTCASE : string := "UVVM"
   );
 end entity;
 
--- Test case architecture
 architecture func of sbi_tb_multi_cycle_read is
 
-  constant C_CLK_PERIOD : time   := 10 ns; -- **** Trenger metode for setting av clk period
+  constant C_CLK_PERIOD : time   := 10 ns;
   constant C_SCOPE      : string := "SBI_VVC_TB";
 
   constant C_ADDR_WIDTH_1 : integer := 8;
@@ -155,6 +153,7 @@ begin
       sbi_read(SBI_VVCT, 1, x"00", "Reading from Register 0");
       v_cmd_idx   := get_last_received_cmd_idx(SBI_VVCT, 1);
       await_completion(SBI_VVCT, 1, 100 ns, "Await execution");
+
       fetch_result(SBI_VVCT, 1, NA, v_cmd_idx, v_result_from_fetch, "Fetch result using the simple fetch_result overload");
       check_value(((now - v_timestamp) = C_CLK_PERIOD * 3.25), ERROR, "Checking that timing was upheld");
       report (to_string(v_result_from_fetch(7 downto 0)));
@@ -171,6 +170,7 @@ begin
       sbi_read(SBI_VVCT, 1, x"00", "Reading from Register 0");
       v_cmd_idx   := get_last_received_cmd_idx(SBI_VVCT, 1);
       await_completion(SBI_VVCT, 1, 100 ns, "Await execution");
+
       fetch_result(SBI_VVCT, 1, NA, v_cmd_idx, v_result_from_fetch, "Fetch result using the simple fetch_result overload");
       increment_expected_alerts(warning, 2);
       check_value(((now - v_timestamp) = C_CLK_PERIOD * 3.25), WARNING, "The read should only take 2.25 clk_periods and therefore throw a warning");

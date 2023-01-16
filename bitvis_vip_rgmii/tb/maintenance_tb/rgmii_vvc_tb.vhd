@@ -22,20 +22,18 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_rgmii;
 context bitvis_vip_rgmii.vvc_context;
 
 --hdlregression:tb
--- Test case entity
 entity rgmii_vvc_tb is
   generic(
     GC_TESTCASE : string := "UVVM"
   );
 end entity;
 
--- Test case architecture
 architecture func of rgmii_vvc_tb is
   --------------------------------------------------------------------------------
   -- Types and constants declarations

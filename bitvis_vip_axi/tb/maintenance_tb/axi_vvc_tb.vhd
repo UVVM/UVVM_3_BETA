@@ -22,7 +22,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_axi;
 context bitvis_vip_axi.vvc_context;
@@ -31,14 +31,12 @@ library bitvis_vip_scoreboard;
 use bitvis_vip_scoreboard.generic_sb_support_pkg.all;
 
 --hdlregression:tb
--- Test case entity
 entity axi_vvc_tb is
   generic(
     GC_TESTCASE : string := "UVVM"
   );
 end entity axi_vvc_tb;
 
--- Test case architecture
 architecture sim of axi_vvc_tb is
 
   constant C_SCOPE        : string  := C_TB_SCOPE_DEFAULT;
@@ -95,6 +93,7 @@ begin
     variable v_timestamp         : time;
     variable v_measured_time     : time;
     variable v_vvc_config        : bitvis_vip_axi.vvc_methods_pkg.t_vvc_config;
+
   begin
     -- To avoid that log files from different test cases (run in separate
     -- simulations) overwrite each other.
@@ -137,6 +136,7 @@ begin
       wdata            => v_write_data,
       msg              => "Testing AXI write"
     );
+
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
     axi_check(
       VVCT             => AXI_VVCT,
@@ -147,6 +147,7 @@ begin
       rdata_exp        => t_slv_array'(x"12345678", x"33333333", x"55555555", x"AAAAAAAA"),
       msg              => "Testing AXI check"
     );
+
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
     axi_read(
       VVCT             => AXI_VVCT,
@@ -158,6 +159,7 @@ begin
       msg              => "Testing AXI read"
     );
     v_cmd_idx := get_last_received_cmd_idx(AXI_VVCT, 1); -- Retrieve the command index
+
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
     fetch_result(AXI_VVCT, 1, v_cmd_idx, v_result, "Fetching read result");
     check_value(v_result.rid, x"00", "Checking RID", C_SCOPE);
@@ -187,6 +189,7 @@ begin
       data_routing     => TO_SB,
       msg              => "Testing AXI read"
     );
+
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
 
     --------------------------------------------------------------------------------------------------------------------
@@ -213,6 +216,7 @@ begin
       wdata            => t_slv_array'(x"BBBBBBBB", x"CCCCCCCC", x"DDDDDDDD", x"EEEEEEEE"),
       msg              => "Testing AXI write"
     );
+
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
 
     --------------------------------------------------------------------------------------------------------------------
@@ -230,6 +234,7 @@ begin
       msg              => "Testing AXI write"
     );
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+
     axi_check(
       VVCT             => AXI_VVCT,
       vvc_instance_idx => 1,
@@ -276,6 +281,7 @@ begin
       msg              => "Writing with a minimum burst length"
     );
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+
     -- Checking that only this word has been written
     axi_check(
       VVCT             => AXI_VVCT,
@@ -314,7 +320,9 @@ begin
       wdata            => v_max_write_data,
       msg              => "Writing with a maximum burst length"
     );
+
     await_completion(AXI_VVCT, 1, 10 us, "Waiting for commands to finish");
+
     -- Checking that the data has been written correctly
     axi_read(
       VVCT             => AXI_VVCT,
@@ -327,6 +335,7 @@ begin
     );
     v_cmd_idx := get_last_received_cmd_idx(AXI_VVCT, 1); -- Retrieve the command index
     await_completion(AXI_VVCT, 1, 10 us, "Waiting for commands to finish");
+
     fetch_result(AXI_VVCT, 1, v_cmd_idx, v_result, "Fetching read result");
     for i in 0 to 255 loop
       check_value(v_result.rdata(i), v_max_write_data(i), "Checking RDATA, index " & to_string(i), C_SCOPE);
@@ -353,6 +362,7 @@ begin
       msg              => "Testing smaller parameter widths on all unconstrained inputs"
     );
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+
     -- Checking that the data was written correctly
     axi_check(
       VVCT             => AXI_VVCT,
@@ -377,6 +387,7 @@ begin
       msg              => "Testing smaller parameter widths on axi_check"
     );
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+
     -- Testing smaller parameter widths on axi_read
     axi_read(
       VVCT             => AXI_VVCT,
@@ -391,12 +402,14 @@ begin
     );
     v_cmd_idx := get_last_received_cmd_idx(AXI_VVCT, 1); -- Retrieve the command index
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+
     fetch_result(AXI_VVCT, 1, v_cmd_idx, v_result, "Fetching read result");
     check_value(v_result.rid, x"01", "Checking RID", C_SCOPE);
     for i in 0 to 1 loop
       check_value(v_result.rdata(i), v_write_data_narrow(i), "Checking RDATA, index " & to_string(i), C_SCOPE);
       check_value(v_result.ruser(i), x"00", "Checking RUSER, index " & to_string(i), C_SCOPE);
     end loop;
+
     -- Testing larger parameter widths on all unconstrained inputs
     axi_write(
       VVCT             => AXI_VVCT,
@@ -413,6 +426,7 @@ begin
       msg              => "Testing larger parameter widths on all unconstrained inputs"
     );
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+
     -- Checking that the data was written correctly
     axi_check(
       VVCT             => AXI_VVCT,
@@ -423,6 +437,7 @@ begin
       rdata_exp        => t_slv_array'(x"87654321", x"9ABCDEF0"),
       msg              => "Checking that the data was written correctly"
     );
+
     -- Testing larger parameter widths on axi_check
     axi_check(
       VVCT             => AXI_VVCT,
@@ -437,6 +452,7 @@ begin
       msg              => "Testing larger parameter widths on axi_check"
     );
     await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+
     -- Testing larger parameter widths on axi_read
     axi_read(
       VVCT             => AXI_VVCT,
@@ -472,6 +488,7 @@ begin
       msg              => "Testing AXI write"
     );
     await_completion(AXI_VVCT, 2, 1 us, "Waiting for commands to finish");
+
     axi_check(
       VVCT             => AXI_VVCT,
       vvc_instance_idx => 2,
@@ -482,6 +499,7 @@ begin
       msg              => "Testing AXI check"
     );
     await_completion(AXI_VVCT, 2, 1 us, "Waiting for commands to finish");
+
     axi_read(
       VVCT             => AXI_VVCT,
       vvc_instance_idx => 2,
@@ -562,7 +580,7 @@ begin
     --------------------------------------------------------------------------------------------------------------------
     log(ID_LOG_HDR, "Testing to force single pending transactions");
     -- First we measure the time it takes to perform a read and write simultaneously
-    v_timestamp                                   := now;
+    v_timestamp     := now;
     axi_write(
       VVCT             => AXI_VVCT,
       vvc_instance_idx => 1,
@@ -582,7 +600,8 @@ begin
       msg              => "Testing AXI read"
     );
     await_completion(AXI_VVCT, 1, 100 us, "Waiting for commands to finish");
-    v_measured_time                               := now - v_timestamp;
+    v_measured_time := now - v_timestamp;
+
     -- Then, we turn on the force_single_penging_transaction setting, and see that it takes about twice as long
     v_vvc_config                                  := shared_axi_vvc_config.get(1);
     v_vvc_config.force_single_pending_transaction := true;
@@ -608,6 +627,7 @@ begin
       msg              => "Testing AXI read"
     );
     await_completion(AXI_VVCT, 1, 100 us, "Waiting for commands to finish");
+
     -- Checking that it takes twice as long (+- 20 %)
     check_value_in_range(now - v_timestamp, v_measured_time * 1.8, v_measured_time * 2.2, ERROR, "Checking that it takes longer time to force a single pending transaction");
 

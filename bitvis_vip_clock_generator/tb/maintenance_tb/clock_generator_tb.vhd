@@ -22,20 +22,18 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_clock_generator;
 context bitvis_vip_clock_generator.vvc_context;
 
 --hdlregression:tb
--- Test case entity
 entity clock_generator_tb is
   generic(
     GC_TESTCASE : string := "UVVM"
   );
 end entity;
 
--- Test case architecture
 architecture func of clock_generator_tb is
 
   constant C_SCOPE             : string := "CLOCK_GENERATOR_VVC_TB";

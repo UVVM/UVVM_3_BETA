@@ -22,15 +22,13 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+context uvvm_vvc_framework.vvc_framework_context;
 
 library bitvis_vip_sbi;
-use bitvis_vip_sbi.vvc_methods_pkg.all;
-use bitvis_vip_sbi.td_vvc_framework_common_methods_pkg.all;
+context bitvis_vip_sbi.vvc_context;
 
 library bitvis_vip_uart;
-use bitvis_vip_uart.vvc_methods_pkg.all;
-use bitvis_vip_uart.td_vvc_framework_common_methods_pkg.all;
+context bitvis_vip_uart.vvc_context;
 
 library bitvis_vip_clock_generator;
 context bitvis_vip_clock_generator.vvc_context;
@@ -71,6 +69,7 @@ begin
   p_main : process
     variable v_uart_vvc_config : bitvis_vip_uart.vvc_methods_pkg.t_vvc_config;
     variable v_sbi_vvc_config  : bitvis_vip_sbi.vvc_methods_pkg.t_vvc_config;
+
   begin
     -- Wait for UVVM to finish initialization
     await_uvvm_initialization(VOID);
@@ -117,6 +116,7 @@ begin
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"00", "RX_DATA default");
     sbi_check(SBI_VVCT, 1, C_ADDR_TX_READY, x"01", "TX_READY default");
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA_VALID, x"00", "RX_DATA_VALID default");
+
     await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
 
     log(ID_LOG_HDR, "Check simple transmit", C_SCOPE);
@@ -127,6 +127,7 @@ begin
     -- until the UART VVC has received the data from the DUT, indicated by the await_completion method.
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"55", "TX_DATA");
     uart_expect(UART_VVCT, 1, RX, x"55", "Expecting data on UART RX");
+
     await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
     wait for 200 ns;                    -- margin
 
@@ -138,8 +139,10 @@ begin
     -- register, and verify that it is in fact x"AA" that the DUT received. The test sequencer will continue
     -- when the SBI VVC is done checking the C_ADDR_RX_DATA register.
     uart_transmit(UART_VVCT, 1, TX, x"AA", "UART TX");
+
     await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
     wait for 200 ns;                    -- margin
+
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"AA", "RX_DATA");
     await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
 
@@ -155,7 +158,9 @@ begin
     sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, x"B4", "TX_DATA");
     uart_transmit(UART_VVCT, 1, TX, x"87", "UART TX");
     uart_expect(UART_VVCT, 1, RX, x"B4", "Expecting data on UART RX");
+
     await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
+
     wait for 200 ns;                    -- margin
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"87", "RX_DATA");
     await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
@@ -171,6 +176,7 @@ begin
     uart_transmit(UART_VVCT, 1, TX, x"A1", "UART TX");
     uart_transmit(UART_VVCT, 1, TX, x"A2", "UART TX");
     uart_transmit(UART_VVCT, 1, TX, x"A3", "UART TX");
+
     await_completion(UART_VVCT, 1, TX, 3 * 13 * C_BIT_PERIOD);
     wait for 200 ns;                    -- margin
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"A1", "RX_DATA");
@@ -212,6 +218,7 @@ begin
     end loop;
 
     await_completion(UART_VVCT, 1, TX, 103 * C_TIME_OF_ONE_UART_TX);
+
     wait for 50 ns;                     -- to assure UART RX complete internally
     -- Check the last two bytes in the DUT RX buffer.
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, std_logic_vector(to_unsigned(16#80# + 101, 8)), "Reading data number " & to_string(101));
@@ -242,8 +249,8 @@ begin
     end loop;
 
     await_completion(UART_VVCT, 1, TX, 103 * C_TIME_OF_ONE_UART_TX);
-    await_completion(SBI_VVCT, 1, 2 * C_TIME_OF_ONE_UART_TX);
 
+    await_completion(SBI_VVCT, 1, 2 * C_TIME_OF_ONE_UART_TX);
     wait for 50 ns;                     -- to assure UART RX complete internally
     -- Check the last two bytes in the DUT RX buffer.
     log("Setting the SBI VVC back to no delay between BFM accesses");
@@ -254,6 +261,7 @@ begin
 
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, std_logic_vector(to_unsigned(16#80# + 101, 8)), "Reading data number " & to_string(101));
     sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, std_logic_vector(to_unsigned(16#80# + 102, 8)), "Reading data number " & to_string(102));
+
     await_completion(SBI_VVCT, 1, 2 * C_TIME_OF_ONE_UART_TX);
 
     -----------------------------------------------------------------------------

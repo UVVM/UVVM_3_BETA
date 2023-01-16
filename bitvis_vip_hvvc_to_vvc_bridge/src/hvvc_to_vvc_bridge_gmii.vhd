@@ -137,7 +137,8 @@ begin
             enable_gmii_vvc_msg_id(TX, ID_CMD_EXECUTOR_WAIT); -- v3
           end if;
           v_cmd_idx := get_last_received_cmd_idx(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, TX, GC_SCOPE);
-          await_completion(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, TX, v_cmd_idx, (GC_MAX_NUM_WORDS + v_num_transfers) * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for write to finish.", GC_SCOPE, v_hvvc_msg_id_panel);
+
+          await_completion(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, TX, v_cmd_idx, (GC_MAX_NUM_WORDS + v_num_transfers) * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for write to finish.", GC_SCOPE);
 
         when RECEIVE =>
           gmii_read(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, v_num_data_bytes, "HVVC: Read data via GMII.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
@@ -148,7 +149,8 @@ begin
           end if;
 
           v_cmd_idx := get_last_received_cmd_idx(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, GC_SCOPE);
-          await_completion(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, v_cmd_idx, (GC_MAX_NUM_WORDS + v_num_transfers) * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for read to finish.", GC_SCOPE, v_hvvc_msg_id_panel); -- v3
+
+          await_completion(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, v_cmd_idx, (GC_MAX_NUM_WORDS + v_num_transfers) * GC_PHY_MAX_ACCESS_TIME, "HVVC: Wait for read to finish.", GC_SCOPE);
 
           fetch_result(GMII_VVCT, GC_PHY_VVC_INSTANCE_IDX, RX, v_cmd_idx, v_gmii_received_data, "HVVC: Fetching received data.", TB_ERROR, GC_SCOPE, v_hvvc_msg_id_panel); -- v3
 

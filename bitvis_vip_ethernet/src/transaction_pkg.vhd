@@ -33,8 +33,6 @@ package transaction_pkg is
   --==========================================================================================
   type t_operation is (
     NO_OPERATION,
-    AWAIT_COMPLETION,
-    AWAIT_ANY_COMPLETION,
     ENABLE_LOG_MSG,
     DISABLE_LOG_MSG,
     FLUSH_COMMAND_QUEUE,

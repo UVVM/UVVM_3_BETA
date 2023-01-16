@@ -80,7 +80,7 @@ Declaration
 
    -- Queue declaration example
    use work.queue_pkg.all;
-   shared variable generic_queue : t_generic_queue;
+   shared variable generic_queue : t_prot_generic_queue;
 
 **********************************************************************************************************************************
 Methods

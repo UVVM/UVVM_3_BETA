@@ -16,25 +16,24 @@ await_completion()
 ==================================================================================================================================
 Tells the VVC to await the completion of either all pending commands or a specified command index. A message will be logged before 
 and at the end of the wait. The procedure will report an alert if not all commands have completed within the specified timeout. 
-The severity of this alert will be TB_ERROR. It is also possible to :ref:`broadcast and multicast <vvc_framework_broadcasting>`.
+The severity of this alert will be TB_ERROR. It is also possible to broadcast by setting vvc_select to ALL_VVCS (:ref:`t_vvc_select`)
+or to multicast using ALL_CHANNELS/ALL_INSTANCES (:ref:`multicast <vvc_framework_broadcasting>`.). 
 
-To await the completion of one out of several VVCs in a group use the overload with the vvc_info_list. The vvc_info_list of type 
-:ref:`t_vvc_info_list` (protected type) is a local variable that needs to be declared in the sequencer. This overload will block 
+To await the completion of one out of several VVCs in a group use the overload with the vvc_list. The vvc_list of type 
+:ref:`t_prot_vvc_list` (protected type) is a local variable that needs to be declared in the sequencer. This overload will block 
 the sequencer while waiting, but not the VVCs, so they can continue to receive commands from other sequencers.
 
 .. important::
 
-    * To use the vvc_info_list, the package ``uvvm_vvc_framework.ti_protected_types_pkg.all`` must be included in the testbench.
-    * The command with the vvc_info_list requires VVCs supporting the VVC activity register introduced in UVVM release v2020.05.19
+    * To use the vvc_list, the package ``uvvm_vvc_framework.ti_protected_types_pkg.all`` must be included in the testbench.
+    * The command with the vvc_list requires VVCs supporting the VVC activity register introduced in UVVM release v2020.05.19
 
 .. code-block::
 
-    -- Old method
     await_completion(vvc_target, vvc_instance_idx, [vvc_channel], [wanted_idx], timeout, [msg, [scope]])
-    await_completion(VVC_BROADCAST, timeout, [msg, [scope]])
-
-    -- New method
-    await_completion(vvc_select, [vvc_info_list], timeout, [list_action, [msg, [scope]]])
+    await_completion(vvc_select, vvc_list, [wanted_idx], timeout, [list_action, [msg, [scope]]])
+    await_completion(vvc_list, timeout, [list_action, [msg, [scope]]])  -- same as ALL_OF
+    await_completion(vvc_select, timeout, [msg, [scope]])               -- use with ALL_VVCS (similar to BROADCAST)
 
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | Object   | Name               | Dir.   | Type                         | Description                                             |
@@ -42,30 +41,30 @@ the sequencer while waiting, but not the VVCs, so they can continue to receive c
 | signal   | vvc_target         | inout  | t_vvc_target_record          | VVC target type compiled into each VVC in order to      |
 |          |                    |        |                              | differentiate between VVCs                              |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
+| constant | wanted_idx         | in     | natural                      | The VVC command index that has to be finished before    |
+|          |                    |        |                              | the blocking is released.                               |
++----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | constant | vvc_instance_idx   | in     | integer                      | Instance number of the VVC used in this method          |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | constant | vvc_channel        | in     | t_channel                    | The VVC channel of the VVC instance used in this method |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | constant | vvc_select         | in     | :ref:`t_vvc_select`          | Selects whether to await for any of the VVCs in the     |
 |          |                    |        |                              | list, all of the VVCs in the list or all the registered |
-|          |                    |        |                              | VVCs in the testbench (broadcast)                       |
+|          |                    |        |                              | VVCs in the testbench (broadcast).                      |
+|          |                    |        |                              | Default vvc_select is ALL_OF.                           |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
-| constant | vvc_info_list      | in     | :ref:`t_vvc_info_list`       | A list of protected type containing one or several VVC  |
-|          |                    |        |                              | IDs (name, instance, channel) & command index. VVC IDs  |
-|          |                    |        |                              | and corresponding command index can be added to the list|
-|          |                    |        |                              | by using the procedure add() from the                   |
-|          |                    |        |                              | :ref:`t_vvc_info_list`                                  |
+| constant | vvc_list           | in     | :ref:`t_prot_vvc_list`       | A list of protected type containing one or several VVC  |
+|          |                    |        |                              | IDs (name, instance, channel). VVC IDs can be added to  |
+|          |                    |        |                              | the VVC list by using the add_to_vvc_list() procedure.  |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | constant | timeout            | in     | time                         | The maximum time to await completion of a specified     |
 |          |                    |        |                              | command, or all pending commands. An alert of severity  |
 |          |                    |        |                              | ERROR will be triggered if the awaited time is equal to |
 |          |                    |        |                              | the specified timeout.                                  |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
-| constant | wanted_idx         | in     | natural                      | The index to be fetched or awaited                      |
-+----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | constant | list_action        | in     | :ref:`t_list_action`         | An enumerated type to either keep the VVC IDs or remove |
 |          |                    |        |                              | them from the list after await_completion() has         |
-|          |                    |        |                              | finished. Default value is CLEAR_LIST.                  |
+|          |                    |        |                              | finished. Default is CLEAR_LIST.                        |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | constant | msg                | in     | string                       | A custom message to be appended to the log when the     |
 |          |                    |        |                              | method is executed. Default value is "".                |
@@ -76,41 +75,70 @@ the sequencer while waiting, but not the VVCs, so they can continue to receive c
 
 .. code-block::
 
-    -- Examples (old method):
-    await_completion(SBI_VVCT, 1, 16 ns, "Wait for SBI instance 1 to finish", C_SCOPE);
-    await_completion(SBI_VVCT, 1, v_cmd_idx, 100 ns, "Wait for sbi_read to finish", C_SCOPE);
-
-    -- Multicast:
-    await_completion(SBI_VVCT, ALL_INSTANCES, 100 ns, "Wait for all SBI instances to finish", C_SCOPE);
-    await_completion(UART_VVCT, 1, ALL_CHANNELS, 100 ns, "Wait for all UART channels from instance 1 to finish", C_SCOPE);
-
-    -- Broadcast:
-    await_completion(VVC_BROADCAST, 1 ms, "Wait for all the VVCs to finish", C_SCOPE)
-
-    -- Examples (new method):
-    variable my_vvc_info_list : t_vvc_info_list;
+    -- Example, wait for any VVC to finish (ANY_OF):
+    variable my_vvc_list : t_prot_vvc_list;
     ...
-    my_vvc_info_list.add("SBI_VVC", 1);
-    my_vvc_info_list.add("AXISTREAM_VVC", 3, v_cmd_idx);
-    my_vvc_info_list.add("UART_VVC", ALL_INSTANCES, ALL_CHANNELS);
-    await_completion(ANY_OF, my_vvc_info_list, 1 ms, KEEP_LIST, "Wait for any VVC in the list to finish", C_SCOPE);
+    add_to_vvc_list(SBI_VVCT, 1, my_vvc_list);
+    add_to_vvc_list(UART_VVCT, ALL_INSTANCES, ALL_CHANNELS, my_vvc_list);
+    await_completion(ANY_OF, my_vvc_list, 1 ms, KEEP_LIST, "Wait for any VVC in the list to finish", C_SCOPE); -- keep v_vvc_list entries for later
 
-    -- Broadcast:
-    await_completion(ALL_VVCS, 1 ms, CLEAR_LIST, "Wait for all the VVCs to finish", C_SCOPE);
+    -- Example, wait for all VVCs to finish (ALL_OF):
+    variable my_vvc_list : t_prot_vvc_list;
+    ...
+    add_to_vvc_list(SBI_VVCT, 1, my_vvc_list);
+    add_to_vvc_list(UART_VVCT, ALL_INSTANCES, ALL_CHANNELS, my_vvc_list);
+    await_completion(ALL_OF, my_vvc_list, 1 ms, CLEAR_LIST, "Wait for any VVC in the list to finish", C_SCOPE); -- can be used without ALL_OF, clear v_vvc_list entries
+
+    -- Example, wait for a specific VVC to finish:
+    await_completion(SBI_VVCT, 1, "Waiting for SBI to finish.", C_SCOPE);
+    await_completion(UART_VVCT, 1, TX, "Waiting for UART RX to finish.", C_SCOPE);
+    await_completion(I2C_VVCT, ALL_INSTANCES, "Waiting for all I2C VVCs to finish.", C_SCOPE);
+
+    -- Example, wait for a specific VVC command index to finish:
+    await_completion(SBI_VVCT, 1, v_cmd_idx, "Waiting for SBI cmd " & to_string(v_cmd_idx) & " to finish.", C_SCOPE);
+
+    -- Example, broadcast to all VVCs (ALL_VVCS):
+    await_completion(ALL_VVCS, 1 ms, "Wait for all the VVCs to finish", C_SCOPE);
 
 
-await_any_completion()
+add_to_vvc_list()
 ==================================================================================================================================
-Replaced by ``await_completion(ANY_OF, vvc_info_list, timeout, list_action, msg, scope)`` above to allow VVCs to accept commands 
-while waiting for completion. This command still works as previously, but with less functionality than the new 
-``await_completion()``. ::
+Adds the VVC to a :ref:`t_prot_vvc_list`. The protected VVC list can be used with ``await_completion()`` to block the sequencer 
+while waiting for the completion of VVC commands. The vvc_list can be cleared using the ``clear_list(VOID)`` method.
 
-    await_any_completion(vvc_target, vvc_instance_idx, [vvc_channel], [wanted_idx], lastness, [timeout, [msg, [awaiting_completion_idx, [scope]]]])
 
-.. warning::
+.. code-block::
 
-    This procedure will soon be deprecated and removed. For details and examples for using this call see UVVM release v2020.05.12 
-    or any earlier releases.
+    add_to_vvc_list(vvc_target, vvc_instance_idx, [vvc_channel], vvc_list)
+
++----------+--------------------+--------+------------------------------+---------------------------------------------------------+
+| Object   | Name               | Dir.   | Type                         | Description                                             |
++==========+====================+========+==============================+=========================================================+
+| signal   | vvc_target         | inout  | t_vvc_target_record          | VVC target type compiled into each VVC in order to      |
+|          |                    |        |                              | differentiate between VVCs.                             |
++----------+--------------------+--------+------------------------------+---------------------------------------------------------+
+| constant | vvc_instance_idx   | in     | integer                      | Instance number of the VVC used in this method.         |
++----------+--------------------+--------+------------------------------+---------------------------------------------------------+
+| constant | vvc_channel        | in     | t_channel                    | The VVC channel of the VVC instance used in this method |
++----------+--------------------+--------+------------------------------+---------------------------------------------------------+
+| constant | vvc_list           | in     | :ref:`t_prot_vvc_list`       | A protected type list where the VVC IDs (name, instance,|
+|          |                    |        |                              | channel) are stored for use with await_completion() when|
+|          |                    |        |                              | waiting for several VVCs to finish command execution.   |
++----------+--------------------+--------+------------------------------+---------------------------------------------------------+
+
+
+.. code-block::
+
+    -- Examples:
+    variable my_vvc_list : t_prot_vvc_list;
+    ...
+    add_to_vvc_list(SBI_VVCT, 1, my_vvc_list);
+    add_to_vvc_list(UART_VVCT, 1, ALL_CHANNELS, my_vvc_list);
+    await_completion(ALL_OF, my_vvc_list, 1 ms, KEEP_LIST, "Wait for any VVC in the list to finish", C_SCOPE);
+    
+    v_vvc_list.clear_list(VOID); -- clear all VVC entries from list
+
+
 
 
 enable_log_msg()
@@ -425,7 +453,6 @@ number of command instructions needed in the testbench. ::
 
     -- Examples:
     enable_log_msg(VVC_BROADCAST, ALL_MESSAGES); -- enable logging for all VVCs
-    await_completion(VVC_BROADCAST, 10 us); -- wait for all VVCs to complete
 
 
 ALL_INSTANCES
@@ -505,22 +532,6 @@ UVVM and VVC User Accessible Shared Variables and Global Signals
 UVVM and VVC shared variables and global signals are defined in global_signals_and_shared_variables_pkg.vhd and the various VVC 
 packages.
 
-shared_uvvm_status
-----------------------------------------------------------------------------------------------------------------------------------
-Shared variable providing access to VVC related information via the info_on_finishing_await_any_completion record element, e.g. ::
-
-    shared_uvvm_status.info_on_finishing_await_any_completion
-
-This record element gives access to the name, command index and the time of completion of the VVC that first fulfilled the
-await_any_completion(). The available record fields are: ::
-
-    vvc_name               : string  -- default "no await_any_completion() yet"
-    vvc_cmd_idx            : natural -- default 0
-    vvc_time_of_completion : time    -- default 0 ns
-
-For more information regarding other fields available in the shared_uvvm_status see :ref:`UVVM Util - Shared Variables
-<util_shared_variables>`.
-
 shared_<vvc_name>_vvc_config
 ----------------------------------------------------------------------------------------------------------------------------------
 Shared variable providing access to configuration parameters for each VVC instance and channel if applicable, e.g. ::
@@ -571,7 +582,7 @@ BFMs require user configuration, e.g. the bit_time setting in serial interface B
 
 The VVC status shared variable provide access to the command status parameters for each of the VVCs, such as the current and 
 previous command index, and the number of pending commands in the VVCs command queue. This provide a helpful tool, e.g. when 
-synchronizing VVCs in the test sequencer using the await_completion() or await_any_completion() methods.
+synchronizing VVCs in the test sequencer using the await_completion() method.
 
 When using a wave viewer during simulation, the transaction shared variable provides helpful information regarding current VVC 
 operation and transaction information such as address and data. Note that the accessible fields depend on the VVC and its 
