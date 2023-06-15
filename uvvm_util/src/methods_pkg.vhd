@@ -1856,6 +1856,12 @@ package methods_pkg is
   ) return real;
 
   impure function random(
+    constant min_value       : time;
+    constant max_value       : time;
+    constant time_resolution : time
+  ) return time;
+
+  impure function random(
     constant min_value : time;
     constant max_value : time
   ) return time;
@@ -1886,6 +1892,16 @@ package methods_pkg is
     variable v_seed1   : inout positive;
     variable v_seed2   : inout positive;
     variable v_target  : inout real
+  );
+
+  procedure random(
+    constant min_value       : time;
+    constant max_value       : time;
+    constant time_resolution : time;
+    variable v_seed1         : inout positive;
+    variable v_seed2         : inout positive;
+    variable v_target        : inout time;
+    constant ext_proc_call   : string := ""
   );
 
   procedure random(
@@ -1934,7 +1950,7 @@ package methods_pkg is
   function convert_slv_array_to_byte_array(
     constant slv_array       : t_slv_array;
     constant ascending       : boolean           := false;
-    constant byte_endianness : t_byte_endianness := FIRST_BYTE_LEFT
+    constant byte_endianness : t_byte_endianness := LOWER_BYTE_LEFT
   ) return t_byte_array;
 
   function reverse_vector(
@@ -3243,7 +3259,7 @@ package body methods_pkg is
     constant open_mode       : in file_open_kind    := append_mode) is
   begin
     -- Write the info string to the target file
-    if log_file_name = "" and (log_destination = LOG_ONLY or log_destination = CONSOLE_AND_LOG) then
+    if log_file_name'length = 0 and (log_destination = LOG_ONLY or log_destination = CONSOLE_AND_LOG) then
       -- Output file specified, but file name was invalid.
       alert(TB_ERROR, "log called with log_destination " & to_upper(to_string(log_destination)) & ", but log file name was empty.");
     else
@@ -3300,7 +3316,7 @@ package body methods_pkg is
 
       -- Prepare strings for msg_id and scope
       v_log_msg_id := to_upper(justify(to_string(msg_id), left, C_LOG_MSG_ID_WIDTH, KEEP_LEADING_SPACE, ALLOW_TRUNCATE));
-      if (scope = "") then
+      if (scope'length = 0) then
         v_log_scope := justify("(non scoped)", left, C_LOG_SCOPE_WIDTH, KEEP_LEADING_SPACE, ALLOW_TRUNCATE);
       else
         v_log_scope := justify(to_string(scope), left, C_LOG_SCOPE_WIDTH, KEEP_LEADING_SPACE, ALLOW_TRUNCATE);
@@ -3388,7 +3404,7 @@ package body methods_pkg is
       prefix_lines(v_info_final);
 
       -- Write the info string to the target file
-      if log_file_name = "" and (log_destination = LOG_ONLY or log_destination = CONSOLE_AND_LOG) then
+      if log_file_name'length = 0 and (log_destination = LOG_ONLY or log_destination = CONSOLE_AND_LOG) then
         -- Output file specified, but file name was invalid.
         alert(TB_ERROR, "log called with log_destination " & to_upper(to_string(log_destination)) & ", but log file name was empty.");
       else
@@ -3450,7 +3466,7 @@ package body methods_pkg is
     variable v_log_body              : line;
     variable v_text_block_is_empty   : boolean;
   begin
-    if ((log_file_name = "") and ((log_destination = CONSOLE_AND_LOG) or (log_destination = LOG_ONLY))) then
+    if ((log_file_name'length = 0) and ((log_destination = CONSOLE_AND_LOG) or (log_destination = LOG_ONLY))) then
       alert(TB_ERROR, "log_text_block called with log_destination " & to_upper(to_string(log_destination)) & ", but log file name was empty.");
     -- Check if message ID is enabled
     elsif (msg_id_panel(msg_id) = ENABLED) then
@@ -6830,8 +6846,25 @@ package body methods_pkg is
     return v_rand_scaled;
   end;
 
-  -- Return a random time between min time and max time
+  -- Return a random time between min time and max time using the given time resolution
   -- Use global seeds
+  impure function random(
+    constant min_value       : time;
+    constant max_value       : time;
+    constant time_resolution : time
+  ) return time is
+    variable v_rand_scaled : time;
+    variable v_seed1       : positive := shared_seed1.get(VOID);
+    variable v_seed2       : positive := shared_seed2.get(VOID);
+  begin
+    random(min_value, max_value, time_resolution, v_seed1, v_seed2, v_rand_scaled);
+    -- Write back seeds
+    shared_seed1.set(v_seed1);
+    shared_seed2.set(v_seed2);
+    return v_rand_scaled;
+  end;
+
+  -- Overload with default time resolution
   impure function random(
     constant min_value : time;
     constant max_value : time
@@ -6840,7 +6873,7 @@ package body methods_pkg is
     variable v_seed1       : positive := shared_seed1.get(VOID);
     variable v_seed2       : positive := shared_seed2.get(VOID);
   begin
-    random(min_value, max_value, v_seed1, v_seed2, v_rand_scaled);
+    random(min_value, max_value, std.env.resolution_limit, v_seed1, v_seed2, v_rand_scaled, "overload");
     -- Write back seeds
     shared_seed1.set(v_seed1);
     shared_seed2.set(v_seed2);
@@ -6906,12 +6939,48 @@ package body methods_pkg is
   begin
     -- Random real-number value in range 0 to 1.0
     uniform(v_seed1, v_seed2, v_rand);
-
     -- Scale to a random integer between min_value and max_value
     v_target := min_value + v_rand * (max_value - min_value);
   end;
 
-  -- Set target to a random integer between min_value and max_value
+  -- Set target to a random integer between min_value and max_value using the given time resolution
+  procedure random(
+    constant min_value       : time;
+    constant max_value       : time;
+    constant time_resolution : time;
+    variable v_seed1         : inout positive;
+    variable v_seed2         : inout positive;
+    variable v_target        : inout time;
+    constant ext_proc_call   : string := "" -- External proc_call. Overwrite if called from random() overload
+  ) is
+    constant C_MAX_INT_VAL : real := real(integer'right);
+    variable v_time_unit   : time := time_resolution;
+    variable v_rand        : real;
+    variable v_rand_int    : integer;
+    function get_range(constant max : in time; constant min : in time; constant unit : in time) return real is
+    begin
+      return (1.0 + real(max / unit) - real(min / unit));
+    end function;
+  begin
+    -- Adjust the time resolution so that the random value does not overflow the integer range
+    if get_range(max_value, min_value, v_time_unit) > C_MAX_INT_VAL then
+      while (get_range(max_value, min_value, v_time_unit) > C_MAX_INT_VAL) loop
+        v_time_unit := v_time_unit * 1000;
+      end loop;
+      if not (shared_warned_rand_time_res.get(VOID)) and ext_proc_call'length = 0 then
+        alert(TB_WARNING, "random(" & to_string(min_value) & "," & to_string(max_value) & "," & to_string(time_resolution) & ") => time_resolution is too small for the given range. It has been increased to " & to_string(v_time_unit), C_TB_SCOPE_DEFAULT);
+        shared_warned_rand_time_res.set(true);
+      end if;
+    end if;
+
+    -- Random real-number value in range 0 to 1.0
+    uniform(v_seed1, v_seed2, v_rand);
+    -- Scale to a random integer between min_value and max_value
+    v_rand_int := integer(real(min_value / v_time_unit) + trunc(v_rand * get_range(max_value, min_value, v_time_unit)));
+    v_target   := v_rand_int * v_time_unit;
+  end;
+
+  -- Overload with default time resolution
   procedure random(
     constant min_value : time;
     constant max_value : time;
@@ -6919,15 +6988,8 @@ package body methods_pkg is
     variable v_seed2   : inout positive;
     variable v_target  : inout time
   ) is
-    constant time_unit  : time := std.env.resolution_limit;
-    variable v_rand     : real;
-    variable v_rand_int : integer;
   begin
-    -- Random real-number value in range 0 to 1.0
-    uniform(v_seed1, v_seed2, v_rand);
-    -- Scale to a random integer between min_value and max_value
-    v_rand_int := integer(real(min_value / time_unit) + trunc(v_rand * (1.0 + real(max_value / time_unit) - real(min_value / time_unit))));
-    v_target   := v_rand_int * time_unit;
+    random(min_value, max_value, std.env.resolution_limit, v_seed1, v_seed2, v_target, "overload");
   end;
 
   -- Set global seeds
@@ -6969,9 +7031,9 @@ package body methods_pkg is
     assert byte_array'ascending report "byte_array must be ascending" severity error;
 
     for byte_idx in 0 to c_num_bytes - 1 loop
-      if (byte_endianness = LOWER_BYTE_LEFT) or (byte_endianness = FIRST_BYTE_LEFT) then
+      if byte_endianness = LOWER_BYTE_LEFT then
         v_slv(8 * (c_num_bytes - byte_idx) - 1 downto 8 * (c_num_bytes - 1 - byte_idx)) := normalized_byte_array(byte_idx);
-      else                              -- LOWER_BYTE_RIGHT or FIRST_BYTE_RIGHT
+      else                              -- LOWER_BYTE_RIGHT
         v_slv(8 * (byte_idx + 1) - 1 downto 8 * byte_idx) := normalized_byte_array(byte_idx);
       end if;
     end loop;
@@ -6999,9 +7061,9 @@ package body methods_pkg is
         if v_slv_idx = -1 then
           v_byte_array(byte_idx)(bit_idx) := 'Z'; -- Pads 'Z'
         else
-          if (byte_endianness = LOWER_BYTE_LEFT) or (byte_endianness = FIRST_BYTE_LEFT) then
+          if byte_endianness = LOWER_BYTE_LEFT then
             v_byte_array(byte_idx)(bit_idx) := normalized_slv(v_slv_idx);
-          else                          -- LOWER_BYTE_RIGHT or FIRST_BYTE_RIGHT
+          else                          -- LOWER_BYTE_RIGHT
             v_slv_idx_min                   := MINIMUM(8 * byte_idx + bit_idx, normalized_slv'high); -- avoid indexing outside the slv
             v_byte_array(byte_idx)(bit_idx) := normalized_slv(v_slv_idx_min);
           end if;
@@ -7024,13 +7086,13 @@ package body methods_pkg is
     variable v_byte_idx         : integer := 0;
   begin
     for slv_idx in 0 to c_num_words - 1 loop
-      if (byte_endianness = LOWER_BYTE_LEFT) or (byte_endianness = FIRST_BYTE_LEFT) then
+      if byte_endianness = LOWER_BYTE_LEFT then
         for byte_in_word in bytes_in_word downto 1 loop
           v_ascending_array(slv_idx)((8 * byte_in_word) - 1 downto (byte_in_word - 1) * 8)  := byte_array(v_byte_idx);
           v_descending_array(slv_idx)((8 * byte_in_word) - 1 downto (byte_in_word - 1) * 8) := byte_array(v_byte_idx);
           v_byte_idx                                                                        := v_byte_idx + 1;
         end loop;
-      else                              -- LOWER_BYTE_RIGHT or FIRST_BYTE_RIGHT
+      else                              -- LOWER_BYTE_RIGHT
         for byte_in_word in 1 to bytes_in_word loop
           v_ascending_array(slv_idx)((8 * byte_in_word) - 1 downto (byte_in_word - 1) * 8)  := byte_array(v_byte_idx);
           v_descending_array(slv_idx)((8 * byte_in_word) - 1 downto (byte_in_word - 1) * 8) := byte_array(v_byte_idx);
@@ -7063,7 +7125,7 @@ package body methods_pkg is
     v_offset := slv_array'low;
 
     for slv_idx in 0 to slv_array'length - 1 loop
-      if (byte_endianness = LOWER_BYTE_LEFT) or (byte_endianness = FIRST_BYTE_LEFT) then
+      if byte_endianness = LOWER_BYTE_LEFT then
         for byte in c_num_bytes_in_word downto 1 loop
           if c_vector_is_ascending then
             v_ascending_array(v_byte_idx)  := slv_array(slv_idx + v_offset)((byte - 1) * 8 to (8 * byte) - 1);
@@ -7074,7 +7136,7 @@ package body methods_pkg is
           end if;
           v_byte_idx := v_byte_idx + 1;
         end loop;
-      else                              -- LOWER_BYTE_RIGHT or FIRST_BYTE_RIGHT
+      else                              -- LOWER_BYTE_RIGHT
         for byte in 1 to c_num_bytes_in_word loop
           if c_vector_is_ascending then
             v_ascending_array(v_byte_idx)  := slv_array(slv_idx + v_offset)((byte - 1) * 8 to (8 * byte) - 1);
@@ -7098,7 +7160,7 @@ package body methods_pkg is
   function convert_slv_array_to_byte_array(
     constant slv_array       : t_slv_array;
     constant ascending       : boolean           := false;
-    constant byte_endianness : t_byte_endianness := FIRST_BYTE_LEFT
+    constant byte_endianness : t_byte_endianness := LOWER_BYTE_LEFT
   ) return t_byte_array is
     variable v_bytes_in_word     : integer := (slv_array(0)'length / 8);
     variable v_byte_array_length : integer := (slv_array'length * v_bytes_in_word);
@@ -7114,7 +7176,7 @@ package body methods_pkg is
 
     v_ascending_vector := slv_array(0)'ascending;
 
-    if (byte_endianness = LOWER_BYTE_LEFT) or (byte_endianness = FIRST_BYTE_LEFT) then
+    if byte_endianness = LOWER_BYTE_LEFT then
       for slv_idx in 0 to slv_array'length - 1 loop
         for byte in v_bytes_in_word downto 1 loop
           if v_ascending_vector then
@@ -7127,7 +7189,7 @@ package body methods_pkg is
           v_byte_number := v_byte_number + 1;
         end loop;
       end loop;
-    else                                -- LOWER_BYTE_RIGHT or FIRST_BYTE_RIGHT
+    else                                -- LOWER_BYTE_RIGHT
       for slv_idx in 0 to slv_array'length - 1 loop
         for byte in 1 to v_bytes_in_word loop
           if v_ascending_vector then
@@ -7553,7 +7615,7 @@ package body methods_pkg is
     constant name        : string := "await_value(" & value_type & " " & v_exp_str & ", " & to_string(min_time, ns) & ", " & to_string(max_time, ns) & ")";
     variable v_proc_call : line;
   begin
-    if caller_name = "" then
+    if caller_name'length = 0 then
       write(v_proc_call, name);
     else
       write(v_proc_call, caller_name);
@@ -8183,7 +8245,7 @@ package body methods_pkg is
     variable v_stable_req_met          : boolean := false; -- When true, the procedure is done and has logged a conclusion.
     variable v_proc_call               : line;
   begin
-    if caller_name = "" then
+    if caller_name'length = 0 then
       write(v_proc_call, name);
     else
       write(v_proc_call, caller_name);

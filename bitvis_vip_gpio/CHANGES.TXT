@@ -1,6 +1,19 @@
 Bitvis VIP GPIO - Overview on Versions and Changes
 ==============================================================
 
+
+v1.X.X
+----------
+Released: 202X-XX-XX
+- Changed default timeout value to -1 ns for gpio_expect().
+- Changed BFM config match strictness default to MATCH_EXACT.
+
+
+v1.8.4
+----------
+Released: 2023-01-23
+- Increased C_VVC_CMD_DATA_MAX_LENGTH from 32 to 1024 to enable bigger widths by default.
+
 v1.8.3
 ----------
 Released: 2022-05-05

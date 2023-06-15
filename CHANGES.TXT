@@ -9,6 +9,26 @@ CHANGES.TXT in each module's sub-directory.
 
 ----------------------------------------------------------------------
 
+
+v3.0 BETA 2023.06.15
+--------------------
+- Added clear_list(t_void) method to protected type t_prot_vvc_list.
+- Increased C_VVC_CMD_DATA_MAX_LENGTH from 32 to 1024 in bitvis_vip_gpio to enable bigger widths by default.
+- Changed the main procedures of bitvis_vip_axistream using t_byte_array (deprecated) to be using t_slv_array instead.
+  Old procedures are now overloads to ensure backwards compability
+- Changed/improved the prompt and added a check and alert message for channel name input order of RX and TX in vvc_generator
+- Improved vvc_generator.py script to automatically generate compilable
+  code without requiring any user inputs.
+- Fixed possible overflow when randomizing with multiple ranges.
+- Fixed compilation warning on rand_pkg regarding a truncated value.
+- Fixed random() time function and procedure overflowing when default time resolution was too small for a given range.
+- Added an overload for the random() time function and procedure with a parameter to select the time resolution.
+- Fixed optimization warning on methods_pkg regarding a string comparison.
+- Corrected poll_until() parameter order for SBI BFM.
+- Changed default timeout value to -1 ns in GPIO VVC gpio_expect() method.
+- Changed GPIO BFM config match strictness default to MATCH_EXACT.
+
+
 v3.0 BETA 2023.01.16
 --------------------
 - Removed await_any_completion()
@@ -21,7 +41,6 @@ v3.0 BETA 2023.01.04
 - await_completion() no longer counts as VVC command, i.e. command index is no longer incremented.
 - Removed cmd_idx from protected t_vvc_list.
 - Added clear_list(t_void) method to protected type t_prot_vvc_list.
-
 
 v3.0 BETA 2022.10.07
 --------------------

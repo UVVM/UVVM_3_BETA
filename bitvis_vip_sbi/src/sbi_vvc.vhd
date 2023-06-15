@@ -395,9 +395,9 @@ begin
           -- Call the corresponding procedure in the BFM package.
           sbi_poll_until(addr_value     => v_normalised_addr,
                          data_exp       => v_normalised_data,
+                         msg            => format_msg(v_cmd),
                          max_polls      => v_cmd.max_polls,
                          timeout        => v_cmd.timeout,
-                         msg            => format_msg(v_cmd),
                          clk            => clk,
                          sbi_if         => sbi_vvc_master_if,
                          terminate_loop => terminate_current_cmd.is_active,

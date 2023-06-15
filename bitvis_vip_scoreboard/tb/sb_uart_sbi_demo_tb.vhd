@@ -160,7 +160,7 @@ begin
       end loop;
 
       for j in 1 to 4 loop
-        sbi_poll_until(to_unsigned(C_ADDR_RX_DATA_VALID, 3), x"01", 0, 100 ns, "wait on data valid", clk, sbi_if, terminate_loop);
+        sbi_poll_until(to_unsigned(C_ADDR_RX_DATA_VALID, 3), x"01", "wait on data valid", 0, 100 ns, clk, sbi_if, terminate_loop);
         sbi_read(to_unsigned(C_ADDR_RX_DATA, 3), v_data, "read data from DUT", clk, sbi_if);
         v_sbi_sb.check_received(v_data);
       end loop;
@@ -177,7 +177,7 @@ begin
       for j in 1 to 4 loop
         v_data := random(8);
         v_uart_sb.add_expected(v_data);
-        sbi_poll_until(to_unsigned(C_ADDR_TX_READY, 3), x"01", 0, 100 ns, "wait on TX ready", clk, sbi_if, terminate_loop);
+        sbi_poll_until(to_unsigned(C_ADDR_TX_READY, 3), x"01", "wait on TX ready", 0, 100 ns, clk, sbi_if, terminate_loop);
         sbi_write(to_unsigned(C_ADDR_TX_DATA, 3), v_data, "write data to DUT", clk, sbi_if);
         uart_receive(v_data, "data from DUT", uart_rx, terminate_loop, v_uart_config);
         v_uart_sb.check_received(v_data);

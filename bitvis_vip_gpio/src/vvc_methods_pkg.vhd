@@ -189,7 +189,7 @@ package vvc_methods_pkg is
     signal   VVCT                : inout t_vvc_target_record;
     constant vvc_instance_idx    : in integer;
     constant data_exp            : in std_logic_vector;
-    constant timeout             : in time           := 1 us;
+    constant timeout             : in time           := -1 ns;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
@@ -202,7 +202,7 @@ package vvc_methods_pkg is
     constant data_exp            : in std_logic_vector;
     constant stable_req          : in time;
     constant stable_req_from     : in t_from_point_in_time;
-    constant timeout             : in time           := 1 us;
+    constant timeout             : in time           := -1 ns;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
@@ -407,7 +407,7 @@ package body vvc_methods_pkg is
     signal   VVCT                : inout t_vvc_target_record;
     constant vvc_instance_idx    : in integer;
     constant data_exp            : in std_logic_vector;
-    constant timeout             : in time           := 1 us;
+    constant timeout             : in time           := -1 ns;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
@@ -446,7 +446,7 @@ package body vvc_methods_pkg is
     constant data_exp            : in std_logic_vector;
     constant stable_req          : in time;
     constant stable_req_from     : in t_from_point_in_time;
-    constant timeout             : in time           := 1 us;
+    constant timeout             : in time           := -1 ns;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;

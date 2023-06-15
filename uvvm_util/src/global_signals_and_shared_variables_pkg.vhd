@@ -125,6 +125,7 @@ package global_signals_and_shared_variables_pkg is
   shared variable shared_log_file_name_is_set       : protected_boolean_pkg.t_prot_generic_array;
   shared variable shared_alert_file_name_is_set     : protected_boolean_pkg.t_prot_generic_array;
   shared variable shared_warned_time_stamp_trunc    : protected_boolean_pkg.t_prot_generic_array;
+  shared variable shared_warned_rand_time_res       : protected_boolean_pkg.t_prot_generic_array;
   shared variable shared_alert_attention            : protected_alert_attention.t_prot_generic_array;
   shared variable shared_stop_limit                 : protected_alert_counters.t_prot_generic_array;
   --shared variable shared_log_hdr_for_waveview      	: string(1 to C_LOG_HDR_FOR_WAVEVIEW_WIDTH);   -- skip, will be a signal

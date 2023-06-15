@@ -1,6 +1,12 @@
 Bitvis VIP SBI - Overview on Versions and Changes
 ==============================================================
 
+
+vX.X.X
+----------
+Released: 202X-XX-XX
+- Corrected poll_until() BFM parameter order.
+
 v2.8.2
 ----------
 Released: 2022-05-05

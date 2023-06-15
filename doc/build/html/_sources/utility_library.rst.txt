@@ -84,9 +84,9 @@ check_value_in_range()
 Checks if min_value ≤ val ≤ max_value, and alerts with severity alert_level if val is outside the range. The result of the check 
 is returned as a boolean if the method is called as a function. ::
 
-    [boolean :=] check_value_in_range(value(u), min_value(u), max_value(u), msg, [scope, [msg_id, [msg_id_panel]]])
-    [boolean :=] check_value_in_range(value(s), min_value(s), max_value(s), msg, [scope, [msg_id, [msg_id_panel]]])
-    [boolean :=] check_value_in_range(value(int), min_value(int), max_value(int), msg, [scope, [msg_id, [msg_id_panel]]])
+    [boolean :=] check_value_in_range(value(u), min_value(u), max_value(u), [alert_level], msg, [scope, [msg_id, [msg_id_panel]]])
+    [boolean :=] check_value_in_range(value(s), min_value(s), max_value(s), [alert_level], msg, [scope, [msg_id, [msg_id_panel]]])
+    [boolean :=] check_value_in_range(value(int), min_value(int), max_value(int), [alert_level], msg, [scope, [msg_id, [msg_id_panel]]])
     [boolean :=] check_value_in_range(value(time), min_value(time), max_value(time), [alert_level], msg, [scope, [msg_id, [msg_id_panel]]])
     [boolean :=] check_value_in_range(value(real), min_value(real), max_value(real), [alert_level], msg, [scope, [msg_id, [msg_id_panel]]])
 
@@ -840,7 +840,7 @@ Returns a random value. The function uses and updates a global seed. ::
     std_logic_vector := random(length)
     integer          := random(min_value(int), max_value(int))
     real             := random(min_value(real), max_value(real))
-    time             := random(min_value(time), max_value(time))
+    time             := random(min_value(time), max_value(time), [time_resolution(time)])
 
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | Object   | Name               | Dir.   | Type                         | Description                                             |
@@ -853,6 +853,11 @@ Returns a random value. The function uses and updates a global seed. ::
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | constant | max_value          | in     | *see overloads*              | Maximum value in the range to generate the random number|
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
+| constant | time_resolution    | in     | time                         | Defines how many values can be generated between        |
+|          |                    |        |                              | min_value and max_value. If the given resolution is too |
+|          |                    |        |                              | small for the range, a TB_WARNING will be printed once. |
+|          |                    |        |                              | Default value is the simulator time resolution.         |
++----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 
 .. code-block::
 
@@ -861,7 +866,8 @@ Returns a random value. The function uses and updates a global seed. ::
     v_slv  := random(v_slv'length);
     v_int  := random(1, 10);
     v_real := random(0.01, 0.03);
-    v_time := random(25 us, 50 us);
+    v_time := random(25 us, 50 us);     -- Generates random values with the default resolution of the simulator
+    v_time := random(25 us, 50 us, us); -- Generates random values with a resolution of 1 us
 
 
 random() - procedure
@@ -872,7 +878,7 @@ Sets v_target to a random value. The procedure uses and updates v_seed1 and v_se
     random(v_seed1, v_seed2, v_target(slv))
     random(min_value(int), max_value(int), v_seed1, v_seed2, v_target(int))
     random(min_value(real), max_value(real), v_seed1, v_seed2, v_target(real))
-    random(min_value(time), max_value(time), v_seed1, v_seed2, v_target(time))
+    random(min_value(time), max_value(time), [time_resolution(time)], v_seed1, v_seed2, v_target(time))
 
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | Object   | Name               | Dir.   | Type                         | Description                                             |
@@ -880,6 +886,11 @@ Sets v_target to a random value. The procedure uses and updates v_seed1 and v_se
 | constant | min_value          | in     | *see overloads*              | Minimum value in the range to generate the random number|
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | constant | max_value          | in     | *see overloads*              | Maximum value in the range to generate the random number|
++----------+--------------------+--------+------------------------------+---------------------------------------------------------+
+| constant | time_resolution    | in     | time                         | Defines how many values can be generated between        |
+|          |                    |        |                              | min_value and max_value. If the given resolution is too |
+|          |                    |        |                              | small for the range, a TB_WARNING will be printed once. |
+|          |                    |        |                              | Default value is the simulator time resolution.         |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
 | variable | v_seed1            | inout  | positive                     | Randomization seed 1                                    |
 +----------+--------------------+--------+------------------------------+---------------------------------------------------------+
@@ -895,7 +906,8 @@ Sets v_target to a random value. The procedure uses and updates v_seed1 and v_se
     random(v_seed1, v_seed2, v_slv);
     random(1, 10, v_seed1, v_seed2, v_int);
     random(0.01, 0.03, v_seed1, v_seed2, v_real);
-    random(25 us, 50 us, v_seed1, v_seed2, v_time);
+    random(25 us, 50 us, v_seed1, v_seed2, v_time);     -- Generates random values with the default resolution of the simulator
+    random(25 us, 50 us, us, v_seed1, v_seed2, v_time); -- Generates random values with a resolution of 1 us
 
 
 randomize()

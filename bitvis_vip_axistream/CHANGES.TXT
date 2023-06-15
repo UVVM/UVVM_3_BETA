@@ -1,5 +1,10 @@
 Bitvis VIP axistream (AXI4-Stream) - Overview on Versions and Changes
 ==============================================================
+v4.7.7
+----------
+Released: 2023-XX-XX
+- Changed the main procedures of bitvis_vip_axistream using t_byte_array (deprecated) to be using t_slv_array instead.
+  Old procedures are now overloads to ensure backwards compability
 
 v4.7.6
 ----------

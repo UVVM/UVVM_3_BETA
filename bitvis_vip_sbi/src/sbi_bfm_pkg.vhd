@@ -240,9 +240,9 @@ package sbi_bfm_pkg is
   procedure sbi_poll_until(
     constant addr_value     : in unsigned;
     constant data_exp       : in std_logic_vector;
+    constant msg            : in string;
     constant max_polls      : in integer          := 1;
     constant timeout        : in time             := 0 ns;
-    constant msg            : in string;
     signal   clk            : in std_logic;
     signal   cs             : inout std_logic;
     signal   addr           : inout unsigned;
@@ -275,9 +275,9 @@ package sbi_bfm_pkg is
   procedure sbi_poll_until(
     constant addr_value     : in unsigned;
     constant data_exp       : in std_logic_vector;
+    constant msg            : in string;
     constant max_polls      : in integer          := 1;
     constant timeout        : in time             := 0 ns;
-    constant msg            : in string;
     signal   clk            : in std_logic;
     signal   sbi_if         : inout t_sbi_if;
     signal   terminate_loop : in std_logic;
@@ -598,9 +598,9 @@ package body sbi_bfm_pkg is
   procedure sbi_poll_until(
     constant addr_value     : in unsigned;
     constant data_exp       : in std_logic_vector;
+    constant msg            : in string;
     constant max_polls      : in integer          := 1;
     constant timeout        : in time             := 0 ns;
-    constant msg            : in string;
     signal   clk            : in std_logic;
     signal   cs             : inout std_logic;
     signal   addr           : inout unsigned;
@@ -677,9 +677,9 @@ package body sbi_bfm_pkg is
   procedure sbi_poll_until(
     constant addr_value     : in unsigned;
     constant data_exp       : in std_logic_vector;
+    constant msg            : in string;
     constant max_polls      : in integer          := 1;
     constant timeout        : in time             := 0 ns;
-    constant msg            : in string;
     signal   clk            : in std_logic;
     signal   sbi_if         : inout t_sbi_if;
     signal   terminate_loop : in std_logic;
@@ -689,7 +689,7 @@ package body sbi_bfm_pkg is
     constant config         : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   ) is
   begin
-    sbi_poll_until(addr_value, data_exp, max_polls, timeout, msg, clk, sbi_if.cs, sbi_if.addr,
+    sbi_poll_until(addr_value, data_exp, msg, max_polls, timeout, clk, sbi_if.cs, sbi_if.addr,
                    sbi_if.rena, sbi_if.wena, sbi_if.ready, sbi_if.rdata,
                    terminate_loop, alert_level, scope, msg_id_panel, config);
   end procedure;
