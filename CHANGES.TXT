@@ -10,7 +10,7 @@ CHANGES.TXT in each module's sub-directory.
 ----------------------------------------------------------------------
 
 
-v3.0 BETA 2023.06.15
+v3.0 BETA 2023.09.04
 --------------------
 - Added clear_list(t_void) method to protected type t_prot_vvc_list.
 - Increased C_VVC_CMD_DATA_MAX_LENGTH from 32 to 1024 in bitvis_vip_gpio to enable bigger widths by default.
@@ -27,6 +27,24 @@ v3.0 BETA 2023.06.15
 - Corrected poll_until() parameter order for SBI BFM.
 - Changed default timeout value to -1 ns in GPIO VVC gpio_expect() method.
 - Changed GPIO BFM config match strictness default to MATCH_EXACT.
+- Increased C_VVC_CMD_DATA_MAX_LENGTH from 32 to 64 in bitvis_vip_sbi to enable bigger widths by default.
+- All queue setups now come directly from the VVC generics. Updated vvc_generator.py script.
+- Removed delta cycle wait in VVC multiple executors. Updated vvc_generator.py script.
+- Removed cmd/result queue parameters in the VVC Configuration. Updated vvc_generator.py script.
+- Fixed crash in bitvis_vip_spec_cov run_spec_cov.py that could occur if there is an empty partial_coverage_files list.
+- Fixed crash in bitvis_vip_spec_cov run_spec_cov.py that could occur with specification coverage file not found.
+- Added target independent prefix "ti" to all VVC framework context declarations.
+- Included ti_vvc_framework_context.vhd in uvvm_vvc_frameowrk compile_order.txt.
+- Updated constant values related to cmd/results queues. Updated vvc_generator.py script.
+- Updated Section 10.2 in Spec_Coverage QuickRef.
+- Fixed direct use of protected variables in demo testbench for spec_cov.
+- Fixed id_for_bfm for all BFMs.
+- Added filter for (vcom-1246) warning in test.py and TCL compile scripts.
+- Added bitvis_uart and bitvis_irqc to uvvm/script/component_list.txt.
+- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
+- Updated vvc_framework.rst documentation for further explanation of common types 
+  and usage of t_vvc_result.
+- Fixed incorrect librart use clause in td_entity_support_pkg.
 
 
 v3.0 BETA 2023.01.16

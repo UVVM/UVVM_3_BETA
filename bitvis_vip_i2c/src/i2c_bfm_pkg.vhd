@@ -31,7 +31,7 @@ package i2c_bfm_pkg is
   --===============================================================================================
   -- Types and constants for I2C BFMs
   --===============================================================================================
-  constant C_SCOPE     : string    := "I2C BFM";
+  constant C_BFM_SCOPE     : string    := "I2C BFM";
   constant C_READ_BIT  : std_logic := '1';
   constant C_WRITE_BIT : std_logic := '0';
 
@@ -59,8 +59,6 @@ package i2c_bfm_pkg is
     reserved_address_severity       : t_alert_level; -- The methods will trigger an alert with this severity if the slave address is equal to one of the reserved addresses from the NXP I2C Specification. For a list of reserved addresses, please see the document referred to in section 3.
     match_strictness                : t_match_strictness; -- Matching strictness for std_logic values in check procedures.
     id_for_bfm                      : t_msg_id; -- The message ID used as a general message ID in the I2C BFM.
-    id_for_bfm_wait                 : t_msg_id; -- The message ID used for logging waits in the I2C BFM.
-    id_for_bfm_poll                 : t_msg_id; -- The message ID used for logging polling in the I2C BFM.
   end record;
 
   constant C_I2C_BFM_CONFIG_DEFAULT : t_i2c_bfm_config := (
@@ -80,9 +78,7 @@ package i2c_bfm_pkg is
     slave_rw_bit_severity           => failure,
     reserved_address_severity       => warning,
     match_strictness                => MATCH_EXACT,
-    id_for_bfm                      => ID_BFM,
-    id_for_bfm_wait                 => ID_BFM_WAIT,
-    id_for_bfm_poll                 => ID_BFM_POLL
+    id_for_bfm                      => ID_BFM
   );
 
   --===============================================================================================
@@ -110,7 +106,7 @@ package i2c_bfm_pkg is
     signal   scl                          : inout std_logic;
     signal   sda                          : inout std_logic;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -127,7 +123,7 @@ package i2c_bfm_pkg is
     constant msg                          : in string;
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -144,7 +140,7 @@ package i2c_bfm_pkg is
     constant msg                          : in string;
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -158,7 +154,7 @@ package i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -172,7 +168,7 @@ package i2c_bfm_pkg is
     constant data         : in t_byte_array;
     constant msg          : in string;
     signal   i2c_if       : inout t_i2c_if;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -186,7 +182,7 @@ package i2c_bfm_pkg is
     constant data         : in std_logic_vector;
     constant msg          : in string;
     signal   i2c_if       : inout t_i2c_if;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -203,7 +199,7 @@ package i2c_bfm_pkg is
     signal   scl                          : inout std_logic;
     signal   sda                          : inout std_logic;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call                : in string                         := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -221,7 +217,7 @@ package i2c_bfm_pkg is
     constant msg                          : in string;
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call                : in string                         := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -239,7 +235,7 @@ package i2c_bfm_pkg is
     constant msg                          : in string;
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call                : in string                         := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -256,7 +252,7 @@ package i2c_bfm_pkg is
     signal   scl           : inout std_logic;
     signal   sda           : inout std_logic;
     constant exp_rw_bit    : in std_logic        := C_WRITE_BIT;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -271,7 +267,7 @@ package i2c_bfm_pkg is
     variable data          : out t_byte_array;
     constant msg           : in string;
     signal   i2c_if        : inout t_i2c_if;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -286,7 +282,7 @@ package i2c_bfm_pkg is
     variable data          : out std_logic_vector;
     constant msg           : in string;
     signal   i2c_if        : inout t_i2c_if;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -308,7 +304,7 @@ package i2c_bfm_pkg is
     signal   sda                          : inout std_logic;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
     constant alert_level                  : in t_alert_level                  := error;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -328,7 +324,7 @@ package i2c_bfm_pkg is
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
     constant alert_level                  : in t_alert_level                  := error;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -348,7 +344,7 @@ package i2c_bfm_pkg is
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
     constant alert_level                  : in t_alert_level                  := error;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -368,7 +364,7 @@ package i2c_bfm_pkg is
     signal   sda          : inout std_logic;
     constant exp_rw_bit   : in std_logic        := C_WRITE_BIT;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -387,7 +383,7 @@ package i2c_bfm_pkg is
     signal   i2c_if       : inout t_i2c_if;
     constant exp_rw_bit   : in std_logic        := C_WRITE_BIT;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -406,7 +402,7 @@ package i2c_bfm_pkg is
     signal   i2c_if       : inout t_i2c_if;
     constant exp_rw_bit   : in std_logic        := C_WRITE_BIT;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -419,7 +415,7 @@ package i2c_bfm_pkg is
     constant exp_ack                      : in boolean                        := true;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
     constant alert_level                  : in t_alert_level                  := error;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   );
@@ -445,7 +441,7 @@ package body i2c_bfm_pkg is
     constant alert_level : t_alert_level;
     constant scope       : in string := C_TB_SCOPE_DEFAULT
   ) is
-    constant C_SCOPE   : string := scope & ": i2c_check_slave_addr()";
+    constant C_BFM_SCOPE   : string := scope & ": i2c_check_slave_addr()";
     constant head      : string := "This address is reserved for ";
     constant tail      : string := ". Only use this address if you are certain " & "that the address is never going to be used " & "for its intended purpose. See I2C-bus specification Rev. 6 " & "for more information.";
     alias a_addr_value : unsigned(6 downto 0) is addr_value(6 downto 0);
@@ -456,35 +452,35 @@ package body i2c_bfm_pkg is
           when "00" =>
             -- general call (rw = 0)
             -- START byte (rw = 1)
-            alert(alert_level, head & "general call and START byte" & tail, C_SCOPE);
+            alert(alert_level, head & "general call and START byte" & tail, C_BFM_SCOPE);
           when "01" =>
             -- cbus addr
-            alert(alert_level, head & "CBUS address" & tail, C_SCOPE);
+            alert(alert_level, head & "CBUS address" & tail, C_BFM_SCOPE);
           when "10" =>
             -- reserved for different bus format
-            alert(alert_level, head & "different bus format" & tail, C_SCOPE);
+            alert(alert_level, head & "different bus format" & tail, C_BFM_SCOPE);
           when "11" =>
             -- reserved for future purposes
-            alert(alert_level, head & "future purposes" & tail, C_SCOPE);
+            alert(alert_level, head & "future purposes" & tail, C_BFM_SCOPE);
           when others =>
             null;
         end case;
       elsif a_addr_value(6 downto 2) = "00001" then
         -- Hs-mode master code
-        alert(alert_level, head & "High-speed mode (Hs-mode) master code" & tail, C_SCOPE);
+        alert(alert_level, head & "High-speed mode (Hs-mode) master code" & tail, C_BFM_SCOPE);
       elsif a_addr_value(6 downto 2) = "11111" then
         -- device ID
-        alert(alert_level, head & "device ID" & tail, C_SCOPE);
+        alert(alert_level, head & "device ID" & tail, C_BFM_SCOPE);
       elsif a_addr_value(6 downto 2) = "11110" then
         -- 10-bit-addressing
-        alert(alert_level, head & "10-bit-addressing" & tail, C_SCOPE);
+        alert(alert_level, head & "10-bit-addressing" & tail, C_BFM_SCOPE);
       else
       -- do nothing
       end if;
     elsif addr_value'length = 10 then
     -- do nothing
     else
-      alert(error, "Invalid address length!", C_SCOPE);
+      alert(error, "Invalid address length!", C_BFM_SCOPE);
     end if;
   end procedure;
 
@@ -541,13 +537,13 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     for i in 7 downto 0 loop
@@ -571,13 +567,13 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     for i in 7 downto 0 loop
@@ -596,13 +592,13 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     wait for config.i2c_bit_time / 4;
@@ -626,13 +622,13 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     -- Check ACK
@@ -656,13 +652,13 @@ package body i2c_bfm_pkg is
     constant msg            : in string;
     signal   scl            : inout std_logic;
     signal   sda            : inout std_logic;
-    constant scope          : in string           := C_SCOPE;
+    constant scope          : in string           := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config         : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     -- Check ACK
@@ -687,13 +683,13 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     for i in 7 downto 0 loop
@@ -713,13 +709,13 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     for i in 7 downto 0 loop
@@ -735,13 +731,13 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     wait for config.i2c_bit_time / 4;
@@ -761,13 +757,13 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     -- Time shall be at the falling edge time of SCL.
 
     -- Check ACK
@@ -791,7 +787,7 @@ package body i2c_bfm_pkg is
     signal   scl                          : inout std_logic;
     signal   sda                          : inout std_logic;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -820,7 +816,7 @@ package body i2c_bfm_pkg is
 
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     if not config.enable_10_bits_addressing then
       check_value(v_normalized_addr(9 downto 7), unsigned'("000"), config.slave_mode_address_severity,
@@ -914,7 +910,7 @@ package body i2c_bfm_pkg is
     constant msg                          : in string;
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -934,7 +930,7 @@ package body i2c_bfm_pkg is
     constant msg                          : in string;
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -959,7 +955,7 @@ package body i2c_bfm_pkg is
     constant msg          : in string;
     signal   scl          : inout std_logic;
     signal   sda          : inout std_logic;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1143,7 +1139,7 @@ package body i2c_bfm_pkg is
     constant data         : in t_byte_array;
     constant msg          : in string;
     signal   i2c_if       : inout t_i2c_if;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1157,7 +1153,7 @@ package body i2c_bfm_pkg is
     constant data         : in std_logic_vector;
     constant msg          : in string;
     signal   i2c_if       : inout t_i2c_if;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1183,7 +1179,7 @@ package body i2c_bfm_pkg is
     signal   scl                          : inout std_logic;
     signal   sda                          : inout std_logic;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call                : in string                         := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -1232,7 +1228,7 @@ package body i2c_bfm_pkg is
     end procedure;
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     if ext_proc_call = "" then
       -- Called directly from sequencer/VVC, log 'i2c_master_receive...'
@@ -1372,7 +1368,7 @@ package body i2c_bfm_pkg is
     constant msg                          : in string;
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call                : in string                         := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -1389,7 +1385,7 @@ package body i2c_bfm_pkg is
     constant msg                          : in string;
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call                : in string                         := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -1412,7 +1408,7 @@ package body i2c_bfm_pkg is
     signal   scl           : inout std_logic;
     signal   sda           : inout std_logic;
     constant exp_rw_bit    : in std_logic        := C_WRITE_BIT;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -1444,7 +1440,7 @@ package body i2c_bfm_pkg is
     end procedure;
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     if ext_proc_call = "" then
       -- Called directly from sequencer/VVC, log 'i2c_slave_receive...'
@@ -1564,7 +1560,7 @@ package body i2c_bfm_pkg is
     variable data          : out t_byte_array;
     constant msg           : in string;
     signal   i2c_if        : inout t_i2c_if;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -1579,7 +1575,7 @@ package body i2c_bfm_pkg is
     variable data          : out std_logic_vector;
     constant msg           : in string;
     signal   i2c_if        : inout t_i2c_if;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -1604,7 +1600,7 @@ package body i2c_bfm_pkg is
     signal   sda                          : inout std_logic;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
     constant alert_level                  : in t_alert_level                  := error;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1617,7 +1613,7 @@ package body i2c_bfm_pkg is
     variable v_alert_radix : t_radix;
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     i2c_master_receive(addr_value, v_data_array, msg, scl, sda, action_when_transfer_is_done, scope, msg_id_panel, config, proc_call);
 
@@ -1652,7 +1648,7 @@ package body i2c_bfm_pkg is
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
     constant alert_level                  : in t_alert_level                  := error;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1669,7 +1665,7 @@ package body i2c_bfm_pkg is
     signal   i2c_if                       : inout t_i2c_if;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
     constant alert_level                  : in t_alert_level                  := error;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1697,7 +1693,7 @@ package body i2c_bfm_pkg is
     signal   sda          : inout std_logic;
     constant exp_rw_bit   : in std_logic        := C_WRITE_BIT;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1742,7 +1738,7 @@ package body i2c_bfm_pkg is
     signal   i2c_if       : inout t_i2c_if;
     constant exp_rw_bit   : in std_logic        := C_WRITE_BIT;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1758,7 +1754,7 @@ package body i2c_bfm_pkg is
     signal   i2c_if       : inout t_i2c_if;
     constant exp_rw_bit   : in std_logic        := C_WRITE_BIT;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_i2c_bfm_config := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1786,7 +1782,7 @@ package body i2c_bfm_pkg is
     constant exp_ack                      : in boolean                        := true;
     constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
     constant alert_level                  : in t_alert_level                  := error;
-    constant scope                        : in string                         := C_SCOPE;
+    constant scope                        : in string                         := C_BFM_SCOPE;
     constant msg_id_panel                 : in t_msg_id_panel                 := shared_msg_id_panel.get(VOID);
     constant config                       : in t_i2c_bfm_config               := C_I2C_BFM_CONFIG_DEFAULT
   ) is
@@ -1821,7 +1817,7 @@ package body i2c_bfm_pkg is
 
   begin
     -- check whether config.i2c_bit_time was set probably
-    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.i2c_bit_time /= -1 ns, TB_ERROR, "I2C Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     if not config.enable_10_bits_addressing then
       check_value(v_normalized_addr(9 downto 7), unsigned'("000"), config.slave_mode_address_severity,

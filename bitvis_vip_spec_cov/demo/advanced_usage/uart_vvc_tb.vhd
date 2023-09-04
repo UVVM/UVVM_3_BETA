@@ -23,7 +23,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-context uvvm_vvc_framework.vvc_framework_context;
+context uvvm_vvc_framework.ti_vvc_framework_context;
 
 library bitvis_vip_sbi;
 context bitvis_vip_sbi.vvc_context;
@@ -73,6 +73,7 @@ architecture func of uart_vvc_tb is
   -- PROCESS: p_main
   ------------------------------------------------
   p_main: process
+    variable v_local_uart_vvc_config : bitvis_vip_uart.vvc_methods_pkg.t_vvc_config;
   begin
 
     -- Wait for UVVM to finish initialization
@@ -107,9 +108,12 @@ architecture func of uart_vvc_tb is
 
     log(ID_LOG_HDR, "Configure UART VVC 1", C_SCOPE);
     ------------------------------------------------------------
-    shared_uart_vvc_config(RX,1).bfm_config.bit_time := C_BIT_PERIOD;
-    shared_uart_vvc_config(TX,1).bfm_config.bit_time := C_BIT_PERIOD;
-
+    v_local_uart_vvc_config := shared_uart_vvc_config.get(1,RX);
+    v_local_uart_vvc_config.bfm_config.bit_time := C_BIT_PERIOD;
+    shared_uart_vvc_config.set(v_local_uart_vvc_config, 1, RX);
+    v_local_uart_vvc_config := shared_uart_vvc_config.get(1,TX);
+    v_local_uart_vvc_config.bfm_config.bit_time := C_BIT_PERIOD;
+    shared_uart_vvc_config.set(v_local_uart_vvc_config, 1, TX);
 
     -- If statement to determine which testcase to run
     if (GC_TESTCASE = 0) then

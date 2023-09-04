@@ -74,6 +74,7 @@ architecture func of uart_simple_bfm_tb is
     id_for_bfm_wait                       => ID_BFM_WAIT,
     id_for_bfm_poll                       => ID_BFM_POLL,
     id_for_bfm_poll_summary               => ID_BFM_POLL_SUMMARY,
+    id_for_bfm_terminate_cmd              => ID_TERMINATE_CMD,
     error_injection                       => C_BFM_ERROR_INJECTION_INACTIVE
   );
 

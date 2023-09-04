@@ -46,12 +46,12 @@ entity sbi_vvc is
     GC_DATA_WIDTH                            : integer range 1 to C_VVC_CMD_DATA_MAX_LENGTH := 32; -- SBI data bus
     GC_INSTANCE_IDX                          : natural                                      := 1; -- Instance index for this SBI_VVCT instance
     GC_SBI_CONFIG                            : t_sbi_bfm_config                             := C_SBI_BFM_CONFIG_DEFAULT; -- Behavior specification for BFM
-    GC_CMD_QUEUE_COUNT_MAX                   : natural                                      := 1000;
-    GC_CMD_QUEUE_COUNT_THRESHOLD             : natural                                      := 950;
-    GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level                                := warning;
-    GC_RESULT_QUEUE_COUNT_MAX                : natural                                      := 1000;
-    GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural                                      := 950;
-    GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level                                := warning
+    GC_CMD_QUEUE_COUNT_MAX                   : natural                                      := C_CMD_QUEUE_COUNT_MAX;
+    GC_CMD_QUEUE_COUNT_THRESHOLD             : natural                                      := C_CMD_QUEUE_COUNT_THRESHOLD;
+    GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level                                := C_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY;
+    GC_RESULT_QUEUE_COUNT_MAX                : natural                                      := C_RESULT_QUEUE_COUNT_MAX;
+    GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural                                      := C_RESULT_QUEUE_COUNT_THRESHOLD;
+    GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level                                := C_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY
   );
   port(
     clk               : in    std_logic;
@@ -315,8 +315,8 @@ begin
             set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_sbi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
             -- Normalise address and data
-            v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "sbi_write() called with to wide addrress. " & v_cmd.msg);
-            v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "sbi_write() called with to wide data. " & v_cmd.msg);
+            v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "sbi_write() called with too wide addrress. " & v_cmd.msg);
+            v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "sbi_write() called with too wide data. " & v_cmd.msg);
 
             -- Call the corresponding procedure in the BFM package.
             sbi_write(addr_value   => v_normalised_addr,
@@ -342,7 +342,7 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_sbi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address and data
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "sbi_read() called with to wide addrress. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "sbi_read() called with too wide addrress. " & v_cmd.msg);
 
           v_read_data := (others => '-');
           -- Call the corresponding procedure in the BFM package.
@@ -370,8 +370,8 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_sbi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address and data
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "sbi_check() called with to wide addrress. " & v_cmd.msg);
-          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "sbi_check() called with to wide data. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "sbi_check() called with too wide addrress. " & v_cmd.msg);
+          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "sbi_check() called with too wide data. " & v_cmd.msg);
 
           -- Call the corresponding procedure in the BFM package.
           sbi_check(addr_value   => v_normalised_addr,
@@ -389,8 +389,8 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_sbi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address and data
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "sbi_poll_until() called with to wide addrress. " & v_cmd.msg);
-          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "sbi_poll_until() called with to wide data. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "sbi_poll_until() called with too wide addrress. " & v_cmd.msg);
+          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "sbi_poll_until() called with too wide data. " & v_cmd.msg);
 
           -- Call the corresponding procedure in the BFM package.
           sbi_poll_until(addr_value     => v_normalised_addr,

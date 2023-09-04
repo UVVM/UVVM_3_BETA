@@ -1,6 +1,13 @@
 Bitvis VIP Axi (AXI4) - Overview on Versions and Changes
 ==============================================================
 
+v0.2.2
+----------
+Released: 2023-XX-XX
+- Added target independent prefix "ti" to the VVC framework context declaration.
+- Removed unused id_for_bfm.
+- Added filter for (vcom-1246) warning in test.py script.
+- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
 
 v0.2.1
 ----------

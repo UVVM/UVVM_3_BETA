@@ -31,7 +31,7 @@ package avalon_st_bfm_pkg is
   --==========================================================================================
   -- Types and constants for AVALON_ST BFM
   --==========================================================================================
-  constant C_SCOPE : string := "AVALON_ST BFM";
+  constant C_BFM_SCOPE : string := "AVALON_ST BFM";
 
   constant C_MAX_BITS_PER_SYMBOL  : positive := 512; -- Recommended maximum in protocol specification (MNL-AVABUSREF)
   constant C_MAX_SYMBOLS_PER_BEAT : positive := 32; -- Recommended maximum in protocol specification (MNL-AVABUSREF)
@@ -65,6 +65,9 @@ package avalon_st_bfm_pkg is
     max_channel              : natural; -- Maximum number of channels that the interface supports.
     use_packet_transfer      : boolean; -- When true, packet signals are enabled: start_of_packet, end_of_packet & empty.
     id_for_bfm               : t_msg_id; -- The message ID used as a general message ID in the BFM
+    id_for_bfm_pkt_initiate  : t_msg_id; -- The message ID used for logging packet initiates in the BFM
+    id_for_bfm_pkt_complete  : t_msg_id; -- The message ID used for logging packet completes in the BFM
+    id_for_bfm_pkt_data      : t_msg_id; -- The message ID used for logging packet data in the BFM
   end record;
 
   -- Define the default value for the BFM config
@@ -82,7 +85,10 @@ package avalon_st_bfm_pkg is
     first_symbol_in_msb      => true,
     max_channel              => 0,
     use_packet_transfer      => true,
-    id_for_bfm               => ID_BFM
+    id_for_bfm               => ID_BFM,
+    id_for_bfm_pkt_initiate  => ID_PACKET_INITIATE,
+    id_for_bfm_pkt_complete  => ID_PACKET_COMPLETE,
+    id_for_bfm_pkt_data      => ID_PACKET_DATA
   );
 
   --==========================================================================================
@@ -109,7 +115,7 @@ package avalon_st_bfm_pkg is
     constant msg           : in string                 := "";
     signal   clk           : in std_logic;
     signal   avalon_st_if  : inout t_avalon_st_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT
   );
@@ -119,7 +125,7 @@ package avalon_st_bfm_pkg is
     constant msg          : in string                 := "";
     signal   clk          : in std_logic;
     signal   avalon_st_if : inout t_avalon_st_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT
   );
@@ -134,7 +140,7 @@ package avalon_st_bfm_pkg is
     constant msg           : in string                 := "";
     signal   clk           : in std_logic;
     signal   avalon_st_if  : inout t_avalon_st_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string                 := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -145,7 +151,7 @@ package avalon_st_bfm_pkg is
     constant msg           : in string                 := "";
     signal   clk           : in std_logic;
     signal   avalon_st_if  : inout t_avalon_st_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string                 := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -161,7 +167,7 @@ package avalon_st_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_st_if : inout t_avalon_st_if;
     constant alert_level  : in t_alert_level          := error;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT
   );
@@ -172,7 +178,7 @@ package avalon_st_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_st_if : inout t_avalon_st_if;
     constant alert_level  : in t_alert_level          := error;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT
   );
@@ -231,7 +237,7 @@ package body avalon_st_bfm_pkg is
     constant msg           : in string                 := "";
     signal   clk           : in std_logic;
     signal   avalon_st_if  : inout t_avalon_st_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT
   ) is
@@ -295,7 +301,7 @@ package body avalon_st_bfm_pkg is
     -- Wait according to config.bfm_sync setup
     wait_on_bfm_sync_start(clk, config.bfm_sync, config.setup_time, config.clock_period, v_time_of_falling_edge, v_time_of_rising_edge);
 
-    log(ID_PACKET_INITIATE, proc_call & "=> " & add_msg_delimiter(msg), scope, msg_id_panel);
+    log(config.id_for_bfm_pkt_initiate, proc_call & "=> " & add_msg_delimiter(msg), scope, msg_id_panel);
 
     ------------------------------------------------------------
     -- Send all the symbols in the symbol array
@@ -313,7 +319,7 @@ package body avalon_st_bfm_pkg is
         v_data_offset := v_sym_in_beat * c_sym_width;
       end if;
       avalon_st_if.data(v_data_offset + c_sym_width - 1 downto v_data_offset) <= v_symbol_array(symbol);
-      log(ID_PACKET_DATA, proc_call & "=> " & to_string(v_symbol_array(symbol), HEX, AS_IS, INCL_RADIX) & " (symbol# " & to_string(symbol) & "). " & add_msg_delimiter(msg), scope, msg_id_panel);
+      log(config.id_for_bfm_pkt_data, proc_call & "=> " & to_string(v_symbol_array(symbol), HEX, AS_IS, INCL_RADIX) & " (symbol# " & to_string(symbol) & "). " & add_msg_delimiter(msg), scope, msg_id_panel);
 
       -- Set the packet transfer signals
       if config.use_packet_transfer then
@@ -382,7 +388,7 @@ package body avalon_st_bfm_pkg is
     if v_timeout then
       alert(config.max_wait_cycles_severity, proc_call & "=> Failed. Timeout while waiting for ready. " & add_msg_delimiter(msg), scope);
     else
-      log(ID_PACKET_COMPLETE, proc_call & " DONE. " & add_msg_delimiter(msg), scope, msg_id_panel);
+      log(config.id_for_bfm_pkt_complete, proc_call & " DONE. " & add_msg_delimiter(msg), scope, msg_id_panel);
     end if;
   end procedure;
 
@@ -395,7 +401,7 @@ package body avalon_st_bfm_pkg is
     constant msg          : in string                 := "";
     signal   clk          : in std_logic;
     signal   avalon_st_if : inout t_avalon_st_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT
   ) is
@@ -414,7 +420,7 @@ package body avalon_st_bfm_pkg is
     constant msg           : in string                 := "";
     signal   clk           : in std_logic;
     signal   avalon_st_if  : inout t_avalon_st_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string                 := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -477,7 +483,7 @@ package body avalon_st_bfm_pkg is
     -- Wait according to config.bfm_sync setup
     wait_on_bfm_sync_start(clk, config.bfm_sync, config.setup_time, config.clock_period, v_time_of_falling_edge, v_time_of_rising_edge);
 
-    log(ID_PACKET_INITIATE, v_proc_call.all & "=> " & add_msg_delimiter(msg), scope, msg_id_panel);
+    log(config.id_for_bfm_pkt_initiate, v_proc_call.all & "=> " & add_msg_delimiter(msg), scope, msg_id_panel);
 
     while not (v_done) loop
       ------------------------------------------------------------
@@ -508,7 +514,7 @@ package body avalon_st_bfm_pkg is
         end if;
         v_normalized_chan         := avalon_st_if.channel;
         v_symbol_array(v_sym_cnt) := avalon_st_if.data(v_data_offset + c_sym_width - 1 downto v_data_offset);
-        log(ID_PACKET_DATA, v_proc_call.all & "=> " & to_string(v_symbol_array(v_sym_cnt), HEX, AS_IS, INCL_RADIX) & " (symbol# " & to_string(v_sym_cnt) & "). " & add_msg_delimiter(msg), scope, msg_id_panel);
+        log(config.id_for_bfm_pkt_data, v_proc_call.all & "=> " & to_string(v_symbol_array(v_sym_cnt), HEX, AS_IS, INCL_RADIX) & " (symbol# " & to_string(v_sym_cnt) & "). " & add_msg_delimiter(msg), scope, msg_id_panel);
 
         -- Sample the packet transfer signals
         if config.use_packet_transfer then
@@ -605,7 +611,7 @@ package body avalon_st_bfm_pkg is
       alert(config.max_wait_cycles_severity, v_proc_call.all & "=> Failed. Timeout while waiting for valid data. " & add_msg_delimiter(msg), scope);
     else
       if ext_proc_call = "" then
-        log(ID_PACKET_COMPLETE, v_proc_call.all & " DONE. " & add_msg_delimiter(msg), scope, msg_id_panel);
+        log(config.id_for_bfm_pkt_complete, v_proc_call.all & " DONE. " & add_msg_delimiter(msg), scope, msg_id_panel);
       else
       -- Log will be handled by calling procedure (e.g. avalon_st_expect)
       end if;
@@ -623,7 +629,7 @@ package body avalon_st_bfm_pkg is
     constant msg           : in string                 := "";
     signal   clk           : in std_logic;
     signal   avalon_st_if  : inout t_avalon_st_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string                 := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -643,7 +649,7 @@ package body avalon_st_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_st_if : inout t_avalon_st_if;
     constant alert_level  : in t_alert_level          := error;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT
   ) is
@@ -708,7 +714,7 @@ package body avalon_st_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_st_if : inout t_avalon_st_if;
     constant alert_level  : in t_alert_level          := error;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT
   ) is

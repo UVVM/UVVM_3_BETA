@@ -1,6 +1,14 @@
 Bitvis VIP I2C - Overview on Versions and Changes
 ==============================================================
 
+v2.7.3
+----------
+Released: 2023-XX-XX
+- Added target independent prefix "ti" to the VVC framework context declaration.
+- Removed unused id_for_bfm.
+- Added filter for (vcom-1246) warning in test.py script.
+- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
+
 v2.7.2
 ----------
 Released: 2022-05-05

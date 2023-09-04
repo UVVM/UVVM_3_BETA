@@ -48,12 +48,12 @@ entity axi_vvc is
     GC_USER_WIDTH                            : integer range 0 to C_VVC_CMD_USER_MAX_LENGTH := 8;
     GC_INSTANCE_IDX                          : natural                                      := 1; -- Instance index for this AXI_VVCT instance
     GC_AXI_CONFIG                            : t_axi_bfm_config                             := C_AXI_BFM_CONFIG_DEFAULT; -- Behavior specification for BFM
-    GC_CMD_QUEUE_COUNT_MAX                   : natural                                      := 1000;
-    GC_CMD_QUEUE_COUNT_THRESHOLD             : natural                                      := 950;
-    GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level                                := WARNING;
-    GC_RESULT_QUEUE_COUNT_MAX                : natural                                      := 1000;
-    GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural                                      := 950;
-    GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level                                := WARNING
+    GC_CMD_QUEUE_COUNT_MAX                   : natural                                      := C_CMD_QUEUE_COUNT_MAX;
+    GC_CMD_QUEUE_COUNT_THRESHOLD             : natural                                      := C_CMD_QUEUE_COUNT_THRESHOLD;
+    GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level                                := C_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY;
+    GC_RESULT_QUEUE_COUNT_MAX                : natural                                      := C_RESULT_QUEUE_COUNT_MAX;
+    GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural                                      := C_RESULT_QUEUE_COUNT_THRESHOLD;
+    GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level                                := C_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY
   );
   port(
     clk               : in    std_logic;
@@ -395,8 +395,8 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address and data
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_write() called with to wide address. " & v_cmd.msg);
-          v_normalised_data := normalize_and_check(v_cmd.data_array(0), v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data_array(0)", "v_normalised_data", "axi_write() called with to wide data. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_write() called with too wide address. " & v_cmd.msg);
+          v_normalised_data := normalize_and_check(v_cmd.data_array(0), v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data_array(0)", "v_normalised_data", "axi_write() called with too wide data. " & v_cmd.msg);
 
           -- Adding the write command to the write address channel queue , write data channel queue and write response channel queue
           v_vvc_status := get_vvc_status(VOID);
@@ -410,7 +410,7 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address and data
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_read() called with to wide address. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_read() called with too wide address. " & v_cmd.msg);
 
           -- Adding the read command to the read address channel queue and the read address data queue
           v_vvc_status := get_vvc_status(VOID);
@@ -423,8 +423,8 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address and data
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_check() called with to wide address. " & v_cmd.msg);
-          v_normalised_data := normalize_and_check(v_cmd.data_array(0), v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data_array(0)", "v_normalised_data", "axi_check() called with to wide data. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_check() called with too wide address. " & v_cmd.msg);
+          v_normalised_data := normalize_and_check(v_cmd.data_array(0), v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data_array(0)", "v_normalised_data", "axi_check() called with too wide data. " & v_cmd.msg);
 
           -- Adding the check command to the read address channel queue and the read address data queue
           v_vvc_status := get_vvc_status(VOID);
@@ -492,12 +492,12 @@ begin
     constant C_CHANNEL_VVC_LABELS : t_vvc_labels                               := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
   begin
-    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     read_address_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
-    read_address_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
-    read_address_channel_queue.set_queue_count_threshold(v_vvc_config.cmd_queue_count_threshold);
-    read_address_channel_queue.set_queue_count_threshold_severity(v_vvc_config.cmd_queue_count_threshold_severity);
+    read_address_channel_queue.set_queue_count_max(GC_CMD_QUEUE_COUNT_MAX);
+    read_address_channel_queue.set_queue_count_threshold(GC_CMD_QUEUE_COUNT_THRESHOLD);
+    read_address_channel_queue.set_queue_count_threshold_severity(GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY);
+
     -- Wait until VVC is registered in vvc activity register in the interpreter
     wait until entry_num_in_vvc_activity_register >= 0;
 
@@ -517,7 +517,7 @@ begin
 
       -- Normalize values from command record to their actual sizes
       if v_normalized_arid'length > 0 then
-        v_normalized_arid := normalize_and_check(v_cmd.id, v_normalized_arid, ALLOW_WIDER_NARROWER, "v_cmd.id", "v_normalized_arid", "Function called with to wide arid. " & v_cmd.msg);
+        v_normalized_arid := normalize_and_check(v_cmd.id, v_normalized_arid, ALLOW_WIDER_NARROWER, "v_cmd.id", "v_normalized_arid", "Function called with too wide arid. " & v_cmd.msg);
       end if;
       v_normalized_araddr := normalize_and_check(v_cmd.addr, v_normalized_araddr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalized_araddr", "Function called with to araddr. " & v_cmd.msg);
       -- Set vvc transaction info
@@ -577,12 +577,11 @@ begin
     constant C_CHANNEL_SCOPE        : string       := C_VVC_NAME & "_R" & "," & to_string(GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS   : t_vvc_labels := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
-    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     read_data_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
-    read_data_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
-    read_data_channel_queue.set_queue_count_threshold(v_vvc_config.cmd_queue_count_threshold);
-    read_data_channel_queue.set_queue_count_threshold_severity(v_vvc_config.cmd_queue_count_threshold_severity);
+    read_data_channel_queue.set_queue_count_max(GC_CMD_QUEUE_COUNT_MAX);
+    read_data_channel_queue.set_queue_count_threshold(GC_CMD_QUEUE_COUNT_THRESHOLD);
+    read_data_channel_queue.set_queue_count_threshold_severity(GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY);
     -- Setup the read data queue
     v_read_data_queue.set_scope(C_CHANNEL_SCOPE & ":PQ");
     -- Wait until VVC is registered in vvc activity register in the interpreter
@@ -740,12 +739,11 @@ begin
     constant C_CHANNEL_SCOPE      : string                                     := C_VVC_NAME & "_AW" & "," & to_string(GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS : t_vvc_labels                               := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
-    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     write_address_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
-    write_address_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
-    write_address_channel_queue.set_queue_count_threshold(v_vvc_config.cmd_queue_count_threshold);
-    write_address_channel_queue.set_queue_count_threshold_severity(v_vvc_config.cmd_queue_count_threshold_severity);
+    write_address_channel_queue.set_queue_count_max(GC_CMD_QUEUE_COUNT_MAX);
+    write_address_channel_queue.set_queue_count_threshold(GC_CMD_QUEUE_COUNT_THRESHOLD);
+    write_address_channel_queue.set_queue_count_threshold_severity(GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY);
 
     -- Wait until VVC is registered in vvc activity register in the interpreter
     wait until entry_num_in_vvc_activity_register >= 0;
@@ -766,7 +764,7 @@ begin
 
       -- Normalise address
       if v_normalized_awid'length > 0 then
-        v_normalized_awid := normalize_and_check(v_cmd.id, v_normalized_awid, ALLOW_WIDER_NARROWER, "v_cmd.id", "v_normalized_awid", "Function called with to wide awid. " & v_cmd.msg);
+        v_normalized_awid := normalize_and_check(v_cmd.id, v_normalized_awid, ALLOW_WIDER_NARROWER, "v_cmd.id", "v_normalized_awid", "Function called with too wide awid. " & v_cmd.msg);
       end if;
 
       v_normalized_awaddr := normalize_and_check(v_cmd.addr, v_normalized_awaddr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalized_awaddr", "Function called with to awaddr. " & v_cmd.msg);
@@ -824,12 +822,11 @@ begin
     constant C_CHANNEL_SCOPE      : string       := C_VVC_NAME & "_W" & "," & to_string(GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
-    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     write_data_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
-    write_data_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
-    write_data_channel_queue.set_queue_count_threshold(v_vvc_config.cmd_queue_count_threshold);
-    write_data_channel_queue.set_queue_count_threshold_severity(v_vvc_config.cmd_queue_count_threshold_severity);
+    write_data_channel_queue.set_queue_count_max(GC_CMD_QUEUE_COUNT_MAX);
+    write_data_channel_queue.set_queue_count_threshold(GC_CMD_QUEUE_COUNT_THRESHOLD);
+    write_data_channel_queue.set_queue_count_threshold_severity(GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY);
 
     -- Wait until VVC is registered in vvc activity register in the interpreter
     wait until entry_num_in_vvc_activity_register >= 0;
@@ -905,12 +902,11 @@ begin
     constant C_CHANNEL_SCOPE        : string       := C_VVC_NAME & "_B" & "," & to_string(GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS   : t_vvc_labels := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
-    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     write_response_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
-    write_response_channel_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
-    write_response_channel_queue.set_queue_count_threshold(v_vvc_config.cmd_queue_count_threshold);
-    write_response_channel_queue.set_queue_count_threshold_severity(v_vvc_config.cmd_queue_count_threshold_severity);
+    write_response_channel_queue.set_queue_count_max(GC_CMD_QUEUE_COUNT_MAX);
+    write_response_channel_queue.set_queue_count_threshold(GC_CMD_QUEUE_COUNT_THRESHOLD);
+    write_response_channel_queue.set_queue_count_threshold_severity(GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY);
 
     -- Wait until VVC is registered in vvc activity register in the interpreter
     wait until entry_num_in_vvc_activity_register >= 0;

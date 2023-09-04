@@ -33,7 +33,7 @@ package sbi_bfm_pkg is
   --===============================================================================================
   -- Types and constants for SBI BFMs
   --===============================================================================================
-  constant C_SCOPE : string := "SBI BFM";
+  constant C_BFM_SCOPE : string := "SBI BFM";
 
   type t_sbi_if is record
     cs    : std_logic;                  -- to dut
@@ -61,7 +61,7 @@ package sbi_bfm_pkg is
     match_strictness           : t_match_strictness; -- Matching strictness for std_logic values in check procedures.
     id_for_bfm                 : t_msg_id; -- The message ID used as a general message ID in the SBI BFM
     id_for_bfm_wait            : t_msg_id; -- The message ID used for logging waits in the SBI BFM
-    id_for_bfm_poll            : t_msg_id; -- The message ID used for logging polling in the SBI BFM
+    id_for_bfm_terminate       : t_msg_id; -- The message ID used for logging terminates in the SBI BFM
     use_ready_signal           : boolean; -- Whether or not to use the interface �ready� signal
   end record;
 
@@ -79,7 +79,7 @@ package sbi_bfm_pkg is
     match_strictness           => MATCH_EXACT,
     id_for_bfm                 => ID_BFM,
     id_for_bfm_wait            => ID_BFM_WAIT,
-    id_for_bfm_poll            => ID_BFM_POLL,
+    id_for_bfm_terminate       => ID_TERMINATE_CMD,
     use_ready_signal           => true
   );
 
@@ -114,7 +114,7 @@ package sbi_bfm_pkg is
     signal   wena         : inout std_logic;
     signal   ready        : in std_logic;
     signal   wdata        : inout std_logic_vector;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   );
@@ -130,7 +130,7 @@ package sbi_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   sbi_if       : inout t_sbi_if;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   );
@@ -152,7 +152,7 @@ package sbi_bfm_pkg is
     signal   wena          : inout std_logic;
     signal   ready         : in std_logic;
     signal   rdata         : in std_logic_vector;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -171,7 +171,7 @@ package sbi_bfm_pkg is
     constant msg           : in string;
     signal   clk           : in std_logic;
     signal   sbi_if        : inout t_sbi_if;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -197,7 +197,7 @@ package sbi_bfm_pkg is
     signal   ready        : in std_logic;
     signal   rdata        : in std_logic_vector;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   );
@@ -217,7 +217,7 @@ package sbi_bfm_pkg is
     signal   clk          : in std_logic;
     signal   sbi_if       : inout t_sbi_if;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   );
@@ -252,7 +252,7 @@ package sbi_bfm_pkg is
     signal   rdata          : in std_logic_vector;
     signal   terminate_loop : in std_logic;
     constant alert_level    : in t_alert_level    := error;
-    constant scope          : in string           := C_SCOPE;
+    constant scope          : in string           := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config         : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   );
@@ -282,7 +282,7 @@ package sbi_bfm_pkg is
     signal   sbi_if         : inout t_sbi_if;
     signal   terminate_loop : in std_logic;
     constant alert_level    : in t_alert_level    := error;
-    constant scope          : in string           := C_SCOPE;
+    constant scope          : in string           := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config         : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   );
@@ -330,7 +330,7 @@ package body sbi_bfm_pkg is
     signal   wena         : inout std_logic;
     signal   ready        : in std_logic;
     signal   wdata        : inout std_logic_vector;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   ) is
@@ -394,7 +394,7 @@ package body sbi_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   sbi_if       : inout t_sbi_if;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   ) is
@@ -418,7 +418,7 @@ package body sbi_bfm_pkg is
     signal   wena          : inout std_logic;
     signal   ready         : in std_logic;
     signal   rdata         : in std_logic_vector;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -511,7 +511,7 @@ package body sbi_bfm_pkg is
     constant msg           : in string;
     signal   clk           : in std_logic;
     signal   sbi_if        : inout t_sbi_if;
-    constant scope         : in string           := C_SCOPE;
+    constant scope         : in string           := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config        : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string           := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -538,7 +538,7 @@ package body sbi_bfm_pkg is
     signal   ready        : in std_logic;
     signal   rdata        : in std_logic_vector;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   ) is
@@ -580,7 +580,7 @@ package body sbi_bfm_pkg is
     signal   clk          : in std_logic;
     signal   sbi_if       : inout t_sbi_if;
     constant alert_level  : in t_alert_level    := error;
-    constant scope        : in string           := C_SCOPE;
+    constant scope        : in string           := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config       : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   ) is
@@ -610,7 +610,7 @@ package body sbi_bfm_pkg is
     signal   rdata          : in std_logic_vector;
     signal   terminate_loop : in std_logic;
     constant alert_level    : in t_alert_level    := error;
-    constant scope          : in string           := C_SCOPE;
+    constant scope          : in string           := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config         : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   ) is
@@ -668,7 +668,7 @@ package body sbi_bfm_pkg is
     elsif not v_timeout_ok then
       alert(alert_level, proc_call & "=> Failed due to timeout. Did not get POLL_UNTILed value " & to_string(data_exp, HEX, AS_IS, INCL_RADIX) & " before time " & to_string(timeout, ns) & ". " & add_msg_delimiter(msg), scope);
     elsif terminate_loop = '1' then
-      log(ID_TERMINATE_CMD, proc_call & " Terminated from outside this BFM. " & add_msg_delimiter(msg), scope, msg_id_panel);
+      log(config.id_for_bfm_terminate, proc_call & " Terminated from outside this BFM. " & add_msg_delimiter(msg), scope, msg_id_panel);
     else
       alert(alert_level, proc_call & "=> Failed. POLL_UNTILed value " & to_string(data_exp, HEX, AS_IS, INCL_RADIX) & " did not appear within " & to_string(max_polls) & " occurrences. " & add_msg_delimiter(msg), scope);
     end if;
@@ -684,7 +684,7 @@ package body sbi_bfm_pkg is
     signal   sbi_if         : inout t_sbi_if;
     signal   terminate_loop : in std_logic;
     constant alert_level    : in t_alert_level    := error;
-    constant scope          : in string           := C_SCOPE;
+    constant scope          : in string           := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel   := shared_msg_id_panel.get(VOID);
     constant config         : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
   ) is

@@ -42,12 +42,12 @@ entity avalon_mm_vvc is
     GC_DATA_WIDTH                            : integer range 1 to C_VVC_CMD_DATA_MAX_LENGTH := 32; -- Avalon MM data bus
     GC_INSTANCE_IDX                          : natural                                      := 1; -- Instance index for this AVALON_MM_VVCT instance
     GC_AVALON_MM_CONFIG                      : t_avalon_mm_bfm_config                       := C_AVALON_MM_BFM_CONFIG_DEFAULT; -- Behavior specification for BFM
-    GC_CMD_QUEUE_COUNT_MAX                   : natural                                      := 1000;
-    GC_CMD_QUEUE_COUNT_THRESHOLD             : natural                                      := 950;
-    GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level                                := WARNING;
-    GC_RESULT_QUEUE_COUNT_MAX                : natural                                      := 1000;
-    GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural                                      := 950;
-    GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level                                := WARNING
+    GC_CMD_QUEUE_COUNT_MAX                   : natural                                      := C_CMD_QUEUE_COUNT_MAX;
+    GC_CMD_QUEUE_COUNT_THRESHOLD             : natural                                      := C_CMD_QUEUE_COUNT_THRESHOLD;
+    GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level                                := C_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY;
+    GC_RESULT_QUEUE_COUNT_MAX                : natural                                      := C_RESULT_QUEUE_COUNT_MAX;
+    GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural                                      := C_RESULT_QUEUE_COUNT_THRESHOLD;
+    GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level                                := C_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY
   );
   port(
     clk                     : in    std_logic;
@@ -308,12 +308,12 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_avalon_mm_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address and data
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "avalon_mm_write() called with to wide address. " & v_cmd.msg);
-          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data", "v_normalised_data", "avalon_mm_write() called with to wide data. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "avalon_mm_write() called with too wide address. " & v_cmd.msg);
+          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data", "v_normalised_data", "avalon_mm_write() called with too wide data. " & v_cmd.msg);
           if (v_cmd.byte_enable = (0 to v_cmd.byte_enable'length - 1 => '1')) then
             v_normalised_byte_ena := (others => '1');
           else
-            v_normalised_byte_ena := normalize_and_check(v_cmd.byte_enable, v_normalised_byte_ena, ALLOW_WIDER_NARROWER, "v_cmd.byte_enable", "v_normalised_byte_ena", "avalon_mm_write() called with to wide byte_enable. " & v_cmd.msg);
+            v_normalised_byte_ena := normalize_and_check(v_cmd.byte_enable, v_normalised_byte_ena, ALLOW_WIDER_NARROWER, "v_cmd.byte_enable", "v_normalised_byte_ena", "avalon_mm_write() called with too wide byte_enable. " & v_cmd.msg);
           end if;
 
           -- Call the corresponding procedure in the BFM package.
@@ -332,7 +332,7 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_avalon_mm_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "avalon_mm_read() called with to wide address. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "avalon_mm_read() called with too wide address. " & v_cmd.msg);
 
           -- Call the corresponding procedure in the BFM package.
           if v_vvc_config.use_read_pipeline then
@@ -379,8 +379,8 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_avalon_mm_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
 
           -- Normalise address
-          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "avalon_mm_check() called with to wide address. " & v_cmd.msg);
-          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data", "v_normalised_data", "avalon_mm_check() called with to wide data. " & v_cmd.msg);
+          v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "avalon_mm_check() called with too wide address. " & v_cmd.msg);
+          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data", "v_normalised_data", "avalon_mm_check() called with too wide data. " & v_cmd.msg);
 
           -- Call the corresponding procedure in the BFM package.
           if v_vvc_config.use_read_pipeline then
@@ -510,13 +510,12 @@ begin
     variable v_vvc_config           : t_vvc_config;
 
   begin
-    wait for 0 ns; -- delay by 1 delta cycle to allow constructor to finish first
     -- Set the command response queue up to the same settings as the command queue
     v_vvc_config := shared_vvc_config.get(GC_INSTANCE_IDX);
     command_response_queue.set_scope(C_SCOPE & ":RQ");
-    command_response_queue.set_queue_count_max(v_vvc_config.cmd_queue_count_max);
-    command_response_queue.set_queue_count_threshold(v_vvc_config.cmd_queue_count_threshold);
-    command_response_queue.set_queue_count_threshold_severity(v_vvc_config.cmd_queue_count_threshold_severity);
+    command_response_queue.set_queue_count_max(GC_CMD_QUEUE_COUNT_MAX);
+    command_response_queue.set_queue_count_threshold(GC_CMD_QUEUE_COUNT_THRESHOLD);
+    command_response_queue.set_queue_count_threshold_severity(GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY);
 
     -- Wait until VVC is registered in vvc activity register in the interpreter
     wait until entry_num_in_vvc_activity_register >= 0;
@@ -561,8 +560,8 @@ begin
       v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
 
       -- Normalise address and data
-      v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "Function called with to wide address. " & v_cmd.msg);
-      v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "Function called with to wide data. " & v_cmd.msg);
+      v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", "Function called with too wide address. " & v_cmd.msg);
+      v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "Function called with too wide data. " & v_cmd.msg);
 
       case v_cmd.operation is
         when READ =>

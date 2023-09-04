@@ -28,7 +28,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-context uvvm_vvc_framework.vvc_framework_context;
+context uvvm_vvc_framework.ti_vvc_framework_context;
 
 -- Include Verification IPs
 library bitvis_vip_spi;
@@ -67,9 +67,7 @@ architecture behav of spi_vvc_tb is
     sclk_to_ss_n     => 301 ns,
     inter_word_delay => 0 ns,
     match_strictness => MATCH_EXACT,
-    id_for_bfm       => ID_BFM,
-    id_for_bfm_wait  => ID_BFM_WAIT,
-    id_for_bfm_poll  => ID_BFM_POLL
+    id_for_bfm       => ID_BFM
   );
 
   constant C_SPI_BFM_CONFIG_MODE1 : t_spi_bfm_config := (
@@ -80,9 +78,7 @@ architecture behav of spi_vvc_tb is
     sclk_to_ss_n     => 301 ns,
     inter_word_delay => 0 ns,
     match_strictness => MATCH_EXACT,
-    id_for_bfm       => ID_BFM,
-    id_for_bfm_wait  => ID_BFM_WAIT,
-    id_for_bfm_poll  => ID_BFM_POLL
+    id_for_bfm       => ID_BFM
   );
 
   constant C_SPI_BFM_CONFIG_MODE2 : t_spi_bfm_config := (
@@ -93,9 +89,7 @@ architecture behav of spi_vvc_tb is
     sclk_to_ss_n     => 301 ns,
     inter_word_delay => 0 ns,
     match_strictness => MATCH_EXACT,
-    id_for_bfm       => ID_BFM,
-    id_for_bfm_wait  => ID_BFM_WAIT,
-    id_for_bfm_poll  => ID_BFM_POLL
+    id_for_bfm       => ID_BFM
   );
 
   constant C_SPI_BFM_CONFIG_MODE3 : t_spi_bfm_config := (
@@ -106,9 +100,7 @@ architecture behav of spi_vvc_tb is
     sclk_to_ss_n     => 301 ns,
     inter_word_delay => 0 ns,
     match_strictness => MATCH_EXACT,
-    id_for_bfm       => ID_BFM,
-    id_for_bfm_wait  => ID_BFM_WAIT,
-    id_for_bfm_poll  => ID_BFM_POLL
+    id_for_bfm       => ID_BFM
   );
 
   type t_spi_bfm_config_array is array (0 to 3) of t_spi_bfm_config;
@@ -131,7 +123,7 @@ architecture behav of spi_vvc_tb is
     clock_period_margin        => 0 ns,
     id_for_bfm                 => ID_BFM,
     id_for_bfm_wait            => ID_BFM_WAIT,
-    id_for_bfm_poll            => ID_BFM_POLL,
+    id_for_bfm_terminate       => ID_TERMINATE_CMD,
     use_ready_signal           => true
   );
 

@@ -54,25 +54,13 @@ package vvc_methods_pkg is
   );
 
   type t_vvc_config is record
-    inter_bfm_delay                       : t_inter_bfm_delay; -- Minimum delay between BFM accesses from the VVC. If parameter delay_type is set to NO_DELAY, BFM accesses will be back to back, i.e. no delay.
-    cmd_queue_count_max                   : natural; -- Maximum pending number in command queue before queue is full. Adding additional commands will result in an ERROR.
-    cmd_queue_count_threshold             : natural; -- An alert with severity 'cmd_queue_count_threshold_severity' will be issued if command queue exceeds this count. Used for early warning if command queue is almost full. Will be ignored if set to 0.
-    cmd_queue_count_threshold_severity    : t_alert_level; -- Severity of alert to be initiated if exceeding cmd_queue_count_threshold
-    result_queue_count_max                : natural; -- Maximum number of unfetched results before result_queue is full.
-    result_queue_count_threshold_severity : t_alert_level; -- An alert with severity 'result_queue_count_threshold_severity' will be issued if command queue exceeds this count. Used for early warning if result queue is almost full. Will be ignored if set to 0.
-    result_queue_count_threshold          : natural; -- Severity of alert to be initiated if exceeding result_queue_count_threshold
-    bfm_config                            : t_spi_bfm_config; -- Configuration for the BFM. See BFM quick reference
+    inter_bfm_delay : t_inter_bfm_delay; -- Minimum delay between BFM accesses from the VVC. If parameter delay_type is set to NO_DELAY, BFM accesses will be back to back, i.e. no delay.
+    bfm_config      : t_bfm_config;      -- Configuration for the BFM. See BFM quick reference.
   end record;
 
   constant C_SPI_VVC_CONFIG_DEFAULT : t_vvc_config := (
-    inter_bfm_delay                       => C_SPI_INTER_BFM_DELAY_DEFAULT,
-    cmd_queue_count_max                   => C_CMD_QUEUE_COUNT_MAX,
-    cmd_queue_count_threshold_severity    => C_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
-    cmd_queue_count_threshold             => C_CMD_QUEUE_COUNT_THRESHOLD,
-    result_queue_count_max                => C_RESULT_QUEUE_COUNT_MAX,
-    result_queue_count_threshold_severity => C_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY,
-    result_queue_count_threshold          => C_RESULT_QUEUE_COUNT_THRESHOLD,
-    bfm_config                            => C_SPI_BFM_CONFIG_DEFAULT
+    inter_bfm_delay => C_SPI_INTER_BFM_DELAY_DEFAULT,
+    bfm_config      => C_SPI_BFM_CONFIG_DEFAULT
   );
 
   type t_vvc_status is record
@@ -495,7 +483,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data(0) := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data(0) := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- Locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -553,7 +541,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- Locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -613,8 +601,8 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
-    v_normalized_data(0)     := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
-    v_normalized_data_exp(0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp(0), ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data(0)     := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    v_normalized_data_exp(0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp(0), ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
 
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- Locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
@@ -662,8 +650,8 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data     := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
-    v_normalized_data_exp := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data     := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    v_normalized_data_exp := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- Locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -707,7 +695,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
-    v_normalized_data(0) := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data(0) := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
 
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- Locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
@@ -750,7 +738,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- Locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -844,7 +832,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
-    v_normalized_data_exp(0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp(0), ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data_exp(0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp(0), ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
 
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
@@ -889,7 +877,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data_exp := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data_exp := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -936,7 +924,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
-    v_normalized_data(0) := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data(0) := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -992,7 +980,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -1050,8 +1038,8 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
-    v_normalized_data(0)     := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
-    v_normalized_data_exp(0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp(0), ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data(0)     := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    v_normalized_data_exp(0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp(0), ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
 
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
@@ -1098,8 +1086,8 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data     := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
-    v_normalized_data_exp := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data     := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    v_normalized_data_exp := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -1142,7 +1130,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
-    v_normalized_data(0) := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data(0) := normalize_and_check(data, v_local_vvc_cmd.data(0), ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -1183,7 +1171,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
 
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
@@ -1274,7 +1262,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
-    v_normalized_data_exp(0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp(0), ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data_exp(0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp(0), ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
@@ -1317,7 +1305,7 @@ package body vvc_methods_pkg is
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
-    v_normalized_data_exp := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with to wide data. " & add_msg_delimiter(msg));
+    v_normalized_data_exp := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC

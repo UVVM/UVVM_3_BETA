@@ -31,7 +31,7 @@ package avalon_mm_bfm_pkg is
   ----------------------------------------------------
   -- Types for Avalon BFM
   ----------------------------------------------------
-  constant C_SCOPE : string := "AVALON MM BFM";
+  constant C_BFM_SCOPE : string := "AVALON MM BFM";
 
   -- Avalon Interface signals
   type t_avalon_mm_if is record
@@ -73,8 +73,6 @@ package avalon_mm_bfm_pkg is
     use_response_signal      : boolean; -- Whether or not to check the response signal on read
     use_begintransfer        : boolean; -- Whether or not to assert begintransfer on start of transfer (Altera recommends not to use)
     id_for_bfm               : t_msg_id; -- The message ID used as a general message ID in the Avalon BFM
-    id_for_bfm_wait          : t_msg_id; -- The message ID used for logging waits in the Avalon BFM
-    id_for_bfm_poll          : t_msg_id; -- The message ID used for logging polling in the Avalon BFM
   end record;
 
   constant C_AVALON_MM_BFM_CONFIG_DEFAULT : t_avalon_mm_bfm_config := (
@@ -93,9 +91,7 @@ package avalon_mm_bfm_pkg is
     use_readdatavalid        => false,
     use_response_signal      => true,
     use_begintransfer        => false,
-    id_for_bfm               => ID_BFM,
-    id_for_bfm_wait          => ID_BFM_WAIT,
-    id_for_bfm_poll          => ID_BFM_POLL
+    id_for_bfm               => ID_BFM
   );
 
   type t_avalon_mm_response_status is (OKAY, RESERVED, SLAVEERROR, DECODEERROR);
@@ -143,7 +139,7 @@ package avalon_mm_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   avalon_mm_if : inout t_avalon_mm_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   );
@@ -156,7 +152,7 @@ package avalon_mm_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_mm_if : inout t_avalon_mm_if;
     constant byte_enable  : in std_logic_vector;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   );
@@ -167,7 +163,7 @@ package avalon_mm_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   avalon_mm_if : inout t_avalon_mm_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT;
     constant proc_name    : in string                 := "avalon_mm_read" -- Overwrite if called from another procedure
@@ -180,7 +176,7 @@ package avalon_mm_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_mm_if : inout t_avalon_mm_if;
     constant alert_level  : in t_alert_level          := error;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   );
@@ -190,7 +186,7 @@ package avalon_mm_bfm_pkg is
     signal   avalon_mm_if   : inout t_avalon_mm_if;
     constant num_rst_cycles : in integer;
     constant msg            : in string;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   );
@@ -200,7 +196,7 @@ package avalon_mm_bfm_pkg is
     constant msg           : in string;
     signal   clk           : in std_logic;
     signal   avalon_mm_if  : inout t_avalon_mm_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string                 := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -212,7 +208,7 @@ package avalon_mm_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   avalon_mm_if : in t_avalon_mm_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT;
     constant proc_name    : in string                 := "avalon_mm_read_response" -- Overwrite if called from another procedure
@@ -225,7 +221,7 @@ package avalon_mm_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_mm_if : in t_avalon_mm_if;
     constant alert_level  : in t_alert_level          := error;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   );
@@ -233,7 +229,7 @@ package avalon_mm_bfm_pkg is
   procedure avalon_mm_lock(
     signal   avalon_mm_if : inout t_avalon_mm_if;
     constant msg          : in string;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   );
@@ -241,7 +237,7 @@ package avalon_mm_bfm_pkg is
   procedure avalon_mm_unlock(
     signal   avalon_mm_if : inout t_avalon_mm_if;
     constant msg          : in string;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   );
@@ -286,7 +282,7 @@ package body avalon_mm_bfm_pkg is
 
   function to_avalon_mm_response_status(
     constant response     : in std_logic_vector(1 downto 0);
-    constant scope        : in string         := C_SCOPE;
+    constant scope        : in string         := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) return t_avalon_mm_response_status is
   begin
@@ -309,7 +305,7 @@ package body avalon_mm_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   avalon_mm_if : inout t_avalon_mm_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   ) is
@@ -334,7 +330,7 @@ package body avalon_mm_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_mm_if : inout t_avalon_mm_if;
     constant byte_enable  : in std_logic_vector;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   ) is
@@ -446,7 +442,7 @@ package body avalon_mm_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   avalon_mm_if : inout t_avalon_mm_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT;
     constant proc_name    : in string                 := "avalon_mm_read" -- Overwrite if called from another procedure
@@ -463,7 +459,7 @@ package body avalon_mm_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_mm_if : inout t_avalon_mm_if;
     constant alert_level  : in t_alert_level          := error;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   ) is
@@ -486,7 +482,7 @@ package body avalon_mm_bfm_pkg is
     signal   avalon_mm_if   : inout t_avalon_mm_if;
     constant num_rst_cycles : in integer;
     constant msg            : in string;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   ) is
@@ -511,7 +507,7 @@ package body avalon_mm_bfm_pkg is
     constant msg           : in string;
     signal   clk           : in std_logic;
     signal   avalon_mm_if  : inout t_avalon_mm_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string                 := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -609,7 +605,7 @@ package body avalon_mm_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   avalon_mm_if : in t_avalon_mm_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT;
     constant proc_name    : in string                 := "avalon_mm_read_response" -- Overwrite if called from another procedure
@@ -675,7 +671,7 @@ package body avalon_mm_bfm_pkg is
     signal   clk          : in std_logic;
     signal   avalon_mm_if : in t_avalon_mm_if;
     constant alert_level  : in t_alert_level          := error;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   ) is
@@ -715,7 +711,7 @@ package body avalon_mm_bfm_pkg is
   procedure avalon_mm_lock(
     signal   avalon_mm_if : inout t_avalon_mm_if;
     constant msg          : in string;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   ) is
@@ -728,7 +724,7 @@ package body avalon_mm_bfm_pkg is
   procedure avalon_mm_unlock(
     signal   avalon_mm_if : inout t_avalon_mm_if;
     constant msg          : in string;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_avalon_mm_bfm_config := C_AVALON_MM_BFM_CONFIG_DEFAULT
   ) is

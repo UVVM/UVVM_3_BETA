@@ -43,3 +43,6 @@ eval vcom  $compdirectives  $tb_path/axistream_multiple_vvc_tb.vhd
 
 echo "eval vcom  $compdirectives  $tb_path/axistream_vvc_tb.vhd"
 eval vcom  $compdirectives  $tb_path/axistream_vvc_tb.vhd
+
+echo "eval vcom  $compdirectives  $tb_path/axistream_width_vvc_tb.vhd"
+eval vcom  $compdirectives  $tb_path/axistream_width_vvc_tb.vhd

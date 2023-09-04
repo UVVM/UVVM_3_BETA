@@ -28,10 +28,11 @@ package ti_data_queue_pkg is
 
   -- Declaration of storage
   subtype t_data_buffer is std_logic_vector(C_TOTAL_NUMBER_OF_BITS_IN_DATA_BUFFER - 1 downto 0);
+  constant C_DATA_BUFFER_PKG_DEFAULT : t_data_buffer := (others => '0');
 
   package protected_data_buffer_pkg is new uvvm_util.protected_generic_types_pkg
     generic map(t_generic_element => t_data_buffer,
-                c_generic_default => (others => '0'));
+                c_generic_default => C_DATA_BUFFER_PKG_DEFAULT);
   use protected_data_buffer_pkg.all;
 
   shared variable shared_data_buffer : protected_data_buffer_pkg.t_prot_generic_array;

@@ -43,7 +43,6 @@ hr.add_files("../../src/*.vhd", "bitvis_vip_spec_cov")
 
 # Add TB/TH
 hr.add_files("../../tb/maintenance_tb/*.vhd", "bitvis_vip_spec_cov")
-hr.add_files("../../tb/*.vhd", "bitvis_vip_spec_cov")
 
 hr.add_generics(entity="spec_cov_tb",
                 generics=["GC_REQ_FILE",       ("../../tb/maintenance_tb/req_file.csv", "PATH"),
@@ -54,8 +53,13 @@ hr.add_generics(entity="spec_cov_tb",
                     "GC_REQ_OMIT_MAP",   ("../../tb/maintenance_tb/sub_req_omit_map_file.csv", "PATH")])
 
 sim_options = None
-if hr.settings.get_simulator_name() in ['MODELSIM', 'RIVIERA']:
+default_options = []
+simulator_name = hr.settings.get_simulator_name()
+if simulator_name in ['MODELSIM', 'RIVIERA']:
     sim_options = '-t ns'
+    # Set compile options
+    default_options = ["-suppress", "1346,1246,1236,1090", "-2008"]
+    hr.set_simulator(simulator=simulator_name, com_options=default_options)
 
 hr.start(sim_options=sim_options)
 

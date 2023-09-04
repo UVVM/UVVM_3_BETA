@@ -1,13 +1,16 @@
 Bitvis VIP GPIO - Overview on Versions and Changes
 ==============================================================
 
-
 v1.X.X
 ----------
 Released: 202X-XX-XX
 - Changed default timeout value to -1 ns for gpio_expect().
 - Changed BFM config match strictness default to MATCH_EXACT.
-
+- Added target independent prefix "ti" to the VVC framework context declaration.
+- Removed unused id_for_bfm.
+- Add support for set/check single std_logic signal
+- Added filter for (vcom-1246) warning in test.py script.
+- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
 
 v1.8.4
 ----------

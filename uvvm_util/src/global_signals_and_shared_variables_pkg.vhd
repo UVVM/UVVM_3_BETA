@@ -40,13 +40,6 @@ package global_signals_and_shared_variables_pkg is
                 c_generic_default => 1);
   use protected_positive_pkg.all;
 
-  -- Protected type: string
-  constant C_PROTECTED_STRING_DEFAULT : string := "";
-  package protected_string_pkg is new work.protected_generic_types_pkg
-    generic map(t_generic_element => string,
-                c_generic_default => C_PROTECTED_STRING_DEFAULT);
-  use protected_string_pkg.all;
-
   -- Protected type: t_sync_flag_record_array
   subtype t_sync_flag_record_array_constrained is t_sync_flag_record_array(1 to C_NUM_SYNC_FLAGS);
   constant C_DEFAULT_SYNC_FLAG_RECORD_ARRAY : t_sync_flag_record_array(1 to C_NUM_SYNC_FLAGS) := (others => C_SYNC_FLAG_DEFAULT);
@@ -59,20 +52,6 @@ package global_signals_and_shared_variables_pkg is
     generic map(t_generic_element => t_msg_id_panel,
                 c_generic_default => C_MSG_ID_PANEL_DEFAULT);
   use protected_msg_id_panel_pkg.all;
-
-  --  -- Shared variables
-  --  --shared variable shared_initialised_util        : protected_boolean_pkg.t_prot_generic_array;  --boolean  := false;
-  --  shared variable shared_initialised_util        : boolean  := false;
-  --  --shared variable shared_msg_id_panel            :  t_msg_id_panel   := C_MSG_ID_PANEL_DEFAULT;
-  --
-  --  --shared variable shared_log_file_name_is_set    : protected_boolean_pkg.t_prot_generic_array;  --boolean  := false;
-  --  shared variable shared_log_file_name_is_set    : boolean  := false;
-  --  --shared variable shared_alert_file_name_is_set  : protected_boolean_pkg.t_prot_generic_array;  --boolean  := false;
-  --  shared variable shared_alert_file_name_is_set  : boolean  := false;
-  --  --shared variable shared_warned_time_stamp_trunc : protected_boolean_pkg.t_prot_generic_array;  --boolean  := false;
-  --  shared variable shared_warned_time_stamp_trunc : boolean  := false;
-  --  shared variable shared_alert_attention         : t_alert_attention:= C_DEFAULT_ALERT_ATTENTION;
-  --  shared variable shared_stop_limit              : t_alert_counters := C_DEFAULT_STOP_LIMIT;
 
   -- Protected type: t_alert_attention
   package protected_alert_attention is new work.protected_generic_types_pkg

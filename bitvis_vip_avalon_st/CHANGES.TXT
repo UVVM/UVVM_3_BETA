@@ -1,6 +1,13 @@
 Bitvis VIP Avalon-ST (Avalon-Stream) - Overview on Versions and Changes
 ==============================================================
 
+v1.2.4
+----------
+Released: 2023-XX-XX
+- Added target independent prefix "ti" to the VVC framework context declaration.
+- Added id_for_bfm for packet initiate, packet complete, and packet data.
+- Added filter for (vcom-1246) warning in test.py script.
+- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
 
 v1.2.3
 ----------

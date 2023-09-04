@@ -67,7 +67,7 @@ architecture struct of test_harness is
     match_strictness           => MATCH_EXACT,
     id_for_bfm                 => ID_BFM,
     id_for_bfm_wait            => ID_BFM_WAIT,
-    id_for_bfm_poll            => ID_BFM_POLL,
+    id_for_bfm_terminate       => ID_TERMINATE_CMD,
     use_ready_signal           => true
   );
 

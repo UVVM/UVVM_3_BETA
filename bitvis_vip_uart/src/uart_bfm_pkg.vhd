@@ -34,7 +34,7 @@ package uart_bfm_pkg is
   -- Types and constants for UART BFMs
   --===============================================================================================
 
-  constant C_SCOPE : string := "UART BFM";
+  constant C_BFM_SCOPE : string := "UART BFM";
 
   constant C_DATA_MAX_LENGTH                       : natural := 8;
   constant C_EXPECT_RECEIVED_DATA_STRING_SEPARATOR : string  := "; ";
@@ -64,6 +64,7 @@ package uart_bfm_pkg is
     id_for_bfm_wait                       : t_msg_id; -- The message ID used for logging waits in the UART BFM
     id_for_bfm_poll                       : t_msg_id; -- The message ID used for logging polling in the UART BFM
     id_for_bfm_poll_summary               : t_msg_id; -- The message ID used for logging polling summary in the UART BFM
+    id_for_bfm_terminate_cmd              : t_msg_id; -- The message ID used for logging terminates in the UART BFM
     error_injection                       : t_bfm_error_injection;
   end record;
 
@@ -81,6 +82,7 @@ package uart_bfm_pkg is
     id_for_bfm_wait                       => ID_BFM_WAIT,
     id_for_bfm_poll                       => ID_BFM_POLL,
     id_for_bfm_poll_summary               => ID_BFM_POLL_SUMMARY,
+    id_for_bfm_terminate_cmd              => ID_TERMINATE_CMD,
     error_injection                       => C_BFM_ERROR_INJECTION_INACTIVE
   );
 
@@ -98,7 +100,7 @@ package uart_bfm_pkg is
     constant msg          : in string;
     signal   tx           : inout std_logic;
     constant config       : in t_uart_bfm_config := C_UART_BFM_CONFIG_DEFAULT;
-    constant scope        : in string            := C_SCOPE;
+    constant scope        : in string            := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel    := shared_msg_id_panel.get(VOID)
   );
 
@@ -113,7 +115,7 @@ package uart_bfm_pkg is
     signal   rx             : in std_logic;
     signal   terminate_loop : in std_logic;
     constant config         : in t_uart_bfm_config := C_UART_BFM_CONFIG_DEFAULT;
-    constant scope          : in string            := C_SCOPE;
+    constant scope          : in string            := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel    := shared_msg_id_panel.get(VOID);
     constant ext_proc_call  : in string            := "" -- External proc_call. Overwrite if called from another BFM procedure
   );
@@ -141,7 +143,7 @@ package uart_bfm_pkg is
     constant timeout        : in time              := -1 ns;
     constant alert_level    : in t_alert_level     := ERROR;
     constant config         : in t_uart_bfm_config := C_UART_BFM_CONFIG_DEFAULT;
-    constant scope          : in string            := C_SCOPE;
+    constant scope          : in string            := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel    := shared_msg_id_panel.get(VOID)
   );
 
@@ -177,7 +179,7 @@ package body uart_bfm_pkg is
     constant msg          : in string;
     signal   tx           : inout std_logic;
     constant config       : in t_uart_bfm_config := C_UART_BFM_CONFIG_DEFAULT;
-    constant scope        : in string            := C_SCOPE;
+    constant scope        : in string            := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel    := shared_msg_id_panel.get(VOID)
   ) is
     constant proc_name : string := "uart_transmit";
@@ -189,7 +191,7 @@ package body uart_bfm_pkg is
   begin
     -- check whether config.bit_time was set probably
     check_value(config.bit_time /= -1 ns, TB_ERROR, "UART Bit time was not set in config. " & add_msg_delimiter(msg), scope, ID_NEVER, msg_id_panel);
-    check_value(data_value'length = config.num_data_bits, FAILURE, "length of data_value does not match config.num_data_bits. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(data_value'length = config.num_data_bits, FAILURE, "length of data_value does not match config.num_data_bits. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     -- check if tx line was idle when trying to transmit data
     check_value(tx, config.idle_state, FAILURE, proc_call & " Bus was active when trying to send data. " & add_msg_delimiter(msg), scope, ID_NEVER, msg_id_panel);
@@ -252,7 +254,7 @@ package body uart_bfm_pkg is
     signal   rx             : in std_logic;
     signal   terminate_loop : in std_logic;
     constant config         : in t_uart_bfm_config := C_UART_BFM_CONFIG_DEFAULT;
-    constant scope          : in string            := C_SCOPE;
+    constant scope          : in string            := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel    := shared_msg_id_panel.get(VOID);
     constant ext_proc_call  : in string            := "" -- External proc_call. Overwrite if called from another BFM procedure
   ) is
@@ -271,10 +273,10 @@ package body uart_bfm_pkg is
     variable v_timeout        : boolean := false;
   begin
     -- check whether config.bit_time was set properly
-    check_value(config.bit_time /= -1 ns, TB_ERROR, "UART Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.bit_time /= -1 ns, TB_ERROR, "UART Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     data_value := (data_value'range => 'X');
-    check_value(data_value'length = config.num_data_bits, FAILURE, "length of data_value does not match config.num_data_bits. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(data_value'length = config.num_data_bits, FAILURE, "length of data_value does not match config.num_data_bits. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     -- If timeout enabled, check that timeout is longer than transfer time
     if config.timeout /= 0 ns then
@@ -287,7 +289,7 @@ package body uart_bfm_pkg is
       elsif config.num_stop_bits = STOP_BITS_TWO then
         v_transfer_time := v_transfer_time + config.bit_time;
       end if;
-      check_value(v_transfer_time < config.timeout, TB_ERROR, "Length of timeout is shorter than or equal length of transfer time.", C_SCOPE, ID_NEVER, msg_id_panel);
+      check_value(v_transfer_time < config.timeout, TB_ERROR, "Length of timeout is shorter than or equal length of transfer time.", C_BFM_SCOPE, ID_NEVER, msg_id_panel);
     end if;
 
     if ext_proc_call = "" then
@@ -310,7 +312,7 @@ package body uart_bfm_pkg is
 
     if terminate_loop = '1' then
       if ext_proc_call = "" then
-        log(ID_TERMINATE_CMD, v_proc_call.all & "=> terminated." & add_msg_delimiter(msg), scope, msg_id_panel);
+        log(config.id_for_bfm_terminate_cmd, v_proc_call.all & "=> terminated." & add_msg_delimiter(msg), scope, msg_id_panel);
       else
       -- termination handled in calling procedure
       end if;
@@ -408,7 +410,7 @@ package body uart_bfm_pkg is
     constant timeout        : in time              := -1 ns;
     constant alert_level    : in t_alert_level     := ERROR;
     constant config         : in t_uart_bfm_config := C_UART_BFM_CONFIG_DEFAULT;
-    constant scope          : in string            := C_SCOPE;
+    constant scope          : in string            := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel    := shared_msg_id_panel.get(VOID)
   ) is
     constant proc_name                      : string                                                                                   := "uart_expect";
@@ -427,7 +429,7 @@ package body uart_bfm_pkg is
     variable v_alert_radix                  : t_radix;
   begin
     -- check whether config.bit_time was set probably
-    check_value(config.bit_time /= -1 ns, TB_ERROR, "UART Bit time was not set in config. " & add_msg_delimiter(msg), C_SCOPE, ID_NEVER, msg_id_panel);
+    check_value(config.bit_time /= -1 ns, TB_ERROR, "UART Bit time was not set in config. " & add_msg_delimiter(msg), C_BFM_SCOPE, ID_NEVER, msg_id_panel);
 
     -- if timeout = -1 function was called without parameter
     if timeout = -1 ns then

@@ -30,7 +30,7 @@ package axi_bfm_pkg is
   --===============================================================================================
   -- Types and constants for AXI BFMs
   --===============================================================================================
-  constant C_SCOPE : string := "AXI_BFM";
+  constant C_BFM_SCOPE : string := "AXI_BFM";
 
   constant C_EMPTY_SLV_ARRAY : t_slv_array(0 to 0)(0 downto 0) := (others => "U");
 
@@ -85,8 +85,6 @@ package axi_bfm_pkg is
     num_r_pipe_stages        : natural; -- Read Data Channel pipeline steps.
     num_b_pipe_stages        : natural; -- Response Channel pipeline steps.
     id_for_bfm               : t_msg_id; -- The message ID used as a general message ID in the AXI BFM
-    id_for_bfm_wait          : t_msg_id; -- The message ID used for logging waits in the AXI BFM
-    id_for_bfm_poll          : t_msg_id; -- The message ID used for logging polling in the AXI BFM
   end record;
 
   constant C_AXI_BFM_CONFIG_DEFAULT : t_axi_bfm_config := (
@@ -104,9 +102,7 @@ package axi_bfm_pkg is
     num_ar_pipe_stages       => 1,
     num_r_pipe_stages        => 1,
     num_b_pipe_stages        => 1,
-    id_for_bfm               => ID_BFM,
-    id_for_bfm_wait          => ID_BFM_WAIT,
-    id_for_bfm_poll          => ID_BFM_POLL
+    id_for_bfm               => ID_BFM
   );
 
   -- AXI Interface signals
@@ -253,7 +249,7 @@ package axi_bfm_pkg is
     constant msg            : in string;
     signal   clk            : in std_logic;
     signal   axi_if         : inout t_axi_if;
-    constant scope          : in string                       := C_SCOPE;
+    constant scope          : in string                       := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel               := shared_msg_id_panel.get(VOID);
     constant config         : in t_axi_bfm_config             := C_AXI_BFM_CONFIG_DEFAULT
   );
@@ -281,7 +277,7 @@ package axi_bfm_pkg is
     constant msg            : in string;
     signal   clk            : in std_logic;
     signal   axi_if         : inout t_axi_if;
-    constant scope          : in string                       := C_SCOPE;
+    constant scope          : in string                       := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel               := shared_msg_id_panel.get(VOID);
     constant config         : in t_axi_bfm_config             := C_AXI_BFM_CONFIG_DEFAULT;
     constant ext_proc_call  : in string                       := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -314,7 +310,7 @@ package axi_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axi_if         : inout t_axi_if;
     constant alert_level    : in t_alert_level                := error;
-    constant scope          : in string                       := C_SCOPE;
+    constant scope          : in string                       := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel               := shared_msg_id_panel.get(VOID);
     constant config         : in t_axi_bfm_config             := C_AXI_BFM_CONFIG_DEFAULT
   );
@@ -433,7 +429,7 @@ package body axi_bfm_pkg is
       when 128 =>
         v_return_value := "111";
       when others =>
-        tb_error(to_string(bytes) & " is not a valid number of bytes for AxSISE. Need to be 2^n where n is between 0 and 7", C_SCOPE);
+        tb_error(to_string(bytes) & " is not a valid number of bytes for AxSISE. Need to be 2^n where n is between 0 and 7", C_BFM_SCOPE);
         v_return_value := "XXX";
     end case;
     return v_return_value;
@@ -548,7 +544,7 @@ package body axi_bfm_pkg is
     constant msg            : in string;
     signal   clk            : in std_logic;
     signal   axi_if         : inout t_axi_if;
-    constant scope          : in string                       := C_SCOPE;
+    constant scope          : in string                       := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel               := shared_msg_id_panel.get(VOID);
     constant config         : in t_axi_bfm_config             := C_AXI_BFM_CONFIG_DEFAULT
   ) is
@@ -738,7 +734,7 @@ package body axi_bfm_pkg is
     constant msg            : in string;
     signal   clk            : in std_logic;
     signal   axi_if         : inout t_axi_if;
-    constant scope          : in string                       := C_SCOPE;
+    constant scope          : in string                       := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel               := shared_msg_id_panel.get(VOID);
     constant config         : in t_axi_bfm_config             := C_AXI_BFM_CONFIG_DEFAULT;
     constant ext_proc_call  : in string                       := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -901,7 +897,7 @@ package body axi_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axi_if         : inout t_axi_if;
     constant alert_level    : in t_alert_level                := error;
-    constant scope          : in string                       := C_SCOPE;
+    constant scope          : in string                       := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel               := shared_msg_id_panel.get(VOID);
     constant config         : in t_axi_bfm_config             := C_AXI_BFM_CONFIG_DEFAULT
   ) is

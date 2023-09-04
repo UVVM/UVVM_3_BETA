@@ -22,7 +22,7 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
-context uvvm_vvc_framework.vvc_framework_context;
+context uvvm_vvc_framework.ti_vvc_framework_context;
 
 library bitvis_vip_error_injection;
 use bitvis_vip_error_injection.error_injection_pkg.all;

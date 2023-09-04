@@ -1,10 +1,15 @@
 Bitvis VIP axistream (AXI4-Stream) - Overview on Versions and Changes
 ==============================================================
+
 v4.7.7
 ----------
 Released: 2023-XX-XX
 - Changed the main procedures of bitvis_vip_axistream using t_byte_array (deprecated) to be using t_slv_array instead.
   Old procedures are now overloads to ensure backwards compability
+- Added target independent prefix "ti" to the VVC framework context declaration.
+- Added id_for_bfm for packet initiate, packet complete, packet data, and packet payload.
+- Added filter for (vcom-1246) warning in test.py script.
+- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
 
 v4.7.6
 ----------

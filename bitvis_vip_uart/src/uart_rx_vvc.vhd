@@ -42,12 +42,12 @@ entity uart_rx_vvc is
     GC_INSTANCE_IDX                          : natural           := 1;
     GC_CHANNEL                               : t_channel         := RX;
     GC_UART_CONFIG                           : t_uart_bfm_config := C_UART_BFM_CONFIG_DEFAULT;
-    GC_CMD_QUEUE_COUNT_MAX                   : natural           := 1000;
-    GC_CMD_QUEUE_COUNT_THRESHOLD             : natural           := 950;
-    GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level     := warning;
-    GC_RESULT_QUEUE_COUNT_MAX                : natural           := 1000;
-    GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural           := 950;
-    GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level     := warning
+    GC_CMD_QUEUE_COUNT_MAX                   : natural           := C_CMD_QUEUE_COUNT_MAX;
+    GC_CMD_QUEUE_COUNT_THRESHOLD             : natural           := C_CMD_QUEUE_COUNT_THRESHOLD;
+    GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level     := C_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY;
+    GC_RESULT_QUEUE_COUNT_MAX                : natural           := C_RESULT_QUEUE_COUNT_MAX;
+    GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural           := C_RESULT_QUEUE_COUNT_THRESHOLD;
+    GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level     := C_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY
   );
   port(
     uart_vvc_rx : in std_logic
@@ -319,7 +319,7 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, GC_CHANNEL, v_cmd, v_vvc_config);
 
           -- Normalise address and data
-          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "uart_expect() called with to wide data. " & add_msg_delimiter(v_cmd.msg));
+          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "uart_expect() called with too wide data. " & add_msg_delimiter(v_cmd.msg));
           -- Call the corresponding procedure in the BFM package.
           uart_expect(data_exp       => v_normalised_data(v_num_data_bits - 1 downto 0),
                       msg            => format_msg(v_cmd),

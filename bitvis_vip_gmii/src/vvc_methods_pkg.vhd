@@ -53,25 +53,13 @@ package vvc_methods_pkg is
   );
 
   type t_vvc_config is record
-    inter_bfm_delay                       : t_inter_bfm_delay; -- Minimum delay between BFM accesses from the VVC. If parameter delay_type is set to NO_DELAY, BFM accesses will be back to back, i.e. no delay.
-    cmd_queue_count_max                   : natural; -- Maximum pending number in command executor before executor is full. Adding additional commands will result in an ERROR.
-    cmd_queue_count_threshold             : natural; -- An alert with severity 'cmd_queue_count_threshold_severity' will be issued if command executor exceeds this count. Used for early warning if command executor is almost full. Will be ignored if set to 0.
-    cmd_queue_count_threshold_severity    : t_alert_level; -- Severity of alert to be initiated if exceeding cmd_queue_count_threshold.
-    result_queue_count_max                : natural;
-    result_queue_count_threshold          : natural;
-    result_queue_count_threshold_severity : t_alert_level;
-    bfm_config                            : t_gmii_bfm_config; -- Configuration for the BFM. See BFM quick reference.
+    inter_bfm_delay : t_inter_bfm_delay; -- Minimum delay between BFM accesses from the VVC. If parameter delay_type is set to NO_DELAY, BFM accesses will be back to back, i.e. no delay.
+    bfm_config      : t_bfm_config;      -- Configuration for the BFM. See BFM quick reference.
   end record;
 
   constant C_GMII_VVC_CONFIG_DEFAULT : t_vvc_config := (
-    inter_bfm_delay                       => C_GMII_INTER_BFM_DELAY_DEFAULT,
-    cmd_queue_count_max                   => C_CMD_QUEUE_COUNT_MAX, --  from adaptation package
-    cmd_queue_count_threshold             => C_CMD_QUEUE_COUNT_THRESHOLD,
-    cmd_queue_count_threshold_severity    => C_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
-    result_queue_count_max                => C_RESULT_QUEUE_COUNT_MAX,
-    result_queue_count_threshold          => C_RESULT_QUEUE_COUNT_THRESHOLD,
-    result_queue_count_threshold_severity => C_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY,
-    bfm_config                            => C_GMII_BFM_CONFIG_DEFAULT
+    inter_bfm_delay => C_GMII_INTER_BFM_DELAY_DEFAULT,
+    bfm_config      => C_GMII_BFM_CONFIG_DEFAULT
   );
 
   type t_vvc_status is record

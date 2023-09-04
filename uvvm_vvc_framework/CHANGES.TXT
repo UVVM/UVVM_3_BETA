@@ -10,6 +10,9 @@ Released: 2023-0X-XX
   If not in the order RX (first) then TX (second) a message is given to the user
 - Improved vvc_generator.py script to automatically generate compilable
   code without requiring any user inputs.
+- Added target independent prefix "ti" to the VVC framework context declaration.
+- Included ti_vvc_framework_context.vhd in compile_order.txt.
+- Added filter for (vcom-1246) warning in test.py script.
 
 v2.12.4
 ----------

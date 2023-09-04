@@ -59,9 +59,7 @@ architecture struct of axi_th is
     num_ar_pipe_stages       => 0,
     num_r_pipe_stages        => 0,
     num_b_pipe_stages        => 0,
-    id_for_bfm               => ID_BFM,
-    id_for_bfm_wait          => ID_BFM_WAIT,
-    id_for_bfm_poll          => ID_BFM_POLL
+    id_for_bfm               => ID_BFM
   );
 
   constant C_AXI_CONFIG_2 : t_axi_bfm_config := (
@@ -79,9 +77,7 @@ architecture struct of axi_th is
     num_ar_pipe_stages       => 1,
     num_r_pipe_stages        => 1,
     num_b_pipe_stages        => 1,
-    id_for_bfm               => ID_BFM,
-    id_for_bfm_wait          => ID_BFM_WAIT,
-    id_for_bfm_poll          => ID_BFM_POLL
+    id_for_bfm               => ID_BFM
   );
 
   constant C_CLK_PERIOD : time := 10 ns;

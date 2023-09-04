@@ -51,26 +51,13 @@ package vvc_methods_pkg is
   );
 
   type t_vvc_config is record
-    inter_bfm_delay                       : t_inter_bfm_delay;
-    cmd_queue_count_max                   : natural;
-    cmd_queue_count_threshold_severity    : t_alert_level;
-    cmd_queue_count_threshold             : natural;
-    result_queue_count_max                : natural; -- Maximum number of unfetched results before result_queue is full. 
-    result_queue_count_threshold_severity : t_alert_level; -- An alert with severity 'result_queue_count_threshold_severity' will be issued if command queue exceeds this count.
-    -- Used for early warning if result queue is almost full. Will be ignored if set to 0.
-    result_queue_count_threshold          : natural; -- Severity of alert to be initiated if exceeding result_queue_count_threshold
-    bfm_config                            : t_gpio_bfm_config;
+    inter_bfm_delay : t_inter_bfm_delay; -- Minimum delay between BFM accesses from the VVC. If parameter delay_type is set to NO_DELAY, BFM accesses will be back to back, i.e. no delay.
+    bfm_config      : t_bfm_config;      -- Configuration for the BFM. See BFM quick reference.
   end record;
 
   constant C_GPIO_VVC_CONFIG_DEFAULT : t_vvc_config := (
-    inter_bfm_delay                       => C_GPIO_INTER_BFM_DELAY_DEFAULT,
-    cmd_queue_count_max                   => C_CMD_QUEUE_COUNT_MAX,
-    cmd_queue_count_threshold_severity    => C_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
-    cmd_queue_count_threshold             => C_CMD_QUEUE_COUNT_THRESHOLD,
-    result_queue_count_max                => C_RESULT_QUEUE_COUNT_MAX,
-    result_queue_count_threshold_severity => C_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY,
-    result_queue_count_threshold          => C_RESULT_QUEUE_COUNT_THRESHOLD,
-    bfm_config                            => C_GPIO_BFM_CONFIG_DEFAULT
+    inter_bfm_delay => C_GPIO_INTER_BFM_DELAY_DEFAULT,
+    bfm_config      => C_GPIO_BFM_CONFIG_DEFAULT
   );
 
   type t_vvc_status is record
@@ -147,6 +134,15 @@ package vvc_methods_pkg is
     constant parent_msg_id_panel : in t_msg_id_panel := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
   );
 
+  procedure gpio_set(
+    signal   VVCT                : inout t_vvc_target_record;
+    constant vvc_instance_idx    : in integer;
+    constant data                : in std_logic;
+    constant msg                 : in string         := "";
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant parent_msg_id_panel : in t_msg_id_panel := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
+  );
+
   procedure gpio_get(
     signal   VVCT                : inout t_vvc_target_record;
     constant vvc_instance_idx    : in integer;
@@ -168,6 +164,16 @@ package vvc_methods_pkg is
     signal   VVCT                : inout t_vvc_target_record;
     constant vvc_instance_idx    : in integer;
     constant data_exp            : in std_logic_vector;
+    constant msg                 : in string         := "";
+    constant alert_level         : in t_alert_level  := error;
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant parent_msg_id_panel : in t_msg_id_panel := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
+  );
+
+  procedure gpio_check(
+    signal   VVCT                : inout t_vvc_target_record;
+    constant vvc_instance_idx    : in integer;
+    constant data_exp            : in std_logic;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
@@ -288,6 +294,21 @@ package body vvc_methods_pkg is
     send_command_to_vvc(VVCT, std.env.resolution_limit, scope, v_msg_id_panel);
   end procedure;
 
+  procedure gpio_set(
+    signal   VVCT                : inout t_vvc_target_record;
+    constant vvc_instance_idx    : in integer;
+    constant data                : in std_logic;
+    constant msg                 : in string         := "";
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant parent_msg_id_panel : in t_msg_id_panel := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
+  ) is
+    variable v_data_slv : std_logic_vector(0 downto 0);
+  begin
+    v_data_slv(0) := data;  -- Convert std_logic to slv.
+    gpio_set(VVCT, vvc_instance_idx, v_data_slv, msg, scope, parent_msg_id_panel);
+  end procedure;
+
+
   procedure gpio_get(
     signal   VVCT                : inout t_vvc_target_record;
     constant vvc_instance_idx    : in integer;
@@ -364,6 +385,21 @@ package body vvc_methods_pkg is
       v_msg_id_panel := parent_msg_id_panel;
     end if;
     send_command_to_vvc(VVCT, std.env.resolution_limit, scope, v_msg_id_panel);
+  end procedure;
+
+  procedure gpio_check(
+    signal   VVCT                : inout t_vvc_target_record;
+    constant vvc_instance_idx    : in integer;
+    constant data_exp            : in std_logic;
+    constant msg                 : in string         := "";
+    constant alert_level         : in t_alert_level  := error;
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant parent_msg_id_panel : in t_msg_id_panel := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
+  ) is
+    variable v_data_exp_slv : std_logic_vector(0 downto 0);
+  begin
+    v_data_exp_slv(0) := data_exp;  -- Convert std_logic to slv.
+    gpio_check(VVCT, vvc_instance_idx, v_data_exp_slv, msg, alert_level, scope, parent_msg_id_panel);
   end procedure;
 
   procedure gpio_check_stable(

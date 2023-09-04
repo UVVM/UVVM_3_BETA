@@ -42,7 +42,7 @@ package transaction_pkg is
     -- Transaction
     WRITE, READ, CHECK, POLL_UNTIL);
 
-  constant C_VVC_CMD_DATA_MAX_LENGTH   : natural := 32;
+  constant C_VVC_CMD_DATA_MAX_LENGTH   : natural := 64;
   constant C_VVC_CMD_ADDR_MAX_LENGTH   : natural := 32;
   constant C_VVC_CMD_STRING_MAX_LENGTH : natural := 300;
 

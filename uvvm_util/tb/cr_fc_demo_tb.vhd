@@ -24,7 +24,7 @@ context uvvm_util.uvvm_util_context;
 library bitvis_uart;
 
 library uvvm_vvc_framework;
-context uvvm_vvc_framework.vvc_framework_context;
+context uvvm_vvc_framework.ti_vvc_framework_context;
 
 library bitvis_vip_sbi;
 context bitvis_vip_sbi.vvc_context;

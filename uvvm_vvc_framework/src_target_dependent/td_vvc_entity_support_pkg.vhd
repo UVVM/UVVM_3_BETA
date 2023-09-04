@@ -30,7 +30,7 @@ use work.vvc_cmd_pkg.all;
 use work.vvc_methods_pkg.all;
 use work.td_vvc_framework_common_methods_pkg.all;
 use work.td_target_support_pkg.all;
-use work.vvc_methods_pkg.protected_vvc_config_pkg.all;
+use work.vvc_methods_pkg.all;
 
 --=================================================================================================
 --=================================================================================================
@@ -75,7 +75,7 @@ package td_vvc_entity_support_pkg is
     constant instance_idx                          : in natural;
     constant channel                               : in t_channel;
     --variable vvc_config                            : inout t_vvc_config;
-    variable vvc_config                            : inout protected_vvc_config_pkg.t_prot_generic_array; -- v3
+    variable vvc_config                            : inout work.vvc_methods_pkg.protected_vvc_config_pkg.t_prot_generic_array; -- v3
     constant msg_id_panel                          : in t_msg_id_panel; -- v3
     variable command_queue                         : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
     variable result_queue                          : inout work.td_result_queue_pkg.t_prot_generic_queue;
@@ -93,7 +93,7 @@ package td_vvc_entity_support_pkg is
     constant scope                                 : in string;
     constant instance_idx                          : in natural;
     --variable vvc_config                            : inout t_vvc_config;
-    variable vvc_config                            : inout protected_vvc_config_pkg.t_prot_generic_array; -- v3
+    variable vvc_config                            : inout work.vvc_methods_pkg.protected_vvc_config_pkg.t_prot_generic_array; -- v3
     constant msg_id_panel                          : in t_msg_id_panel; -- v3
     variable command_queue                         : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
     variable result_queue                          : inout work.td_result_queue_pkg.t_prot_generic_queue;
@@ -306,7 +306,7 @@ package body td_vvc_entity_support_pkg is
     constant instance_idx                          : in natural;
     constant channel                               : in t_channel;
     --variable vvc_config                            : inout t_vvc_config;
-    variable vvc_config                            : inout protected_vvc_config_pkg.t_prot_generic_array; -- v3
+    variable vvc_config                            : inout work.vvc_methods_pkg.protected_vvc_config_pkg.t_prot_generic_array; -- v3
     constant msg_id_panel                          : in t_msg_id_panel; -- v3
     variable command_queue                         : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
     variable result_queue                          : inout work.td_result_queue_pkg.t_prot_generic_queue;
@@ -324,14 +324,8 @@ package body td_vvc_entity_support_pkg is
   begin
     check_value(instance_idx <= C_MAX_VVC_INSTANCE_NUM - 1, TB_FAILURE, "Generic VVC Instance index =" & to_string(instance_idx) & " cannot exceed C_MAX_VVC_INSTANCE_NUM-1 in UVVM adaptations = " & to_string(C_MAX_VVC_INSTANCE_NUM - 1), C_SCOPE, ID_NEVER);
 
-    v_vvc_config                                       := vvc_config.get(instance_idx, channel);
-    v_vvc_config.bfm_config                            := bfm_config;
-    v_vvc_config.cmd_queue_count_max                   := cmd_queue_count_max;
-    v_vvc_config.cmd_queue_count_threshold             := cmd_queue_count_threshold;
-    v_vvc_config.cmd_queue_count_threshold_severity    := cmd_queue_count_threshold_severity;
-    v_vvc_config.result_queue_count_max                := result_queue_count_max;
-    v_vvc_config.result_queue_count_threshold          := result_queue_count_threshold;
-    v_vvc_config.result_queue_count_threshold_severity := result_queue_count_threshold_severity;
+    v_vvc_config            := vvc_config.get(instance_idx, channel);
+    v_vvc_config.bfm_config := bfm_config;
     vvc_config.set(v_vvc_config, instance_idx, channel);
 
     -- compose log message based on the number of channels in scope string
@@ -381,7 +375,7 @@ package body td_vvc_entity_support_pkg is
     constant scope                                 : in string;
     constant instance_idx                          : in natural;
     --variable vvc_config                            : inout t_vvc_config;
-    variable vvc_config                            : inout protected_vvc_config_pkg.t_prot_generic_array; -- v3
+    variable vvc_config                            : inout work.vvc_methods_pkg.protected_vvc_config_pkg.t_prot_generic_array; -- v3
     constant msg_id_panel                          : in t_msg_id_panel; -- v3
     variable command_queue                         : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
     variable result_queue                          : inout work.td_result_queue_pkg.t_prot_generic_queue;

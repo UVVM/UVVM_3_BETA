@@ -34,7 +34,7 @@ package axistream_bfm_pkg is
   --========================================================================================================================
   -- Types and constants for AXISTREAM_BFM
   --========================================================================================================================
-  constant C_SCOPE : string := "AXISTREAM_BFM";
+  constant C_BFM_SCOPE : string := "AXISTREAM_BFM";
 
   --========================================================================================================================
   -- C_MAX_*_BITS : Maximum number of bits per data word supported by the BFM.
@@ -93,7 +93,10 @@ package axistream_bfm_pkg is
     ready_low_max_random_duration  : integer;               -- Maximum number of clock cycles to deassert ready when using C_RANDOM
     ready_default_value            : std_logic;             -- Which value the BFM shall set ready to between accesses.
     -- Common
-    id_for_bfm                     : t_msg_id;              -- The message ID used as a general message ID in the BFM
+    id_for_bfm_pkt_initiate        : t_msg_id;              -- The message ID used for logging packet initiates in the BFM
+    id_for_bfm_pkt_complete        : t_msg_id;              -- The message ID used for logging packet completes in the BFM
+    id_for_bfm_pkt_data            : t_msg_id;              -- The message ID used for logging packet data in the BFM
+    id_for_bfm_pkt_payload         : t_msg_id;              -- The message ID used for logging packet payloads in the BFM
   end record;
 
   -- Define the default value for the BFM config
@@ -119,7 +122,10 @@ package axistream_bfm_pkg is
     ready_low_duration             => 0,
     ready_low_max_random_duration  => 5,
     ready_default_value            => '0',
-    id_for_bfm                     => ID_BFM
+    id_for_bfm_pkt_initiate        => ID_PACKET_INITIATE,
+    id_for_bfm_pkt_complete        => ID_PACKET_COMPLETE,
+    id_for_bfm_pkt_data            => ID_PACKET_DATA,
+    id_for_bfm_pkt_payload         => ID_PACKET_PAYLOAD
   );
 
   --========================================================================================================================
@@ -156,7 +162,7 @@ package axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -169,7 +175,7 @@ package axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -180,7 +186,7 @@ package axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -190,7 +196,7 @@ package axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -200,7 +206,7 @@ package axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -209,7 +215,7 @@ package axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -233,7 +239,7 @@ package axistream_bfm_pkg is
     constant msg           : in string;
     signal   clk           : in std_logic;
     signal   axistream_if  : inout t_axistream_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string                 := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -254,7 +260,7 @@ package axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -268,7 +274,7 @@ package axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -280,7 +286,7 @@ package axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -291,7 +297,7 @@ package axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -302,7 +308,7 @@ package axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -312,7 +318,7 @@ package axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   );
@@ -389,7 +395,7 @@ package body axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -444,7 +450,7 @@ package body axistream_bfm_pkg is
     -- Wait according to config.bfm_sync setup
     wait_on_bfm_sync_start(clk, config.bfm_sync, config.setup_time, config.clock_period, v_time_of_falling_edge, v_time_of_rising_edge);
 
-    log(ID_PACKET_INITIATE, C_PROC_CALL & "=> " & add_msg_delimiter(msg), scope, msg_id_panel);
+    log(config.id_for_bfm_pkt_initiate, C_PROC_CALL & "=> " & add_msg_delimiter(msg), scope, msg_id_panel);
 
     -- Convert SLV with variable word-width to byte-width
     v_data_byte_array := convert_slv_array_to_byte_array(data_array, config.byte_endianness);
@@ -453,7 +459,7 @@ package body axistream_bfm_pkg is
     -- Send byte by byte. There may be multiple bytes per clock cycle, depending on axistream_if'tdata width.
     ------------------------------------------------------------------------------------------------------------
     for byte in 0 to v_data_byte_array'high loop
-      log(ID_PACKET_DATA, C_PROC_CALL & "=> Tx " & to_string(v_data_byte_array(byte), HEX, AS_IS, INCL_RADIX) &
+      log(config.id_for_bfm_pkt_data, C_PROC_CALL & "=> Tx " & to_string(v_data_byte_array(byte), HEX, AS_IS, INCL_RADIX) &
       --     ", tuser=" & to_string(user_array(byte/C_NUM_BYTES_PER_WORD), HEX, AS_IS, INCL_RADIX) &
       --     ", tstrb=" & to_string(strb_array(byte/C_NUM_BYTES_PER_WORD), HEX, AS_IS, INCL_RADIX) &
       --     ", tid="   & to_string(id_array(byte/C_NUM_BYTES_PER_WORD),   HEX, AS_IS, INCL_RADIX) &
@@ -575,7 +581,7 @@ package body axistream_bfm_pkg is
     if v_timeout then
       alert(config.max_wait_cycles_severity, C_PROC_CALL & "=> Failed. Timeout while waiting for tready. " & add_msg_delimiter(msg), scope);
     else
-      log(ID_PACKET_COMPLETE, C_PROC_CALL & "=> Tx DONE. " & add_msg_delimiter(msg), scope, msg_id_panel);
+      log(config.id_for_bfm_pkt_complete, C_PROC_CALL & "=> Tx DONE. " & add_msg_delimiter(msg), scope, msg_id_panel);
     end if;
   end procedure;
 
@@ -589,7 +595,7 @@ package body axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -606,7 +612,7 @@ package body axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -636,7 +642,7 @@ package body axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -665,7 +671,7 @@ package body axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -688,7 +694,7 @@ package body axistream_bfm_pkg is
     constant msg          : in string;
     signal   clk          : in std_logic;
     signal   axistream_if : inout t_axistream_if;
-    constant scope        : in string                 := C_SCOPE;
+    constant scope        : in string                 := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config       : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -722,7 +728,7 @@ package body axistream_bfm_pkg is
     constant msg           : in string;
     signal   clk           : in std_logic;
     signal   axistream_if  : inout t_axistream_if;
-    constant scope         : in string                 := C_SCOPE;
+    constant scope         : in string                 := C_BFM_SCOPE;
     constant msg_id_panel  : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config        : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT;
     constant ext_proc_call : in string                 := "" -- External proc_call. Overwrite if called from another BFM procedure
@@ -793,7 +799,7 @@ package body axistream_bfm_pkg is
     -- Wait according to config.bfm_sync setup
     wait_on_bfm_sync_start(clk, config.bfm_sync, config.setup_time, config.clock_period, v_time_of_falling_edge, v_time_of_rising_edge);
 
-    log(ID_PACKET_INITIATE, v_proc_call.all & "=> Receive packet. " & add_msg_delimiter(msg), scope, msg_id_panel);
+    log(config.id_for_bfm_pkt_initiate, v_proc_call.all & "=> Receive packet. " & add_msg_delimiter(msg), scope, msg_id_panel);
 
     ------------------------------------------------------------------------------------------------------------
     -- Sample byte by byte. There may be multiple bytes per clock cycle, depending on axistream_if'tdata width.
@@ -922,7 +928,7 @@ package body axistream_bfm_pkg is
           end if;
         end if;
 
-        log(ID_PACKET_DATA, v_proc_call.all & "=> Rx " & to_string(v_data_byte_array(v_byte_cnt), HEX, AS_IS, INCL_RADIX) &
+        log(config.id_for_bfm_pkt_data, v_proc_call.all & "=> Rx " & to_string(v_data_byte_array(v_byte_cnt), HEX, AS_IS, INCL_RADIX) &
         --     ", tuser=" & to_string(user_array(v_byte_cnt/C_NUM_BYTES_PER_WORD), HEX, AS_IS, INCL_RADIX) &
         --     ", tstrb=" & to_string(strb_array(v_byte_cnt/C_NUM_BYTES_PER_WORD), HEX, AS_IS, INCL_RADIX) &
         --     ", tid="   & to_string(id_array(v_byte_cnt/C_NUM_BYTES_PER_WORD),   HEX, AS_IS, INCL_RADIX) &
@@ -1014,7 +1020,7 @@ package body axistream_bfm_pkg is
 
     -- Log the received frame
     if is_log_msg_enabled(ID_PACKET_PAYLOAD, msg_id_panel) then -- large frames may affect performance
-      log(ID_PACKET_PAYLOAD, v_proc_call.all & "=> Rx Frame (" & to_string(v_byte_cnt) & " bytes) " & to_string(v_data_byte_array) & ". " & add_msg_delimiter(msg), scope, msg_id_panel);
+      log(config.id_for_bfm_pkt_payload, v_proc_call.all & "=> Rx Frame (" & to_string(v_byte_cnt) & " bytes) " & to_string(v_data_byte_array) & ". " & add_msg_delimiter(msg), scope, msg_id_panel);
     end if;
 
     -- Check if there was a timeout or it was successful
@@ -1022,7 +1028,7 @@ package body axistream_bfm_pkg is
       alert(config.max_wait_cycles_severity, v_proc_call.all & "=> Failed. Timeout while waiting for valid data. " & add_msg_delimiter(msg), scope);
     else
       if ext_proc_call = "" then
-        log(ID_PACKET_COMPLETE, v_proc_call.all & "=> Rx DONE (" & to_string(data_array'length) & " words[" & to_string(C_DATA_ARRAY_BYTES_PER_WORD*8) & "b]). " & add_msg_delimiter(msg), scope, msg_id_panel);
+        log(config.id_for_bfm_pkt_complete, v_proc_call.all & "=> Rx DONE (" & to_string(data_array'length) & " words[" & to_string(C_DATA_ARRAY_BYTES_PER_WORD*8) & "b]). " & add_msg_delimiter(msg), scope, msg_id_panel);
       else
         -- Log will be handled by calling procedure (e.g. axistream_expect)
       end if;
@@ -1061,7 +1067,7 @@ package body axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -1133,7 +1139,7 @@ package body axistream_bfm_pkg is
         if exp_user_array(word)(i) = '-' or check_value(v_rx_user_array(word)(i), exp_user_array(word)(i), config.match_strictness, NO_ALERT, msg, scope, ID_NEVER) then
         -- Check is OK
         else
-          log(ID_PACKET_DATA, C_PROC_CALL & "=> NOK(word=" & to_string(word) & "), checked " & to_string(v_rx_user_array(word), HEX, AS_IS, INCL_RADIX) & "=" & to_string(exp_user_array(word), HEX, AS_IS, INCL_RADIX) & add_msg_delimiter(msg), scope, msg_id_panel);
+          log(config.id_for_bfm_pkt_data, C_PROC_CALL & "=> NOK(word=" & to_string(word) & "), checked " & to_string(v_rx_user_array(word), HEX, AS_IS, INCL_RADIX) & "=" & to_string(exp_user_array(word), HEX, AS_IS, INCL_RADIX) & add_msg_delimiter(msg), scope, msg_id_panel);
           -- Received tuser word does not match the expected word
           v_user_error_cnt     := v_user_error_cnt + 1;
           v_first_errored_word := word;
@@ -1148,7 +1154,7 @@ package body axistream_bfm_pkg is
         if exp_strb_array(word)(i) = '-' or check_value(v_rx_strb_array(word)(i), exp_strb_array(word)(i), config.match_strictness, NO_ALERT, msg, scope, ID_NEVER) then
         -- Check is OK
         else
-          log(ID_PACKET_DATA, C_PROC_CALL & "=> NOK(word=" & to_string(word) & "), checked " & to_string(v_rx_strb_array(word), HEX, AS_IS, INCL_RADIX) & "=" & to_string(exp_strb_array(word), HEX, AS_IS, INCL_RADIX) & add_msg_delimiter(msg), scope, msg_id_panel);
+          log(config.id_for_bfm_pkt_data, C_PROC_CALL & "=> NOK(word=" & to_string(word) & "), checked " & to_string(v_rx_strb_array(word), HEX, AS_IS, INCL_RADIX) & "=" & to_string(exp_strb_array(word), HEX, AS_IS, INCL_RADIX) & add_msg_delimiter(msg), scope, msg_id_panel);
           -- Received tstrb word does not match the expected word
           v_strb_error_cnt     := v_strb_error_cnt + 1;
           v_first_errored_word := word;
@@ -1163,7 +1169,7 @@ package body axistream_bfm_pkg is
         if exp_id_array(word)(i) = '-' or check_value(v_rx_id_array(word)(i), exp_id_array(word)(i), config.match_strictness, NO_ALERT, msg, scope, ID_NEVER) then
         -- Check is OK
         else
-          log(ID_PACKET_DATA, C_PROC_CALL & "=> NOK(word=" & to_string(word) & "), checked " & to_string(v_rx_id_array(word), HEX, AS_IS, INCL_RADIX) & "=" & to_string(exp_id_array(word), HEX, AS_IS, INCL_RADIX) & add_msg_delimiter(msg), scope, msg_id_panel);
+          log(config.id_for_bfm_pkt_data, C_PROC_CALL & "=> NOK(word=" & to_string(word) & "), checked " & to_string(v_rx_id_array(word), HEX, AS_IS, INCL_RADIX) & "=" & to_string(exp_id_array(word), HEX, AS_IS, INCL_RADIX) & add_msg_delimiter(msg), scope, msg_id_panel);
           -- Received tid word does not match the expected word
           v_id_error_cnt       := v_id_error_cnt + 1;
           v_first_errored_word := word;
@@ -1178,7 +1184,7 @@ package body axistream_bfm_pkg is
         if exp_dest_array(word)(i) = '-' or check_value(v_rx_dest_array(word)(i), exp_dest_array(word)(i), config.match_strictness, NO_ALERT, msg, scope, ID_NEVER) then
         -- Check is OK
         else
-          log(ID_PACKET_DATA, C_PROC_CALL & "=> NOK(word=" & to_string(word) & "), checked " & to_string(v_rx_dest_array(word), HEX, AS_IS, INCL_RADIX) & "=" & to_string(exp_dest_array(word), HEX, AS_IS, INCL_RADIX) & add_msg_delimiter(msg), scope, msg_id_panel);
+          log(config.id_for_bfm_pkt_data, C_PROC_CALL & "=> NOK(word=" & to_string(word) & "), checked " & to_string(v_rx_dest_array(word), HEX, AS_IS, INCL_RADIX) & "=" & to_string(exp_dest_array(word), HEX, AS_IS, INCL_RADIX) & add_msg_delimiter(msg), scope, msg_id_panel);
           -- Received tdest word does not match the expected word
           v_dest_error_cnt     := v_dest_error_cnt + 1;
           v_first_errored_word := word;
@@ -1208,7 +1214,7 @@ package body axistream_bfm_pkg is
       v_alert_radix := BIN when config.match_strictness = MATCH_EXACT and check_value(v_rx_dest_array(v_first_errored_word), exp_dest_array(v_first_errored_word), MATCH_STD, NO_ALERT, msg, scope, HEX_BIN_IF_INVALID, KEEP_LEADING_0, ID_NEVER) else HEX;
       alert(alert_level, C_PROC_CALL & "=> Failed in " & to_string(v_dest_error_cnt) & " tdest bits. First mismatch in word# " & to_string(v_first_errored_word) & ". Was " & to_string(v_rx_dest_array(v_first_errored_word)(C_NUM_DEST_BITS_PER_WORD - 1 downto 0), v_alert_radix, AS_IS, INCL_RADIX) & ". Expected " & to_string(exp_dest_array(v_first_errored_word)(C_NUM_DEST_BITS_PER_WORD - 1 downto 0), v_alert_radix, AS_IS, INCL_RADIX) & "." & LF & add_msg_delimiter(msg), scope);
     else
-      log(ID_PACKET_COMPLETE, C_PROC_CALL & "=> OK, received " & to_string(exp_data_array'length) & " words[" & to_string(C_DATA_ARRAY_BYTES_PER_WORD*8) & "b]). " & add_msg_delimiter(msg), scope, msg_id_panel);
+      log(config.id_for_bfm_pkt_complete, C_PROC_CALL & "=> OK, received " & to_string(exp_data_array'length) & " words[" & to_string(C_DATA_ARRAY_BYTES_PER_WORD*8) & "b]). " & add_msg_delimiter(msg), scope, msg_id_panel);
     end if;
 
   end procedure;
@@ -1224,7 +1230,7 @@ package body axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -1253,7 +1259,7 @@ package body axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -1284,7 +1290,7 @@ package body axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -1314,7 +1320,7 @@ package body axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is
@@ -1345,7 +1351,7 @@ package body axistream_bfm_pkg is
     signal   clk            : in std_logic;
     signal   axistream_if   : inout t_axistream_if;
     constant alert_level    : in t_alert_level          := error;
-    constant scope          : in string                 := C_SCOPE;
+    constant scope          : in string                 := C_BFM_SCOPE;
     constant msg_id_panel   : in t_msg_id_panel         := shared_msg_id_panel.get(VOID);
     constant config         : in t_axistream_bfm_config := C_AXISTREAM_BFM_CONFIG_DEFAULT
   ) is

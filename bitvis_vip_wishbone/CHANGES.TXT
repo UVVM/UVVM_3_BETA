@@ -3,10 +3,16 @@ Bitvis VIP Wishbone - Overview of Versions and Changes
 
 ----------------------------------------------------------------------
 
+v0.1.2 BETA
+----------
+Released: 2023-XX-XX
+- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
+
 v0.1.1 BETA
 ----------
 Released: 2022-05-05
 - t_vvc_config, t_vvc_status, t_transaction_info and t_wishbone_bfm_config record declaration formatting.
+- Removed unused id_for_bfm.
 
 v0.1.0 BETA
 ----------
