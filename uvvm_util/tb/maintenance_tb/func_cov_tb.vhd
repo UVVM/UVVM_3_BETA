@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -35,7 +35,8 @@ architecture func of func_cov_tb is
   type t_cov_bin_type_array is array (natural range <>) of t_cov_bin_type;
   type t_weight_type is (ADAPTIVE, EXPLICIT);
 
-  shared variable shared_coverpoint : t_prot_coverpoint;
+  shared variable shared_coverpoint    : t_coverpoint;
+  signal shared_coverpoint_initialized : std_logic := '0';
 
   constant C_ADAPTIVE_WEIGHT : integer := -1;
   constant C_NULL            : integer := integer'left;
@@ -46,32 +47,32 @@ begin
   -- PROCESS: p_main
   --------------------------------------------------------------------------------
   p_main : process
-    variable v_coverpoint_a : t_prot_coverpoint;
-    variable v_coverpoint_b : t_prot_coverpoint;
-    variable v_coverpoint_c : t_prot_coverpoint;
-    variable v_coverpoint_d : t_prot_coverpoint;
-    variable v_coverpoint_e : t_prot_coverpoint;
-    variable v_cross_x2     : t_prot_coverpoint;
-    variable v_cross_x2_b   : t_prot_coverpoint;
-    variable v_cross_x3     : t_prot_coverpoint;
-    variable v_cross_x3_b   : t_prot_coverpoint;
-    variable v_cross_x4     : t_prot_coverpoint;
-    variable v_cross_x5     : t_prot_coverpoint;
-    variable v_cross_x6     : t_prot_coverpoint;
-    variable v_cross_x7     : t_prot_coverpoint;
-    variable v_cross_x8     : t_prot_coverpoint;
-    variable v_cross_x9     : t_prot_coverpoint;
-    variable v_cross_x10    : t_prot_coverpoint;
-    variable v_cross_x11    : t_prot_coverpoint;
-    variable v_cross_x12    : t_prot_coverpoint;
-    variable v_cross_x13    : t_prot_coverpoint;
-    variable v_cross_x14    : t_prot_coverpoint;
-    variable v_cross_x15    : t_prot_coverpoint;
+    variable v_coverpoint_a : t_coverpoint;
+    variable v_coverpoint_b : t_coverpoint;
+    variable v_coverpoint_c : t_coverpoint;
+    variable v_coverpoint_d : t_coverpoint;
+    variable v_coverpoint_e : t_coverpoint;
+    variable v_cross_x2     : t_coverpoint;
+    variable v_cross_x2_b   : t_coverpoint;
+    variable v_cross_x3     : t_coverpoint;
+    variable v_cross_x3_b   : t_coverpoint;
+    variable v_cross_x4     : t_coverpoint;
+    variable v_cross_x5     : t_coverpoint;
+    variable v_cross_x6     : t_coverpoint;
+    variable v_cross_x7     : t_coverpoint;
+    variable v_cross_x8     : t_coverpoint;
+    variable v_cross_x9     : t_coverpoint;
+    variable v_cross_x10    : t_coverpoint;
+    variable v_cross_x11    : t_coverpoint;
+    variable v_cross_x12    : t_coverpoint;
+    variable v_cross_x13    : t_coverpoint;
+    variable v_cross_x14    : t_coverpoint;
+    variable v_cross_x15    : t_coverpoint;
 
     variable v_bin_idx         : natural := 0;
     variable v_invalid_bin_idx : natural := 0;
     variable v_vector          : std_logic_vector(1 downto 0);
-    variable v_rand            : t_prot_rand;
+    variable v_rand            : t_rand;
     variable v_seeds           : t_positive_vector(0 to 1);
     variable v_bin_val         : integer;
     variable v_num_bins        : natural;
@@ -92,7 +93,7 @@ begin
     -- ignore/illegal bins. The bin_idx will be incremented at the end of the procedure
     -- so that the bins can be checked sequentially.
     procedure check_bin(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type_array;
       constant values      : in t_integer_array;
@@ -142,7 +143,7 @@ begin
 
     -- Overload
     procedure check_bin(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type;
       constant values      : in integer_vector;
@@ -158,7 +159,7 @@ begin
 
     -- Overload
     procedure check_bin(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type;
       constant value       : in integer;
@@ -172,7 +173,7 @@ begin
 
     -- Overload for crossed bins
     procedure check_cross_bin(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type_array;
       constant values      : in t_integer_array;
@@ -187,7 +188,7 @@ begin
 
     -- Overload for crossed bins
     procedure check_cross_bin(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type_array;
       constant values_1    : in integer_vector;
@@ -206,7 +207,7 @@ begin
 
     -- Overload for crossed bins
     procedure check_cross_bin(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type_array;
       constant values_1    : in integer_vector;
@@ -227,7 +228,7 @@ begin
 
     -- Overload for crossed bins
     procedure check_cross_bin(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type_array;
       constant values_1    : in integer_vector;
@@ -250,7 +251,7 @@ begin
 
     -- Overload for crossed bins
     procedure check_cross_bin(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type_array;
       constant values_1    : in integer_vector;
@@ -275,7 +276,7 @@ begin
 
     -- Overload for ignore and illegal bins
     procedure check_invalid_bin(
-      variable coverpoint : inout t_prot_coverpoint;
+      variable coverpoint : inout t_coverpoint;
       variable bin_idx    : inout natural;
       constant contains   : in t_cov_bin_type;
       constant values     : in integer_vector;
@@ -289,7 +290,7 @@ begin
 
     -- Overload for ignore and illegal bins
     procedure check_invalid_bin(
-      variable coverpoint : inout t_prot_coverpoint;
+      variable coverpoint : inout t_coverpoint;
       variable bin_idx    : inout natural;
       constant contains   : in t_cov_bin_type;
       constant value      : in integer;
@@ -301,7 +302,7 @@ begin
 
     -- Overload for ignore and illegal crossed bins
     procedure check_invalid_cross_bin(
-      variable coverpoint : inout t_prot_coverpoint;
+      variable coverpoint : inout t_coverpoint;
       variable bin_idx    : inout natural;
       constant contains   : in t_cov_bin_type_array;
       constant values_1   : in integer_vector;
@@ -318,7 +319,7 @@ begin
 
     -- Checks the number of bins in the coverpoint
     procedure check_num_bins(
-      variable coverpoint       : inout t_prot_coverpoint;
+      variable coverpoint       : inout t_coverpoint;
       constant num_valid_bins   : in natural;
       constant num_invalid_bins : in natural) is
       constant C_PROC_NAME : string := "check_num_bins";
@@ -329,7 +330,7 @@ begin
 
     -- Samples several values in the coverpoint a number of times
     procedure sample_bins(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       constant values      : in integer_vector;
       constant num_samples : in positive := 1) is
     begin
@@ -342,7 +343,7 @@ begin
 
     -- Overload
     procedure sample_bins(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       constant value       : in integer;
       constant num_samples : in positive := 1) is
     begin
@@ -351,7 +352,7 @@ begin
 
     -- Overload
     procedure sample_cross_bins(
-      variable coverpoint  : inout t_prot_coverpoint;
+      variable coverpoint  : inout t_coverpoint;
       constant values      : in t_integer_array;
       constant num_samples : in positive := 1) is
     begin
@@ -364,7 +365,7 @@ begin
 
     -- Checks the bins coverage in the coverpoint
     procedure check_bins_coverage(
-      variable coverpoint : inout t_prot_coverpoint;
+      variable coverpoint : inout t_coverpoint;
       constant coverage   : in real;
       constant use_goal   : in boolean := false) is
       constant C_PROC_NAME : string := "check_bins_coverage" & return_string_if_true("(% of goal)", use_goal);
@@ -385,7 +386,7 @@ begin
 
     -- Checks the hits coverage in the coverpoint
     procedure check_hits_coverage(
-      variable coverpoint : inout t_prot_coverpoint;
+      variable coverpoint : inout t_coverpoint;
       constant coverage   : in real;
       constant use_goal   : in boolean := false) is
       constant C_PROC_NAME : string := "check_hits_coverage" & return_string_if_true("(% of goal)", use_goal);
@@ -406,7 +407,7 @@ begin
 
     -- Checks that the bins and hits coverage is complete
     procedure check_coverage_completed(
-      variable coverpoint : inout t_prot_coverpoint;
+      variable coverpoint : inout t_coverpoint;
       constant use_goal   : in boolean := false) is
     begin
       check_bins_coverage(coverpoint, 100.0, use_goal);
@@ -416,7 +417,7 @@ begin
     -- Checks that the number of hits from a bin in the coverpoint
     -- is greater than a certain value
     procedure check_bin_hits_is_greater(
-      variable coverpoint : inout t_prot_coverpoint;
+      variable coverpoint : inout t_coverpoint;
       constant bin_idx    : in natural;
       constant min_hits   : in natural) is
       constant C_PROC_NAME : string := "check_bin_hits_is_greater";
@@ -431,7 +432,7 @@ begin
     -- Checks that the randomization follows the weighted distribution by checking at which
     -- iteration number each bin was covered.
     procedure randomize_and_check_distribution(
-      variable coverpoint            : inout t_prot_coverpoint;
+      variable coverpoint            : inout t_coverpoint;
       constant weight_type           : in t_weight_type;
       constant bin_covered_iteration : in integer_vector) is
       type t_test_bin is record
@@ -487,11 +488,32 @@ begin
 
     -- Overload
     procedure delete_coverpoint(
-      variable coverpoint : inout t_prot_coverpoint) is
+      variable coverpoint : inout t_coverpoint) is
     begin
       coverpoint.delete_coverpoint(VOID);
       v_bin_idx         := 0;
       v_invalid_bin_idx := 0;
+    end procedure;
+
+    procedure load_coverage_db_quiet (
+      variable coverpoint       : inout t_coverpoint;
+      constant path             : in string;
+      constant report_verbosity : in t_report_verbosity := HOLES_ONLY
+    ) is
+    begin
+      disable_log_msg(ID_FUNC_COV_CONFIG, QUIET);
+      coverpoint.load_coverage_db(path, report_verbosity => report_verbosity);
+      enable_log_msg(ID_FUNC_COV_CONFIG, QUIET);
+    end procedure;
+
+    procedure write_coverage_db_quiet (
+      variable coverpoint : inout t_coverpoint;
+      constant path       : in string
+    ) is
+    begin
+      disable_log_msg(ID_FUNC_COV_CONFIG, QUIET);
+      coverpoint.write_coverage_db(path);
+      enable_log_msg(ID_FUNC_COV_CONFIG, QUIET);
     end procedure;
 
   begin
@@ -532,6 +554,7 @@ begin
       shared_coverpoint.add_bins(bin(-100));
       shared_coverpoint.add_bins(bin(100));
       shared_coverpoint.add_bins(bin(101));
+      gen_pulse(shared_coverpoint_initialized, 0 ns, "Unblocking p_sampling process", msg_id => ID_NEVER);
       wait for 0 ns;                    -- Wait a delta cycle so that p_sampling can finish
 
       check_bin(shared_coverpoint, v_bin_idx, VAL, -101);
@@ -2607,7 +2630,7 @@ begin
       sample_bins(v_coverpoint_a, (231, 237, 237, 238, 235, 231), 1);
 
       v_coverpoint_a.report_coverage(VERBOSE); -- Bins: 0.0% / 0.0%, Hits: 30.19% / 15.09%
-      v_coverpoint_a.write_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      write_coverage_db_quiet(v_coverpoint_a, GC_FILE_PATH & "db_coverpoint.txt");
 
       ------------------------------------------------------------
       log(ID_LOG_HDR, "Testing write database to a file - cross");
@@ -2652,7 +2675,7 @@ begin
       sample_cross_bins(v_cross_x2, ((231, 1231), (237, 1237), (237, 1237)), 1);
 
       v_cross_x2.report_coverage(VERBOSE); -- Bins: 0.0% / 0.0%, Hits: 30.19% / 40.25%
-      v_cross_x2.write_coverage_db(GC_FILE_PATH & "db_cross.txt");
+      write_coverage_db_quiet(v_cross_x2, GC_FILE_PATH & "db_cross.txt");
 
       ------------------------------------------------------------
       log(ID_LOG_HDR, "Testing write database to a file - max data");
@@ -2666,7 +2689,7 @@ begin
       end loop;
 
       v_cross_x3.report_coverage(VERBOSE); -- Bins: 25.00%, Hits: 25.00%
-      v_cross_x3.write_coverage_db(GC_FILE_PATH & "db_cross_max.txt");
+      write_coverage_db_quiet(v_cross_x3, GC_FILE_PATH & "db_cross_max.txt");
 
       fc_report_overall_coverage(VERBOSE);
 
@@ -2706,7 +2729,7 @@ begin
       log(ID_LOG_HDR, "Testing adding bins after load_coverage_db()");
       ------------------------------------------------------------
       increment_expected_alerts(TB_WARNING, 1);
-      v_coverpoint_b.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_b, GC_FILE_PATH & "db_coverpoint.txt");
       v_coverpoint_b.add_bins(bin(10));
       check_value(v_coverpoint_b.get_num_valid_bins(VOID), 7, ERROR, "Checking number of valid bins");
 
@@ -2716,7 +2739,7 @@ begin
       check_value(v_coverpoint_b.get_num_valid_bins(VOID), 8, ERROR, "Checking number of valid bins");
 
       increment_expected_alerts(TB_WARNING, 1);
-      v_cross_x2_b.load_coverage_db(GC_FILE_PATH & "db_cross.txt");
+      load_coverage_db_quiet(v_cross_x2_b, GC_FILE_PATH & "db_cross.txt");
       v_cross_x2_b.add_cross(bin(10), bin(1010));
       check_value(v_cross_x2_b.get_num_valid_bins(VOID), 7, ERROR, "Checking number of valid bins");
 
@@ -2734,25 +2757,25 @@ begin
       increment_expected_alerts(TB_WARNING, 1);
       v_coverpoint_b.add_bins(bin(10));
       v_coverpoint_b.sample_coverage(10);
-      v_coverpoint_b.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_b, GC_FILE_PATH & "db_coverpoint.txt");
       v_bin_idx := 0;
       check_bin(v_coverpoint_b, v_bin_idx, VAL, 10, name => "bin_0", hits => 0);
 
       increment_expected_alerts(TB_WARNING, 1);
-      v_coverpoint_c.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
-      v_coverpoint_c.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_c, GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_c, GC_FILE_PATH & "db_coverpoint.txt");
 
       log(ID_SEQUENCER, "Check DB can be safely loaded after clearing the coverage");
       v_coverpoint_d.add_bins(bin(10));
       v_coverpoint_d.sample_coverage(10);
       v_coverpoint_d.clear_coverage(VOID);
-      v_coverpoint_d.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_d, GC_FILE_PATH & "db_coverpoint.txt");
 
       log(ID_SEQUENCER, "Check DB can be safely loaded after deleting the coverpoint");
       v_coverpoint_e.add_bins(bin(10));
       v_coverpoint_e.sample_coverage(10);
       v_coverpoint_e.delete_coverpoint(VOID);
-      v_coverpoint_e.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_e, GC_FILE_PATH & "db_coverpoint.txt");
 
       v_coverpoint_b.delete_coverpoint(VOID);
       v_coverpoint_c.delete_coverpoint(VOID);
@@ -2764,7 +2787,7 @@ begin
       ------------------------------------------------------------
       v_cross_x2_b.add_cross(bin(1), bin(2));
       increment_expected_alerts_and_stop_limit(TB_ERROR, 1);
-      v_cross_x2_b.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_cross_x2_b, GC_FILE_PATH & "db_coverpoint.txt");
 
       v_cross_x2_b.delete_coverpoint(VOID);
 
@@ -2775,15 +2798,15 @@ begin
       v_coverpoint_a.report_coverage(VOID);
       fc_report_overall_coverage(VERBOSE);
 
-      v_coverpoint_b.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_b, GC_FILE_PATH & "db_coverpoint.txt");
       fc_report_overall_coverage(VERBOSE);
-      v_coverpoint_b.write_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      write_coverage_db_quiet(v_coverpoint_b, GC_FILE_PATH & "db_coverpoint.txt");
 
-      v_coverpoint_c.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_c, GC_FILE_PATH & "db_coverpoint.txt");
       fc_report_overall_coverage(VERBOSE);
-      v_coverpoint_c.write_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      write_coverage_db_quiet(v_coverpoint_c, GC_FILE_PATH & "db_coverpoint.txt");
 
-      v_coverpoint_d.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_d, GC_FILE_PATH & "db_coverpoint.txt");
       fc_report_overall_coverage(VERBOSE);
 
       log(ID_SEQUENCER, "Check accumulated testcases counter is reset after clearing the coverage");
@@ -2966,7 +2989,7 @@ begin
       ------------------------------------------------------------
       log(ID_LOG_HDR, "Testing load and write database from a file - coverpoint");
       ------------------------------------------------------------
-      v_coverpoint_a.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt", report_verbosity => NON_VERBOSE);
+      load_coverage_db_quiet(v_coverpoint_a, GC_FILE_PATH & "db_coverpoint.txt", report_verbosity => NON_VERBOSE);
 
       -- Check bins and coverage
       v_bin_idx         := 0;
@@ -3020,12 +3043,12 @@ begin
       sample_bins(v_coverpoint_a, (231, 237, 237, 238, 235, 231), 1);
 
       v_coverpoint_a.report_coverage(VERBOSE); -- Bins: 0.0% / 0.0%, Hits: 60.38% / 30.19%
-      v_coverpoint_a.write_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      write_coverage_db_quiet(v_coverpoint_a, GC_FILE_PATH & "db_coverpoint.txt");
 
       ------------------------------------------------------------
       log(ID_LOG_HDR, "Testing load and write database from a file - cross");
       ------------------------------------------------------------
-      v_cross_x2.load_coverage_db(GC_FILE_PATH & "db_cross.txt", report_verbosity => NON_VERBOSE);
+      load_coverage_db_quiet(v_cross_x2, GC_FILE_PATH & "db_cross.txt", report_verbosity => NON_VERBOSE);
 
       -- Check bins and coverage
       v_bin_idx         := 0;
@@ -3079,12 +3102,12 @@ begin
       sample_cross_bins(v_cross_x2, ((231, 1231), (237, 1237), (237, 1237)), 1);
 
       v_cross_x2.report_coverage(VERBOSE); -- Bins: 0.0% / 0.0%, Hits: 60.38% / 80.50%
-      v_cross_x2.write_coverage_db(GC_FILE_PATH & "db_cross.txt");
+      write_coverage_db_quiet(v_cross_x2, GC_FILE_PATH & "db_cross.txt");
 
       ------------------------------------------------------------
       log(ID_LOG_HDR, "Testing load and write database from a file - max data");
       ------------------------------------------------------------
-      v_cross_x3.load_coverage_db(GC_FILE_PATH & "db_cross_max.txt");
+      load_coverage_db_quiet(v_cross_x3, GC_FILE_PATH & "db_cross_max.txt");
 
       -- Check bins and coverage
       v_bin_idx         := 0;
@@ -3109,14 +3132,14 @@ begin
       end loop;
 
       v_cross_x3.report_coverage(VERBOSE); -- Bins: 50.00%, Hits: 50.00%
-      v_cross_x3.write_coverage_db(GC_FILE_PATH & "db_cross_max.txt");
+      write_coverage_db_quiet(v_cross_x3, GC_FILE_PATH & "db_cross_max.txt");
 
       fc_report_overall_coverage(VERBOSE);
 
       ------------------------------------------------------------
       log(ID_LOG_HDR, "Testing load database from a file - coverpoint");
       ------------------------------------------------------------
-      v_coverpoint_b.load_coverage_db(GC_FILE_PATH & "db_coverpoint.txt");
+      load_coverage_db_quiet(v_coverpoint_b, GC_FILE_PATH & "db_coverpoint.txt");
 
       -- Check bins and coverage
       v_bin_idx         := 0;
@@ -3160,7 +3183,7 @@ begin
       ------------------------------------------------------------
       log(ID_LOG_HDR, "Testing load database from a file - cross");
       ------------------------------------------------------------
-      v_cross_x2_b.load_coverage_db(GC_FILE_PATH & "db_cross.txt");
+      load_coverage_db_quiet(v_cross_x2_b, GC_FILE_PATH & "db_cross.txt");
 
       -- Check bins and coverage
       v_bin_idx         := 0;
@@ -3204,7 +3227,7 @@ begin
       ------------------------------------------------------------
       log(ID_LOG_HDR, "Testing load database from a file - max data");
       ------------------------------------------------------------
-      v_cross_x3_b.load_coverage_db(GC_FILE_PATH & "db_cross_max.txt");
+      load_coverage_db_quiet(v_cross_x3_b, GC_FILE_PATH & "db_cross_max.txt");
 
       -- Check bins and coverage
       v_bin_idx         := 0;
@@ -4052,12 +4075,11 @@ begin
       set_log_file_name(GC_TESTCASE & "_Log.txt");
       set_alert_file_name(GC_TESTCASE & "_Alert.txt");
 
-      while not (shared_coverpoint.is_defined(VOID)) loop
-        log(ID_SEQUENCER, "Waiting for coverpoint to be initialized", C_SCOPE);
-        wait for C_CLK_PERIOD;
-      end loop;
+      log(ID_SEQUENCER, "Waiting for coverpoint to be initialized", C_SCOPE);
+      wait until shared_coverpoint_initialized'event;
       log(ID_SEQUENCER, "Coverpoint initialized, ready to sample", C_SCOPE);
       shared_coverpoint.sample_coverage(10000);
+      wait;
     end if;
     wait;
   end process p_sampling;

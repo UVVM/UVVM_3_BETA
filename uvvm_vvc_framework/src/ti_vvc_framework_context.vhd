@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -16,9 +16,6 @@
 
 context ti_vvc_framework_context is
   library uvvm_vvc_framework;
-  use uvvm_vvc_framework.ti_data_fifo_pkg.all;
-  use uvvm_vvc_framework.ti_data_queue_pkg.all;
-  use uvvm_vvc_framework.ti_data_stack_pkg.all;
   use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
   use uvvm_vvc_framework.ti_protected_types_pkg.all;
 end context;

@@ -38,13 +38,13 @@ def main():
 
             # Compare files
             error_found = False
-            for idx, line in enumerate(golden_lines):
-                if golden_lines[idx] != verify_lines[idx]:
-                    failing_verify_file.append(filename)
-                    error_found = True
-                    break
-            # Check for line number mismatch
-            if not(error_found) and (golden_file_lines != check_file_lines):
+            if golden_file_lines == check_file_lines: # Compare content if line numbers match
+                for idx, line in enumerate(golden_lines):
+                    if golden_lines[idx] != verify_lines[idx]:
+                        failing_verify_file.append(filename)
+                        error_found = True
+                        break
+            else:
                 failing_verify_file.append(filename)
                 error_found = True
 

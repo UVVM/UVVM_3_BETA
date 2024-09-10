@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -14,34 +14,16 @@
 -- Description : See library quick reference (under 'doc') and README-file(s)
 ---------------------------------------------------------------------------------------------
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
+--================================================================================================================================
+--  Support package
+--================================================================================================================================
 library uvvm_util;
-context uvvm_util.uvvm_util_context;
-
-library uvvm_vvc_framework;
-use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
-
-library bitvis_vip_hvvc_to_vvc_bridge;
-use bitvis_vip_hvvc_to_vvc_bridge.support_pkg.all;
-
-library bitvis_vip_scoreboard;
-use bitvis_vip_scoreboard.generic_sb_support_pkg.all;
-
+use uvvm_util.types_pkg.all;
+use uvvm_util.adaptations_pkg.all;
 use work.support_pkg.all;
-use work.vvc_cmd_pkg.all;
 use work.td_target_support_pkg.all;
-use work.transaction_pkg.all;
-use work.ethernet_sb_pkg.all;
 
-library std;
-use std.textio.all;
-
---==========================================================================================
---==========================================================================================
-package vvc_methods_pkg is
+package vvc_methods_support_pkg is
 
   --==========================================================================================
   -- Types and constants for the ETHERNET VVC
@@ -93,35 +75,96 @@ package vvc_methods_pkg is
     pending_cmd_cnt  => 0
   );
 
-  -- v3
-  package protected_vvc_status_pkg is new uvvm_util.protected_generic_types_pkg
-    generic map(t_generic_element => t_vvc_status,
-                c_generic_default => C_VVC_STATUS_DEFAULT);
-  use protected_vvc_status_pkg.all;
-  shared variable shared_ethernet_vvc_status : protected_vvc_status_pkg.t_prot_generic_array;
-  alias shared_vvc_status is shared_ethernet_vvc_status; -- This alias is for internal use in the VVC
+end package vvc_methods_support_pkg;
 
-  package protected_vvc_config_pkg is new uvvm_util.protected_generic_types_pkg
-    generic map(t_generic_element => t_vvc_config,
-                c_generic_default => C_ETHERNET_VVC_CONFIG_DEFAULT);
-  use protected_vvc_config_pkg.all;
-  shared variable shared_ethernet_vvc_config : protected_vvc_config_pkg.t_prot_generic_array;
-  alias shared_vvc_config is shared_ethernet_vvc_config; -- This alias is for internal use in the VVC
+--================================================================================================================================
+--  Generic package instantiations
+--================================================================================================================================
+----------------------------------------------------------------------
+-- Protected type: t_vvc_status
+----------------------------------------------------------------------
+library uvvm_util;
+use work.vvc_methods_support_pkg.all;
+use work.vvc_transaction_pkg.all;
 
-  package protected_msg_id_panel_pkg is new uvvm_util.protected_generic_types_pkg
-    generic map(t_generic_element => t_msg_id_panel,
-                c_generic_default => C_ETHERNET_VVC_MSG_ID_PANEL_DEFAULT);
-  use protected_msg_id_panel_pkg.all;
-  shared variable shared_ethernet_vvc_msg_id_panel : protected_msg_id_panel_pkg.t_prot_generic_array;
+package protected_vvc_status_pkg is new uvvm_util.protected_generic_types_pkg
+  generic map(
+    t_generic_element  => t_vvc_status,
+    c_generic_default  => C_VVC_STATUS_DEFAULT,
+    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+  );
+
+----------------------------------------------------------------------
+-- Protected type: t_vvc_config
+----------------------------------------------------------------------
+library uvvm_util;
+use work.vvc_methods_support_pkg.all;
+use work.vvc_transaction_pkg.all;
+
+package protected_vvc_config_pkg is new uvvm_util.protected_generic_types_pkg
+  generic map(
+    t_generic_element  => t_vvc_config,
+    c_generic_default  => C_ETHERNET_VVC_CONFIG_DEFAULT,
+    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+  );
+
+----------------------------------------------------------------------
+-- Protected type: t_msg_id_panel
+----------------------------------------------------------------------
+library uvvm_util;
+use uvvm_util.types_pkg.all;
+use uvvm_util.adaptations_pkg.all;
+use work.vvc_methods_support_pkg.all;
+use work.vvc_transaction_pkg.all;
+
+package protected_msg_id_panel_pkg is new uvvm_util.protected_generic_types_pkg
+  generic map(
+    t_generic_element  => t_msg_id_panel,
+    c_generic_default  => C_ETHERNET_VVC_MSG_ID_PANEL_DEFAULT,
+    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+  );
+
+--================================================================================================================================
+--  VVC methods package
+--================================================================================================================================
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library std;
+use std.textio.all;
+
+library uvvm_util;
+context uvvm_util.uvvm_util_context;
+
+library uvvm_vvc_framework;
+use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
+
+library bitvis_vip_hvvc_to_vvc_bridge;
+use bitvis_vip_hvvc_to_vvc_bridge.support_pkg.all;
+
+use work.support_pkg.all;
+use work.vvc_transaction_pkg.all;
+use work.protected_transaction_group_pkg.all;
+use work.vvc_cmd_pkg.all;
+use work.vvc_cmd_shared_variables_pkg.all;
+use work.td_target_support_pkg.all;
+use work.vvc_methods_support_pkg.all;
+use work.protected_vvc_status_pkg.all;
+use work.protected_vvc_config_pkg.all;
+use work.protected_msg_id_panel_pkg.all;
+use work.vvc_sb_pkg.all;
+
+package vvc_methods_pkg is
+
+  shared variable shared_ethernet_vvc_status       : work.protected_vvc_status_pkg.t_generic_array;
+  shared variable shared_ethernet_vvc_config       : work.protected_vvc_config_pkg.t_generic_array;
+  shared variable shared_ethernet_vvc_msg_id_panel : work.protected_msg_id_panel_pkg.t_generic_array;
+  shared variable ETHERNET_VVC_SB                  : t_generic_sb;
+
+  alias shared_vvc_status       is shared_ethernet_vvc_status;       -- This alias is for internal use in the VVC
+  alias shared_vvc_config       is shared_ethernet_vvc_config;       -- This alias is for internal use in the VVC
   alias shared_vvc_msg_id_panel is shared_ethernet_vvc_msg_id_panel; -- This alias is for internal use in the VVC
-
-  -- Scoreboard
-  package ethernet_sb_pkg is new bitvis_vip_scoreboard.generic_sb_pkg
-    generic map(t_element         => t_ethernet_frame,
-                element_match     => ethernet_match,
-                to_string_element => to_string);
-  use ethernet_sb_pkg.all;
-  shared variable ETHERNET_VVC_SB : ethernet_sb_pkg.t_prot_generic_sb;
 
   --==========================================================================================
   -- Methods dedicated to this VVC
@@ -222,7 +265,7 @@ package vvc_methods_pkg is
     constant dut_if_field_config  : in t_dut_if_field_config_array;
     signal   hvvc_to_bridge       : inout t_hvvc_to_bridge;
     signal   bridge_to_hvvc       : in t_bridge_to_hvvc;
-    variable vvc_transaction_info : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx         : in natural;
     constant channel              : in t_channel;
     constant scope                : in string;
@@ -237,7 +280,7 @@ package vvc_methods_pkg is
     constant dut_if_field_config  : in t_dut_if_field_config_array;
     signal   hvvc_to_bridge       : inout t_hvvc_to_bridge;
     signal   bridge_to_hvvc       : in t_bridge_to_hvvc;
-    variable vvc_transaction_info : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx         : in natural;
     constant channel              : in t_channel;
     constant scope                : in string;
@@ -251,43 +294,41 @@ package vvc_methods_pkg is
     constant dut_if_field_config  : in t_dut_if_field_config_array;
     signal   hvvc_to_bridge       : inout t_hvvc_to_bridge;
     signal   bridge_to_hvvc       : in t_bridge_to_hvvc;
-    variable vvc_transaction_info : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx         : in natural;
     constant channel              : in t_channel;
     constant scope                : in string;
     constant msg_id_panel         : in t_msg_id_panel
   );
 
-  --==============================================================================
+  --==========================================================================================
   -- Transaction info methods
-  --==============================================================================
+  --==========================================================================================
   procedure set_global_vvc_transaction_info(
     signal   vvc_transaction_info_trigger : inout std_logic;
-    variable vvc_transaction_info_group   : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info_group   : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx                 : in natural;
     constant channel                      : in t_channel;
     constant vvc_cmd                      : in t_vvc_cmd_record;
     constant vvc_config                   : in t_vvc_config;
+    constant transaction_status           : in t_transaction_status;
+    constant scope                        : in string := C_VVC_CMD_SCOPE_DEFAULT);
+
+  procedure set_global_vvc_transaction_info(
+    signal   vvc_transaction_info_trigger : inout std_logic;
+    variable vvc_transaction_info_group   : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
+    constant instance_idx                 : in natural;
+    constant channel                      : in t_channel;
+    constant vvc_cmd                      : in t_vvc_cmd_record;
+    constant vvc_result                   : in t_vvc_result;
+    constant transaction_status           : in t_transaction_status;
     constant scope                        : in string := C_VVC_CMD_SCOPE_DEFAULT);
 
   procedure reset_vvc_transaction_info(
-    variable vvc_transaction_info_group : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info_group : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx               : in natural;
     constant channel                    : in t_channel;
     constant vvc_cmd                    : in t_vvc_cmd_record);
-
-  --==============================================================================
-  -- VVC Activity
-  --==============================================================================
-  procedure update_vvc_activity_register(signal   global_trigger_vvc_activity_register : inout std_logic;
-                                         variable vvc_status                           : inout protected_vvc_status_pkg.t_prot_generic_array;
-                                         constant instance_idx                         : in natural;
-                                         constant channel                              : in t_channel;
-                                         constant activity                             : in t_activity;
-                                         constant entry_num_in_vvc_activity_register   : in integer;
-                                         constant last_cmd_idx_executed                : in natural;
-                                         constant command_queue_is_empty               : in boolean;
-                                         constant scope                                : in string := C_VVC_NAME);
 
 end package vvc_methods_pkg;
 
@@ -465,7 +506,7 @@ package body vvc_methods_pkg is
     constant dut_if_field_config  : in t_dut_if_field_config_array;
     signal   hvvc_to_bridge       : inout t_hvvc_to_bridge;
     signal   bridge_to_hvvc       : in t_bridge_to_hvvc;
-    variable vvc_transaction_info : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx         : in natural;
     constant channel              : in t_channel;
     constant scope                : in string;
@@ -628,7 +669,7 @@ package body vvc_methods_pkg is
     constant dut_if_field_config  : in t_dut_if_field_config_array;
     signal   hvvc_to_bridge       : inout t_hvvc_to_bridge;
     signal   bridge_to_hvvc       : in t_bridge_to_hvvc;
-    variable vvc_transaction_info : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx         : in natural;
     constant channel              : in t_channel;
     constant scope                : in string;
@@ -816,7 +857,7 @@ package body vvc_methods_pkg is
     constant dut_if_field_config  : in t_dut_if_field_config_array;
     signal   hvvc_to_bridge       : inout t_hvvc_to_bridge;
     signal   bridge_to_hvvc       : in t_bridge_to_hvvc;
-    variable vvc_transaction_info : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx         : in natural;
     constant channel              : in t_channel;
     constant scope                : in string;
@@ -873,40 +914,67 @@ package body vvc_methods_pkg is
     end if;
   end procedure priv_ethernet_expect_from_bridge;
 
-  --==============================================================================
+  --==========================================================================================
   -- Transaction info methods
-  --==============================================================================
+  --==========================================================================================
   procedure set_global_vvc_transaction_info(
     signal   vvc_transaction_info_trigger : inout std_logic;
-    variable vvc_transaction_info_group   : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info_group   : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx                 : in natural;
     constant channel                      : in t_channel;
     constant vvc_cmd                      : in t_vvc_cmd_record;
     constant vvc_config                   : in t_vvc_config;
+    constant transaction_status           : in t_transaction_status;
     constant scope                        : in string := C_VVC_CMD_SCOPE_DEFAULT) is
     variable v_transaction_info_group : t_transaction_group := vvc_transaction_info_group.get(instance_idx, channel);
   begin
     case vvc_cmd.operation is
       when TRANSMIT | RECEIVE | EXPECT =>
-        v_transaction_info_group.bt.operation                             := vvc_cmd.operation;
-        v_transaction_info_group.bt.ethernet_frame.mac_destination        := vvc_cmd.mac_destination;
-        v_transaction_info_group.bt.ethernet_frame.mac_source             := vvc_cmd.mac_source;
-        v_transaction_info_group.bt.ethernet_frame.payload_length         := vvc_cmd.payload_length;
-        v_transaction_info_group.bt.ethernet_frame.payload                := vvc_cmd.payload;
-        v_transaction_info_group.bt.vvc_meta.msg(1 to vvc_cmd.msg'length) := vvc_cmd.msg;
-        v_transaction_info_group.bt.vvc_meta.cmd_idx                      := vvc_cmd.cmd_idx;
-        v_transaction_info_group.bt.transaction_status                    := IN_PROGRESS;
+        v_transaction_info_group.bt.operation                      := vvc_cmd.operation;
+        v_transaction_info_group.bt.ethernet_frame.mac_destination := vvc_cmd.mac_destination;
+        v_transaction_info_group.bt.ethernet_frame.mac_source      := vvc_cmd.mac_source;
+        v_transaction_info_group.bt.ethernet_frame.payload_length  := vvc_cmd.payload_length;
+        v_transaction_info_group.bt.ethernet_frame.payload         := vvc_cmd.payload;
+        v_transaction_info_group.bt.vvc_meta.msg                   := vvc_cmd.msg;
+        v_transaction_info_group.bt.vvc_meta.cmd_idx               := vvc_cmd.cmd_idx;
+        v_transaction_info_group.bt.transaction_status             := transaction_status;
         vvc_transaction_info_group.set(v_transaction_info_group, instance_idx, channel);
         gen_pulse(vvc_transaction_info_trigger, 0 ns, "pulsing global vvc transaction info trigger", scope, ID_NEVER);
+
       when others =>
-        alert(TB_ERROR, "VVC operation not recognized");
+        alert(TB_ERROR, "VVC operation not recognized", scope);
+    end case;
+
+    wait for 0 ns;
+  end procedure set_global_vvc_transaction_info;
+
+  procedure set_global_vvc_transaction_info(
+    signal   vvc_transaction_info_trigger : inout std_logic;
+    variable vvc_transaction_info_group   : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
+    constant instance_idx                 : in natural;
+    constant channel                      : in t_channel;
+    constant vvc_cmd                      : in t_vvc_cmd_record;
+    constant vvc_result                   : in t_vvc_result;
+    constant transaction_status           : in t_transaction_status;
+    constant scope                        : in string := C_VVC_CMD_SCOPE_DEFAULT) is
+    variable v_transaction_info_group : t_transaction_group := vvc_transaction_info_group.get(instance_idx, channel);
+  begin
+    case vvc_cmd.operation is
+      when RECEIVE =>
+        v_transaction_info_group.bt.ethernet_frame     := vvc_result.ethernet_frame;
+        v_transaction_info_group.bt.transaction_status := transaction_status;
+        vvc_transaction_info_group.set(v_transaction_info_group, instance_idx, channel);
+        gen_pulse(vvc_transaction_info_trigger, 0 ns, "pulsing global vvc transaction info trigger", scope, ID_NEVER);
+
+      when others =>
+        alert(TB_ERROR, "VVC operation does not update vvc_result", scope);
     end case;
 
     wait for 0 ns;
   end procedure set_global_vvc_transaction_info;
 
   procedure reset_vvc_transaction_info(
-    variable vvc_transaction_info_group : inout protected_vvc_transaction_info_pkg.t_prot_generic_array; -- v3 t_transaction_group;
+    variable vvc_transaction_info_group : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
     constant instance_idx               : in natural;
     constant channel                    : in t_channel;
     constant vvc_cmd                    : in t_vvc_cmd_record) is
@@ -915,6 +983,7 @@ package body vvc_methods_pkg is
     case vvc_cmd.operation is
       when TRANSMIT | RECEIVE | EXPECT =>
         v_transaction_info_group.bt := C_BASE_TRANSACTION_SET_DEFAULT;
+
       when others =>
         null;
     end case;
@@ -922,39 +991,5 @@ package body vvc_methods_pkg is
 
     wait for 0 ns;
   end procedure reset_vvc_transaction_info;
-
-  --==============================================================================
-  -- VVC Activity
-  --==============================================================================
-  procedure update_vvc_activity_register(signal   global_trigger_vvc_activity_register : inout std_logic;
-                                         variable vvc_status                           : inout protected_vvc_status_pkg.t_prot_generic_array;
-                                         constant instance_idx                         : in natural;
-                                         constant channel                              : in t_channel;
-                                         constant activity                             : in t_activity;
-                                         constant entry_num_in_vvc_activity_register   : in integer;
-                                         constant last_cmd_idx_executed                : in natural;
-                                         constant command_queue_is_empty               : in boolean;
-                                         constant scope                                : in string := C_VVC_NAME) is
-    variable v_activity   : t_activity   := activity;
-    variable v_vvc_status : t_vvc_status := vvc_status.get(instance_idx, channel);
-  begin
-    -- Update vvc_status after a command has finished (during same delta cycle the activity register is updated)
-    if activity = INACTIVE then
-      v_vvc_status.previous_cmd_idx := last_cmd_idx_executed;
-      v_vvc_status.current_cmd_idx  := 0;
-    end if;
-    vvc_status.set(v_vvc_status, instance_idx, channel);
-
-    if v_activity = INACTIVE and not (command_queue_is_empty) then
-      v_activity := ACTIVE;
-    end if;
-    shared_vvc_activity_register.priv_report_vvc_activity(vvc_idx               => entry_num_in_vvc_activity_register,
-                                                          activity              => v_activity,
-                                                          last_cmd_idx_executed => last_cmd_idx_executed);
-    if global_trigger_vvc_activity_register /= 'L' then
-      wait until global_trigger_vvc_activity_register = 'L';
-    end if;
-    gen_pulse(global_trigger_vvc_activity_register, 0 ns, "pulsing global trigger for vvc activity register", scope, ID_NEVER);
-  end procedure;
 
 end package body vvc_methods_pkg;

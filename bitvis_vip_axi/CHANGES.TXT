@@ -1,35 +1,7 @@
-Bitvis VIP Axi (AXI4) - Overview on Versions and Changes
+Bitvis VIP AXI (AXI4) - Overview on Versions and Changes
 ==============================================================
 
-v0.2.2
+v1.0.0
 ----------
-Released: 2023-XX-XX
-- Added target independent prefix "ti" to the VVC framework context declaration.
-- Removed unused id_for_bfm.
-- Added filter for (vcom-1246) warning in test.py script.
-- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
-
-v0.2.1
-----------
-Released: 2022-05-05
-- t_vvc_config, t_vvc_status, t_transaction_info and t_axi_bfm_config record declaration formatting.
-
-v0.2.0
-----------
-Released: 2021-10-22
-- Added support to force the VVC to execute only one transaction at a time.
-- Fixed bug where await_completion in certain cases didn't detect that the VVC was finished.
-- Changed last_cmd_idx_executed to have a constant value of natural'high to avoid potential 
-  problems with fetch_result.
-
-v0.1.1
-----------
-Released: 2021-04-08
-- Fixed "bad handle or reference" fatal error that happened in some versions of Modelsim
-- Fixed bug in the log message in the axi_read BFM procedure
-- Fixed compilation error in Riviera Pro
-
-v0.1.0
-----------
-Released: 2020-10-06
-- Initial version of AXI VIP
+Released: 20XX-XX-XX
+- Initial version of AXI VIP in UVVM V3.

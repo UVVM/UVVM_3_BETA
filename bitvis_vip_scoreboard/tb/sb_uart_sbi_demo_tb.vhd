@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -65,8 +65,8 @@ architecture func of sb_uart_sbi_demo_tb is
   constant C_CLK_PERIOD : time := 10 ns; -- 100 MHz
 
   -- One SB for each side of the DUT
-  shared variable v_uart_sb : t_prot_generic_sb;
-  shared variable v_sbi_sb  : t_prot_generic_sb;
+  shared variable v_uart_sb : t_generic_sb;
+  shared variable v_sbi_sb  : t_generic_sb;
 
 begin
 

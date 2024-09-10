@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -51,7 +51,6 @@ begin
   i_rgmii_tx : entity work.rgmii_tx_vvc
     generic map(
       GC_INSTANCE_IDX                          => GC_INSTANCE_IDX,
-      GC_CHANNEL                               => TX,
       GC_RGMII_BFM_CONFIG                      => GC_RGMII_BFM_CONFIG,
       GC_CMD_QUEUE_COUNT_MAX                   => GC_CMD_QUEUE_COUNT_MAX,
       GC_CMD_QUEUE_COUNT_THRESHOLD             => GC_CMD_QUEUE_COUNT_THRESHOLD,
@@ -68,7 +67,6 @@ begin
   i_rgmii_rx : entity work.rgmii_rx_vvc
     generic map(
       GC_INSTANCE_IDX                          => GC_INSTANCE_IDX,
-      GC_CHANNEL                               => RX,
       GC_RGMII_BFM_CONFIG                      => GC_RGMII_BFM_CONFIG,
       GC_CMD_QUEUE_COUNT_MAX                   => GC_CMD_QUEUE_COUNT_MAX,
       GC_CMD_QUEUE_COUNT_THRESHOLD             => GC_CMD_QUEUE_COUNT_THRESHOLD,

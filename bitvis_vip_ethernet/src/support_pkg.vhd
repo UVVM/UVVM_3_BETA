@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -22,13 +22,14 @@ use std.textio.all;
 library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
---========================================================================================================================
---========================================================================================================================
+--================================================================================================================================
+--  Support package
+--================================================================================================================================
 package support_pkg is
 
-  --========================================================================================================================
+  --==========================================================================================
   -- Types and constants
-  --========================================================================================================================
+  --==========================================================================================
   -- The preamble & SFD sequence is represented with the LSb transmitted first
   constant C_PREAMBLE : std_logic_vector(55 downto 0) := x"55_55_55_55_55_55_55";
   constant C_SFD      : std_logic_vector(7 downto 0)  := x"D5";
@@ -85,9 +86,9 @@ package support_pkg is
     interpacket_gap_time => 96 ns       -- Standard minimum interpacket gap (Gigabith Ethernet)
   );
 
-  --========================================================================================================================
+  --==========================================================================================
   -- Functions and procedures
-  --========================================================================================================================
+  --==========================================================================================
   impure function generate_crc_32(
     constant data_array : in t_byte_array
   ) return std_logic_vector;
@@ -125,9 +126,6 @@ package support_pkg is
   ) return boolean;
 
 end package support_pkg;
-
---========================================================================================================================
---========================================================================================================================
 
 package body support_pkg is
 
@@ -171,7 +169,9 @@ package body support_pkg is
   begin
     case frame_field is
       when HEADER =>
-        return LF & "    MAC destination: " & to_string(ethernet_frame.mac_destination, HEX, KEEP_LEADING_0, INCL_RADIX) & LF & "    MAC source:      " & to_string(ethernet_frame.mac_source, HEX, KEEP_LEADING_0, INCL_RADIX) & LF & "    payload length:  " & to_string(ethernet_frame.payload_length);
+        return LF & "    MAC destination: " & to_string(ethernet_frame.mac_destination, HEX, KEEP_LEADING_0, INCL_RADIX) &
+               LF & "    MAC source:      " & to_string(ethernet_frame.mac_source, HEX, KEEP_LEADING_0, INCL_RADIX) &
+               LF & "    payload length:  " & to_string(ethernet_frame.payload_length);
 
       when PAYLOAD =>
         write(v_line, string'("[" & to_string(0) & "]:" & to_string(ethernet_frame.payload(0), HEX, AS_IS, INCL_RADIX)));
@@ -198,7 +198,9 @@ package body support_pkg is
     constant ethernet_frame : in t_ethernet_frame
   ) return string is
   begin
-    return "MAC dest: " & to_string(ethernet_frame.mac_destination, HEX, AS_IS, INCL_RADIX) & ", MAC src: " & to_string(ethernet_frame.mac_source, HEX, AS_IS, INCL_RADIX) & ", payload length: " & to_string(ethernet_frame.payload_length);
+    return "MAC dest: " & to_string(ethernet_frame.mac_destination, HEX, AS_IS, INCL_RADIX) &
+           ", MAC src: " & to_string(ethernet_frame.mac_source, HEX, AS_IS, INCL_RADIX) &
+           ", payload length: " & to_string(ethernet_frame.payload_length);
   end function to_string;
 
   -- Compares two ethernet frames
@@ -235,7 +237,11 @@ package body support_pkg is
     constant expected : in t_ethernet_frame
   ) return boolean is
   begin
-    return actual.mac_destination = expected.mac_destination and actual.mac_source = expected.mac_source and actual.payload_length = expected.payload_length and actual.payload(0 to actual.payload_length - 1) = expected.payload(0 to expected.payload_length - 1) and actual.fcs = expected.fcs;
+    return actual.mac_destination = expected.mac_destination and
+           actual.mac_source = expected.mac_source and
+           actual.payload_length = expected.payload_length and
+           actual.payload(0 to actual.payload_length - 1) = expected.payload(0 to expected.payload_length - 1) and
+           actual.fcs = expected.fcs;
   end function ethernet_match;
 
 end package body support_pkg;

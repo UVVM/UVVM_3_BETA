@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -32,9 +32,10 @@ context uvvm_util.uvvm_util_context;
 
 library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
-use uvvm_vvc_framework.ti_protected_types_pkg.t_prot_vvc_list;
+use uvvm_vvc_framework.ti_protected_types_pkg.t_vvc_list;
 
-use work.vvc_cmd_pkg.all;               -- shared_vvc_response, t_vvc_result
+use work.vvc_cmd_pkg.all;
+use work.vvc_cmd_shared_variables_pkg.all;
 use work.td_target_support_pkg.all;
 
 package td_vvc_framework_common_methods_pkg is
@@ -47,13 +48,17 @@ package td_vvc_framework_common_methods_pkg is
     signal   vvc_target       : inout t_vvc_target_record;
     constant vvc_instance_idx : in integer;
     constant vvc_channel      : in t_channel;
-    variable vvc_list         : inout t_prot_vvc_list
+    variable vvc_list         : inout t_vvc_list;
+    constant scope            : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel     : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   );
 
   procedure add_to_vvc_list(
     signal   vvc_target       : inout t_vvc_target_record;
     constant vvc_instance_idx : in integer;
-    variable vvc_list         : inout t_prot_vvc_list
+    variable vvc_list         : inout t_vvc_list;
+    constant scope            : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel     : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   );
 
   -------------------------------------------
@@ -68,7 +73,8 @@ package td_vvc_framework_common_methods_pkg is
     constant vvc_channel         : in t_channel;
     constant timeout             : in time;
     constant msg                 : in string         := "";
-    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   );
 
   -------------------------------------------
@@ -80,7 +86,8 @@ package td_vvc_framework_common_methods_pkg is
     constant vvc_instance_idx    : in integer;
     constant timeout             : in time;
     constant msg                 : in string         := "";
-    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   );
 
   -------------------------------------------
@@ -96,7 +103,8 @@ package td_vvc_framework_common_methods_pkg is
     constant wanted_idx          : in integer;
     constant timeout             : in time;
     constant msg                 : in string         := "";
-    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   );
 
   -------------------------------------------
@@ -109,7 +117,8 @@ package td_vvc_framework_common_methods_pkg is
     constant wanted_idx          : in integer;
     constant timeout             : in time;
     constant msg                 : in string         := "";
-    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   );
 
   -------------------------------------------
@@ -378,7 +387,7 @@ package body td_vvc_framework_common_methods_pkg is
   --  Methods
   --=========================================================================================
 
-  -- NOTE: ALL VVCs using this td_vvc_framework_common_methods_pkg package MUST have the following declared in their local transaction_pkg.
+  -- NOTE: ALL VVCs using this td_vvc_framework_common_methods_pkg package MUST have the following declared in their local vvc_transaction_pkg.
   --       - The enumerated t_operation  (e.g. AWAIT_COMPLETION, ENABLE_LOG_MSG, etc.)
   --       Any VVC based on an older version of td_vvc_framework_common_methods_pkg must - if new operators have been introduced in td_vvc_framework_common_methods_pkg either
   --       a) include the new operator(s) in its t_operation, or
@@ -388,19 +397,23 @@ package body td_vvc_framework_common_methods_pkg is
     signal   vvc_target       : inout t_vvc_target_record;
     constant vvc_instance_idx : in integer;
     constant vvc_channel      : in t_channel;
-    variable vvc_list         : inout t_prot_vvc_list
+    variable vvc_list         : inout t_vvc_list;
+    constant scope            : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel     : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
   begin
-    vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel);
+    vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel, scope, msg_id_panel);
   end procedure add_to_vvc_list;
 
   procedure add_to_vvc_list(
     signal   vvc_target       : inout t_vvc_target_record;
     constant vvc_instance_idx : in integer;
-    variable vvc_list         : inout t_prot_vvc_list
+    variable vvc_list         : inout t_vvc_list;
+    constant scope            : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel     : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
   begin
-    vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, NA);
+    vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, NA, scope, msg_id_panel);
   end procedure add_to_vvc_list;
 
   -------------------------------------------
@@ -415,12 +428,13 @@ package body td_vvc_framework_common_methods_pkg is
     constant vvc_channel         : in t_channel;
     constant timeout             : in time;
     constant msg                 : in string         := "";
-    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
-    variable v_vvc_list : t_prot_vvc_list;
+    variable v_vvc_list : t_vvc_list;
   begin
-    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel);
-    await_completion(ALL_OF, v_vvc_list, timeout, CLEAR_LIST, msg, scope);
+    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel, scope, msg_id_panel);
+    await_completion(ALL_OF, v_vvc_list, timeout, CLEAR_LIST, msg, scope, msg_id_panel);
   end procedure await_completion;
 
   -------------------------------------------
@@ -432,12 +446,13 @@ package body td_vvc_framework_common_methods_pkg is
     constant vvc_instance_idx    : in integer;
     constant timeout             : in time;
     constant msg                 : in string         := "";
-    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
-    variable v_vvc_list : t_prot_vvc_list;
+    variable v_vvc_list : t_vvc_list;
   begin
-    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, NA);
-    await_completion(ALL_OF, v_vvc_list, timeout, CLEAR_LIST, msg, scope);
+    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, NA, scope, msg_id_panel);
+    await_completion(ALL_OF, v_vvc_list, timeout, CLEAR_LIST, msg, scope, msg_id_panel);
   end procedure await_completion;
 
   -------------------------------------------
@@ -453,12 +468,13 @@ package body td_vvc_framework_common_methods_pkg is
     constant wanted_idx          : in integer;
     constant timeout             : in time;
     constant msg                 : in string         := "";
-    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
-    variable v_vvc_list : t_prot_vvc_list;
+    variable v_vvc_list : t_vvc_list;
   begin
-    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel);
-    await_completion(ALL_OF, v_vvc_list, wanted_idx, timeout, CLEAR_LIST, msg, scope);
+    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel, scope, msg_id_panel);
+    await_completion(ALL_OF, v_vvc_list, wanted_idx, timeout, CLEAR_LIST, msg, scope, msg_id_panel);
   end procedure await_completion;
 
   -------------------------------------------
@@ -471,12 +487,13 @@ package body td_vvc_framework_common_methods_pkg is
     constant wanted_idx          : in integer;
     constant timeout             : in time;
     constant msg                 : in string         := "";
-    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT
+    constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
-    variable v_vvc_list : t_prot_vvc_list;
+    variable v_vvc_list : t_vvc_list;
   begin
-    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, NA);
-    await_completion(ALL_OF, v_vvc_list, wanted_idx, timeout, CLEAR_LIST, msg, scope);
+    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, NA, scope, msg_id_panel);
+    await_completion(ALL_OF, v_vvc_list, wanted_idx, timeout, CLEAR_LIST, msg, scope, msg_id_panel);
   end procedure await_completion;
 
   -------------------------------------------

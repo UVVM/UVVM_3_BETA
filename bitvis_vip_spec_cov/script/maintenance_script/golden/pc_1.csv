@@ -4,3 +4,5 @@ DELIMITER: ,
 
 REQ_1,TC_1,PASS
 SUMMARY, TC_1, PASS
+
+Has been parsed by run_spec_cov.py script for total coverage

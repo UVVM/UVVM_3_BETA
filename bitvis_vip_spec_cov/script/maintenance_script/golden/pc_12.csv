@@ -6,3 +6,5 @@ REQ_8,TC_8,PASS
 REQ_888,TC_8,PASS
 REQ_88,TC_8,PASS
 SUMMARY, TC_8, PASS
+
+Has been parsed by run_spec_cov.py script for total coverage

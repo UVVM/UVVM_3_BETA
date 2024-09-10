@@ -4,9 +4,9 @@
 Protected types
 ##################################################################################################################################
 
-.. _t_prot_vvc_list:
+.. _t_vvc_list:
 
-t_prot_vvc_list
+t_vvc_list
 ----------------------------------------------------------------------------------------------------------------------------------
 
 Protected type to gather VVC's in a list.
@@ -36,7 +36,7 @@ Adds a VVC to the protected VVC list.
 .. code-block::
 
     -- Examples:
-    variable v_vvc_list : t_prot_vvc_list;
+    variable v_vvc_list : t_vvc_list;
     v_vvc_list.add("SBI_VVC", 1);
     v_vvc_list.add("UART_VVC", ALL_INSTANCES, ALL_CHANNELS);
 

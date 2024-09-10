@@ -4,3 +4,5 @@ DELIMITER: ,
 
 REQ_5,TC_5,FAIL
 SUMMARY, TC_5, FAIL
+
+Has been parsed by run_spec_cov.py script for total coverage

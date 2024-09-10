@@ -5,7 +5,7 @@ if { [info exists ::env(SIMULATOR)] } {
   puts "Simulator: $simulator"
 
   if [string equal $simulator "MODELSIM"] {
-    set compdirectives "-quiet -suppress 1346,1236,1090 -2008 -work $lib_name"
+    set compdirectives "-quiet -suppress 1346,1236 -2008 -work $lib_name"
   } elseif [string equal $simulator "RIVIERAPRO"] {
     set compdirectives "-2008 -nowarn COMP96_0564 -nowarn COMP96_0048 -dbg -work $lib_name"
   } else {
@@ -25,5 +25,5 @@ set tb_path "$root_path/bitvis_irqc/tb/maintenance_tb"
 
 echo "\n\n\n=== Compiling TB\n"
 
-echo "eval vcom  $compdirectives  $tb_path/maintenance_irqc_tb.vhd"
-eval vcom  $compdirectives  $tb_path/maintenance_irqc_tb.vhd
+echo "eval vcom  $compdirectives  $tb_path/irqc_tb.vhd"
+eval vcom  $compdirectives  $tb_path/irqc_tb.vhd

@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -21,15 +21,14 @@ use std.textio.all;
 
 use work.types_pkg.all;
 use work.adaptations_pkg.t_channel;
-use work.adaptations_pkg.C_MAX_VVC_INSTANCE_NUM;
-use work.adaptations_pkg.ALL_INSTANCES;
 
 package protected_generic_types_pkg is
 
   generic(type t_generic_element;
-          c_generic_default : t_generic_element);
+          c_generic_default  : t_generic_element;
+          c_max_instance_num : natural := 1);
 
-  type t_prot_generic_array is protected
+  type t_generic_array is protected
 
     procedure set(
       constant element : in t_generic_element;
@@ -68,9 +67,9 @@ package protected_generic_types_pkg is
       VOID : t_void
     ) return t_generic_element;
 
-  end protected t_prot_generic_array;
+  end protected t_generic_array;
 
-  type t_prot_generic is protected
+  type t_generic is protected
 
     procedure set(
       constant element : in t_generic_element
@@ -80,27 +79,27 @@ package protected_generic_types_pkg is
       VOID : t_void
     ) return t_generic_element;
 
-  end protected t_prot_generic;
+  end protected t_generic;
 
 end package protected_generic_types_pkg;
 
 package body protected_generic_types_pkg is
 
-  type t_prot_generic_array is protected body
+  type t_generic_array is protected body
 
     constant C_SCOPE               : string    := "PROTECTED_GENERIC";
     constant C_DEFAULT_ARRAY_INDEX : integer   := 0;
     constant C_DEFAULT_VVC_CHANNEL : t_channel := NA;
 
-    type t_queue_is_initialized_array is array (C_MAX_VVC_INSTANCE_NUM - 1 downto ALL_INSTANCES) of boolean;
-    variable vr_queue_is_initialized    : t_queue_is_initialized_array := (others => false);
-    variable vr_rx_queue_is_initialized : t_queue_is_initialized_array := (others => false);
-    variable vr_tx_queue_is_initialized : t_queue_is_initialized_array := (others => false);
+    type t_queue_is_initialized_array is array (c_max_instance_num - 1 downto ALL_INSTANCES) of boolean;
+    variable priv_queue_is_initialized    : t_queue_is_initialized_array := (others => false);
+    variable priv_rx_queue_is_initialized : t_queue_is_initialized_array := (others => false);
+    variable priv_tx_queue_is_initialized : t_queue_is_initialized_array := (others => false);
 
     type t_generic_element_array is array (integer range <>) of t_generic_element;
-    variable vr_element           : t_generic_element_array(C_MAX_VVC_INSTANCE_NUM - 1 downto ALL_INSTANCES);
-    variable vr_vvc_rx_ch_element : t_generic_element_array(C_MAX_VVC_INSTANCE_NUM - 1 downto ALL_INSTANCES);
-    variable vr_vvc_tx_ch_element : t_generic_element_array(C_MAX_VVC_INSTANCE_NUM - 1 downto ALL_INSTANCES);
+    variable priv_element           : t_generic_element_array(c_max_instance_num - 1 downto ALL_INSTANCES);
+    variable priv_vvc_rx_ch_element : t_generic_element_array(c_max_instance_num - 1 downto ALL_INSTANCES);
+    variable priv_vvc_tx_ch_element : t_generic_element_array(c_max_instance_num - 1 downto ALL_INSTANCES);
 
     ------------------------------------------------------------
     -- Queue initialization helper methods
@@ -110,16 +109,16 @@ package body protected_generic_types_pkg is
       constant channel : t_channel
     ) return boolean is
     begin
-      if (index < C_MAX_VVC_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
+      if (index < c_max_instance_num) and (index >= ALL_INSTANCES) then
         case channel is
           when RX =>
-            return vr_rx_queue_is_initialized(index);
+            return priv_rx_queue_is_initialized(index);
           when TX =>
-            return vr_tx_queue_is_initialized(index);
+            return priv_tx_queue_is_initialized(index);
           when ALL_CHANNELS =>
-            return vr_queue_is_initialized(index);
+            return priv_queue_is_initialized(index);
           when others =>
-            return vr_queue_is_initialized(index);
+            return priv_queue_is_initialized(index);
         end case;
       else
         return false;
@@ -131,17 +130,17 @@ package body protected_generic_types_pkg is
       constant channel : t_channel
     ) is
     begin
-      if (index < C_MAX_VVC_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
+      if (index < c_max_instance_num) and (index >= ALL_INSTANCES) then
 
         case channel is
           when RX =>
-            vr_rx_queue_is_initialized(index) := true;
+            priv_rx_queue_is_initialized(index) := true;
           when TX =>
-            vr_tx_queue_is_initialized(index) := true;
+            priv_tx_queue_is_initialized(index) := true;
           when ALL_CHANNELS =>
-            vr_queue_is_initialized(index) := true;
+            priv_queue_is_initialized(index) := true;
           when others =>
-            vr_queue_is_initialized(index) := true;
+            priv_queue_is_initialized(index) := true;
         end case;
       end if;
     end procedure initialize_queue;
@@ -155,20 +154,20 @@ package body protected_generic_types_pkg is
       constant channel : in t_channel
     ) is
     begin
-      if (index < C_MAX_VVC_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
+      if (index < c_max_instance_num) and (index >= ALL_INSTANCES) then
         initialize_queue(index, channel);
 
         case channel is
           when RX =>
-            vr_vvc_rx_ch_element(index) := element;
+            priv_vvc_rx_ch_element(index) := element;
           when TX =>
-            vr_vvc_tx_ch_element(index) := element;
+            priv_vvc_tx_ch_element(index) := element;
           when ALL_CHANNELS =>          -- Set all channels to the given value
-            vr_vvc_tx_ch_element(index) := element;
-            vr_vvc_rx_ch_element(index) := element;
-            vr_element(index)           := element;
+            priv_vvc_tx_ch_element(index) := element;
+            priv_vvc_rx_ch_element(index) := element;
+            priv_element(index)           := element;
           when others =>
-            vr_element(index) := element;
+            priv_element(index) := element;
         end case;
       end if;
     end procedure set;
@@ -209,15 +208,15 @@ package body protected_generic_types_pkg is
 
       constant queue_is_initialized : boolean := is_queue_initialized(index, channel);
     begin
-      if (index < C_MAX_VVC_INSTANCE_NUM) and (index >= ALL_INSTANCES) and (queue_is_initialized = true) then
+      if (index < c_max_instance_num) and (index >= ALL_INSTANCES) and (queue_is_initialized = true) then
         case channel is
           when RX =>
-            return vr_vvc_rx_ch_element(index);
+            return priv_vvc_rx_ch_element(index);
           when TX =>
-            return vr_vvc_tx_ch_element(index);
+            return priv_vvc_tx_ch_element(index);
           -- TODO: Decide how to handle get() being called with ALL_CHANNELS. Treat as invalid input and give error?
           when others =>
-            return vr_element(index);
+            return priv_element(index);
         end case;
       else
         return C_GENERIC_DEFAULT;
@@ -248,27 +247,27 @@ package body protected_generic_types_pkg is
       return get(C_DEFAULT_ARRAY_INDEX, C_DEFAULT_VVC_CHANNEL);
     end function get;
 
-  end protected body t_prot_generic_array;
+  end protected body t_generic_array;
 
   -- Protected type that holds a single, non-array element. v3
-  type t_prot_generic is protected body
+  type t_generic is protected body
 
-    variable vr_element : t_generic_element := c_generic_default;
+    variable priv_element : t_generic_element := c_generic_default;
 
     procedure set(
       constant element : in t_generic_element
     ) is
     begin
-      vr_element := element;
+      priv_element := element;
     end procedure set;
 
     impure function get(
       VOID : t_void
     ) return t_generic_element is
     begin
-      return vr_element;
+      return priv_element;
     end function get;
 
-  end protected body t_prot_generic;
+  end protected body t_generic;
 
 end package body protected_generic_types_pkg;

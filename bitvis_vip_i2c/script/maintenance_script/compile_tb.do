@@ -5,7 +5,7 @@ if { [info exists ::env(SIMULATOR)] } {
   puts "Simulator: $simulator"
 
   if [string equal $simulator "MODELSIM"] {
-    set compdirectives "-quiet -suppress 1346,1236,1090 -2008 -work $lib_name"
+    set compdirectives "-quiet -suppress 1346,1236 -2008 -work $lib_name"
   } elseif [string equal $simulator "RIVIERAPRO"] {
     set compdirectives "-2008 -nowarn COMP96_0564 -nowarn COMP96_0048 -dbg -work $lib_name"
   } else {
@@ -60,5 +60,5 @@ eval vcom  $compdirectives  $tb_path/i2c_slave_dut.vhd
 echo "eval vcom  $compdirectives  $tb_path/i2c_th.vhd"
 eval vcom  $compdirectives  $tb_path/i2c_th.vhd
 
-echo "eval vcom  $compdirectives  $tb_path/i2c_tb.vhd"
-eval vcom  $compdirectives  $tb_path/i2c_tb.vhd
+echo "eval vcom  $compdirectives  $tb_path/i2c_vvc_tb.vhd"
+eval vcom  $compdirectives  $tb_path/i2c_vvc_tb.vhd

@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -18,18 +18,18 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library uvvm_util;
-context uvvm_util.uvvm_util_context;
-
 library std;
 use std.textio.all;
+
+library uvvm_util;
+context uvvm_util.uvvm_util_context;
 
 --================================================================================================================================
 --================================================================================================================================
 package rgmii_bfm_pkg is
 
   --==========================================================================================
-  -- Types and constants for RGMII BFM 
+  -- Types and constants for RGMII BFM
   --==========================================================================================
   constant C_BFM_SCOPE : string := "RGMII BFM";
 
@@ -48,31 +48,33 @@ package rgmii_bfm_pkg is
 
   -- Configuration record to be assigned in the test harness.
   type t_rgmii_bfm_config is record
-    max_wait_cycles          : integer; -- Used for setting the maximum cycles to wait before an alert is issued when
-                                        -- waiting for signals from the DUT.
-    max_wait_cycles_severity : t_alert_level; -- Severity if max_wait_cycles expires.
-    clock_period             : time;    -- Period of the clock signal.
-    rx_clock_skew            : time;    -- Skew of the sampling of the data in connection to the RX clock edges
-    match_strictness         : t_match_strictness; -- Matching strictness for std_logic values in check procedures.
-    id_for_bfm               : t_msg_id; -- The message ID used as a general message ID in the BFM
+    max_wait_cycles                : integer; -- Used for setting the maximum cycles to wait before an alert is issued when
+                                              -- waiting for signals from the DUT.
+    max_wait_cycles_severity       : t_alert_level; -- Severity if max_wait_cycles expires.
+    clock_period                   : time;    -- Period of the clock signal.
+    rx_clock_skew                  : time;    -- Skew of the sampling of the data in connection to the RX clock edges
+    match_strictness               : t_match_strictness; -- Matching strictness for std_logic values in check procedures.
+    id_for_bfm                     : t_msg_id; -- The message ID used as a general message ID in the BFM
+    data_valid_on_both_clock_edges : boolean;  -- Data is valid on both edges of the clock. Set this to true for 1 Gbps, and false for 10/100 Mbps.
   end record;
 
   -- Define the default value for the BFM config
   constant C_RGMII_BFM_CONFIG_DEFAULT : t_rgmii_bfm_config := (
-    max_wait_cycles          => 10,
-    max_wait_cycles_severity => ERROR,
-    clock_period             => -1 ns,
-    rx_clock_skew            => -1 ns,
-    match_strictness         => MATCH_EXACT,
-    id_for_bfm               => ID_BFM
+    max_wait_cycles                => 10,
+    max_wait_cycles_severity       => ERROR,
+    clock_period                   => -1 ns,
+    rx_clock_skew                  => -1 ns,
+    match_strictness               => MATCH_EXACT,
+    id_for_bfm                     => ID_BFM,
+    data_valid_on_both_clock_edges => true -- Default 1 Gbps
   );
 
   --==========================================================================================
-  -- BFM procedures 
+  -- BFM procedures
   --==========================================================================================
   -- This function returns an RGMII interface with initialized signals.
-  -- All input signals are initialized to 0
-  -- All output signals are initialized to Z
+  -- All BFM output signals are initialized to 0
+  -- All BFM input signals are initialized to Z
   function init_rgmii_if_signals
   return t_rgmii_tx_if;
 
@@ -90,6 +92,16 @@ package rgmii_bfm_pkg is
     constant scope        : in string             := C_BFM_SCOPE;
     constant msg_id_panel : in t_msg_id_panel     := shared_msg_id_panel.get(VOID);
     constant config       : in t_rgmii_bfm_config := C_RGMII_BFM_CONFIG_DEFAULT
+  );
+
+  procedure rgmii_write(
+    constant data_array                   : in t_byte_array;
+    constant action_when_transfer_is_done : in t_action_when_transfer_is_done;
+    constant msg                          : in string             := "";
+    signal   rgmii_tx_if                  : inout t_rgmii_tx_if;
+    constant scope                        : in string             := C_BFM_SCOPE;
+    constant msg_id_panel                 : in t_msg_id_panel     := shared_msg_id_panel.get(VOID);
+    constant config                       : in t_rgmii_bfm_config := C_RGMII_BFM_CONFIG_DEFAULT
   );
 
   ---------------------------------------------------------------------------------------------
@@ -158,6 +170,19 @@ package body rgmii_bfm_pkg is
     constant msg_id_panel : in t_msg_id_panel     := shared_msg_id_panel.get(VOID);
     constant config       : in t_rgmii_bfm_config := C_RGMII_BFM_CONFIG_DEFAULT
   ) is
+  begin
+    rgmii_write(data_array, RELEASE_LINE_AFTER_TRANSFER, msg, rgmii_tx_if, scope, msg_id_panel, config);
+  end procedure;
+
+  procedure rgmii_write(
+    constant data_array                   : in t_byte_array;
+    constant action_when_transfer_is_done : in t_action_when_transfer_is_done;
+    constant msg                          : in string             := "";
+    signal   rgmii_tx_if                  : inout t_rgmii_tx_if;
+    constant scope                        : in string             := C_BFM_SCOPE;
+    constant msg_id_panel                 : in t_msg_id_panel     := shared_msg_id_panel.get(VOID);
+    constant config                       : in t_rgmii_bfm_config := C_RGMII_BFM_CONFIG_DEFAULT
+  ) is
     constant proc_name : string  := "rgmii_write";
     constant proc_call : string  := proc_name & "(" & to_string(data_array'length) & " bytes)";
     variable v_timeout : boolean := false;
@@ -166,9 +191,9 @@ package body rgmii_bfm_pkg is
     check_value(data_array'ascending, TB_FAILURE, "Sanity check: Check that data_array is ascending (defined with 'to'), for byte order clarity.", scope, ID_NEVER, msg_id_panel, proc_call);
     check_value(config.clock_period > -1 ns, TB_FAILURE, "Sanity check: Check that clock_period is set.", scope, ID_NEVER, msg_id_panel, proc_call);
 
-    rgmii_tx_if <= init_rgmii_if_signals;
     log(config.id_for_bfm, proc_call & "=> " & add_msg_delimiter(msg), scope, msg_id_panel);
 
+    rgmii_tx_if.txc <= 'Z';
     -- Wait for the first rising edge to enable the control line
     wait until rising_edge(rgmii_tx_if.txc) for config.clock_period * config.max_wait_cycles;
     if rgmii_tx_if.txc = '1' then
@@ -177,14 +202,33 @@ package body rgmii_bfm_pkg is
       for i in data_array'range loop
         rgmii_tx_if.txd <= data_array(i)(3 downto 0);
         wait until falling_edge(rgmii_tx_if.txc);
-        rgmii_tx_if.txd <= data_array(i)(7 downto 4);
-        wait until rising_edge(rgmii_tx_if.txc);
+
+        if config.data_valid_on_both_clock_edges then
+          -- 1 Gbps
+          rgmii_tx_if.txd <= data_array(i)(7 downto 4);
+        else -- not config.data_valid_on_both_clock_edges
+          -- 10/100 Mbps
+          wait until rising_edge(rgmii_tx_if.txc);
+          rgmii_tx_if.txd <= data_array(i)(7 downto 4);
+          wait until falling_edge(rgmii_tx_if.txc);
+        end if; -- config.data_valid_on_both_clock_edges
+
+        if i < data_array'high then
+          wait until rising_edge(rgmii_tx_if.txc);
+          rgmii_tx_if.tx_ctl <= '1';
+        else
+          -- last byte sendt, release control line
+          if action_when_transfer_is_done = RELEASE_LINE_AFTER_TRANSFER then
+            wait until rising_edge(rgmii_tx_if.txc);
+            rgmii_tx_if <= init_rgmii_if_signals;
+          end if;
+          -- else: Keep the control line active, and next byte is held until next rgmii_write (first rising edge in this procedure)
+        end if;
       end loop;
     else
       v_timeout := true;
     end if;
 
-    rgmii_tx_if <= init_rgmii_if_signals;
     if v_timeout then
       alert(config.max_wait_cycles_severity, proc_call & "=> Failed. Timeout while waiting for txc. " & add_msg_delimiter(msg), scope);
     else
@@ -231,8 +275,12 @@ package body rgmii_bfm_pkg is
     rgmii_rx_if <= init_rgmii_if_signals;
     log(config.id_for_bfm, v_proc_call.all & "=> " & add_msg_delimiter(msg), scope, msg_id_panel);
 
+    -- Wait for the first rising edge
+    if rgmii_rx_if.rxc /= '1' then
+      wait until rising_edge(rgmii_rx_if.rxc) for config.clock_period * config.max_wait_cycles;
+    end if;
+
     -- Sample the data using the RX clock edges and a skew
-    wait until rising_edge(rgmii_rx_if.rxc) for config.clock_period * config.max_wait_cycles;
     if rgmii_rx_if.rxc = '1' then
       wait for config.rx_clock_skew;
 
@@ -251,8 +299,18 @@ package body rgmii_bfm_pkg is
         if rgmii_rx_if.rx_ctl = '1' then
           v_normalized_data(v_byte_cnt)(3 downto 0) := rgmii_rx_if.rxd;
           wait until falling_edge(rgmii_rx_if.rxc);
-          wait for config.rx_clock_skew;
-          v_normalized_data(v_byte_cnt)(7 downto 4) := rgmii_rx_if.rxd;
+
+          if config.data_valid_on_both_clock_edges then
+            -- 1 Gbps
+            wait for config.rx_clock_skew;
+            v_normalized_data(v_byte_cnt)(7 downto 4) := rgmii_rx_if.rxd;
+          else -- not config.data_valid_on_both_clock_edges
+            -- 10/100 Mbps
+            wait until rising_edge(rgmii_rx_if.rxc);
+            wait for config.rx_clock_skew;
+            v_normalized_data(v_byte_cnt)(7 downto 4) := rgmii_rx_if.rxd;
+            wait until falling_edge(rgmii_rx_if.rxc);
+          end if; -- config.data_valid_on_both_clock_edges
 
           if v_byte_cnt = v_normalized_data'length - 1 then
             v_done := true;
@@ -272,6 +330,8 @@ package body rgmii_bfm_pkg is
 
     data_array := v_normalized_data;
     data_len   := v_byte_cnt;
+
+    wait until rising_edge(rgmii_rx_if.rxc); -- Wait until rising edge so that the procedure exits after the interface is idle
 
     if v_timeout then
       alert(config.max_wait_cycles_severity, v_proc_call.all & "=> Failed. Timeout while waiting for rxc or rx_ctl. " & add_msg_delimiter(msg), scope);
@@ -335,14 +395,31 @@ package body rgmii_bfm_pkg is
     end loop;
 
     -- Done. Report result
-    if v_length_error then
-      alert(alert_level, proc_call & "=> Failed. Mismatch in received data length. Was " & to_string(v_rx_data_len) & ". Expected " & to_string(v_normalized_data'length) & "." & LF & add_msg_delimiter(msg), scope);
-    elsif v_data_error_cnt /= 0 then
-      -- Use binary representation when mismatch is due to weak signals
-      v_alert_radix := BIN when config.match_strictness = MATCH_EXACT and check_value(v_rx_data_array(v_first_wrong_byte), v_normalized_data(v_first_wrong_byte), MATCH_STD, NO_ALERT, msg, scope, HEX_BIN_IF_INVALID, KEEP_LEADING_0, ID_NEVER) else HEX;
-      alert(alert_level, proc_call & "=> Failed in " & to_string(v_data_error_cnt) & " data bits. First mismatch in byte# " & to_string(v_first_wrong_byte) & ". Was " & to_string(v_rx_data_array(v_first_wrong_byte), v_alert_radix, AS_IS, INCL_RADIX) & ". Expected " & to_string(v_normalized_data(v_first_wrong_byte), v_alert_radix, AS_IS, INCL_RADIX) & "." & LF & add_msg_delimiter(msg), scope);
-    else
-      log(config.id_for_bfm, proc_call & "=> OK, received " & to_string(v_rx_data_array'length) & " bytes. " & add_msg_delimiter(msg), scope, msg_id_panel);
+    if C_ERROR_REPORT_EXTENT = EXTENDED then
+      if v_length_error then
+        alert(alert_level, proc_call & "=> Failed. Mismatch in received data length. Was " & to_string(v_rx_data_len) & ". Expected " & to_string(v_normalized_data'length) & "." & LF & add_msg_delimiter(msg), scope);
+      elsif v_data_error_cnt /= 0 then
+        -- Use binary representation when mismatch is due to weak signals
+        v_alert_radix := BIN when config.match_strictness = MATCH_EXACT and check_value(v_rx_data_array(v_first_wrong_byte), v_normalized_data(v_first_wrong_byte), MATCH_STD, NO_ALERT, msg, scope, HEX_BIN_IF_INVALID, KEEP_LEADING_0, ID_NEVER) else HEX;
+        alert(alert_level, proc_call & "=> Failed in " & to_string(v_data_error_cnt) & " data bits. First mismatch in byte# " & to_string(v_first_wrong_byte+1) & ". Was " & 
+          to_string(v_rx_data_array(v_first_wrong_byte), v_alert_radix, AS_IS, INCL_RADIX) & ". Expected " & to_string(v_normalized_data(v_first_wrong_byte), 
+          v_alert_radix, AS_IS, INCL_RADIX) & "." & LF & "Was:" & LF & to_string(v_rx_data_array, v_alert_radix, AS_IS) & LF &"Expected:" & LF & 
+          to_string(v_normalized_data, v_alert_radix, AS_IS) & LF & add_msg_delimiter(msg), scope);
+      else
+        log(config.id_for_bfm, proc_call & "=> OK, received " & to_string(v_rx_data_array'length) & " bytes. " & add_msg_delimiter(msg), scope, msg_id_panel);
+      end if;
+    elsif C_ERROR_REPORT_EXTENT = BRIEF then
+      if v_length_error then
+        alert(alert_level, proc_call & "=> Failed. Mismatch in received data length. Was " & to_string(v_rx_data_len) & ". Expected " & to_string(v_normalized_data'length) & "." & LF & add_msg_delimiter(msg), scope);
+      elsif v_data_error_cnt /= 0 then
+        -- Use binary representation when mismatch is due to weak signals
+        v_alert_radix := BIN when config.match_strictness = MATCH_EXACT and check_value(v_rx_data_array(v_first_wrong_byte), v_normalized_data(v_first_wrong_byte), MATCH_STD, NO_ALERT, msg, scope, HEX_BIN_IF_INVALID, KEEP_LEADING_0, ID_NEVER) else HEX;
+        alert(alert_level, proc_call & "=> Failed in " & to_string(v_data_error_cnt) & " data bits. First mismatch in byte# " & to_string(v_first_wrong_byte+1) & ". Was " & 
+          to_string(v_rx_data_array(v_first_wrong_byte), v_alert_radix, AS_IS, INCL_RADIX) & ". Expected " & to_string(v_normalized_data(v_first_wrong_byte), 
+          v_alert_radix, AS_IS, INCL_RADIX) & "." & LF & add_msg_delimiter(msg), scope);
+      else
+        log(config.id_for_bfm, proc_call & "=> OK, received " & to_string(v_rx_data_array'length) & " bytes. " & add_msg_delimiter(msg), scope, msg_id_panel);
+      end if;
     end if;
   end procedure;
 

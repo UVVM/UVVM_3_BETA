@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -25,9 +25,13 @@ library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 
 use work.monitor_cmd_pkg.all;
+use work.monitor_cmd_support_pkg.all;
+use work.monitor_cmd_shared_variables_pkg.all;
 use work.vvc_cmd_pkg.all;
 use work.vvc_methods_pkg.all;
-use work.transaction_pkg.all;
+use work.vvc_transaction_pkg.all;
+use work.vvc_transaction_shared_variables_pkg.all;
+use work.protected_transaction_group_pkg.all;
 
 --=================================================================================================
 entity uart_monitor is
@@ -60,7 +64,7 @@ architecture behave of uart_monitor is
     constant instance_idx      : in natural;
     constant channel           : in t_channel;
     signal   transaction_trigger : inout std_logic;
-    variable transaction_info  : inout protected_monitor_transaction_info_pkg.t_prot_generic_array;
+    variable transaction_info  : inout work.protected_transaction_group_pkg.t_generic_array;
     signal   uart_line           : in std_logic
     --variable monitor_config      : in t_uart_monitor_config -- v3 edited out
   ) is

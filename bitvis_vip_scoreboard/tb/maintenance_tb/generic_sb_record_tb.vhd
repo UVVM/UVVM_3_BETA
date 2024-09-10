@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -72,7 +72,7 @@ architecture func of generic_sb_record_tb is
 
   use record_sb_pkg.all;
 
-  shared variable sb_under_test : record_sb_pkg.t_prot_generic_sb;
+  shared variable sb_under_test : record_sb_pkg.t_generic_sb;
 
   constant C_SCOPE    : string := "test_bench";
   constant C_SB_SCOPE : string := "record_sb_scope";

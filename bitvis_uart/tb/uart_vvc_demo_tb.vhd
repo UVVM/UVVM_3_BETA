@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -67,8 +67,8 @@ begin
   -- PROCESS: p_main
   ------------------------------------------------
   p_main : process
-    variable v_uart_vvc_config : bitvis_vip_uart.vvc_methods_pkg.t_vvc_config;
-    variable v_sbi_vvc_config  : bitvis_vip_sbi.vvc_methods_pkg.t_vvc_config;
+    variable v_uart_vvc_config : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
+    variable v_sbi_vvc_config  : bitvis_vip_sbi.vvc_methods_support_pkg.t_vvc_config;
 
   begin
     -- Wait for UVVM to finish initialization

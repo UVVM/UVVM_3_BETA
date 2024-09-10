@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -14,6 +14,9 @@
 -- Description   : See library quick reference (under 'doc') and README-file(s)
 ------------------------------------------------------------------------------------------
 
+--================================================================================================================================
+--  VVC command package
+--================================================================================================================================
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -24,19 +27,16 @@ context uvvm_util.uvvm_util_context;
 library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 
-use work.transaction_pkg.all;
+use work.vvc_transaction_pkg.all;
 
---=================================================================================================
---=================================================================================================
---=================================================================================================
 package vvc_cmd_pkg is
 
-  alias t_operation is work.transaction_pkg.t_operation;
+  alias t_operation is work.vvc_transaction_pkg.t_operation;
 
-  --===============================================================================================
+  --==========================================================================================
   -- t_vvc_cmd_record
   -- - Record type used for communication with the VVC
-  --===============================================================================================
+  --==========================================================================================
   type t_vvc_cmd_record is record
     -- VVC dedicated fields
     addr                         : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0);
@@ -86,18 +86,7 @@ package vvc_cmd_pkg is
     parent_msg_id_panel          => C_UNUSED_MSG_ID_PANEL
   );
 
-  --===============================================================================================
-  -- shared_vvc_cmd
-  --  - Shared variable used for transmitting VVC commands
-  --===============================================================================================
-  -- v3
-  package protected_vvc_cmd_pkg is new uvvm_util.protected_generic_types_pkg
-    generic map(t_generic_element => t_vvc_cmd_record,
-                c_generic_default => C_VVC_CMD_DEFAULT);
-  use protected_vvc_cmd_pkg.all;
-  shared variable shared_vvc_cmd : protected_vvc_cmd_pkg.t_prot_generic_array;
-
-  --===============================================================================================
+  --==========================================================================================
   -- t_vvc_result, t_vvc_result_queue_element, t_vvc_response and shared_vvc_response :
   --
   -- - These are used for storing the result of f.ex. read/receive BFM procedures called by the VVC,
@@ -106,7 +95,7 @@ package vvc_cmd_pkg is
   --
   -- - t_vvc_result matches the return value of read/receive procedure in the BFM.
   --   It can also be defined as a record if multiple return values shall be transported from the BFM
-  --===============================================================================================
+  --==========================================================================================
   subtype t_vvc_result is t_byte_array(0 to C_VVC_CMD_DATA_MAX_LENGTH - 1);
 
   type t_vvc_result_queue_element is record
@@ -125,29 +114,7 @@ package vvc_cmd_pkg is
     transaction_result => ACK,
     result             => (others => (others => '0'))
   );
-
-  package protected_vvc_response_pkg is new uvvm_util.protected_generic_types_pkg
-    generic map(
-      t_generic_element => t_vvc_response,
-      c_generic_default => C_VVC_RESPONSE_DEFAULT);
-  use protected_vvc_response_pkg.all;
-  shared variable shared_vvc_response : protected_vvc_response_pkg.t_prot_generic_array;
-
-  --===============================================================================================
-  -- shared_vvc_last_received_cmd_idx
-  --  - Shared variable used to get last queued index from vvc to sequencer
-  --===============================================================================================
-  package protected_vvc_last_received_cmd_idx_pkg is new uvvm_util.protected_generic_types_pkg
-
-    generic map(t_generic_element => integer,
-                c_generic_default => -1);
-  use protected_vvc_last_received_cmd_idx_pkg.all;
-
-  shared variable shared_vvc_last_received_cmd_idx : protected_vvc_last_received_cmd_idx_pkg.t_prot_generic_array;
 end package vvc_cmd_pkg;
-
---=================================================================================================
---=================================================================================================
 
 package body vvc_cmd_pkg is
 
@@ -160,3 +127,60 @@ package body vvc_cmd_pkg is
 
 end package body vvc_cmd_pkg;
 
+--================================================================================================================================
+--  Generic package instantiations
+--================================================================================================================================
+----------------------------------------------------------------------
+-- Protected type: t_vvc_cmd_record
+----------------------------------------------------------------------
+library uvvm_util;
+use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
+
+package protected_vvc_cmd_pkg is new uvvm_util.protected_generic_types_pkg
+  generic map(
+    t_generic_element  => t_vvc_cmd_record,
+    c_generic_default  => C_VVC_CMD_DEFAULT,
+    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+  );
+
+----------------------------------------------------------------------
+-- Protected type: t_vvc_response
+----------------------------------------------------------------------
+library uvvm_util;
+use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
+
+package protected_vvc_response_pkg is new uvvm_util.protected_generic_types_pkg
+  generic map(
+    t_generic_element  => t_vvc_response,
+    c_generic_default  => C_VVC_RESPONSE_DEFAULT,
+    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+  );
+
+----------------------------------------------------------------------
+-- Protected type: vvc_last_received_cmd_idx
+----------------------------------------------------------------------
+library uvvm_util;
+use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
+
+package protected_vvc_last_received_cmd_idx_pkg is new uvvm_util.protected_generic_types_pkg
+  generic map(
+    t_generic_element  => integer,
+    c_generic_default  => -1,
+    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+  );
+
+--================================================================================================================================
+--  Shared variables package
+--================================================================================================================================
+use work.protected_vvc_cmd_pkg.all;
+use work.protected_vvc_response_pkg.all;
+use work.protected_vvc_last_received_cmd_idx_pkg.all;
+
+package vvc_cmd_shared_variables_pkg is
+  shared variable shared_vvc_cmd                   : work.protected_vvc_cmd_pkg.t_generic_array;
+  shared variable shared_vvc_response              : work.protected_vvc_response_pkg.t_generic_array;
+  shared variable shared_vvc_last_received_cmd_idx : work.protected_vvc_last_received_cmd_idx_pkg.t_generic_array;
+end package vvc_cmd_shared_variables_pkg;

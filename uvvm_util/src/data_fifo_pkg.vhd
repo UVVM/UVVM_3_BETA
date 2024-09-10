@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -26,7 +26,7 @@ use work.data_queue_pkg.all;
 
 package data_fifo_pkg is
 
-  shared variable shared_data_fifo : t_prot_data_queue;
+  shared variable shared_data_fifo : t_data_queue;
 
   ------------------------------------------
   -- uvvm_fifo_init

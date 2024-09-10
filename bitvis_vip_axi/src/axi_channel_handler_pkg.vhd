@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -24,7 +24,6 @@ use std.textio.all;
 library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
-library work;
 use work.axi_bfm_pkg.all;
 use work.axi_read_data_queue_pkg.all;
 use work.vvc_cmd_pkg.all;
@@ -170,7 +169,7 @@ package axi_channel_handler_pkg is
   -- - When completed, a log message with ID id_for_bfm is issued.
   procedure read_data_channel_receive(
     variable read_result     : out t_vvc_result;
-    variable read_data_queue : inout t_prot_axi_read_data_queue;
+    variable read_data_queue : inout t_axi_read_data_queue;
     constant msg             : in string;
     signal   clk             : in std_logic;
     signal   rid             : in std_logic_vector;
@@ -537,7 +536,7 @@ package body axi_channel_handler_pkg is
 
   procedure read_data_channel_receive(
     variable read_result     : out t_vvc_result;
-    variable read_data_queue : inout t_prot_axi_read_data_queue;
+    variable read_data_queue : inout t_axi_read_data_queue;
     constant msg             : in string;
     signal   clk             : in std_logic;
     signal   rid             : in std_logic_vector;

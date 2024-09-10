@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -14,12 +14,9 @@
 -- Description   : See library quick reference (under 'doc') and README-file(s)
 ------------------------------------------------------------------------------------------
 
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 use std.textio.all;
 
 package types_pkg is
@@ -84,6 +81,8 @@ package types_pkg is
 
   type t_deprecate_setting is (NO_DEPRECATE, DEPRECATE_ONCE, ALWAYS_DEPRECATE);
   type t_deprecate_list is array (0 to 9) of string(1 to 100);
+
+  constant C_DEPRECATE_LIST_DEFAULT : t_deprecate_list := (others => (others => ' '));
 
   type t_action_when_transfer_is_done is (RELEASE_LINE_AFTER_TRANSFER, HOLD_LINE_AFTER_TRANSFER);
   type t_when_to_start_transfer is (START_TRANSFER_IMMEDIATE, START_TRANSFER_ON_NEXT_SS);
@@ -188,6 +187,10 @@ package types_pkg is
   -------------------------------------
   type t_transaction_result is (ACK, NAK, error); -- add more when needed
 
+  -- Transaction status FAILED and SUCCEEDED are only applicable for Monitor Transaction Info records and not for VVC Transaction Info records.
+  -- Whereas COMPLETED is applicable only for VVCs and not Monitors.
+  type t_transaction_status is (INACTIVE, IN_PROGRESS, FAILED, SUCCEEDED, COMPLETED);
+
   type t_hierarchy_alert_level_print is array (note to t_alert_level'right) of boolean;
 
   type t_hierarchy_node is record
@@ -226,8 +229,26 @@ package types_pkg is
 
   type t_extent_tickoff is (LIST_SINGLE_TICKOFF, LIST_EVERY_TICKOFF);
 
+  type t_error_report_extent is (EXTENDED, BRIEF);
+
+  type t_report_alert_counters is (NO_REPORT, REPORT_ALERT_COUNTERS, REPORT_ALERT_COUNTERS_FINAL);
+
+  type t_report_vvc is (NO_REPORT, REPORT_VVCS);
+
+  type t_report_sb is (NO_REPORT, REPORT_SCOREBOARDS);
+
+  type t_uvvm_state is (IDLE, PHASE_A, PHASE_B, INIT_COMPLETED);
+  type t_broadcastable_cmd is (NO_CMD, ENABLE_LOG_MSG, DISABLE_LOG_MSG, FLUSH_COMMAND_QUEUE, INSERT_DELAY, TERMINATE_CURRENT_COMMAND);
+  constant C_BROADCAST_CMD_STRING_MAX_LENGTH : natural := 300;
+
+  constant C_CMD_IDX_PREFIX : string := " [";
+  constant C_CMD_IDX_SUFFIX : string := "]";
+
+  constant ALL_INSTANCES         : integer := -2;
+  constant ALL_ENABLED_INSTANCES : integer := -3;
+
   -------------------------------------
-  -- SB
+  -- Scoreboard
   -------------------------------------
   -- Identifier_option: Typically describes what the next parameter means.
   -- - ENTRY_NUM :
@@ -240,6 +261,22 @@ package types_pkg is
   type t_range_option is (SINGLE, AND_LOWER, AND_HIGHER);
 
   type t_tag_usage is (TAG, NO_TAG);
+
+  -------------------------------------
+  -- Spec. Cov.
+  -------------------------------------
+  type t_spec_cov_config is record
+    missing_req_label_severity : t_alert_level; -- Alert level used when the tick_off_req_cov() procedure does not find the specified
+                                                -- requirement label in the requirement list.
+    csv_delimiter              : character;     -- Character used as delimiter in the CSV files. Default is ",".
+    max_requirements           : natural;       -- Maximum number of requirements in the req_map file used in initialize_req_cov().
+    max_testcases_per_req      : natural;       -- Max number of testcases allowed per requirement.
+    csv_max_line_length        : positive;      -- Max length of each line in any CSV file.
+  end record;
+
+  -- These values are used to indicate outdated sub-programs
+  constant C_DEPRECATE_SETTING               : t_deprecate_setting := DEPRECATE_ONCE;
+  shared variable deprecated_subprogram_list : t_deprecate_list    := (others => (others => ' '));
 
 end package types_pkg;
 

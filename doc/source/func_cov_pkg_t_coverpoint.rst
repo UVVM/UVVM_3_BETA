@@ -420,6 +420,8 @@ Deallocates the list of bins and resets all configuration settings to their defa
     my_coverpoint.delete_coverpoint(my_msg_id_panel);
 
 
+.. _add_bins:
+
 add_bins()
 ----------------------------------------------------------------------------------------------------------------------------------
 Adds bins to the coverpoint. Must be used together with the :ref:`bin functions <bin_functions>` which return a t_new_bin_array. 
@@ -589,6 +591,7 @@ Returns true if the coverpoint contains at least one bin. ::
     ...
     end if;
 
+.. _sample_coverage:
 
 sample_coverage()
 ----------------------------------------------------------------------------------------------------------------------------------
@@ -667,8 +670,8 @@ click :ref:`here <func_cov_pkg_coverage_status>`. ::
 report_coverage()
 ----------------------------------------------------------------------------------------------------------------------------------
 Prints the coverpoint coverage summary containing all the bins. The printing destination can be log and/or console and is defined 
-by shared_default_log_destination in adaptations_pkg. The report can also be printed to a separate file by using the file_name 
-parameter. To see an example of the generated report click :ref:`here <func_cov_pkg_coverage_report>`. ::
+by shared_default_log_destination in global_signals_and_shared_variables_pkg. The report can also be printed to a separate file
+by using the file_name parameter. To see an example of the generated report click :ref:`here <func_cov_pkg_coverage_report>`. ::
 
     report_coverage(VOID)
     report_coverage(verbosity, [file_name, [open_mode, [rand_weight_col]]])

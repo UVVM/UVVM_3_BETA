@@ -3,3 +3,5 @@ TESTCASE_NAME: TC_7
 DELIMITER: ,
 
 SUMMARY, TC_7, PASS
+
+Has been parsed by run_spec_cov.py script for total coverage

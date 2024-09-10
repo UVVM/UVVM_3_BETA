@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -22,7 +22,6 @@ library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
 use work.uart_bfm_pkg.all;
-use work.transaction_pkg.all;
 
 --=================================================================================================
 entity uart_vvc is
@@ -55,7 +54,6 @@ begin
     generic map(
       GC_DATA_WIDTH                            => GC_DATA_WIDTH,
       GC_INSTANCE_IDX                          => GC_INSTANCE_IDX,
-      GC_CHANNEL                               => RX,
       GC_UART_CONFIG                           => GC_UART_CONFIG,
       GC_CMD_QUEUE_COUNT_MAX                   => GC_CMD_QUEUE_COUNT_MAX,
       GC_CMD_QUEUE_COUNT_THRESHOLD             => GC_CMD_QUEUE_COUNT_THRESHOLD,
@@ -73,7 +71,6 @@ begin
     generic map(
       GC_DATA_WIDTH                            => GC_DATA_WIDTH,
       GC_INSTANCE_IDX                          => GC_INSTANCE_IDX,
-      GC_CHANNEL                               => TX,
       GC_UART_CONFIG                           => GC_UART_CONFIG,
       GC_CMD_QUEUE_COUNT_MAX                   => GC_CMD_QUEUE_COUNT_MAX,
       GC_CMD_QUEUE_COUNT_THRESHOLD             => GC_CMD_QUEUE_COUNT_THRESHOLD,

@@ -1,33 +1,7 @@
 Bitvis VIP Ethernet - Overview on Versions and Changes
 ==============================================================
 
-v0.2.3
+v1.0.0
 ----------
-Released: 2023-XX-XX
-- Added target independent prefix "ti" to the VVC framework context declaration.
-- Added filter for (vcom-1246) warning in test.py script.
-
-v0.2.2
-----------
-Released: 2022-05-25
-- Fixed issue where Questa Sim coudl fail to read array width.
-
-v0.2.1
-----------
-Released: 2022-05-05
-- t_vvc_config and t_vvc_status record declaration formatting.
-
-v0.2.0
-----------
-Released: 2020-10-06
-- Added ETHERNET_VVC_SB scoreboard.
-
-v0.1.1
-----------
-Released: 2020-06-23
-- Updated GC_PHY_INTERFACE description in QuickRef.
-
-v0.1.0
-----------
-Released: 2020-05-19
-- Initial version of Ethernet VIP.
+Released: 20XX-XX-XX
+- Initial version of Ethernet VIP in UVVM V3.

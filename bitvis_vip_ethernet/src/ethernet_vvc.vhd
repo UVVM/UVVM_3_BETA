@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -54,7 +54,6 @@ begin
   i_ethernet_tx : entity work.ethernet_tx_vvc
     generic map(
       GC_INSTANCE_IDX                          => GC_INSTANCE_IDX,
-      GC_CHANNEL                               => TX,
       GC_PHY_INTERFACE                         => GC_PHY_INTERFACE,
       GC_PHY_VVC_INSTANCE_IDX                  => GC_PHY_VVC_INSTANCE_IDX,
       GC_PHY_MAX_ACCESS_TIME                   => GC_PHY_MAX_ACCESS_TIME,
@@ -72,7 +71,6 @@ begin
   i_ethernet_rx : entity work.ethernet_rx_vvc
     generic map(
       GC_INSTANCE_IDX                          => GC_INSTANCE_IDX,
-      GC_CHANNEL                               => RX,
       GC_PHY_INTERFACE                         => GC_PHY_INTERFACE,
       GC_PHY_VVC_INSTANCE_IDX                  => GC_PHY_VVC_INSTANCE_IDX,
       GC_PHY_MAX_ACCESS_TIME                   => GC_PHY_MAX_ACCESS_TIME,

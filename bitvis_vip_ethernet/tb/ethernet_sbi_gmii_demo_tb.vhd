@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -64,7 +64,7 @@ begin
   -----------------------------------------------------------------------------
   -- Instantiate test harness, containing DUT and VVCs
   -----------------------------------------------------------------------------
-  i_test_harness : entity bitvis_vip_ethernet.ethernet_sbi_gmii_demo_th
+  i_test_harness : entity work.ethernet_sbi_gmii_demo_th
     generic map(
       GC_CLK_PERIOD => C_CLK_PERIOD
     );
@@ -76,9 +76,9 @@ begin
     variable v_payload_len     : integer := 0;
     variable v_payload_data    : t_byte_array(0 to C_MAX_PAYLOAD_LENGTH - 1);
     variable v_expected_frame  : t_ethernet_frame;
-    variable v_vvc_config      : bitvis_vip_ethernet.vvc_methods_pkg.t_vvc_config;
-    variable v_gmii_vvc_config : bitvis_vip_gmii.vvc_methods_pkg.t_vvc_config;
-    variable v_vvc_list        : t_prot_vvc_list;
+    variable v_vvc_config      : bitvis_vip_ethernet.vvc_methods_support_pkg.t_vvc_config;
+    variable v_gmii_vvc_config : bitvis_vip_gmii.vvc_methods_support_pkg.t_vvc_config;
+    variable v_vvc_list        : t_vvc_list;
 
     impure function make_ethernet_frame(
       constant mac_destination : in unsigned(47 downto 0);
@@ -172,6 +172,7 @@ begin
     ETHERNET_VVC_SB.add_expected(C_VVC_ETH_GMII, v_expected_frame);
     ethernet_receive(ETHERNET_VVCT, C_VVC_ETH_GMII, RX, TO_SB, "Receive a frame in the PHY and put it in the Scoreboard.");
     await_completion(ALL_OF, v_vvc_list, 1 ms, CLEAR_LIST, "Wait for transmit and receive to finish.");
+    wait for 1 us; -- Wait so that interface goes idle before the next test
 
     ---------------------------------------------------------------------------
     log(ID_LOG_HDR_LARGE, "TEST DIRECT ACCESS TO INTERFACE VVCs");

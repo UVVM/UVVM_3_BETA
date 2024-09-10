@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -9,9 +9,10 @@
 --================================================================================================================================
 -- Note : Any functionality not explicitly described in the documentation is subject to change at any time
 ----------------------------------------------------------------------------------------------------------------------------------
---========================================================================================================================
--- This VVC was generated with Bitvis VVC Generator
---========================================================================================================================
+
+---------------------------------------------------------------------------------------------
+-- Description : See library quick reference (under 'doc') and README-file(s)
+---------------------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -23,9 +24,11 @@ context uvvm_util.uvvm_util_context;
 library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 
-use work.vvc_methods_pkg.all;
 use work.vvc_cmd_pkg.all;
+use work.vvc_cmd_shared_variables_pkg.all;
 use work.td_target_support_pkg.all;
+use work.vvc_methods_pkg.all;
+use work.vvc_methods_support_pkg.all;
 use work.td_vvc_entity_support_pkg.all;
 use work.td_cmd_queue_pkg.all;
 use work.td_result_queue_pkg.all;
@@ -55,8 +58,8 @@ end entity clock_generator_vvc;
 --========================================================================================================================
 architecture behave of clock_generator_vvc is
 
-  constant C_SCOPE      : string       := C_VVC_NAME & "," & to_string(GC_INSTANCE_IDX);
-  constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
+  constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX);
+  constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
   signal executor_is_busy                   : boolean := false;
   signal queue_is_increasing                : boolean := false;
@@ -67,8 +70,8 @@ architecture behave of clock_generator_vvc is
   signal entry_num_in_vvc_activity_register : integer;
 
   -- Instantiation of the element dedicated executor
-  shared variable command_queue : work.td_cmd_queue_pkg.t_prot_generic_queue;
-  shared variable result_queue  : work.td_result_queue_pkg.t_prot_generic_queue;
+  shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
+  shared variable result_queue  : work.td_result_queue_pkg.t_generic_queue;
 
   -- TODO! Check if this function is used
   impure function get_clock_name
@@ -92,12 +95,26 @@ architecture behave of clock_generator_vvc is
     return shared_vvc_status.get(GC_INSTANCE_IDX);
   end function get_vvc_status;
 
+  impure function get_msg_id_panel(
+    constant void : t_void
+  ) return t_msg_id_panel is
+  begin
+    return shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX);
+  end function get_msg_id_panel;
+
   procedure set_vvc_status(
     constant vvc_status : t_vvc_status
   ) is
   begin
     shared_vvc_status.set(vvc_status, GC_INSTANCE_IDX);
   end procedure set_vvc_status;
+
+  procedure set_msg_id_panel(
+    constant msg_id_panel : t_msg_id_panel
+  ) is
+  begin
+    shared_vvc_msg_id_panel.set(msg_id_panel, GC_INSTANCE_IDX);
+  end procedure set_msg_id_panel;
 
 begin
 
@@ -106,9 +123,10 @@ begin
   -- - Set up the defaults and show constructor if enabled
   --========================================================================================================================
   -- v3
-  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_vvc_config, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX), command_queue, result_queue, C_VOID_BFM_CONFIG,
+  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_vvc_config, get_msg_id_panel(VOID), command_queue, result_queue, C_VOID_BFM_CONFIG,
                   GC_CMD_QUEUE_COUNT_MAX, GC_CMD_QUEUE_COUNT_THRESHOLD, GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
-                  GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY);
+                  GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY,
+                  C_VVC_MAX_INSTANCE_NUM);
   --========================================================================================================================
 
   --========================================================================================================================
@@ -154,12 +172,12 @@ begin
     -- Then for every single command from the sequencer
     loop                                -- basically as long as new commands are received
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
       -- 1. wait until command targeted at this VVC. Must match VVC name, instance and channel (if applicable)
       --    releases global semaphore
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.await_cmd_from_sequencer(C_VVC_LABELS, v_msg_id_panel, THIS_VVCT, VVC_BROADCAST, global_vvc_busy, global_vvc_ack, v_local_vvc_cmd); -- v3
+      work.td_vvc_entity_support_pkg.await_cmd_from_sequencer(C_VVC_LABELS, C_SCOPE, v_msg_id_panel, THIS_VVCT, VVC_BROADCAST, global_vvc_busy, global_vvc_ack, v_local_vvc_cmd); -- v3
 
       -- update shared_vvc_last_received_cmd_idx with received command index
       shared_vvc_last_received_cmd_idx.set(v_local_vvc_cmd.cmd_idx, GC_INSTANCE_IDX);
@@ -188,18 +206,18 @@ begin
 
           when FLUSH_COMMAND_QUEUE =>
             v_vvc_status := get_vvc_status(VOID);
-            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, command_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS);
+            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, command_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS, C_SCOPE);
             set_vvc_status(v_vvc_status);
 
           when TERMINATE_CURRENT_COMMAND =>
-            work.td_vvc_entity_support_pkg.interpreter_terminate_current_command(v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, terminate_current_cmd); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_terminate_current_command(v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, C_SCOPE, terminate_current_cmd, executor_is_busy); -- v3
 
           when others =>
             tb_error("Unsupported command received for IMMEDIATE execution: '" & to_string(v_local_vvc_cmd.operation) & "'", C_SCOPE);
 
         end case;
 
-        shared_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX); -- v3
+        set_msg_id_panel(v_msg_id_panel); -- v3
 
       else
         tb_error("command_type is not IMMEDIATE or QUEUED", C_SCOPE);
@@ -210,6 +228,7 @@ begin
       work.td_target_support_pkg.acknowledge_cmd(global_vvc_ack, v_local_vvc_cmd.cmd_idx);
 
     end loop;
+    wait;
   end process;
   --========================================================================================================================
 
@@ -229,39 +248,21 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
-      -- update vvc activity. Note that clock generator VVC activity is not included in the resetting of the VVC activity register!
-      -- update_vvc_activity_register(global_trigger_vvc_activity_register,
-      --                              shared_vvc_status,
-      --                              GC_INSTANCE_IDX,
-      --                              NA,
-      --                              INACTIVE,
-      --                              entry_num_in_vvc_activity_register,
-      --                              last_cmd_idx_executed,
-      --                              command_queue.is_empty(VOID),
-      --                              C_SCOPE);
+      -- update vvc activity -> Note that clock generator VVC activity is not included in the resetting of the VVC activity register!
 
       -- 1. Set defaults, fetch command and log
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS);
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS, C_SCOPE);
+
+      -- update vvc activity -> Note that clock generator VVC activity is not included in the resetting of the VVC activity register!
 
       v_vvc_config := get_vvc_config(VOID);
 
-      -- update vvc activity. Note that clock generator VVC activity is not included in the resetting of the VVC activity register!
-      -- update_vvc_activity_register(global_trigger_vvc_activity_register,
-      --                              shared_vvc_status,
-      --                              GC_INSTANCE_IDX,
-      --                              NA,
-      --                              ACTIVE,
-      --                              entry_num_in_vvc_activity_register,
-      --                              last_cmd_idx_executed,
-      --                              command_queue.is_empty(VOID),
-      --                              C_SCOPE);
-
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
+      v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- 2. Execute the fetched command
       -------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -26,13 +26,14 @@ library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 
 use work.vvc_cmd_pkg.all;
+use work.vvc_cmd_shared_variables_pkg.shared_vvc_cmd;
 
 package td_target_support_pkg is
 
   signal global_vvc_ack                      : std_logic; -- ACK on global triggers
   signal global_vvc_busy                     : std_logic := 'L'; -- ACK on global triggers
-  shared variable shared_multicast_semaphore : t_prot_semaphore;
-  shared variable shared_acknowledge_index   : t_prot_acknowledge_cmd_idx;
+  shared variable shared_multicast_semaphore : t_semaphore;
+  shared variable shared_acknowledge_index   : t_acknowledge_cmd_idx;
 
   type t_vvc_target_record_unresolved is record -- VVC dedicated to assure signature differences between equal common methods
     trigger          : std_logic;
@@ -213,9 +214,9 @@ package body td_target_support_pkg is
       end if;
     else
       if vvc_instance = -2 then
-        return to_string(value.vvc_name) & ",ALL_INSTANCES" & "," & to_string(v_channel);
+        return to_string(value.vvc_name) & ",ALL_INSTANCES" & "," & to_upper(to_string(v_channel));
       else
-        return to_string(value.vvc_name) & "," & to_string(v_instance) & "," & to_string(v_channel);
+        return to_string(value.vvc_name) & "," & to_string(v_instance) & "," & to_upper(to_string(v_channel));
       end if;
     end if;
   end;
@@ -290,13 +291,12 @@ package body td_target_support_pkg is
     constant scope        : in string         := C_VVC_CMD_SCOPE_DEFAULT;
     constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
-
+    -- variable v_local_cmd_idx                : integer                                := shared_cmd_idx.get(VOID);
     variable v_local_cmd_idx                : integer                                := shared_cmd_idx.increment_and_get(VOID); -- v3
     -- constant C_CMD_INFO                     : string                                 := "uvvm cmd " & format_command_idx(shared_cmd_idx.get(VOID) + 1) & ": ";
     constant C_CMD_INFO                     : string                                 := "uvvm cmd " & format_command_idx(v_local_cmd_idx) & ": ";
     variable v_vvc_instance_idx             : integer                                := vvc_target.vvc_instance_idx;
     variable v_vvc_channel                  : t_channel                              := vvc_target.vvc_channel;
-    -- variable v_local_cmd_idx                : integer                                := shared_cmd_idx.get(VOID);
     variable v_ack_cmd_idx                  : integer                                := -1;
     variable v_start_time                   : time;
     variable v_local_vvc_cmd                : t_vvc_cmd_record;
@@ -343,13 +343,13 @@ package body td_target_support_pkg is
       v_was_multicast := true;
     end if;
     v_start_time := now;
+
     -- semaphore "shared_semaphore" gets released after "wait for 0 ns" in await_cmd_from_sequencer
     -- Before the semaphore is released copy shared_vvc_cmd to local variable, so that the shared_vvc_cmd can be used by other VVCs.
-
-    v_local_vvc_cmd := shared_vvc_cmd.get(v_vvc_instance_idx, v_vvc_channel); -- v3    
+    --v_local_vvc_cmd := shared_vvc_cmd.get(v_vvc_instance_idx, v_vvc_channel); -- v3: already copied above
 
     -- copy the shared_cmd_idx as it can be changed during this function after the semaphore is released
-    v_local_cmd_idx := shared_cmd_idx.get(VOID);
+    --v_local_cmd_idx := shared_cmd_idx.get(VOID); -- v3: already copied in variable declaration
 
     -- trigger the target -> vvc continues in await_cmd_from_sequencer
     vvc_target.trigger <= '1';

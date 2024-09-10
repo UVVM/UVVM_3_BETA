@@ -3,4 +3,6 @@ TESTCASE_NAME: TC_4
 DELIMITER: ,
 
 REQ_4,TC_4,FAIL
-SUMMARY, TC_4, FAIL
+SUMMARY, TC_4, PASS
+
+Has been parsed by run_spec_cov.py script for total coverage

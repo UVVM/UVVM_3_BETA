@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -24,11 +24,14 @@ context uvvm_util.uvvm_util_context;
 library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 
-use work.transaction_pkg.all;
 use work.uart_bfm_pkg.all;
-use work.vvc_methods_pkg.all;
+use work.vvc_transaction_pkg.all;
+use work.vvc_transaction_shared_variables_pkg.all;
 use work.vvc_cmd_pkg.all;
+use work.vvc_cmd_shared_variables_pkg.all;
 use work.td_target_support_pkg.all;
+use work.vvc_methods_pkg.all;
+use work.vvc_methods_support_pkg.all;
 use work.td_vvc_entity_support_pkg.all;
 use work.td_cmd_queue_pkg.all;
 use work.td_result_queue_pkg.all;
@@ -37,7 +40,6 @@ entity uart_tx_vvc is
   generic(
     GC_DATA_WIDTH                            : natural           := 8;
     GC_INSTANCE_IDX                          : natural           := 1;
-    GC_CHANNEL                               : t_channel         := TX;
     GC_UART_CONFIG                           : t_uart_bfm_config := C_UART_BFM_CONFIG_DEFAULT;
     GC_CMD_QUEUE_COUNT_MAX                   : natural           := C_CMD_QUEUE_COUNT_MAX;
     GC_CMD_QUEUE_COUNT_THRESHOLD             : natural           := C_CMD_QUEUE_COUNT_THRESHOLD;
@@ -53,9 +55,9 @@ end entity uart_tx_vvc;
 
 architecture behave of uart_tx_vvc is
 
-  constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX, GC_CHANNEL);
-  constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, GC_CHANNEL);
-  constant C_DATA_WIDTH : natural      := 8;
+  constant C_CHANNEL    : t_channel    := TX;
+  constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX, C_CHANNEL);
+  constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, C_CHANNEL);
 
   signal executor_is_busy      : boolean := false;
   signal queue_is_increasing   : boolean := false;
@@ -63,11 +65,11 @@ architecture behave of uart_tx_vvc is
   signal terminate_current_cmd : t_flag_record;
 
   -- Instantiation of the element dedicated Queue
-  shared variable command_queue : work.td_cmd_queue_pkg.t_prot_generic_queue;
-  shared variable result_queue  : work.td_result_queue_pkg.t_prot_generic_queue;
+  shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
+  shared variable result_queue  : work.td_result_queue_pkg.t_generic_queue;
 
   -- Transaction info
-  alias vvc_transaction_info_trigger        : std_logic is global_uart_vvc_transaction_trigger(TX, GC_INSTANCE_IDX);
+  alias vvc_transaction_info_trigger        : std_logic is global_uart_vvc_transaction_trigger(C_CHANNEL, GC_INSTANCE_IDX);
   -- Activity Watchdog
   signal entry_num_in_vvc_activity_register : integer;
 
@@ -75,22 +77,36 @@ architecture behave of uart_tx_vvc is
     constant void : t_void
   ) return t_vvc_config is
   begin
-    return shared_vvc_config.get(GC_INSTANCE_IDX, GC_CHANNEL);
+    return shared_vvc_config.get(GC_INSTANCE_IDX, C_CHANNEL);
   end function get_vvc_config;
 
   impure function get_vvc_status(
     constant void : t_void
   ) return t_vvc_status is
   begin
-    return shared_vvc_status.get(GC_INSTANCE_IDX, GC_CHANNEL);
+    return shared_vvc_status.get(GC_INSTANCE_IDX, C_CHANNEL);
   end function get_vvc_status;
+
+  impure function get_msg_id_panel(
+    constant void : t_void
+  ) return t_msg_id_panel is
+  begin
+    return shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX, C_CHANNEL);
+  end function get_msg_id_panel;
 
   procedure set_vvc_status(
     constant vvc_status : t_vvc_status
   ) is
   begin
-    shared_vvc_status.set(vvc_status, GC_INSTANCE_IDX, GC_CHANNEL);
+    shared_vvc_status.set(vvc_status, GC_INSTANCE_IDX, C_CHANNEL);
   end procedure set_vvc_status;
+
+  procedure set_msg_id_panel(
+    constant msg_id_panel : t_msg_id_panel
+  ) is
+  begin
+    shared_vvc_msg_id_panel.set(msg_id_panel, GC_INSTANCE_IDX, C_CHANNEL);
+  end procedure set_msg_id_panel;
 
 begin
 
@@ -99,9 +115,10 @@ begin
   -- - Set up the defaults and show constructor if enabled
   --===============================================================================================
   -- v3
-  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_vvc_config, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX, GC_CHANNEL), command_queue, result_queue,
+  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, C_CHANNEL, shared_vvc_config, get_msg_id_panel(VOID), command_queue, result_queue,
                   GC_UART_CONFIG, GC_CMD_QUEUE_COUNT_MAX, GC_CMD_QUEUE_COUNT_THRESHOLD, GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
-                  GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY);
+                  GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY,
+                  C_VVC_MAX_INSTANCE_NUM);
   --===============================================================================================
 
   --===============================================================================================
@@ -117,29 +134,29 @@ begin
     -- 0. Initialize the process prior to first command
     work.td_vvc_entity_support_pkg.initialize_interpreter(terminate_current_cmd);
     -- initialise shared_vvc_last_received_cmd_idx for channel and instance
-    shared_vvc_last_received_cmd_idx.set(0, GC_INSTANCE_IDX, TX);
+    shared_vvc_last_received_cmd_idx.set(0, GC_INSTANCE_IDX, C_CHANNEL);
     -- Register VVC in vvc activity register
     entry_num_in_vvc_activity_register <= shared_vvc_activity_register.priv_register_vvc(name     => C_VVC_NAME,
                                                                                          instance => GC_INSTANCE_IDX,
-                                                                                         channel  => GC_CHANNEL);
+                                                                                         channel  => C_CHANNEL);
 
     -- Update BFM config num_data_bits with GC_DATA_WIDTH
     v_vvc_config                          := get_vvc_config(VOID);
     v_vvc_config.bfm_config.num_data_bits := GC_DATA_WIDTH;
-    shared_vvc_config.set(v_vvc_config, GC_INSTANCE_IDX, GC_CHANNEL);
+    shared_vvc_config.set(v_vvc_config, GC_INSTANCE_IDX, C_CHANNEL);
 
     -- Then for every single command from the sequencer
     loop                                -- basically as long as new commands are received
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX, GC_CHANNEL); -- v3
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
       -- 1. wait until command targeted at this VVC. Must match VVC name, instance and channel (if applicable)
       --    releases global semaphore
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.await_cmd_from_sequencer(C_VVC_LABELS, v_msg_id_panel, THIS_VVCT, VVC_BROADCAST, global_vvc_busy, global_vvc_ack, v_local_vvc_cmd); -- v3
+      work.td_vvc_entity_support_pkg.await_cmd_from_sequencer(C_VVC_LABELS, C_SCOPE, v_msg_id_panel, THIS_VVCT, VVC_BROADCAST, global_vvc_busy, global_vvc_ack, v_local_vvc_cmd); -- v3
 
       -- update shared_vvc_last_received_cmd_idx with received command index
-      shared_vvc_last_received_cmd_idx.set(v_local_vvc_cmd.cmd_idx, GC_INSTANCE_IDX, TX);
+      shared_vvc_last_received_cmd_idx.set(v_local_vvc_cmd.cmd_idx, GC_INSTANCE_IDX, C_CHANNEL);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
@@ -166,21 +183,21 @@ begin
 
           when FLUSH_COMMAND_QUEUE =>
             v_vvc_status := get_vvc_status(VOID);
-            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, command_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, command_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS, C_SCOPE); -- v3
             set_vvc_status(v_vvc_status);
 
           when TERMINATE_CURRENT_COMMAND =>
-            work.td_vvc_entity_support_pkg.interpreter_terminate_current_command(v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, terminate_current_cmd); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_terminate_current_command(v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, C_SCOPE, terminate_current_cmd, executor_is_busy); -- v3
 
           when FETCH_RESULT =>
-            work.td_vvc_entity_support_pkg.interpreter_fetch_result(result_queue, v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, last_cmd_idx_executed, shared_vvc_response); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_fetch_result(result_queue, entry_num_in_vvc_activity_register, v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, C_SCOPE, shared_vvc_response); -- v3
 
           when others =>
             tb_error("Unsupported command received for IMMEDIATE execution: '" & to_string(v_local_vvc_cmd.operation) & "'", C_SCOPE);
 
         end case;
 
-        shared_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX, GC_CHANNEL); -- v3
+        set_msg_id_panel(v_msg_id_panel); -- v3
 
       else
         tb_error("command_type is not IMMEDIATE or QUEUED", C_SCOPE);
@@ -191,6 +208,7 @@ begin
       work.td_target_support_pkg.acknowledge_cmd(global_vvc_ack, v_local_vvc_cmd.cmd_idx);
 
     end loop;
+    wait;
   end process;
   --===============================================================================================
 
@@ -199,6 +217,7 @@ begin
   -- - Fetch and execute the commands
   --===============================================================================================
   cmd_executor : process
+    constant C_EXECUTOR_ID                            : natural                                     := 0;
     variable v_cmd                                    : t_vvc_cmd_record;
     variable v_read_data                              : t_vvc_result; -- See vvc_cmd_pkg
     variable v_timestamp_start_of_current_bfm_access  : time                                        := 0 ns;
@@ -207,7 +226,7 @@ begin
     variable v_command_is_bfm_access                  : boolean                                     := false;
     variable v_prev_command_was_bfm_access            : boolean                                     := false;
     variable v_msg_id_panel                           : t_msg_id_panel;
-    variable v_normalised_data                        : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := (others => '0');
+    variable v_normalised_data                        : std_logic_vector(GC_DATA_WIDTH - 1 downto 0) := (others => '0');
     variable v_num_data_bits                          : natural;
     variable v_has_raised_warning_if_vvc_bfm_conflict : boolean                                     := false;
     variable v_vvc_config                             : t_vvc_config; -- v3
@@ -220,43 +239,25 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX, GC_CHANNEL); -- v3
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
       -- update vvc activity
-      update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                   shared_vvc_status,
-                                   GC_INSTANCE_IDX,
-                                   GC_CHANNEL,
-                                   INACTIVE,
-                                   entry_num_in_vvc_activity_register,
-                                   last_cmd_idx_executed,
-                                   command_queue.is_empty(VOID),
-                                   C_SCOPE
-                                  );
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, C_CHANNEL, INACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, last_cmd_idx_executed, command_queue.is_empty(VOID), C_SCOPE);
 
       -- 1. Set defaults, fetch command and log
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS); -- v3
-
-      v_vvc_config := get_vvc_config(VOID);
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS, C_SCOPE); -- v3
 
       -- update vvc activity
-      update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                   shared_vvc_status,
-                                   GC_INSTANCE_IDX,
-                                   GC_CHANNEL,
-                                   ACTIVE,
-                                   entry_num_in_vvc_activity_register,
-                                   last_cmd_idx_executed,
-                                   command_queue.is_empty(VOID),
-                                   C_SCOPE
-                                  );
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, C_CHANNEL, ACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, last_cmd_idx_executed, command_queue.is_empty(VOID), C_SCOPE);
+
+      v_vvc_config := get_vvc_config(VOID);
 
       v_num_data_bits := v_vvc_config.bfm_config.num_data_bits; -- v3            
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX, GC_CHANNEL));
+      v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Check if command is a BFM access
       v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay
@@ -307,8 +308,8 @@ begin
                 null;
             end case;
 
-            -- Set transaction info
-            set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, GC_CHANNEL, v_cmd, v_vvc_config_copy);
+            -- Set vvc transaction info
+            set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, C_CHANNEL, v_cmd, v_vvc_config_copy, IN_PROGRESS, C_SCOPE);
 
             -- Normalise address and data
             v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "uart_transmit() called with too wide data. " & add_msg_delimiter(v_cmd.msg));
@@ -321,8 +322,11 @@ begin
                           scope        => C_SCOPE,
                           msg_id_panel => v_msg_id_panel);
 
-            -- Set transaction info back to default values
-            reset_vvc_transaction_info(shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, GC_CHANNEL, v_cmd);
+            -- Update vvc transaction info
+            set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, C_CHANNEL, v_cmd, v_vvc_config_copy, COMPLETED, C_SCOPE);
+
+            -- Set vvc transaction info back to default values
+            reset_vvc_transaction_info(shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, C_CHANNEL, v_cmd);
 
             -- exit loop if terminate_current_cmd is requested
             if terminate_current_cmd.is_active = '1' then
@@ -360,7 +364,7 @@ begin
 
       last_cmd_idx_executed <= v_cmd.cmd_idx;
       -- Set VVC Transaction Info back to default values
-      reset_vvc_transaction_info(shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, GC_CHANNEL, v_cmd);
+      reset_vvc_transaction_info(shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, C_CHANNEL, v_cmd);
     end loop;
   end process;
   --===============================================================================================

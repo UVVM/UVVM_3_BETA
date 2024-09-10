@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -30,6 +30,7 @@ context bitvis_vip_sbi.vvc_context;
 library bitvis_vip_uart;
 context bitvis_vip_uart.vvc_context;
 use bitvis_vip_uart.monitor_cmd_pkg.all;
+use bitvis_vip_uart.monitor_cmd_support_pkg.all;
 
 library bitvis_uart;
 library bitvis_vip_clock_generator;
@@ -199,12 +200,12 @@ begin
   p_model : process
     -- SBI transaction info
     alias sbi_vvc_transaction_info_trigger : std_logic is global_sbi_vvc_transaction_trigger(C_SBI_VVC);
-    variable v_sbi_vvc_transaction_info    : bitvis_vip_sbi.transaction_pkg.t_transaction_group;
+    variable v_sbi_vvc_transaction_info    : bitvis_vip_sbi.vvc_transaction_pkg.t_transaction_group;
 
     -- UART transaction info
     alias uart_rx_transaction_info_trigger : std_logic is global_uart_vvc_transaction_trigger(RX, C_UART_RX_VVC);
     alias uart_tx_transaction_info_trigger : std_logic is global_uart_vvc_transaction_trigger(TX, C_UART_TX_VVC);
-    variable v_uart_vvc_transaction_info   : bitvis_vip_uart.transaction_pkg.t_transaction_group;
+    variable v_uart_vvc_transaction_info   : bitvis_vip_uart.vvc_transaction_pkg.t_transaction_group;
 
   begin
     while true loop
@@ -218,16 +219,10 @@ begin
       if sbi_vvc_transaction_info_trigger'event then
         v_sbi_vvc_transaction_info := shared_sbi_vvc_transaction_info.get(C_SBI_VVC, NA);
 
-        case v_sbi_vvc_transaction_info.bt.operation is
-          when WRITE =>
-            -- add to UART scoreboard
-            UART_VVC_SB.add_expected(v_sbi_vvc_transaction_info.bt.data(C_DATA_WIDTH - 1 downto 0));
-
-          when READ =>
-            null;
-          when others =>
-            null;
-        end case;
+        if v_sbi_vvc_transaction_info.bt.operation = WRITE and v_sbi_vvc_transaction_info.bt.transaction_status = IN_PROGRESS then
+          -- add to UART scoreboard
+          UART_VVC_SB.add_expected(v_sbi_vvc_transaction_info.bt.data(C_DATA_WIDTH - 1 downto 0));
+        end if;
       end if;
 
       -------------------------------
@@ -244,22 +239,17 @@ begin
       if uart_tx_transaction_info_trigger'event then
         v_uart_vvc_transaction_info := shared_uart_vvc_transaction_info.get(C_UART_TX_VVC, TX);
 
-        case v_uart_vvc_transaction_info.bt.operation is
-          when TRANSMIT =>
-
-            -- Check if transaction is intended valid / free of error
-            if (v_uart_vvc_transaction_info.bt.error_info.parity_bit_error = false) and (v_uart_vvc_transaction_info.bt.error_info.stop_bit_error = false) then
-              -- Add to SBI scoreboard
-              SBI_VVC_SB.add_expected(pad_sbi_sb(v_uart_vvc_transaction_info.bt.data(C_DATA_WIDTH - 1 downto 0)));
-              -- Wait for UART Transmit to finish before SBI VVC start
-              insert_delay(SBI_VVCT, 1, 12 * GC_BIT_PERIOD, "Wait for UART TX to finish");
-              -- Request SBI Read
-              sbi_read(SBI_VVCT, 1, GC_ADDR_RX_DATA, TO_SB, "SBI_READ");
-            end if;
-
-          when others =>
-            null;
-        end case;
+        if v_uart_vvc_transaction_info.bt.operation = TRANSMIT and v_uart_vvc_transaction_info.bt.transaction_status = IN_PROGRESS then
+          -- Check if transaction is intended valid / free of error
+          if (v_uart_vvc_transaction_info.bt.error_info.parity_bit_error = false) and (v_uart_vvc_transaction_info.bt.error_info.stop_bit_error = false) then
+            -- Add to SBI scoreboard
+            SBI_VVC_SB.add_expected(pad_sbi_sb(v_uart_vvc_transaction_info.bt.data(C_DATA_WIDTH - 1 downto 0)));
+            -- Wait for UART Transmit to finish before SBI VVC start
+            insert_delay(SBI_VVCT, 1, 12 * GC_BIT_PERIOD, "Wait for UART TX to finish");
+            -- Request SBI Read
+            sbi_read(SBI_VVCT, 1, GC_ADDR_RX_DATA, TO_SB, "SBI_READ");
+          end if;
+        end if;
 
       end if;
 

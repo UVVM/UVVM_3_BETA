@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -144,10 +144,11 @@ begin
   -- PROCESS: p_main
   --------------------------------------------------------------------------------
   p_main : process
-    variable v_data           : integer;
-    variable v_data_and_state : integer_vector(0 to 1);
-    variable v_rand           : t_rand;
-    variable v_cross          : t_coverpoint;
+    variable v_data                : integer;
+    variable v_data_and_state      : integer_vector(0 to 1);
+    variable v_rand                : t_rand;
+    variable v_cross               : t_coverpoint;
+    variable v_uart_vvc_config     : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
 
     procedure uart_transmit_and_sbi_check(
       constant data : in integer) is
@@ -291,8 +292,13 @@ begin
     enable_log_msg(SBI_VVCT, ALL_INSTANCES, ID_BFM);
 
     log(ID_LOG_HDR, "Configure UART VVC", C_SCOPE);
-    shared_uart_vvc_config(RX, C_UART_VVC_IDX).bfm_config.bit_time := C_BIT_PERIOD;
-    shared_uart_vvc_config(TX, C_UART_VVC_IDX).bfm_config.bit_time := C_BIT_PERIOD;
+    v_uart_vvc_config                     := shared_uart_vvc_config.get(C_UART_VVC_IDX, RX);
+    v_uart_vvc_config.bfm_config.bit_time := C_BIT_PERIOD;
+    shared_uart_vvc_config.set(v_uart_vvc_config, C_UART_VVC_IDX, RX);
+
+    v_uart_vvc_config                     := shared_uart_vvc_config.get(C_UART_VVC_IDX, TX);
+    v_uart_vvc_config.bfm_config.bit_time := C_BIT_PERIOD;
+    shared_uart_vvc_config.set(v_uart_vvc_config, C_UART_VVC_IDX, TX);
 
     log(ID_LOG_HDR, "Start clock and deassert reset", C_SCOPE);
     clk_ena <= true;

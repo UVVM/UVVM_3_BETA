@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -14,6 +14,9 @@
 -- Description   : See library quick reference (under 'doc') and README-file(s)
 ------------------------------------------------------------------------------------------
 
+--================================================================================================================================
+--  Error injection package
+--================================================================================================================================
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -60,17 +63,32 @@ package error_injection_pkg is
     randomization_seed2 => 2
   );
 
-  constant C_MAX_EI_INSTANCE_NUM : natural := 100;
+  constant C_MAX_EI_INSTANCE_NUM : natural := C_EI_VVC_MAX_INSTANCE_NUM;
 
   type t_error_injection_config_array is array (natural range <>) of t_error_injection_config;
 
-  package protected_ei_config_pkg is new uvvm_util.protected_generic_types_pkg --v3
-    generic map(
-      t_generic_element => t_error_injection_config_array(0 to C_MAX_EI_INSTANCE_NUM),
-      c_generic_default => (others => C_EI_CONFIG_DEFAULT));
-  use protected_ei_config_pkg.all;
-
-  --shared variable shared_ei_config : t_error_injection_config_array(0 to C_MAX_EI_INSTANCE_NUM) := (others => C_EI_CONFIG_DEFAULT);
-  shared variable shared_ei_config : protected_ei_config_pkg.t_prot_generic;
-
 end package error_injection_pkg;
+
+--================================================================================================================================
+--  Generic package instantiations
+--================================================================================================================================
+----------------------------------------------------------------------
+-- Protected type: t_error_injection_config_array
+----------------------------------------------------------------------
+library uvvm_util;
+use work.error_injection_pkg.all;
+
+package protected_ei_config_pkg is new uvvm_util.protected_generic_types_pkg
+  generic map(
+    t_generic_element => t_error_injection_config_array(0 to C_MAX_EI_INSTANCE_NUM),
+    c_generic_default => (others => C_EI_CONFIG_DEFAULT)
+  );
+
+--================================================================================================================================
+--  Shared variables package
+--================================================================================================================================
+use work.protected_ei_config_pkg.all;
+
+package error_injection_shared_variables_pkg is
+  shared variable shared_ei_config : work.protected_ei_config_pkg.t_generic;
+end package error_injection_shared_variables_pkg;

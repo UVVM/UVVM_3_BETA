@@ -29,10 +29,6 @@ ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_util ../../uv
 echo "Compiling UVVM VVC Framework..."
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_vvc_framework ../../uvvm_vvc_framework/src/ti_protected_types_pkg.vhd
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_vvc_framework ../../uvvm_vvc_framework/src/ti_vvc_framework_support_pkg.vhd
-ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_vvc_framework ../../uvvm_vvc_framework/src/ti_generic_queue_pkg.vhd
-ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_vvc_framework ../../uvvm_vvc_framework/src/ti_data_queue_pkg.vhd
-ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_vvc_framework ../../uvvm_vvc_framework/src/ti_data_fifo_pkg.vhd
-ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_vvc_framework ../../uvvm_vvc_framework/src/ti_data_stack_pkg.vhd
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_vvc_framework ../../uvvm_vvc_framework/src/ti_uvvm_engine.vhd
 
 # Compiling Bitvis VIP Scoreboard
@@ -43,7 +39,7 @@ ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_scorebo
 
 # Compiling Bitvis VIP SBI
 echo "Compiling Bitvis VIP SBI..."
-ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_sbi ../../bitvis_vip_sbi/src/transaction_pkg.vhd
+ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_sbi ../../bitvis_vip_sbi/src/vvc_transaction_pkg.vhd
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_sbi ../../bitvis_vip_sbi/src/sbi_bfm_pkg.vhd
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_sbi ../../bitvis_vip_sbi/src/vvc_cmd_pkg.vhd
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_sbi ../../uvvm_vvc_framework/src_target_dependent/td_target_support_pkg.vhd
@@ -57,7 +53,7 @@ ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_sbi ../
 # Compiling Bitvis VIP UART
 echo "Compiling Bitvis VIP UART..."
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_uart ../../bitvis_vip_uart/src/uart_bfm_pkg.vhd
-ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_uart ../../bitvis_vip_uart/src/transaction_pkg.vhd
+ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_uart ../../bitvis_vip_uart/src/vvc_transaction_pkg.vhd
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_uart ../../bitvis_vip_uart/src/vvc_cmd_pkg.vhd
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_uart ../../bitvis_vip_uart/src/monitor_cmd_pkg.vhd
 ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=bitvis_vip_uart ../../uvvm_vvc_framework/src_target_dependent/td_target_support_pkg.vhd

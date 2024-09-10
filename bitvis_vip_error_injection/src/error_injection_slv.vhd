@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -22,8 +22,8 @@ use ieee.std_logic_1164.all;
 library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
-library bitvis_vip_error_injection;
-use bitvis_vip_error_injection.error_injection_pkg.all;
+use work.error_injection_pkg.all;
+use work.error_injection_shared_variables_pkg.all;
 
 entity error_injection_slv is
   generic(

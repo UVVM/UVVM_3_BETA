@@ -1,62 +1,7 @@
 Bitvis VIP Avalon-ST (Avalon-Stream) - Overview on Versions and Changes
 ==============================================================
 
-v1.2.4
-----------
-Released: 2023-XX-XX
-- Added target independent prefix "ti" to the VVC framework context declaration.
-- Added id_for_bfm for packet initiate, packet complete, and packet data.
-- Added filter for (vcom-1246) warning in test.py script.
-- Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
-
-v1.2.3
-----------
-Released: 2022-05-05
-- t_vvc_config, t_vvc_status and t_avalon_st_bfm_config record declaration formatting.
-
-v1.2.2
-----------
-Released: 2021-05-26
-- Corrected message ID for check_value() in BFM.
-
-v1.2.1
-----------
-Released: 2020-06-23
-- Added match_strictness to BFM config and use it in check/expect procedures. Also print HEX
-  or BIN value in BFM check/expect alert logs depending on what kind of error it is. Updated BFM QR.
-
-v1.2.0
-----------
-Released: 2020-05-19
-- Added shared_avalon_mm_vvc_transaction_info information to quick reference.
-- Changed VVC activity methods parameters and default scope.
-- Updated quick reference Activity Watchdog section and BFM config record description.
-- Updated activity_watchdog_register_vvc_state() call with new t_activity parameter and 
-  other minor improvements.
-- Removed extra log in receive procedure when called from another BFM procedure.
-
-v1.1.1
-----------
-Released: 2020-04-20
-- Added reference to verbosity control in VVC QR.
-
-v1.1.0
-----------
-Released: 2020-03-30
-- Fixed logging to show the correct total number of words/symbols.
-- Replaced use_provided_msg_id_panel and msg_id_panel for parent_msg_id_panel in
-  vvc_cmd_pkg. Added parent_msg_id_panel optional parameter to all VVC procedures
-  for future HVVC support.
-- Renamed Direct Transaction Transfer to transaction info.
-- Moved alert_level parameter placement in avalon_st_expect() VVC procedure.
-
-v1.0.1
-----------
-Released: 2020-03-06
-- Removed deprecated t_transaction_info.
-
 v1.0.0
 ----------
-Released: 2020-02-16
-- Initial version of Avalon-ST VIP.
-- Added missing DTT commands.
+Released: 20XX-XX-XX
+- Initial version of Avalon-ST VIP in UVVM V3.

@@ -1,13 +1,7 @@
 Bitvis VIP Error Injection - Overview on Versions and Changes
 ==============================================================
 
-v0.1.1
+v1.0.0
 ----------
-Released: 2023-XX-XX
-- Added target independent prefix "ti" to the VVC framework context declaration.
-- Added filter for (vcom-1246) warning in test.py script.
-
-v0.1.0
-----------
-Released: 2019-12-04
-- Initial version of Error Injection VIP
+Released: 20XX-XX-XX
+- Initial version of Error Injection VIP in UVVM V3.

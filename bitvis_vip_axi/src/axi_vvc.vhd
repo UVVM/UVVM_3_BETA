@@ -1,5 +1,5 @@
 --================================================================================================================================
--- Copyright 2020 Bitvis
+-- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 --
@@ -25,19 +25,21 @@ library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 
 library bitvis_vip_scoreboard;
-use bitvis_vip_scoreboard.generic_sb_support_pkg.all;
+use bitvis_vip_scoreboard.generic_sb_support_pkg.C_SB_CONFIG_DEFAULT;
 
-library work;
 use work.axi_bfm_pkg.all;
+use work.axi_read_data_queue_pkg.all;
 use work.axi_channel_handler_pkg.all;
-use work.vvc_methods_pkg.all;
+use work.vvc_transaction_pkg.all;
+use work.vvc_transaction_shared_variables_pkg.all;
 use work.vvc_cmd_pkg.all;
+use work.vvc_cmd_shared_variables_pkg.all;
 use work.td_target_support_pkg.all;
+use work.vvc_methods_pkg.all;
+use work.vvc_methods_support_pkg.all;
 use work.td_vvc_entity_support_pkg.all;
 use work.td_cmd_queue_pkg.all;
 use work.td_result_queue_pkg.all;
-use work.transaction_pkg.all;
-use work.axi_read_data_queue_pkg.all;
 
 --=================================================================================================
 entity axi_vvc is
@@ -73,8 +75,8 @@ end entity axi_vvc;
 
 architecture behave of axi_vvc is
 
-  constant C_SCOPE      : string       := C_VVC_NAME & "," & to_string(GC_INSTANCE_IDX);
-  constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
+  constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX);
+  constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
   signal executor_is_busy                           : boolean := false;
   signal write_address_channel_executor_is_busy     : boolean := false;
@@ -89,32 +91,24 @@ architecture behave of axi_vvc is
   signal write_response_channel_queue_is_increasing : boolean := false;
   signal read_address_channel_queue_is_increasing   : boolean := false;
   signal read_data_channel_queue_is_increasing      : boolean := false;
-  signal last_cmd_idx_executed                      : natural := natural'high;
   signal last_write_response_channel_idx_executed   : natural := 0;
   signal last_read_data_channel_idx_executed        : natural := 0;
   signal terminate_current_cmd                      : t_flag_record;
+  signal clock_period                               : time;
 
   -- Instantiation of the element dedicated Queue
-  shared variable command_queue                : work.td_cmd_queue_pkg.t_prot_generic_queue;
-  shared variable write_address_channel_queue  : work.td_cmd_queue_pkg.t_prot_generic_queue;
-  shared variable write_data_channel_queue     : work.td_cmd_queue_pkg.t_prot_generic_queue;
-  shared variable write_response_channel_queue : work.td_cmd_queue_pkg.t_prot_generic_queue;
-  shared variable read_address_channel_queue   : work.td_cmd_queue_pkg.t_prot_generic_queue;
-  shared variable read_data_channel_queue      : work.td_cmd_queue_pkg.t_prot_generic_queue;
-  shared variable result_queue                 : work.td_result_queue_pkg.t_prot_generic_queue;
+  shared variable command_queue                : work.td_cmd_queue_pkg.t_generic_queue;
+  shared variable write_address_channel_queue  : work.td_cmd_queue_pkg.t_generic_queue;
+  shared variable write_data_channel_queue     : work.td_cmd_queue_pkg.t_generic_queue;
+  shared variable write_response_channel_queue : work.td_cmd_queue_pkg.t_generic_queue;
+  shared variable read_address_channel_queue   : work.td_cmd_queue_pkg.t_generic_queue;
+  shared variable read_data_channel_queue      : work.td_cmd_queue_pkg.t_generic_queue;
+  shared variable result_queue                 : work.td_result_queue_pkg.t_generic_queue;
 
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_axi_vvc_transaction_trigger(GC_INSTANCE_IDX);
   -- VVC Activity
   signal entry_num_in_vvc_activity_register : integer;
-
-  impure function queues_are_empty(
-    constant void : t_void
-  ) return boolean is
-    variable v_return : boolean := false;
-  begin
-    return command_queue.is_empty(VOID) and write_address_channel_queue.is_empty(VOID) and write_data_channel_queue.is_empty(VOID) and write_response_channel_queue.is_empty(VOID) and read_address_channel_queue.is_empty(VOID) and read_data_channel_queue.is_empty(VOID);
-  end function;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -130,6 +124,13 @@ architecture behave of axi_vvc is
     return shared_vvc_status.get(GC_INSTANCE_IDX);
   end function get_vvc_status;
 
+  impure function get_msg_id_panel(
+    constant void : t_void
+  ) return t_msg_id_panel is
+  begin
+    return shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX);
+  end function get_msg_id_panel;
+
   procedure set_vvc_status(
     constant vvc_status : t_vvc_status
   ) is
@@ -137,13 +138,21 @@ architecture behave of axi_vvc is
     shared_vvc_status.set(vvc_status, GC_INSTANCE_IDX);
   end procedure set_vvc_status;
 
+  procedure set_msg_id_panel(
+    constant msg_id_panel : t_msg_id_panel
+  ) is
+  begin
+    shared_vvc_msg_id_panel.set(msg_id_panel, GC_INSTANCE_IDX);
+  end procedure set_msg_id_panel;
+
   procedure peek_command_and_prepare_executor(
     variable command             : inout t_vvc_cmd_record;
-    variable command_queue       : inout work.td_cmd_queue_pkg.t_prot_generic_queue;
+    variable command_queue       : inout work.td_cmd_queue_pkg.t_generic_queue;
     constant msg_id_panel        : in t_msg_id_panel;
     signal   queue_is_increasing : in boolean;
     signal   executor_is_busy    : inout boolean;
     constant vvc_labels          : in t_vvc_labels;
+    constant scope               : in string;
     constant executor_id         : in t_msg_id := ID_CMD_EXECUTOR;
     constant executor_wait_id    : in t_msg_id := ID_CMD_EXECUTOR_WAIT
   ) is
@@ -158,7 +167,7 @@ architecture behave of axi_vvc is
 
     wait for 0 ns;                      -- to allow delta updates in other processes.
     if command_queue.is_empty(VOID) then
-      log(executor_wait_id, "Executor: Waiting for command", to_string(vvc_labels.scope), msg_id_panel);
+      log(executor_wait_id, "Executor: Waiting for command", to_string(scope), msg_id_panel);
       wait until queue_is_increasing;
     end if;
 
@@ -168,7 +177,7 @@ architecture behave of axi_vvc is
     command          := command_queue.peek(VOID);
 
     v_msg_id_panel               := get_msg_id_panel(command, msg_id_panel);
-    log(executor_id, to_string(command.proc_call) & " - Will be executed " & format_command_idx(command), to_string(vvc_labels.scope), v_msg_id_panel); -- Get and ack the new command
+    log(executor_id, to_string(command.proc_call) & " - Will be executed " & format_command_idx(command), to_string(scope), v_msg_id_panel); -- Get and ack the new command
     v_vvc_status                 := get_vvc_status(VOID);
     v_vvc_status.pending_cmd_cnt := command_queue.get_count(VOID);
     v_vvc_status.current_cmd_idx := command.cmd_idx;
@@ -177,14 +186,33 @@ architecture behave of axi_vvc is
 
 begin
 
+  -- Remove vsim-8684 warning
+  p_initial_drivers : process begin
+    axi_vvc_master_if.write_address_channel.awready <= 'Z';
+    axi_vvc_master_if.write_data_channel.wready     <= 'Z';
+    axi_vvc_master_if.write_response_channel.bvalid <= 'Z';
+    axi_vvc_master_if.write_response_channel.bid    <= (axi_vvc_master_if.write_response_channel.bid'range => 'Z');
+    axi_vvc_master_if.write_response_channel.bresp  <= (others => 'Z');
+    axi_vvc_master_if.write_response_channel.buser  <= (axi_vvc_master_if.write_response_channel.buser'range => 'Z');
+    axi_vvc_master_if.read_address_channel.arready  <= 'Z';
+    axi_vvc_master_if.read_data_channel.rlast       <= 'Z';
+    axi_vvc_master_if.read_data_channel.rvalid      <= 'Z';
+    axi_vvc_master_if.read_data_channel.rid         <= (axi_vvc_master_if.read_data_channel.rid'range => 'Z');
+    axi_vvc_master_if.read_data_channel.rdata       <= (axi_vvc_master_if.read_data_channel.rdata'range => 'Z');
+    axi_vvc_master_if.read_data_channel.rresp       <= (others => 'Z');
+    axi_vvc_master_if.read_data_channel.ruser       <= (axi_vvc_master_if.read_data_channel.ruser'range => 'Z');
+    wait;
+  end process p_initial_drivers;
+
   --===============================================================================================
   -- Constructor
   -- - Set up the defaults and show constructor if enabled
   --===============================================================================================
   -- v3
-  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_vvc_config, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX), command_queue, result_queue, GC_AXI_CONFIG,
+  vvc_constructor(C_SCOPE, GC_INSTANCE_IDX, shared_vvc_config, get_msg_id_panel(VOID), command_queue, result_queue, GC_AXI_CONFIG,
                   GC_CMD_QUEUE_COUNT_MAX, GC_CMD_QUEUE_COUNT_THRESHOLD, GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY,
-                  GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY);
+                  GC_RESULT_QUEUE_COUNT_MAX, GC_RESULT_QUEUE_COUNT_THRESHOLD, GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY,
+                  C_VVC_MAX_INSTANCE_NUM);
   --===============================================================================================
 
   --===============================================================================================
@@ -209,19 +237,19 @@ begin
     shared_vvc_last_received_cmd_idx.set(0, GC_INSTANCE_IDX);
 
     -- Register VVC in vvc activity register
-    entry_num_in_vvc_activity_register <= shared_vvc_activity_register.priv_register_vvc(name                     => C_VVC_NAME,
-                                                                                         instance                 => GC_INSTANCE_IDX,
-                                                                                         await_selected_supported => false);
+    entry_num_in_vvc_activity_register <= shared_vvc_activity_register.priv_register_vvc(name          => C_VVC_NAME,
+                                                                                         instance      => GC_INSTANCE_IDX,
+                                                                                         num_executors => 6);
 
     -- Then for every single command from the sequencer
     loop                                -- basically as long as new commands are received
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
       -- 1. wait until command targeted at this VVC. Must match VVC name, instance and channel (if applicable)
       --    releases global semaphore
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.await_cmd_from_sequencer(C_VVC_LABELS, v_msg_id_panel, THIS_VVCT, VVC_BROADCAST, global_vvc_busy, global_vvc_ack, v_local_vvc_cmd); -- v3
+      work.td_vvc_entity_support_pkg.await_cmd_from_sequencer(C_VVC_LABELS, C_SCOPE, v_msg_id_panel, THIS_VVCT, VVC_BROADCAST, global_vvc_busy, global_vvc_ack, v_local_vvc_cmd); -- v3
 
       -- update shared_vvc_last_received_cmd_idx with received command index
       shared_vvc_last_received_cmd_idx.set(v_local_vvc_cmd.cmd_idx, GC_INSTANCE_IDX);
@@ -251,26 +279,26 @@ begin
 
           when FLUSH_COMMAND_QUEUE =>
             v_vvc_status := get_vvc_status(VOID);
-            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, command_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS); -- v3
-            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, write_address_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS); -- v3
-            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, write_data_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS); -- v3
-            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, write_response_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS); -- v3
-            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, read_address_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS); -- v3
-            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, read_data_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, command_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS, C_SCOPE); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, write_address_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS, C_SCOPE); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, write_data_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS, C_SCOPE); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, write_response_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS, C_SCOPE); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, read_address_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS, C_SCOPE); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_flush_command_queue(v_local_vvc_cmd, read_data_channel_queue, v_msg_id_panel, v_vvc_status, C_VVC_LABELS, C_SCOPE); -- v3
             set_vvc_status(v_vvc_status);
 
           when TERMINATE_CURRENT_COMMAND =>
-            work.td_vvc_entity_support_pkg.interpreter_terminate_current_command(v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, terminate_current_cmd); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_terminate_current_command(v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, C_SCOPE, terminate_current_cmd, executor_is_busy); -- v3
 
           when FETCH_RESULT =>
-            work.td_vvc_entity_support_pkg.interpreter_fetch_result(result_queue, v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, last_cmd_idx_executed, shared_vvc_response); -- v3
+            work.td_vvc_entity_support_pkg.interpreter_fetch_result(result_queue, entry_num_in_vvc_activity_register, v_local_vvc_cmd, v_msg_id_panel, C_VVC_LABELS, C_SCOPE, shared_vvc_response); -- v3
 
           when others =>
             tb_error("Unsupported command received for IMMEDIATE execution: '" & to_string(v_local_vvc_cmd.operation) & "'", C_SCOPE);
 
         end case;
 
-        shared_vvc_msg_id_panel.set(v_msg_id_panel, GC_INSTANCE_IDX); -- v3
+        set_msg_id_panel(v_msg_id_panel); -- v3
 
       else
         tb_error("command_type is not IMMEDIATE or QUEUED", C_SCOPE);
@@ -281,50 +309,16 @@ begin
       work.td_target_support_pkg.acknowledge_cmd(global_vvc_ack, v_local_vvc_cmd.cmd_idx);
 
     end loop;
+    wait;
   end process;
   --===============================================================================================
-
-  --===============================================================================================
-  -- Updating the activity register
-  --===============================================================================================
-  p_activity_register_update : process
-    variable v_cmd_queues_are_empty : boolean;
-  begin
-    -- Wait until active and set the activity register to ACTIVE
-    if not any_executors_busy then
-      wait until any_executors_busy;
-    end if;
-    v_cmd_queues_are_empty := queues_are_empty(VOID);
-    update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                 shared_vvc_status,
-                                 GC_INSTANCE_IDX,
-                                 NA,
-                                 ACTIVE,
-                                 entry_num_in_vvc_activity_register,
-                                 last_cmd_idx_executed,
-                                 v_cmd_queues_are_empty,
-                                 C_SCOPE);
-    -- Wait until inactive and set the activity register to INACTIVE
-    if any_executors_busy then
-      wait until not any_executors_busy;
-    end if;
-    v_cmd_queues_are_empty := queues_are_empty(VOID);
-    update_vvc_activity_register(global_trigger_vvc_activity_register,
-                                 shared_vvc_status,
-                                 GC_INSTANCE_IDX,
-                                 NA,
-                                 INACTIVE,
-                                 entry_num_in_vvc_activity_register,
-                                 last_cmd_idx_executed,
-                                 v_cmd_queues_are_empty,
-                                 C_SCOPE);
-  end process p_activity_register_update;
 
   --===============================================================================================
   -- Command executor
   -- - Fetch and execute the commands
   --===============================================================================================
   cmd_executor : process
+    constant C_EXECUTOR_ID                           : natural                                      := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
     variable v_read_data                             : t_vvc_result; -- See vvc_cmd_pkg
     variable v_timestamp_start_of_current_bfm_access : time                                         := 0 ns;
@@ -335,7 +329,6 @@ begin
     variable v_msg_id_panel                          : t_msg_id_panel;
     variable v_normalised_addr                       : unsigned(GC_ADDR_WIDTH - 1 downto 0)         := (others => '0');
     variable v_normalised_data                       : std_logic_vector(GC_DATA_WIDTH - 1 downto 0) := (others => '0');
-    variable v_cmd_queues_are_empty                  : boolean;
     variable v_finish2start_warning_triggered        : boolean                                      := false;
     variable v_vvc_config                            : t_vvc_config                                 := get_vvc_config(VOID);
     variable v_vvc_status                            : t_vvc_status;
@@ -352,17 +345,22 @@ begin
 
     loop
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
+
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, INACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, 0, command_queue.is_empty(VOID), C_SCOPE);
 
       -- 1. Set defaults, fetch command and log
       -------------------------------------------------------------------------
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS, C_SCOPE); -- v3
+
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, ACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, 0, command_queue.is_empty(VOID), C_SCOPE);
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
+      v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Check if command is a BFM access
       v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay
@@ -392,7 +390,7 @@ begin
         --===================================
         when WRITE =>
           -- Set vvc transaction info
-          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_SCOPE);
 
           -- Normalise address and data
           v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_write() called with too wide address. " & v_cmd.msg);
@@ -407,7 +405,7 @@ begin
 
         when READ =>
           -- Set vvc transaction info
-          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_SCOPE);
 
           -- Normalise address and data
           v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_read() called with too wide address. " & v_cmd.msg);
@@ -420,7 +418,7 @@ begin
 
         when CHECK =>
           -- Set vvc transaction info
-          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_SCOPE);
 
           -- Normalise address and data
           v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "axi_check() called with too wide address. " & v_cmd.msg);
@@ -467,6 +465,13 @@ begin
         uvvm_vvc_framework.ti_vvc_framework_support_pkg.reset_flag(terminate_current_cmd);
       end if;
 
+      -- These commands are sent to other executors where they are executed.
+      -- Since the commands can finish in any order, to detect when this specific command has finished, we store the cmd_idx
+      -- in a list with pending commands which will be cleared in the corresponding executor when it has finished.
+      if v_cmd.operation = WRITE or v_cmd.operation = READ or v_cmd.operation = CHECK then
+        shared_vvc_activity_register.priv_add_pending_cmd_idx(entry_num_in_vvc_activity_register, v_cmd.cmd_idx);
+      end if;
+
       -- In case we only allow a single pending transaction, wait here until every channel is finished. 
       -- Even though this wait doesn't have a timeout, each of the executors have timeouts.
       if v_vvc_config.force_single_pending_transaction and v_command_is_bfm_access then
@@ -482,14 +487,15 @@ begin
   -- - Fetch and execute the read address channel transactions
   --===============================================================================================
   read_address_channel_executor : process
+    constant C_EXECUTOR_ID        : natural                                    := 1;
     variable v_cmd                : t_vvc_cmd_record;
     variable v_msg_id_panel       : t_msg_id_panel;
     variable v_normalized_arid    : std_logic_vector(GC_ID_WIDTH - 1 downto 0) := (others => '0');
     variable v_normalized_araddr  : unsigned(GC_ADDR_WIDTH - 1 downto 0)       := (others => '0');
     variable v_vvc_config         : t_vvc_config                               := get_vvc_config(VOID);
     variable v_vvc_status         : t_vvc_status;
-    constant C_CHANNEL_SCOPE      : string                                     := C_VVC_NAME & "_AR" & "," & to_string(GC_INSTANCE_IDX);
-    constant C_CHANNEL_VVC_LABELS : t_vvc_labels                               := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
+    constant C_CHANNEL_SCOPE      : string                                     := get_scope_for_log(C_VVC_NAME & "_AR", GC_INSTANCE_IDX);
+    constant C_CHANNEL_VVC_LABELS : t_vvc_labels                               := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
   begin
     -- Set the command response queue up to the same settings as the command queue
@@ -502,26 +508,28 @@ begin
     wait until entry_num_in_vvc_activity_register >= 0;
 
     loop
-      wait for 0 ns;
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
-
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, INACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, 0, read_address_channel_queue.is_empty(VOID), C_SCOPE);
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, read_address_channel_queue, shared_vvc_status, read_address_channel_queue_is_increasing, read_address_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, read_address_channel_queue, shared_vvc_status, read_address_channel_queue_is_increasing, read_address_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, C_CHANNEL_SCOPE, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, ACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, 0, read_address_channel_queue.is_empty(VOID), C_SCOPE);
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
+      v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Normalize values from command record to their actual sizes
       if v_normalized_arid'length > 0 then
         v_normalized_arid := normalize_and_check(v_cmd.id, v_normalized_arid, ALLOW_WIDER_NARROWER, "v_cmd.id", "v_normalized_arid", "Function called with too wide arid. " & v_cmd.msg);
       end if;
-      v_normalized_araddr := normalize_and_check(v_cmd.addr, v_normalized_araddr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalized_araddr", "Function called with to araddr. " & v_cmd.msg);
+      v_normalized_araddr := normalize_and_check(v_cmd.addr, v_normalized_araddr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalized_araddr", "Function called with too wide araddr. " & v_cmd.msg);
       -- Set vvc transaction info
-      set_arw_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+      set_arw_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_CHANNEL_SCOPE);
       -- Start transaction
       read_address_channel_write(arid_value     => v_normalized_arid,
                                  araddr_value   => v_normalized_araddr,
@@ -553,6 +561,8 @@ begin
                                  msg_id_panel   => v_msg_id_panel,
                                  config         => v_vvc_config.bfm_config);
 
+      -- Update vvc transaction info
+      set_arw_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_CHANNEL_SCOPE);
       -- Set vvc transaction info back to default values
       reset_arw_vvc_transaction_info(shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd);
     end loop;
@@ -564,18 +574,18 @@ begin
   -- - Fetch and execute the read data channel transactions
   --===============================================================================================
   read_data_channel_executor : process
+    constant C_EXECUTOR_ID          : natural      := 2;
     variable v_cmd                  : t_vvc_cmd_record;
     variable v_result               : t_vvc_result := C_EMPTY_VVC_RESULT; -- See vvc_cmd_pkg
     variable v_msg_id_panel         : t_msg_id_panel;
-    variable v_cmd_queues_are_empty : boolean;
-    variable v_read_data_queue      : t_prot_axi_read_data_queue;
+    variable v_read_data_queue      : t_axi_read_data_queue;
     variable v_queue_count          : natural;
     variable v_cmd_len              : natural;
     variable v_normalized_rid       : std_logic_vector(GC_ID_WIDTH - 1 downto 0);
     variable v_check_ok             : boolean      := true;
     variable v_vvc_config           : t_vvc_config := get_vvc_config(VOID);
-    constant C_CHANNEL_SCOPE        : string       := C_VVC_NAME & "_R" & "," & to_string(GC_INSTANCE_IDX);
-    constant C_CHANNEL_VVC_LABELS   : t_vvc_labels := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
+    constant C_CHANNEL_SCOPE        : string       := get_scope_for_log(C_VVC_NAME & "_R", GC_INSTANCE_IDX);
+    constant C_CHANNEL_VVC_LABELS   : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
     -- Set the command response queue up to the same settings as the command queue
     read_data_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
@@ -588,22 +598,26 @@ begin
     wait until entry_num_in_vvc_activity_register >= 0;
 
     loop
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, INACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, last_read_data_channel_idx_executed, read_data_channel_queue.is_empty(VOID), C_SCOPE);
       -- get a command from the queue without removing it
-      peek_command_and_prepare_executor(v_cmd, read_data_channel_queue, v_msg_id_panel, read_data_channel_queue_is_increasing, read_data_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT);
+      peek_command_and_prepare_executor(v_cmd, read_data_channel_queue, v_msg_id_panel, read_data_channel_queue_is_increasing, read_data_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, C_CHANNEL_SCOPE, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT);
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, ACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, last_read_data_channel_idx_executed, read_data_channel_queue.is_empty(VOID), C_SCOPE);
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
+      v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Handling commands
       case v_cmd.operation is
         when READ =>
           -- Set vvc transaction info
-          set_r_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+          set_r_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_CHANNEL_SCOPE);
           -- Start transaction
           read_data_channel_receive(read_result     => v_result,
                                     read_data_queue => v_read_data_queue,
@@ -632,7 +646,7 @@ begin
                 exit;
               elsif i = v_queue_count then
                 -- We didn't find the correct RID
-                error("Unexpected read data with RID: " & to_string(v_result.rid), C_CHANNEL_SCOPE);
+                alert(v_vvc_config.bfm_config.general_severity,"Unexpected read data with RID: " & to_string(v_result.rid), C_CHANNEL_SCOPE);
               end if;
             end loop;
           else
@@ -651,9 +665,12 @@ begin
                                                         result       => v_result);
           end if;
 
+          -- Update vvc transaction info
+          set_r_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_result, COMPLETED, C_CHANNEL_SCOPE);
+
         when CHECK =>
           -- Set vvc transaction info
-          set_r_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+          set_r_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_CHANNEL_SCOPE);
           -- Start transaction
           read_data_channel_receive(read_result     => v_result,
                                     read_data_queue => v_read_data_queue,
@@ -683,7 +700,7 @@ begin
                 exit;
               elsif i = v_queue_count then
                 -- We didn't find the correct RID
-                error("Unexpected read data with RID: " & to_string(v_result.rid), C_CHANNEL_SCOPE);
+                alert(v_vvc_config.bfm_config.general_severity, "Unexpected read data with RID: " & to_string(v_result.rid), C_CHANNEL_SCOPE);
               end if;
             end loop;
           else
@@ -714,11 +731,17 @@ begin
             log(v_vvc_config.bfm_config.id_for_bfm, "read data channel check OK. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, v_msg_id_panel);
           end if;
 
+          -- Update vvc transaction info
+          set_r_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_CHANNEL_SCOPE);
+
         when others =>
           tb_error("Unsupported local command received for execution: '" & to_string(v_cmd.operation) & "'", C_CHANNEL_SCOPE);
       end case;
       v_check_ok                          := true;
       last_read_data_channel_idx_executed <= v_cmd.cmd_idx;
+
+      -- Update vvc transaction info
+      set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_CHANNEL_SCOPE);
       -- Set vvc transaction info back to default values
       reset_r_vvc_transaction_info(shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA);
       reset_vvc_transaction_info(shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd);
@@ -731,13 +754,14 @@ begin
   -- - Fetch and execute the write address channel transactions
   --===============================================================================================
   write_address_channel_executor : process
+    constant C_EXECUTOR_ID        : natural                                    := 3;
     variable v_cmd                : t_vvc_cmd_record;
     variable v_msg_id_panel       : t_msg_id_panel;
     variable v_normalized_awid    : std_logic_vector(GC_ID_WIDTH - 1 downto 0) := (others => '0');
     variable v_normalized_awaddr  : unsigned(GC_ADDR_WIDTH - 1 downto 0)       := (others => '0');
     variable v_vvc_config         : t_vvc_config                               := get_vvc_config(VOID);
-    constant C_CHANNEL_SCOPE      : string                                     := C_VVC_NAME & "_AW" & "," & to_string(GC_INSTANCE_IDX);
-    constant C_CHANNEL_VVC_LABELS : t_vvc_labels                               := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
+    constant C_CHANNEL_SCOPE      : string                                     := get_scope_for_log(C_VVC_NAME & "_AW", GC_INSTANCE_IDX);
+    constant C_CHANNEL_VVC_LABELS : t_vvc_labels                               := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
     -- Set the command response queue up to the same settings as the command queue
     write_address_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
@@ -749,27 +773,29 @@ begin
     wait until entry_num_in_vvc_activity_register >= 0;
 
     loop
-      wait for 0 ns;
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
-
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, INACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, 0, write_address_channel_queue.is_empty(VOID), C_SCOPE);
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_address_channel_queue, shared_vvc_status, write_address_channel_queue_is_increasing, write_address_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_address_channel_queue, shared_vvc_status, write_address_channel_queue_is_increasing, write_address_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, C_CHANNEL_SCOPE, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, ACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, 0, write_address_channel_queue.is_empty(VOID), C_SCOPE);
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
+      v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Normalise address
       if v_normalized_awid'length > 0 then
         v_normalized_awid := normalize_and_check(v_cmd.id, v_normalized_awid, ALLOW_WIDER_NARROWER, "v_cmd.id", "v_normalized_awid", "Function called with too wide awid. " & v_cmd.msg);
       end if;
 
-      v_normalized_awaddr := normalize_and_check(v_cmd.addr, v_normalized_awaddr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalized_awaddr", "Function called with to awaddr. " & v_cmd.msg);
+      v_normalized_awaddr := normalize_and_check(v_cmd.addr, v_normalized_awaddr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalized_awaddr", "Function called with too wide awaddr. " & v_cmd.msg);
       -- Set vvc transaction info
-      set_arw_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+      set_arw_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_CHANNEL_SCOPE);
 
       -- Start transaction
       write_address_channel_write(awid_value     => v_normalized_awid,
@@ -802,6 +828,8 @@ begin
                                   msg_id_panel   => v_msg_id_panel,
                                   config         => v_vvc_config.bfm_config);
 
+      -- Update vvc transaction info
+      set_arw_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_CHANNEL_SCOPE);
       -- Set vvc transaction info back to default values
       reset_arw_vvc_transaction_info(shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd);
     end loop;
@@ -813,14 +841,15 @@ begin
   -- - Fetch and execute the write data channel transactions
   --===============================================================================================
   write_data_channel_executor : process
+    constant C_EXECUTOR_ID        : natural      := 4;
     variable v_cmd                : t_vvc_cmd_record;
     variable v_msg_id_panel       : t_msg_id_panel;
     variable v_wdata_array_ptr    : t_slv_array_ptr;
     variable v_wstrb_array_ptr    : t_slv_array_ptr;
     variable v_wuser_array_ptr    : t_slv_array_ptr;
     variable v_vvc_config         : t_vvc_config := get_vvc_config(VOID);
-    constant C_CHANNEL_SCOPE      : string       := C_VVC_NAME & "_W" & "," & to_string(GC_INSTANCE_IDX);
-    constant C_CHANNEL_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
+    constant C_CHANNEL_SCOPE      : string       := get_scope_for_log(C_VVC_NAME & "_W", GC_INSTANCE_IDX);
+    constant C_CHANNEL_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
     -- Set the command response queue up to the same settings as the command queue
     write_data_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
@@ -832,18 +861,20 @@ begin
     wait until entry_num_in_vvc_activity_register >= 0;
 
     loop
-      wait for 0 ns;
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
-
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, INACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, 0, write_data_channel_queue.is_empty(VOID), C_SCOPE);
       -- Fetch commands
-      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_data_channel_queue, shared_vvc_status, write_data_channel_queue_is_increasing, write_data_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, write_data_channel_queue, shared_vvc_status, write_data_channel_queue_is_increasing, write_data_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, C_CHANNEL_SCOPE, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT); -- v3
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, ACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, 0, write_data_channel_queue.is_empty(VOID), C_SCOPE);
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
+      v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Initializing array pointers
       v_wdata_array_ptr := new t_slv_array(0 to to_integer(unsigned(v_cmd.len)))(GC_DATA_WIDTH-1 downto 0);
@@ -856,7 +887,7 @@ begin
       end loop;
 
       -- Set vvc transaction info
-      set_w_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+      set_w_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_CHANNEL_SCOPE);
 
       -- Start transaction
       write_data_channel_write(wdata_value  => v_wdata_array_ptr.all,
@@ -878,6 +909,9 @@ begin
       deallocate(v_wdata_array_ptr);
       deallocate(v_wstrb_array_ptr);
       deallocate(v_wuser_array_ptr);
+
+      -- Update vvc transaction info
+      set_w_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_CHANNEL_SCOPE);
       -- Set vvc transaction info back to default values
       reset_w_vvc_transaction_info(shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA);
     end loop;
@@ -889,6 +923,7 @@ begin
   -- - Fetch and execute the write response channel transactions
   --===============================================================================================
   write_response_channel_executor : process
+    constant C_EXECUTOR_ID          : natural      := 5;
     variable v_cmd                  : t_vvc_cmd_record;
     variable v_msg_id_panel         : t_msg_id_panel;
     variable v_normalized_bid       : std_logic_vector(GC_ID_WIDTH - 1 downto 0);
@@ -896,11 +931,10 @@ begin
     variable v_bid_value            : std_logic_vector(GC_ID_WIDTH - 1 downto 0);
     variable v_bresp_value          : t_xresp;
     variable v_buser_value          : std_logic_vector(GC_USER_WIDTH - 1 downto 0);
-    variable v_cmd_queues_are_empty : boolean;
     variable v_queue_count          : integer;
     variable v_vvc_config           : t_vvc_config := get_vvc_config(VOID);
-    constant C_CHANNEL_SCOPE        : string       := C_VVC_NAME & "_B" & "," & to_string(GC_INSTANCE_IDX);
-    constant C_CHANNEL_VVC_LABELS   : t_vvc_labels := assign_vvc_labels(C_CHANNEL_SCOPE, C_VVC_NAME, GC_INSTANCE_IDX, NA);
+    constant C_CHANNEL_SCOPE        : string       := get_scope_for_log(C_VVC_NAME & "_B", GC_INSTANCE_IDX);
+    constant C_CHANNEL_VVC_LABELS   : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
   begin
     -- Set the command response queue up to the same settings as the command queue
     write_response_channel_queue.set_scope(C_CHANNEL_SCOPE & ":Q");
@@ -912,19 +946,23 @@ begin
     wait until entry_num_in_vvc_activity_register >= 0;
 
     loop
-      v_msg_id_panel := shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX); -- v3
+      v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, INACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, last_write_response_channel_idx_executed, write_response_channel_queue.is_empty(VOID), C_SCOPE);
       -- get a command from the queue without removing it
-      peek_command_and_prepare_executor(v_cmd, write_response_channel_queue, v_msg_id_panel, write_response_channel_queue_is_increasing, write_response_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT);
+      peek_command_and_prepare_executor(v_cmd, write_response_channel_queue, v_msg_id_panel, write_response_channel_queue_is_increasing, write_response_channel_executor_is_busy, C_CHANNEL_VVC_LABELS, C_CHANNEL_SCOPE, ID_CHANNEL_EXECUTOR, ID_CHANNEL_EXECUTOR_WAIT);
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, ACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, last_write_response_channel_idx_executed, write_response_channel_queue.is_empty(VOID), C_SCOPE);
 
       v_vvc_config := get_vvc_config(VOID);
 
       -- Select between a provided msg_id_panel via the vvc_cmd_record from a VVC with a higher hierarchy or the
       -- msg_id_panel in this VVC's config. This is to correctly handle the logging when using Hierarchical-VVCs.
-      v_msg_id_panel := get_msg_id_panel(v_cmd, shared_vvc_msg_id_panel.get(GC_INSTANCE_IDX));
+      v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Set vvc transaction info
-      set_b_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config);
+      set_b_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_CHANNEL_SCOPE);
 
       -- Receiving a write response
       write_response_channel_receive(bid_value    => v_bid_value,
@@ -937,7 +975,7 @@ begin
                                      buser        => axi_vvc_master_if.write_response_channel.buser,
                                      bvalid       => axi_vvc_master_if.write_response_channel.bvalid,
                                      bready       => axi_vvc_master_if.write_response_channel.bready,
-                                     alert_level  => error,
+                                     alert_level  => v_vvc_config.bfm_config.general_severity,
                                      scope        => C_CHANNEL_SCOPE,
                                      msg_id_panel => v_msg_id_panel,
                                      config       => v_vvc_config.bfm_config);
@@ -954,7 +992,7 @@ begin
             exit;
           elsif i = v_queue_count then
             -- We didn't find the correct BID
-            error("Unexpected write response with BID: " & to_string(v_bid_value), C_CHANNEL_SCOPE);
+            alert(v_vvc_config.bfm_config.general_severity,"Unexpected write response with BID: " & to_string(v_bid_value), C_CHANNEL_SCOPE);
           end if;
         end loop;
       else
@@ -964,15 +1002,21 @@ begin
 
       -- Checking response
       if v_normalized_bid'length > 0 then
-        check_value(v_bid_value, v_normalized_bid, v_vvc_config.bfm_config.match_strictness, error, "Checking BID value. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, KEEP_LEADING_0, ID_POS_ACK, v_msg_id_panel);
+        check_value(v_bid_value, v_normalized_bid, v_vvc_config.bfm_config.match_strictness, v_vvc_config.bfm_config.general_severity, "Checking BID value. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, KEEP_LEADING_0, ID_POS_ACK, v_msg_id_panel);
       end if;
       if v_normalized_buser'length > 0 then
         v_normalized_buser := normalize_and_check(v_cmd.user, v_normalized_buser, ALLOW_WIDER_NARROWER, "v_cmd.user", "v_normalized_buser", v_cmd.msg);
-        check_value(v_buser_value, v_normalized_buser, v_vvc_config.bfm_config.match_strictness, error, "Checking BUSER value. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, KEEP_LEADING_0, ID_POS_ACK, v_msg_id_panel);
+        check_value(v_buser_value, v_normalized_buser, v_vvc_config.bfm_config.match_strictness, v_vvc_config.bfm_config.general_severity, "Checking BUSER value. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, KEEP_LEADING_0, ID_POS_ACK, v_msg_id_panel);
       end if;
-      check_value(v_bresp_value = v_cmd.resp, error, "Checking BRESP value. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, ID_POS_ACK, v_msg_id_panel);
+      if v_bresp_value /= v_cmd.resp then
+        alert(v_vvc_config.bfm_config.general_severity,"Unexpected BRESP value. Was " & to_string(v_bresp_value) & ". Expected " & to_string(v_cmd.resp) ,  C_CHANNEL_SCOPE);
+      end if;
 
       last_write_response_channel_idx_executed <= v_cmd.cmd_idx;
+
+      -- Update vvc transaction info
+      set_b_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_CHANNEL_SCOPE);
+      set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_CHANNEL_SCOPE);
       -- Set vvc transaction info back to default values
       reset_b_vvc_transaction_info(shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA);
       reset_vvc_transaction_info(shared_axi_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd);
@@ -985,6 +1029,73 @@ begin
   -- - Handles the termination request record (sets and resets terminate flag on request)
   --===============================================================================================
   cmd_terminator : uvvm_vvc_framework.ti_vvc_framework_support_pkg.flag_handler(terminate_current_cmd); -- flag: is_active, set, reset
+  --===============================================================================================
+
+  --===============================================================================================
+  -- Clock period
+  -- - Finds the clock period
+  --===============================================================================================
+  p_clock_period : process
+  begin
+    wait until rising_edge(clk);
+    clock_period <= now;
+    wait until rising_edge(clk);
+    clock_period <= now - clock_period;
+    wait;
+  end process;
+  --===============================================================================================
+
+  --===============================================================================================
+  -- Unwanted activity detection
+  -- - Monitors unwanted activity from the DUT
+  --===============================================================================================
+  p_unwanted_activity : process
+    variable v_vvc_config : t_vvc_config;
+  begin
+    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    wait for std.env.resolution_limit;
+
+    loop
+      -- Skip if the vvc is inactive to avoid waiting for an inactive activity register
+      if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = ACTIVE then
+        -- Wait until the vvc is inactive
+        loop
+          wait on global_trigger_vvc_activity_register;
+          if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
+            exit;
+          end if;
+        end loop;
+      end if;
+
+      -- All ready signals are not monitored. See AXI VVC QuickRef.
+      wait on axi_vvc_master_if.write_response_channel.bid, axi_vvc_master_if.write_response_channel.bresp, axi_vvc_master_if.write_response_channel.buser,
+              axi_vvc_master_if.write_response_channel.bvalid, axi_vvc_master_if.read_data_channel.rid, axi_vvc_master_if.read_data_channel.rdata,
+              axi_vvc_master_if.read_data_channel.rresp, axi_vvc_master_if.read_data_channel.rlast, axi_vvc_master_if.read_data_channel.ruser,
+              axi_vvc_master_if.read_data_channel.rvalid, global_trigger_vvc_activity_register;
+
+      -- Check the changes on the DUT outputs only when the vvc is inactive
+      if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
+        v_vvc_config := get_vvc_config(VOID);
+        -- Skip checking the changes if the bvalid signal goes low within one clock period after the VVC becomes inactive
+        if not (falling_edge(axi_vvc_master_if.write_response_channel.bvalid) and global_trigger_vvc_activity_register'last_event < clock_period) then
+          check_value(not axi_vvc_master_if.write_response_channel.bvalid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on bvalid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_value(not axi_vvc_master_if.write_response_channel.bid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on bid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_value(not axi_vvc_master_if.write_response_channel.bresp'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on bresp", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_value(not axi_vvc_master_if.write_response_channel.buser'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on buser", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+        end if;
+
+        -- Skip checking the changes if the rvalid signal goes low within one clock period after the VVC becomes inactive
+        if not (falling_edge(axi_vvc_master_if.read_data_channel.rvalid) and global_trigger_vvc_activity_register'last_event < clock_period) then
+          check_value(not axi_vvc_master_if.read_data_channel.rvalid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rvalid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_value(not axi_vvc_master_if.read_data_channel.rid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_value(not axi_vvc_master_if.read_data_channel.rdata'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rdata", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_value(not axi_vvc_master_if.read_data_channel.rresp'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rresp", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_value(not axi_vvc_master_if.read_data_channel.rlast'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rlast", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_value(not axi_vvc_master_if.read_data_channel.ruser'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on ruser", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+        end if;
+      end if;
+    end loop;
+  end process p_unwanted_activity;
   --===============================================================================================
 
 end architecture behave;
