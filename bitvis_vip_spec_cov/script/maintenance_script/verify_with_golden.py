@@ -18,7 +18,11 @@ def main():
      # Get file lists
     filelist = get_file_list(".")
     golden_file_list = get_file_list("../script/maintenance_script/golden/")
-    
+
+    for golden_list_item in golden_file_list:
+        if golden_list_item not in filelist:
+            print("Missing from file list: "+ golden_list_item)
+
     failing_verify_file = []
 
     for filename in filelist:

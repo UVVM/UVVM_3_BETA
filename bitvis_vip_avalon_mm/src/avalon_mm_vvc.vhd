@@ -657,7 +657,7 @@ begin
   p_unwanted_activity : process
     variable v_vvc_config : t_vvc_config;
   begin
-    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    -- Add a delay to allow the VVC to be registered in the activity register
     wait for std.env.resolution_limit;
 
     loop
@@ -679,11 +679,11 @@ begin
         -- Skip checking the changes if the readdatavalid signal goes low within one clock period after the VVC becomes inactive
         if not (falling_edge(avalon_mm_vvc_master_if.readdatavalid) and global_trigger_vvc_activity_register'last_event < clock_period) then
           v_vvc_config := get_vvc_config(VOID);
-          check_value(not avalon_mm_vvc_master_if.readdatavalid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on readdatavalid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not avalon_mm_vvc_master_if.readdata'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on readdata", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not avalon_mm_vvc_master_if.response'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on response", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not avalon_mm_vvc_master_if.waitrequest'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on waitrequest", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not avalon_mm_vvc_master_if.irq'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on irq", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(avalon_mm_vvc_master_if.readdatavalid, v_vvc_config.unwanted_activity_severity, "readdatavalid", C_SCOPE);
+          check_unwanted_activity(avalon_mm_vvc_master_if.readdata, v_vvc_config.unwanted_activity_severity, "readdata", C_SCOPE);
+          check_unwanted_activity(avalon_mm_vvc_master_if.response, v_vvc_config.unwanted_activity_severity, "response", C_SCOPE);
+          check_unwanted_activity(avalon_mm_vvc_master_if.waitrequest, v_vvc_config.unwanted_activity_severity, "waitrequest", C_SCOPE);
+          check_unwanted_activity(avalon_mm_vvc_master_if.irq, v_vvc_config.unwanted_activity_severity, "irq", C_SCOPE);
         end if;
       end if;
     end loop;

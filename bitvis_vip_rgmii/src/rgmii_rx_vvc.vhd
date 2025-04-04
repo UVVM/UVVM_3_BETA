@@ -397,7 +397,7 @@ begin
   p_unwanted_activity : process
     variable v_vvc_config : t_vvc_config;
   begin
-    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    -- Add a delay to allow the VVC to be registered in the activity register
     wait for std.env.resolution_limit;
 
     loop
@@ -419,8 +419,8 @@ begin
         -- Skip checking the changes if the rx_ctl signal goes low within one clock period after the VVC becomes inactive
         if not (falling_edge(rgmii_vvc_rx_if.rx_ctl) and global_trigger_vvc_activity_register'last_event < clock_period) then
           v_vvc_config := get_vvc_config(VOID);
-          check_value(not rgmii_vvc_rx_if.rx_ctl'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rx_ctl", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not rgmii_vvc_rx_if.rxd'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rxd", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(rgmii_vvc_rx_if.rx_ctl, v_vvc_config.unwanted_activity_severity, "rx_ctl", C_SCOPE);
+          check_unwanted_activity(rgmii_vvc_rx_if.rxd, v_vvc_config.unwanted_activity_severity, "rxd", C_SCOPE);
         end if;
       end if;
     end loop;

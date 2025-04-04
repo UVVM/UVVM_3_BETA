@@ -417,7 +417,7 @@ begin
   p_unwanted_activity : process
     variable v_vvc_config : t_vvc_config;
   begin
-    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    -- Add a delay to allow the VVC to be registered in the activity register
     wait for std.env.resolution_limit;
 
     loop
@@ -439,8 +439,8 @@ begin
         -- Skip checking the changes if the acknowledge signal goes low within one clock period after the VVC becomes inactive
         if not (wishbone_vvc_master_if.ack_i = '0' and global_trigger_vvc_activity_register'last_event < clock_period) then
           v_vvc_config := get_vvc_config(VOID);
-          check_value(not wishbone_vvc_master_if.ack_i'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on ack_i", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not wishbone_vvc_master_if.dat_i'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on dat_i", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(wishbone_vvc_master_if.ack_i, v_vvc_config.unwanted_activity_severity, "ack_i", C_SCOPE);
+          check_unwanted_activity(wishbone_vvc_master_if.dat_i, v_vvc_config.unwanted_activity_severity, "dat_i", C_SCOPE);
         end if;
       end if;
     end loop;

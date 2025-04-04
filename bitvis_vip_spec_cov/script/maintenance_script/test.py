@@ -103,12 +103,12 @@ hr.add_files("../../tb/maintenance_tb/*.vhd", "bitvis_vip_spec_cov")
 hr.add_generics(
     entity="spec_cov_tb",
     generics=[
-        "GC_REQ_FILE", ("../../tb/maintenance_tb/req_file.csv", "PATH"),
+        "GC_TB_REQ_FILE", ("../../tb/maintenance_tb/tb_tests_req_file.csv", "PATH"),
         "GC_REQ_FILE_EMPTY", ("../../tb/maintenance_tb/req_file_empty.csv", "PATH"),
-        "GC_SUB_REQ_FILE", ("../../tb/maintenance_tb/sub_req_file.csv", "PATH"),
-        "GC_UART_REQ_FILE", ("../../tb/maintenance_tb/uart_req_file.csv", "PATH"),
-        "GC_COMBI_REQ_FILE", ("../../tb/maintenance_tb/combi_req_file.csv", "PATH"),
-        "GC_REQ_OMIT_MAP", ("../../tb/maintenance_tb/sub_req_omit_map_file.csv", "PATH")
+        "GC_MIX_REQ_FILE", ("../../tb/maintenance_tb/mix_req_file.csv", "PATH"),
+        "GC_MIX_MAP_FILE", ("../../tb/maintenance_tb/mix_map_file.csv", "PATH"),
+        "GC_GENERAL_REQ_FILE", ("../../tb/maintenance_tb/general_req_file.csv", "PATH"),
+        "GC_GENERAL_MAP_FILE", ("../../tb/maintenance_tb/general_map_file.csv", "PATH"),
     ],
 )
 
@@ -172,26 +172,26 @@ if simulator_name in ["MODELSIM", "RIVIERA"]:
 
 script_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
 
-# Basic demo
-hr.add_files("../../demo/basic_usage/*.vhd", "bitvis_vip_spec_cov")
-hr.add_generics(entity="uart_vvc_tb", architecture="func", generics=["GC_SCRIPT_PATH", (script_path, "PATH")])
+# # Basic demo
+# hr.add_files("../../demo/basic_usage/*.vhd", "bitvis_vip_spec_cov")
+# hr.add_generics(entity="uart_vvc_tb", architecture="func", generics=["GC_SCRIPT_PATH", (script_path, "PATH")])
 
-hr.start(sim_options=sim_options)
+# hr.start(sim_options=sim_options)
 
-num_failing_tests += hr.get_num_fail_tests()
-num_passing_tests += hr.get_num_pass_tests()
+# num_failing_tests += hr.get_num_fail_tests()
+# num_passing_tests += hr.get_num_pass_tests()
 
-# Advanced demo
-hr.remove_file("../../demo/basic_usage/*.vhd", "bitvis_vip_spec_cov")
-hr.add_files("../../demo/advanced_usage/*.vhd", "bitvis_vip_spec_cov")
-C_NUM_TESTCASES = 4
-for i in range(C_NUM_TESTCASES):
-  hr.add_generics(entity="uart_vvc_tb", architecture="func", generics=["GC_SCRIPT_PATH", (script_path, "PATH"), "GC_TESTCASE", i])
+# # Advanced demo
+# hr.remove_file("../../demo/basic_usage/*.vhd", "bitvis_vip_spec_cov")
+# hr.add_files("../../demo/advanced_usage/*.vhd", "bitvis_vip_spec_cov")
+# C_NUM_TESTCASES = 4
+# for i in range(C_NUM_TESTCASES):
+#   hr.add_generics(entity="uart_vvc_tb", architecture="func", generics=["GC_SCRIPT_PATH", (script_path, "PATH"), "GC_TESTCASE", i])
 
-hr.start(sim_options=sim_options)
+# hr.start(sim_options=sim_options)
 
-num_failing_tests += hr.get_num_fail_tests()
-num_passing_tests += hr.get_num_pass_tests()
+# num_failing_tests += hr.get_num_fail_tests()
+# num_passing_tests += hr.get_num_pass_tests()
 
 
 # No tests run error

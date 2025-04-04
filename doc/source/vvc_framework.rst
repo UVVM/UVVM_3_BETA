@@ -834,6 +834,25 @@ as shown below example. Note that the unwanted activity detection must be enable
     v_vvc_config.unwanted_activity_severity := ERROR; -- Enable unwanted activity on slave VVC 3
     shared_i2c_vvc_config.set(v_vvc_config, 3);
 
+When the reset signal is set, signal transitions may occur from the uninitialized value 'U'. Additionally, using pull-up or pull-down 
+resistors in the design may cause signal transitions from the weak 1 state 'H' to the logic high '1' or from the weak 0 state 'L' 
+to the logic low '0', and vice versa. These are intended behaviors that should not be monitored by the unwanted activity detection. 
+The signal transitions that are excluded from unwanted activity detection are summarized below.
+
++----------------+-----------------------------------+
+| From           | To                                |
++================+===================================+
+| 'U'            | 'X', '0', '1', 'Z', 'W', 'L', 'H' |
++----------------+-----------------------------------+
+| 'L'            | '0'                               |
++----------------+-----------------------------------+
+| '0'            | 'L'                               |
++----------------+-----------------------------------+
+| 'H'            | '1'                               |
++----------------+-----------------------------------+
+| '1'            | 'H'                               |
++----------------+-----------------------------------+
+
 For a VVC specific description of this feature, see the Unwanted Activity Detection section in each VVC QuickRef.
 
 .. note::
@@ -1454,6 +1473,52 @@ to allow users to add more profiles.
 +----------------------------+---------------------------------------------------------------------------------------------------+
 | <user-defined>             |                                                                                                   |
 +----------------------------+---------------------------------------------------------------------------------------------------+
+
+Note that the randomization seeds are initialized with a unique string assigned to each VVC. These seeds are automatically updated 
+when random data is generated.
+
+Managing randomization seeds in BFMs
+----------------------------------------------------------------------------------------------------------------------------------
+Flow Control signals (e.g. valid and ready) can be configured to be randomly de-asserted in some BFMs (e.g. AXI-Stream and Avalon-ST). 
+The randomization parameters in the BFM configuration determine the low duration and the probability of signal de-assertion. 
+The random() methods described in :ref:`basic_randomization` are used to generate random values for these parameters. To ensure that 
+the tests are repeatable and produce consistent results, the randomization seeds must be controlled. A standard dictionary-like linked 
+list is implemented for this purpose. The seeds are managed using the protected type **t_seeds**, declared in protected_types_pkg.vhd. 
+This type consists of the **t_seeds_item** record type, which holds the seeds, and an access type that points to a dynamically allocated 
+t_seeds_item. The seeds are stored in a record using a unique string (scope and instance_name) assigned to each BFM procedure as keys. 
+To facilitate seed management, two subprograms are declared in the t_seeds protected type:
+
+``set_rand_seeds()``- sets randomization seeds from a string.
+
+``update_and_get_seeds()``- updates and get the seeds from the linked list.
+
+A global shared variable **shared_rand_seeds_register** of type t_seeds is declared in global_signals_and_shared_variables_pkg.vhd 
+to allow common access to the seeds from different BFM procedure calls, as shown below.
+
+.. code-block::
+
+    shared variable shared_rand_seeds_register : t_seeds;
+
+The randomization steps used to control the seeds in BFMs are as follow:
+
+    #. When a BFM procedure (e.g. axistream_transmit() / axistream_receive()) is invoked for the first time, there is no entry for the 
+       BFM in the list. Generate seeds based on scope and instance_name using the set_rand_seeds() method. Store the generated seeds 
+       in the linked list, with scope and instance_name as keys.
+    #. Generate a random value using the random() procedure defined in the methods package.
+    #. When the same BFM procedure is invoked again, the previously stored seeds can be retrieved with scope and instance_name as keys. 
+       Update the seeds and generate a new random value.
+
+The handling of randomization seeds is hidden from the user and performed automatically. Therefore, the user does not require to change or 
+modify testbenches to control the randomization seeds. If a new BFM requires this functionality, it only needs to invoke the 
+update_and_get_seeds() procedure from the global shared variable with suitable parameters and use the random() procedure with the generated 
+seeds whenever a randomized method is used, as shown below:
+
+.. code-block::
+
+    -- Search the randomization seeds register with the scope and instance_name attribute as keys. The updated seeds are stored in v_seeds.
+    shared_rand_seeds_register.update_and_get_seeds(scope, v_seeds'instance_name, v_seeds);
+    random(1, config.valid_low_max_random_duration, v_seeds(0), v_seeds(1), v_valid_low_duration);
+
 
 VVC Command Syntax
 ----------------------------------------------------------------------------------------------------------------------------------

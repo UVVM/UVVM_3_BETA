@@ -329,16 +329,16 @@ begin
   -- PROCESS: p_main
   ------------------------------------------------
   p_main : process
-    variable tx_word             : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
-    variable rx_word             : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
-    variable tx_word_2           : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
-    variable master_word_array   : t_slv_array(GC_DATA_ARRAY_WIDTH - 1 downto 0)(GC_DATA_WIDTH - 1 downto 0);
-    variable slave_word_array    : t_slv_array(GC_DATA_ARRAY_WIDTH - 1 downto 0)(GC_DATA_WIDTH - 1 downto 0);
-    variable slave_tx_data_word  : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
-    variable master_tx_data_word : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
+    variable tx_word                    : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
+    variable rx_word                    : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
+    variable tx_word_2                  : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
+    variable master_word_array          : t_slv_array(GC_DATA_ARRAY_WIDTH - 1 downto 0)(GC_DATA_WIDTH - 1 downto 0);
+    variable slave_word_array           : t_slv_array(GC_DATA_ARRAY_WIDTH - 1 downto 0)(GC_DATA_WIDTH - 1 downto 0);
+    variable slave_tx_data_word         : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
+    variable master_tx_data_word        : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
     variable result              : std_logic_vector(bitvis_vip_spi.vvc_transaction_pkg.C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
-    variable v_cmd_idx           : natural;
-    variable v_num_words         : positive;
+    variable v_cmd_idx                  : natural;
+    variable v_num_words                : positive;
     variable v_alert_level       : t_alert_level;
     variable v_vvc_config               : bitvis_vip_spi.vvc_methods_support_pkg.t_vvc_config;
 
@@ -355,12 +355,18 @@ begin
     ) is
       variable v_num_expected_alerts : natural;
       variable v_rand                : t_rand;
+      variable v_hold_time           : time;
     begin
-      -- Number of total expected alerts: (number of signals tested individually + number of signals tested together) x 1 toggle
-      if alert_level /= NO_ALERT then
-        increment_expected_alerts_and_stop_limit(alert_level, (C_NUM_VVC_SIGNALS + C_NUM_VVC_SIGNALS) * 2);
-      end if;
       for i in 0 to C_NUM_VVC_SIGNALS loop
+        -- Set expected alerts before toggle
+        if alert_level /= NO_ALERT then
+          if i = 0 then
+            increment_expected_alerts_and_stop_limit(alert_level, C_NUM_VVC_SIGNALS);
+          else
+            increment_expected_alerts_and_stop_limit(alert_level, 1);
+          end if;
+        end if;
+
         -- Force new value
         v_num_expected_alerts := get_alert_counter(alert_level);
         case i is
@@ -373,11 +379,39 @@ begin
           when 3 => dut_mosi <= force not dut_mosi;
           when 4 => dut_miso <= force not dut_miso;
         end case;
-        wait for v_rand.rand(ONLY, (C_LOG_TIME_BASE, C_LOG_TIME_BASE * 5, C_LOG_TIME_BASE * 10)); -- Hold the value a random time
+        v_hold_time := v_rand.rand(ONLY, (C_LOG_TIME_BASE, C_LOG_TIME_BASE * 5, C_LOG_TIME_BASE * 10)); -- Hold the value a random time
+        wait for v_hold_time;
         v_num_expected_alerts := 0 when alert_level = NO_ALERT else
                                  v_num_expected_alerts + C_NUM_VVC_SIGNALS when i = 0 else
                                  v_num_expected_alerts + 1;
+
         check_value(get_alert_counter(alert_level), v_num_expected_alerts, TB_NOTE, "Unwanted activity alert was expected", C_SCOPE, ID_NEVER);
+
+        -- Set expected alerts before toggle
+        if alert_level /= NO_ALERT then
+          if i < 2 then
+            -- Toggles ss_n
+            if v_hold_time > (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit) then
+              if i = 0 then
+                increment_expected_alerts_and_stop_limit(alert_level, C_NUM_VVC_SIGNALS);
+              else
+                increment_expected_alerts_and_stop_limit(alert_level, 1);
+              end if;
+            else -- v_hold_time <= (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit)
+              if i = 0 then
+                increment_expected_alerts_and_stop_limit(alert_level, C_NUM_VVC_SIGNALS - 1); -- No alert for ss_n because toggle happened within accepted time period
+              end if;
+            end if; -- v_hold_time
+          else
+            -- Does not toggle ss_n
+            if i = 0 then
+              increment_expected_alerts_and_stop_limit(alert_level, C_NUM_VVC_SIGNALS);
+            else
+              increment_expected_alerts_and_stop_limit(alert_level, 1);
+            end if;
+          end if;
+        end if;
+
         -- Set back original value
         v_num_expected_alerts := get_alert_counter(alert_level);
         case i is
@@ -392,9 +426,25 @@ begin
         end case;
         wait for 0 ns; -- Wait two delta cycles so that the alert is triggered
         wait for 0 ns;
-        v_num_expected_alerts := 0 when alert_level = NO_ALERT else
-                                 v_num_expected_alerts + C_NUM_VVC_SIGNALS when i = 0 else
-                                 v_num_expected_alerts + 1;
+
+        if i < 2 then
+          -- Toggles ss_n
+          if v_hold_time > (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit) then
+            v_num_expected_alerts := 0 when alert_level = NO_ALERT else
+              v_num_expected_alerts + C_NUM_VVC_SIGNALS when i = 0 else
+              v_num_expected_alerts + 1;
+          else -- v_hold_time <= (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit)
+            v_num_expected_alerts := 0 when alert_level = NO_ALERT else
+              v_num_expected_alerts + C_NUM_VVC_SIGNALS - 1 when i = 0 else
+              v_num_expected_alerts;
+          end if; -- v_hold_time
+        else -- i >=2
+          -- Does not toggle ss_n
+          v_num_expected_alerts := 0 when alert_level = NO_ALERT else
+                                  v_num_expected_alerts + C_NUM_VVC_SIGNALS when i = 0 else
+                                  v_num_expected_alerts + 1;
+        end if;
+        wait for 0 ns; -- Wait another cycle to allow signals to propagate before checking them - Needed for Riviera Pro
         check_value(get_alert_counter(alert_level), v_num_expected_alerts, TB_NOTE, "Unwanted activity alert was expected", C_SCOPE, ID_NEVER);
       end loop;
     end procedure;
@@ -739,7 +789,6 @@ begin
 
     wait for 1 ms;
 
-    increment_expected_alerts_and_stop_limit(ERROR, 1); -- Unwanted activity errors: scl goes from uninitialized to idle value during powerup
     powerup;
     randomize(GC_DATA_WIDTH, GC_DATA_WIDTH + 10, "Setting global seeds");
 
@@ -778,7 +827,7 @@ begin
         -- transfer missed word
         spi_master_transmit_only(not (tx_word), C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER); -- transfer missed by slave
         -- delay and start slave
-        insert_delay(SPI_VVCT, C_VVC_IDX_SLAVE_1, random(5, GC_DATA_WIDTH) * C_CLK_PERIOD, "Skew SPI BFM start.");
+        insert_delay(SPI_VVCT, C_VVC_IDX_SLAVE_1, random(16, 16 + GC_DATA_WIDTH) * C_CLK_PERIOD, "Skew SPI BFM start.");
         increment_expected_alerts(warning, 1);
         spi_slave_check_only(tx_word, C_VVC_IDX_SLAVE_1, START_TRANSFER_ON_NEXT_SS);
         -- transfer received word
@@ -954,7 +1003,7 @@ begin
         -- Terminating commands between loop 3 and 7.
         -- This is done to firstly check function of terminate_access, and then
         -- to verify correct function of slave_transmit after previous terminated access
-        if (iteration > 3) and (iteration < 7) then 
+        if (iteration > 3) and (iteration < 7) then
           wait for iteration*C_CLK_PERIOD;
           increment_expected_alerts(WARNING, 1);
           increment_expected_alerts_and_stop_limit(ERROR);
@@ -1145,7 +1194,7 @@ begin
       for idx in 0 to 5 loop
         tx_word := random(GC_DATA_WIDTH);
         sbi_master_write(not (tx_word)); -- missed transfer
-        insert_delay(SPI_VVCT, C_SPI_VVC_2, random(2, GC_DATA_WIDTH - 1)); -- delay slave
+        insert_delay(SPI_VVCT, C_SPI_VVC_2, random(3, GC_DATA_WIDTH - 1)); -- delay slave
         spi_slave_check_only(tx_word, C_SPI_VVC_2, START_TRANSFER_ON_NEXT_SS); -- start slave
         sbi_master_write(tx_word);      -- received transfer
       end loop;
@@ -1196,7 +1245,8 @@ begin
         spi_slave_transmit_only(tx_word, C_SPI_VVC_2);
         sbi_master_write(std_logic_vector(to_unsigned(iteration, 8))); -- transmit dummy byte from master DUT to allow slave VVC to transmit to master DUT
         await_slave_tx_completion(50 ms, C_SPI_VVC_2);
-        sbi_master_check(tx_word);      -- this will cause dut to receive on SPI
+        await_value(spi_vvc_if_2.ss_n, '1', 0 ns, C_SPI_BFM_CONFIG_ARRAY(GC_SPI_MODE).sclk_to_ss_n, ERROR, "await inactive ss_n"); -- Allow SPI operation to finish completely
+        sbi_master_check(tx_word); -- this will read the received SPI data via SBI
         sbi_await_completion(50 ms);
       end loop;
 
@@ -1209,7 +1259,8 @@ begin
         spi_slave_transmit_only(tx_word, C_SPI_VVC_2);
         sbi_master_write(std_logic_vector(to_unsigned(0, 8))); -- transmit dummy byte from master DUT to allow slave VVC to transmit to master DUT
         await_slave_tx_completion(50 ms, C_SPI_VVC_2);
-        sbi_master_check(tx_word);      -- this will cause dut to receive on SPI
+        await_value(spi_vvc_if_2.ss_n, '1', 0 ns, C_SPI_BFM_CONFIG_ARRAY(GC_SPI_MODE).sclk_to_ss_n, ERROR, "await inactive ss_n"); -- Allow SPI operation to finish completely
+        sbi_master_check(tx_word);      -- this will read the received SPI data via SBI
         sbi_await_completion(50 ms);
 
         tx_word := x"AAAA_AAAA";
@@ -1217,7 +1268,8 @@ begin
         spi_slave_transmit_only(tx_word, C_SPI_VVC_2);
         sbi_master_write(std_logic_vector(to_unsigned(0, 8))); -- transmit dummy byte from master DUT to allow slave VVC to transmit to master DUT
         await_slave_tx_completion(50 ms, C_SPI_VVC_2);
-        sbi_master_check(tx_word);      -- this will cause dut to receive on SPI
+        await_value(spi_vvc_if_2.ss_n, '1', 0 ns, C_SPI_BFM_CONFIG_ARRAY(GC_SPI_MODE).sclk_to_ss_n, ERROR, "await inactive ss_n"); -- Allow SPI operation to finish completely
+        sbi_master_check(tx_word);      -- this will read the received SPI data via SBI
         sbi_await_completion(50 ms);
 
         tx_word := x"FFFF_FFFF";
@@ -1225,7 +1277,8 @@ begin
         spi_slave_transmit_only(tx_word, C_SPI_VVC_2);
         sbi_master_write(std_logic_vector(to_unsigned(0, 8))); -- transmit dummy byte from master DUT to allow slave VVC to transmit to master DUT
         await_slave_tx_completion(50 ms, C_SPI_VVC_2);
-        sbi_master_check(tx_word);      -- this will cause dut to receive on SPI
+        await_value(spi_vvc_if_2.ss_n, '1', 0 ns, C_SPI_BFM_CONFIG_ARRAY(GC_SPI_MODE).sclk_to_ss_n, ERROR, "await inactive ss_n"); -- Allow SPI operation to finish completely
+        sbi_master_check(tx_word);      -- this will read the received SPI data via SBI
         sbi_await_completion(50 ms);
 
         tx_word := x"0000_0000";
@@ -1233,7 +1286,8 @@ begin
         spi_slave_transmit_only(tx_word, C_SPI_VVC_2);
         sbi_master_write(std_logic_vector(to_unsigned(0, 8))); -- transmit dummy byte from master DUT to allow slave VVC to transmit to master DUT
         await_slave_tx_completion(50 ms, C_SPI_VVC_2);
-        sbi_master_check(tx_word);      -- this will cause dut to receive on SPI
+        await_value(spi_vvc_if_2.ss_n, '1', 0 ns, C_SPI_BFM_CONFIG_ARRAY(GC_SPI_MODE).sclk_to_ss_n, ERROR, "await inactive ss_n"); -- Allow SPI operation to finish completely
+        sbi_master_check(tx_word);      -- this will read the received SPI data via SBI
         sbi_await_completion(50 ms);
       end if;
 
@@ -1390,6 +1444,7 @@ begin
         else
           v_alert_level := NO_ALERT;
         end if;
+
         log(ID_SEQUENCER, "Setting unwanted_activity_severity to " & to_upper(to_string(v_alert_level)), C_SCOPE);
         v_vvc_config                            := shared_spi_vvc_config.get(C_SPI_VVC_2);
         v_vvc_config.unwanted_activity_severity := v_alert_level;
@@ -1406,7 +1461,7 @@ begin
 
         tx_word := random(GC_DATA_WIDTH);
         sbi_slave_write(tx_word);
-        wait for C_CLK_PERIOD; -- to allow the tx_word to be applied in the SPI slave dut.
+        wait for 2*C_CLK_PERIOD; -- to allow the tx_word to be applied in the SPI slave dut.
         spi_master_check_only(tx_word, C_SPI_VVC_3);
         await_master_tx_completion(50 ms, C_SPI_VVC_3);
 

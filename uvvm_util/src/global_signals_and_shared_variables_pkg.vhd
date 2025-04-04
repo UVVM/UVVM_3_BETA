@@ -170,6 +170,9 @@ package global_signals_and_shared_variables_pkg is
   shared variable shared_uvvm_status  : work.protected_uvvm_status_pkg.t_generic;
   shared variable shared_msg_id_panel : work.protected_msg_id_panel_pkg.t_generic;
 
+  -- Randomization seeds
+  shared variable shared_rand_seeds_register : t_seeds;
+
   -- UVVM internal shared variables
   shared variable shared_initialised_util           : work.protected_boolean_pkg.t_generic;
   shared variable shared_log_file_name_is_set       : work.protected_boolean_pkg.t_generic;

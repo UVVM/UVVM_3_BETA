@@ -506,7 +506,7 @@ begin
   p_unwanted_activity : process
     variable v_vvc_config : t_vvc_config;
   begin
-    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    -- Add a delay to allow the VVC to be registered in the activity register
     wait for std.env.resolution_limit;
 
     loop
@@ -532,10 +532,10 @@ begin
         v_vvc_config := get_vvc_config(VOID);
 
         if GC_MASTER_MODE then
-          check_value(not i2c_vvc_if.sda'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on sda", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(i2c_vvc_if.sda, v_vvc_config.unwanted_activity_severity, "sda", C_SCOPE);
         else
-          check_value(not i2c_vvc_if.scl'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on scl. This can be caused by multiple slave VVCs with a common bus connected to the same DUT. See documentation.", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not i2c_vvc_if.sda'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on sda. This can be caused by multiple slave VVCs with a common bus connected to the same DUT. See documentation.", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(i2c_vvc_if.scl, v_vvc_config.unwanted_activity_severity, "This can be caused by multiple slave VVCs with a common bus connected to the same DUT. See documentation.\nscl", C_SCOPE);
+          check_unwanted_activity(i2c_vvc_if.sda, v_vvc_config.unwanted_activity_severity, "This can be caused by multiple slave VVCs with a common bus connected to the same DUT. See documentation.\nsda", C_SCOPE);
         end if;
       end if;
     end loop;

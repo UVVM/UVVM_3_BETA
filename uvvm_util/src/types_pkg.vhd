@@ -91,8 +91,6 @@ package types_pkg is
   type t_byte_endianness is (LOWER_BYTE_LEFT, LOWER_BYTE_RIGHT, LOWER_WORD_LEFT, LOWER_WORD_RIGHT);
   alias t_word_endianness is t_byte_endianness;
 
-  type t_pulse_continuation is (ALLOW_PULSE_CONTINUATION, NO_PULSE_CONTINUATION_ALLOWED);
-
   type t_coverage_representation is (NO_GOAL, GOAL_CAPPED, GOAL_UNCAPPED);
 
   type t_global_ctrl is record
@@ -266,12 +264,13 @@ package types_pkg is
   -- Spec. Cov.
   -------------------------------------
   type t_spec_cov_config is record
-    missing_req_label_severity : t_alert_level; -- Alert level used when the tick_off_req_cov() procedure does not find the specified
-                                                -- requirement label in the requirement list.
-    csv_delimiter              : character;     -- Character used as delimiter in the CSV files. Default is ",".
-    max_requirements           : natural;       -- Maximum number of requirements in the req_map file used in initialize_req_cov().
-    max_testcases_per_req      : natural;       -- Max number of testcases allowed per requirement.
-    csv_max_line_length        : positive;      -- Max length of each line in any CSV file.
+    missing_req_label_severity    : t_alert_level; -- Alert level used when the tick_off_req_cov() procedure does not find the specified
+                                                   -- requirement label in the requirement list.
+    compound_req_tickoff_severity : t_alert_level; -- Alert level used when tickoff is performed on a requirement that has sub requirements.
+    csv_delimiter                 : character;     -- Character used as delimiter in the CSV files. Default is ",".
+    max_requirement_lines         : natural;       -- Maximum number of requirement lines in the req list file used in initialize_req_cov().
+    max_testcases_per_req         : natural;       -- Max number of testcases allowed per requirement.
+    csv_max_line_length           : positive;      -- Max length of each line in any CSV file.
   end record;
 
   -- These values are used to indicate outdated sub-programs

@@ -446,7 +446,7 @@ begin
     p_unwanted_activity : process
       variable v_vvc_config : t_vvc_config;
     begin
-      -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+      -- Add a delay to allow the VVC to be registered in the activity register
       wait for std.env.resolution_limit;
 
       loop
@@ -470,14 +470,14 @@ begin
           -- Skip checking the changes if the valid signal goes low within one clock period after the VVC becomes inactive
           if not (falling_edge(avalon_st_vvc_if.valid) and global_trigger_vvc_activity_register'last_event < clock_period) then
             v_vvc_config := get_vvc_config(VOID);
-            check_value(not avalon_st_vvc_if.valid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on valid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not avalon_st_vvc_if.channel'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on channel", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not avalon_st_vvc_if.data'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on data", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not avalon_st_vvc_if.data_error'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on data_error", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not avalon_st_vvc_if.empty'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on empty", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not avalon_st_vvc_if.end_of_packet'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on end_of_packet", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+            check_unwanted_activity(avalon_st_vvc_if.valid, v_vvc_config.unwanted_activity_severity, "valid", C_SCOPE);
+            check_unwanted_activity(avalon_st_vvc_if.channel, v_vvc_config.unwanted_activity_severity, "channel", C_SCOPE);
+            check_unwanted_activity(avalon_st_vvc_if.data, v_vvc_config.unwanted_activity_severity, "data", C_SCOPE);
+            check_unwanted_activity(avalon_st_vvc_if.data_error, v_vvc_config.unwanted_activity_severity, "data_error", C_SCOPE);
+            check_unwanted_activity(avalon_st_vvc_if.empty, v_vvc_config.unwanted_activity_severity, "empty", C_SCOPE);
+            check_unwanted_activity(avalon_st_vvc_if.end_of_packet, v_vvc_config.unwanted_activity_severity, "end_of_packet", C_SCOPE);
           end if;
-          check_value(not avalon_st_vvc_if.start_of_packet'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on start_of_packet", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(avalon_st_vvc_if.start_of_packet, v_vvc_config.unwanted_activity_severity, "start_of_packet", C_SCOPE);
         end if;
       end loop;
     end process p_unwanted_activity;

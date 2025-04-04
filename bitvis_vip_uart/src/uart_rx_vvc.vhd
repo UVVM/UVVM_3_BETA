@@ -410,7 +410,7 @@ begin
   p_unwanted_activity : process
     variable v_vvc_config : t_vvc_config;
   begin
-    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    -- Add a delay to allow the VVC to be registered in the activity register
     wait for std.env.resolution_limit;
 
     loop
@@ -430,7 +430,7 @@ begin
       -- Check the changes on the DUT output only when the vvc is inactive
       if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
         v_vvc_config := get_vvc_config(VOID);
-        check_value(not uart_vvc_rx'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on DUT TX output", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+        check_unwanted_activity(uart_vvc_rx, v_vvc_config.unwanted_activity_severity, "The DUT TX output", C_SCOPE);
       end if;
     end loop;
   end process p_unwanted_activity;

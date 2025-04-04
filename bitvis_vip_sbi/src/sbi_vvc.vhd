@@ -244,6 +244,7 @@ begin
     variable v_normalised_data                       : std_logic_vector(GC_DATA_WIDTH - 1 downto 0) := (others => '0');
     variable v_msg_id_panel                          : t_msg_id_panel;
     variable v_vvc_config                            : t_vvc_config;
+    variable v_seeds                                 : t_positive_vector(0 to 1)                    := (1, 2);
 
   begin
     -- 0. Initialize the process prior to first command
@@ -255,6 +256,9 @@ begin
     SBI_VVC_SB.enable(GC_INSTANCE_IDX, "SBI VVC SB Enabled");
     SBI_VVC_SB.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
     SBI_VVC_SB.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
+
+    -- Set the randomization seeds
+    set_rand_seeds(C_SCOPE, v_seeds(0), v_seeds(1));
 
     loop
 
@@ -309,7 +313,7 @@ begin
             -- Randomise data if applicable
             case v_cmd.randomisation is
               when RANDOM =>
-                v_cmd.data(GC_DATA_WIDTH - 1 downto 0) := std_logic_vector(random(GC_DATA_WIDTH));
+                random(v_seeds(0), v_seeds(1), v_cmd.data(GC_DATA_WIDTH - 1 downto 0));
               when RANDOM_FAVOUR_EDGES =>
                 null;                   -- Not implemented yet
               when others =>            -- NA
@@ -476,7 +480,7 @@ begin
   p_unwanted_activity : process
     variable v_vvc_config : t_vvc_config;
   begin
-    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    -- Add a delay to allow the VVC to be registered in the activity register
     wait for std.env.resolution_limit;
 
     loop
@@ -497,7 +501,7 @@ begin
       -- Check the changes on the DUT outputs only when the vvc is inactive
       if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
         v_vvc_config := get_vvc_config(VOID);
-        check_value(not sbi_vvc_master_if.rdata'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rdata", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+        check_unwanted_activity(sbi_vvc_master_if.rdata, v_vvc_config.unwanted_activity_severity, "rdata", C_SCOPE);
       end if;
     end loop;
   end process p_unwanted_activity;

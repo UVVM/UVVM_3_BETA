@@ -15,6 +15,7 @@ def cleanup(msg='Cleaning up...'):
     print(msg)
 
     sim_path = os.getcwd()
+    return
 
     # Check if the current directory is 'sim'
     if os.path.basename(sim_path) == 'sim':

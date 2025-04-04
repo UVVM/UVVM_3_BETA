@@ -231,11 +231,15 @@ begin
     variable v_has_raised_warning_if_vvc_bfm_conflict : boolean                                     := false;
     variable v_vvc_config                             : t_vvc_config; -- v3
     variable v_vvc_config_copy                        : t_vvc_config; --v3
+    variable v_seeds                                  : t_positive_vector(0 to 1)                   := (1, 2);
 
   begin
     -- 0. Initialize the process prior to first command
     -------------------------------------------------------------------------
     work.td_vvc_entity_support_pkg.initialize_executor(terminate_current_cmd);
+
+    -- Set the randomization seeds
+    set_rand_seeds(C_SCOPE, v_seeds(0), v_seeds(1));
 
     loop
 
@@ -301,7 +305,7 @@ begin
             -- Randomise data if applicable
             case v_cmd.randomisation is
               when RANDOM =>
-                v_cmd.data(v_num_data_bits - 1 downto 0) := std_logic_vector(random(v_num_data_bits));
+                random(v_seeds(0), v_seeds(1), v_cmd.data(v_num_data_bits - 1 downto 0));
               when RANDOM_FAVOUR_EDGES =>
                 null;                   -- Not implemented yet
               when others =>            -- NA

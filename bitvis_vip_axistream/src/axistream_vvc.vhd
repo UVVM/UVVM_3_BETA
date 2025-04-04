@@ -443,7 +443,7 @@ begin
     p_unwanted_activity : process
       variable v_vvc_config : t_vvc_config;
     begin
-      -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+      -- Add a delay to allow the VVC to be registered in the activity register
       wait for std.env.resolution_limit;
 
       loop
@@ -468,14 +468,14 @@ begin
           v_vvc_config := get_vvc_config(VOID);
           -- Skip checking the changes if the tvalid signal goes low within one clock period after the VVC becomes inactive
           if not (falling_edge(axistream_vvc_if.tvalid) and global_trigger_vvc_activity_register'last_event < clock_period) then
-            check_value(not axistream_vvc_if.tvalid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on tvalid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not axistream_vvc_if.tdata'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on tdata", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not axistream_vvc_if.tkeep'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on tkeep", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not axistream_vvc_if.tuser'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on tuser", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not axistream_vvc_if.tlast'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on tlast", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not axistream_vvc_if.tstrb'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on tstrb", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not axistream_vvc_if.tid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on tid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-            check_value(not axistream_vvc_if.tdest'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on tdest", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+            check_unwanted_activity(axistream_vvc_if.tvalid, v_vvc_config.unwanted_activity_severity, "tvalid", C_SCOPE);
+            check_unwanted_activity(axistream_vvc_if.tdata, v_vvc_config.unwanted_activity_severity, "tdata", C_SCOPE);
+            check_unwanted_activity(axistream_vvc_if.tkeep, v_vvc_config.unwanted_activity_severity, "tkeep", C_SCOPE);
+            check_unwanted_activity(axistream_vvc_if.tuser, v_vvc_config.unwanted_activity_severity, "tuser", C_SCOPE);
+            check_unwanted_activity(axistream_vvc_if.tlast, v_vvc_config.unwanted_activity_severity, "tlast", C_SCOPE);
+            check_unwanted_activity(axistream_vvc_if.tstrb, v_vvc_config.unwanted_activity_severity, "tstrb", C_SCOPE);
+            check_unwanted_activity(axistream_vvc_if.tid, v_vvc_config.unwanted_activity_severity, "tid", C_SCOPE);
+            check_unwanted_activity(axistream_vvc_if.tdest, v_vvc_config.unwanted_activity_severity, "tdest", C_SCOPE);
           end if;
         end if;
       end loop;

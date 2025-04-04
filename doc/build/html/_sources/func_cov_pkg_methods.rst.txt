@@ -301,8 +301,8 @@ Returns true if the coverpoints coverage has reached the goal. Default goal is 1
 fc_report_overall_coverage()
 ----------------------------------------------------------------------------------------------------------------------------------
 Prints the overall coverage summary for all the coverpoints in the testbench. The printing destination can be log and/or console 
-and is defined by shared_default_log_destination in adaptations_pkg. The report can also be printed to a separate file by using 
-the file_name parameter. To see an example of the generated report click :ref:`here <func_cov_pkg_coverage_report>`. ::
+and is defined by shared_default_log_destination in global_signals_and_shared_variables_pkg. The report can also be printed to a
+separate file by using the file_name parameter. To see an example of the generated report click :ref:`here <func_cov_pkg_coverage_report>`. ::
 
     fc_report_overall_coverage(VOID)
     fc_report_overall_coverage(verbosity, [file_name, [open_mode, [scope]]])

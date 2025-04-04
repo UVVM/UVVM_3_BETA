@@ -833,7 +833,7 @@ begin
   p_unwanted_activity : process
     variable v_vvc_config : t_vvc_config;
   begin
-    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    -- Add a delay to allow the VVC to be registered in the activity register
     wait for std.env.resolution_limit;
 
     loop
@@ -857,15 +857,15 @@ begin
         v_vvc_config := get_vvc_config(VOID);
         -- Skip checking the changes if the bvalid signal goes low within one clock period after the VVC becomes inactive
         if not (falling_edge(axilite_vvc_master_if.write_response_channel.bvalid) and global_trigger_vvc_activity_register'last_event < clock_period) then
-          check_value(not axilite_vvc_master_if.write_response_channel.bvalid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on bvalid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not axilite_vvc_master_if.write_response_channel.bresp'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on bresp", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(axilite_vvc_master_if.write_response_channel.bvalid, v_vvc_config.unwanted_activity_severity, "bvalid", C_SCOPE);
+          check_unwanted_activity(axilite_vvc_master_if.write_response_channel.bresp, v_vvc_config.unwanted_activity_severity, "bresp", C_SCOPE);
         end if;
 
         -- Skip checking the changes if the rvalid signal goes low within one clock period after the VVC becomes inactive
         if not (falling_edge(axilite_vvc_master_if.read_data_channel.rvalid) and global_trigger_vvc_activity_register'last_event < clock_period) then
-          check_value(not axilite_vvc_master_if.read_data_channel.rvalid'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rvalid", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not axilite_vvc_master_if.read_data_channel.rdata'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rdata", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not axilite_vvc_master_if.read_data_channel.rresp'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on rresp", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(axilite_vvc_master_if.read_data_channel.rvalid, v_vvc_config.unwanted_activity_severity, "rvalid", C_SCOPE);
+          check_unwanted_activity(axilite_vvc_master_if.read_data_channel.rdata, v_vvc_config.unwanted_activity_severity, "rdata", C_SCOPE);
+          check_unwanted_activity(axilite_vvc_master_if.read_data_channel.rresp, v_vvc_config.unwanted_activity_severity, "rresp", C_SCOPE);
         end if;
       end if;
     end loop;

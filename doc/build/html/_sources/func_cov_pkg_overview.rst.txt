@@ -24,7 +24,6 @@ After tests have been run, the Functional Coverage package can generate reports 
 been tested. This makes Functional Coverage a particularly useful tool for projects with stringent demands for documentation of 
 compliance with requirements.
 
-
 Coverpoints and bins
 =================================================================================================================================
 
@@ -62,7 +61,6 @@ how many times the coverpoint has been sampled with the corresponding values of 
 Sometimes we want to monitor the values of multiple points of our design at the same time. In this case, we can create a coverpoint 
 containing a *cross*. A cross is a type of container that can hold a combination of multiple bins or coverpoints, where every 
 combination of the values covered by the crossed bins or coverpoints must have been sampled during testing for the cross to be covered. 
-
 
 In Figure 2, we can see a cross named *src_addr_x_dst_addr* which contains eight different bins. Each bin contains different 
 combinations of values for *src_addr* and *dst_addr*.
@@ -113,7 +111,6 @@ hit coverage, the coverpoint will have full coverage.
     my_coverpoint.sample_coverage(to_integer(address));
     rand_addr_int := my_coverpoint.rand(NO_SAMPLE_COV);
     rand_addr     <= to_unsigned(rand_addr_int,rand_addr'length);
-
 
 
 **********************************************************************************************************************************
@@ -241,7 +238,6 @@ The bin functions may be concatenated to add several bins at once.
     The maximum number of bins which can be added at once using a single ``add_bins()`` call is limited by C_FC_MAX_NUM_NEW_BINS 
     defined in adaptations_pkg.
 
-
 Ignore bins
 ==================================================================================================================================
 Specific values or transitions can be excluded from the coverage by using ignore bins. This is useful to:
@@ -289,7 +285,6 @@ sampled. The default severity of the alert is ERROR and can be configured using 
     my_coverpoint.add_bins(illegal_bin_range(220, 250));
     my_coverpoint.add_bins(illegal_bin_transition((200,100,0)));
 
-
 Using predefined bins
 ==================================================================================================================================
 Sometimes it is useful to define bins which have a particular meaning or which are used several times. A constant or a variable 
@@ -307,7 +302,6 @@ can be created using the type *t_new_bin_array(0 to 0)* which is returned by any
     my_coverpoint.add_cross(C_BIN_IDLE, v_bin_sequence & v_bin_ranges);
     my_coverpoint.add_cross(C_BIN_RUNNING, v_bin_sequence & v_bin_ranges);
     my_coverpoint.add_cross(C_BIN_ILLEGAL, v_bin_sequence & v_bin_ranges);
-
 
 Adding bins from separate process
 ==================================================================================================================================
@@ -337,7 +331,6 @@ it before the sequencer has added the bins, the testbench will generate a TB_ERR
     It is recommended to add all the bins at the beginning of the testbench (time 0 ns) to avoid adding any bins after the coverpoint 
     has been sampled. If this happens, a TB_WARNING alert will be generated because some bins might have incomplete coverage.
 
-
 Bin memory allocation
 ==================================================================================================================================
 For users who want more control over the memory usage during simulation, it is possible to configure how large the bin list is 
@@ -346,7 +339,6 @@ when the list becomes full. These constants are defined in adaptations_pkg.
 
 Moreover, the procedures ``set_num_allocated_bins()`` and ``set_num_allocated_bins_increment()`` can be used to reconfigure a 
 coverpoint's respective values.
-
 
 Bin name
 ==================================================================================================================================
@@ -361,7 +353,6 @@ default name will be automatically given. Having a bin name is useful when readi
 
 The maximum length of the name is determined by C_FC_MAX_NAME_LENGTH defined in adaptations_pkg.
 
-
 Minimum coverage
 ==================================================================================================================================
 By default all bins created have a minimum coverage of 1, i.e. they only need to be sampled once to be covered. The parameter 
@@ -374,7 +365,6 @@ By default all bins created have a minimum coverage of 1, i.e. they only need to
     my_coverpoint.add_bins(bin(0), 1);
     my_coverpoint.add_bins(bin(2), 5);
     my_coverpoint.add_bins(bin(4), 10);
-
 
 **********************************************************************************************************************************
 Cross coverage
@@ -400,7 +390,6 @@ Crosses are made using the ``add_cross()`` procedure and can be made either betw
 .. important::
     Once the number of crossed bins has been set in a coverpoint, by calling the first ``add_cross()``, it cannot be 
     changed anymore.
-
 
 Crossing bins
 ==================================================================================================================================
@@ -719,7 +708,6 @@ Coverpoint Non-Verbose
     # UVVM:  -----------------------------------------------------------------------------------------------------------------
     # UVVM:  transition_2: (0->15->127->248->249->250->251->252->253->254)
     # UVVM:  =================================================================================================================
-
 
 Coverpoint Holes
 ==================================================================================================================================

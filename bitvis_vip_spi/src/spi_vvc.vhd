@@ -79,7 +79,7 @@ architecture behave of spi_vvc is
 
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_spi_vvc_transaction_trigger(GC_INSTANCE_IDX);
-  -- VVC Activity 
+  -- VVC Activity
   signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
@@ -754,7 +754,7 @@ begin
   p_unwanted_activity : process
     variable v_vvc_config : t_vvc_config;
   begin
-    -- Add a delay to avoid detecting the first transition from the undefined value to initial value
+    -- Add a delay to allow the VVC to be registered in the activity register
     wait for std.env.resolution_limit;
 
     loop
@@ -780,11 +780,19 @@ begin
         v_vvc_config := get_vvc_config(VOID);
 
         if GC_MASTER_MODE then
-          check_value(not spi_vvc_if.miso'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on miso", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          check_unwanted_activity(spi_vvc_if.miso, v_vvc_config.unwanted_activity_severity, "miso", C_SCOPE);
         else
-          check_value(not spi_vvc_if.ss_n'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on ss_n", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not spi_vvc_if.sclk'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on sclk", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
-          check_value(not spi_vvc_if.mosi'event, v_vvc_config.unwanted_activity_severity, "Unwanted activity detected on mosi", C_SCOPE, ID_NEVER, get_msg_id_panel(VOID));
+          -- Skip checking the changes if the ss_n signal goes high within the sclk_to_ss_n period after the last sclk
+          if not (rising_edge(spi_vvc_if.ss_n) and global_trigger_vvc_activity_register'last_event <= (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit)) then
+            check_unwanted_activity(spi_vvc_if.ss_n, v_vvc_config.unwanted_activity_severity, "ss_n", C_SCOPE);
+          end if;
+
+          -- Skip checking the changes if the mosi signal goes to 'Z' within the sclk_to_ss_n period after the last sclk
+          if not (spi_vvc_if.mosi = 'Z' and global_trigger_vvc_activity_register'last_event <= (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit)) then
+            check_unwanted_activity(spi_vvc_if.mosi, v_vvc_config.unwanted_activity_severity, "mosi", C_SCOPE);
+          end if;
+
+          check_unwanted_activity(spi_vvc_if.sclk, v_vvc_config.unwanted_activity_severity, "sclk", C_SCOPE);
         end if;
       end if;
     end loop;

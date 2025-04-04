@@ -30,8 +30,8 @@ package adaptations_pkg is
   --------------------------------------------------------------------------------------------------------------------------------
   -- Alert and Log files
   --------------------------------------------------------------------------------------------------------------------------------
-  constant C_ALERT_FILE_NAME                          : string := "_Alert.txt";
-  constant C_LOG_FILE_NAME                            : string := "_Log.txt";
+  constant C_ALERT_FILE_NAME                          : string := "UVVM_Alert.txt";
+  constant C_LOG_FILE_NAME                            : string := "UVVM_Log.txt";
   constant C_WARNING_ON_LOG_ALERT_FILE_RUNTIME_RENAME : boolean := false;
 
   constant C_SHOW_UVVM_UTILITY_LIBRARY_INFO         : boolean := true; -- Set this to false when you no longer need the initial info
@@ -279,7 +279,9 @@ package adaptations_pkg is
   constant C_RAND_CYCLIC_QUEUE_MAX_ALERT         : natural  := 10000;
   constant C_RAND_CYCLIC_QUEUE_MAX_ALERT_DISABLE : boolean  := false; -- Set to true to disable the alert above
 
-  constant C_RAND_MM_MAX_LONG_VECTOR_LENGTH : natural := 128; -- Maximum length for unsigned/signed constraints in multi-method approach
+  constant C_RAND_MM_MAX_LONG_VECTOR_LENGTH      : natural  := 128; -- Maximum length for unsigned/signed constraints in multi-method approach
+
+  constant C_RAND_MAX_INSTANCE_NAME_LENGTH       : positive := 300; -- Maximum length used for constraining the INSTANCE_NAME attribute output
 
   --------------------------------------------------------------------------------------------------------------------------------
   -- Functional Coverage
@@ -493,17 +495,18 @@ package adaptations_pkg is
 
   -- Specification Coverage
   constant C_SPEC_COV_CONFIG_DEFAULT : t_spec_cov_config := (
-    missing_req_label_severity => TB_WARNING,
-    csv_delimiter              => ',',        -- Delimiter when reading and writing CSV files.
-    max_requirements           => 1000,       -- Maximum number of requirements in the req_map file used in initialize_req_cov().
-    max_testcases_per_req      => 20,         -- Max number of testcases allowed per requirement.
-    csv_max_line_length        => 256         -- Max length of line read from CSV file, used in csv_file_reader_pkg.vhd
+    missing_req_label_severity    => TB_WARNING,
+    compound_req_tickoff_severity => TB_WARNING,
+    csv_delimiter                 => ',',        -- Delimiter when reading and writing CSV files.
+    max_requirement_lines         => 1000,       -- Maximum number of requirement lines in the req+map files used in initialize_req_cov()
+    max_testcases_per_req         => 20,         -- Max number of testcases allowed per requirement.
+    csv_max_line_length           => 256         -- Max length of line read from CSV file, used in csv_file_reader_pkg.vhd
   );
 
   -- SPI
   -- Constants for the maximum sizes to use in the VVC.
   constant C_SPI_VVC_CMD_DATA_MAX_LENGTH   : natural := 32;
-  constant C_SPI_VVC_DATA_ARRAY_WIDTH      : natural := 31; -- Width of SPI VVC data array for SPI VVC and transaction package defaults.
+  constant C_SPI_VVC_DATA_ARRAY_WIDTH      : natural := 32; -- Width of SPI VVC data array for SPI VVC and transaction package defaults.
   constant C_SPI_VVC_CMD_STRING_MAX_LENGTH : natural := C_COMMON_VVC_CMD_STRING_MAX_LENGTH;
   constant C_SPI_VVC_MAX_INSTANCE_NUM      : natural := C_MAX_VVC_INSTANCE_NUM;
 

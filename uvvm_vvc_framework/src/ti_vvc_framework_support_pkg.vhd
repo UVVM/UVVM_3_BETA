@@ -329,6 +329,25 @@ package ti_vvc_framework_support_pkg is
   );
 
   -- ============================================================================
+  -- Unwanted Activity Detection
+  -- ============================================================================
+  -- Checks for unwanted activity and issues an alert of severity
+  procedure check_unwanted_activity(
+    signal   tracked_signal : std_logic;
+    constant alert_level    : t_alert_level;
+    constant signal_name    : string;
+    constant scope          : string
+  );
+
+  -- Overload for std_logic_vector signal
+  procedure check_unwanted_activity(
+    signal   tracked_signal : std_logic_vector;
+    constant alert_level    : t_alert_level;
+    constant signal_name    : string;
+    constant scope          : string
+  );
+
+  -- ============================================================================
   -- VVC Activity Register
   -- ============================================================================
   shared variable shared_vvc_activity_register : t_vvc_activity;
@@ -1007,5 +1026,59 @@ package body ti_vvc_framework_support_pkg is
     end loop;
     wait;
   end procedure activity_watchdog;
+
+  -- ============================================================================
+  -- Unwanted Activity Detection
+  -- ============================================================================
+  -------------------------------------------------------------------------------
+  procedure check_unwanted_activity(
+    signal   tracked_signal : std_logic;
+    constant alert_level    : t_alert_level;
+    constant signal_name    : string;
+    constant scope          : string
+  ) is
+    variable v_last_value   : std_logic := tracked_signal'last_value;
+  begin
+    -- Exclude checks for signal transitions from 'U', 'L' to/from '0', 'H' to/from '1'
+    if not (v_last_value = 'U' or
+           (v_last_value = 'L' and tracked_signal = '0') or
+           (v_last_value = '0' and tracked_signal = 'L') or
+           (v_last_value = 'H' and tracked_signal = '1') or
+           (v_last_value = '1' and tracked_signal = 'H')) then
+      if tracked_signal'event then
+        alert(alert_level, "Unwanted activity detected. " & signal_name & " changed from " &
+          to_string(tracked_signal'last_value) & " to " & to_string(tracked_signal), scope);
+      end if;
+    end if;
+  end procedure;
+
+  procedure check_unwanted_activity(
+    signal   tracked_signal : std_logic_vector;
+    constant alert_level    : t_alert_level;
+    constant signal_name    : string;
+    constant scope          : string
+  ) is
+    variable v_is_unwanted_activity : boolean := false;
+    variable v_last_value           : std_logic_vector(tracked_signal'range) := tracked_signal'last_value;
+  begin
+    -- Loop through each bit in the vector and check for unwanted activity
+    for i in 0 to tracked_signal'length - 1 loop
+      -- Exclude signal transitions from 'U', 'L' to/from '0', 'H' to/from '1'
+      if not (v_last_value(i) = 'U' or
+             (v_last_value(i) = 'L' and tracked_signal(i) = '0') or
+             (v_last_value(i) = '0' and tracked_signal(i) = 'L') or
+             (v_last_value(i) = 'H' and tracked_signal(i) = '1') or
+             (v_last_value(i) = '1' and tracked_signal(i) = 'H')) then
+        v_is_unwanted_activity := true;
+      end if;
+    end loop;
+
+    if v_is_unwanted_activity then
+      if tracked_signal'event then
+        alert(alert_level, "Unwanted activity detected. " & signal_name & " changed from " &
+          to_string(tracked_signal'last_value, HEX, KEEP_LEADING_0, INCL_RADIX) & " to " & to_string(tracked_signal, HEX, KEEP_LEADING_0, INCL_RADIX), scope);
+      end if;
+    end if;
+  end procedure;
 
 end package body ti_vvc_framework_support_pkg;
