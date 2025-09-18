@@ -1,6 +1,6 @@
-#######################################################################################################################
+##################################################################################################################################
 Bitvis VIP GPIO
-#######################################################################################################################
+##################################################################################################################################
 
 .. _vip_gpio_bfm:
 
@@ -8,7 +8,7 @@ Bitvis VIP GPIO
 BFM
 **********************************************************************************************************************************
 
-See `gpio_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_gpio/doc/gpio_bfm_QuickRef.pdf>`_
+See `gpio_bfm_QuickRef.pdf <../../../bitvis_vip_gpio/doc/gpio_bfm_QuickRef.pdf>`_
 
 .. _vip_gpio_vvc:
 
@@ -16,6 +16,6 @@ See `gpio_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_
 VVC
 **********************************************************************************************************************************
 
-See `gpio_vvc_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_gpio/doc/gpio_vvc_QuickRef.pdf>`_
+See `gpio_vvc_QuickRef.pdf <../../../bitvis_vip_gpio/doc/gpio_vvc_QuickRef.pdf>`_
 
 .. include:: rst_snippets/ip_disclaimer.rst

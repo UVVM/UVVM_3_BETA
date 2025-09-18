@@ -1,0 +1,7 @@
+UVVM Assertions Library - Overview on Versions and Changes
+==============================================================
+
+v1.0.0
+----------
+Released: 20XX-XX-XX
+- Initial version of UVVM Assertions in UVVM V3.

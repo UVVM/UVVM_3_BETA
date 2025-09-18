@@ -1727,10 +1727,11 @@ package body rand_tb_pkg is
     -- Print bottom line
     write(v_line, fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)));
 
+    -- Format the report
     wrap_lines(v_line, 1, 1, C_LOG_LINE_WIDTH - C_PREFIX'length);
     prefix_lines(v_line, C_PREFIX);
 
-    -- Write the info string to transcript
+    -- Write the report to the log destination
     write_line_to_log_destination(v_line);
     deallocate(v_line);
 

@@ -62,7 +62,6 @@ package uart_bfm_pkg is
     match_strictness                      : t_match_strictness; -- Matching strictness for std_logic values in check procedures.
     id_for_bfm                            : t_msg_id; -- The message ID used as a general message ID in the UART BFM
     id_for_bfm_wait                       : t_msg_id; -- The message ID used for logging waits in the UART BFM
-    id_for_bfm_poll                       : t_msg_id; -- The message ID used for logging polling in the UART BFM
     id_for_bfm_poll_summary               : t_msg_id; -- The message ID used for logging polling summary in the UART BFM
     id_for_bfm_terminate_cmd              : t_msg_id; -- The message ID used for logging terminates in the UART BFM
     error_injection                       : t_bfm_error_injection;
@@ -80,7 +79,6 @@ package uart_bfm_pkg is
     match_strictness                      => MATCH_EXACT,
     id_for_bfm                            => ID_BFM,
     id_for_bfm_wait                       => ID_BFM_WAIT,
-    id_for_bfm_poll                       => ID_BFM_POLL,
     id_for_bfm_poll_summary               => ID_BFM_POLL_SUMMARY,
     id_for_bfm_terminate_cmd              => ID_TERMINATE_CMD,
     error_injection                       => C_BFM_ERROR_INJECTION_INACTIVE

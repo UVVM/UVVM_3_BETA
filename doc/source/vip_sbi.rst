@@ -1,6 +1,6 @@
-#######################################################################################################################
+##################################################################################################################################
 Bitvis VIP SBI
-#######################################################################################################################
+##################################################################################################################################
 
 .. _vip_sbi_bfm:
 
@@ -8,7 +8,7 @@ Bitvis VIP SBI
 BFM
 **********************************************************************************************************************************
 
-See `sbi_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_sbi/doc/sbi_bfm_QuickRef.pdf>`_
+See `sbi_bfm_QuickRef.pdf <../../../bitvis_vip_sbi/doc/sbi_bfm_QuickRef.pdf>`_
 
 .. _vip_sbi_vvc:
 
@@ -16,6 +16,6 @@ See `sbi_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_s
 VVC
 **********************************************************************************************************************************
 
-See `sbi_vvc_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_sbi/doc/sbi_vvc_QuickRef.pdf>`_
+See `sbi_vvc_QuickRef.pdf <../../../bitvis_vip_sbi/doc/sbi_vvc_QuickRef.pdf>`_
 
 .. include:: rst_snippets/ip_disclaimer.rst

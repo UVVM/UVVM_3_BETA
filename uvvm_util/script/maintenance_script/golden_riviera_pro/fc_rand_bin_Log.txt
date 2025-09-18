@@ -32,18 +32,18 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization doesn't select ignore or illegal bins
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(ignore_bin(2000), "bin_0")
-UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: IGN(2000), min_hits:1, rand_weight:1, "bin_0"
-UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(ignore_bin_range(2100,2109), "bin_1")
-UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: IGN(2100 to 2109), min_hits:1, rand_weight:1, "bin_1"
-UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(ignore_bin_transition((2201, 2203, 2205, 2209)), "bin_2")
-UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: IGN(2201->2203->2205->2209), min_hits:1, rand_weight:1, "bin_2"
-UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(illegal_bin(3000), "bin_3")
-UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: ILL(3000), min_hits:1, rand_weight:1, "bin_3"
-UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(illegal_bin_range(3100,3109), "bin_4")
-UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: ILL(3100 to 3109), min_hits:1, rand_weight:1, "bin_4"
-UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(illegal_bin_transition((3201, 3203, 3205, 3209)), "bin_5")
-UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: ILL(3201->3203->3205->3209), min_hits:1, rand_weight:1, "bin_5"
+UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(ignore_bin(2000), "")
+UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: IGN(2000), min_hits:1, rand_weight:1, ""
+UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(ignore_bin_range(2100,2109), "")
+UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: IGN(2100 to 2109), min_hits:1, rand_weight:1, ""
+UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(ignore_bin_transition((2201, 2203, 2205, 2209)), "")
+UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: IGN(2201->2203->2205->2209), min_hits:1, rand_weight:1, ""
+UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(illegal_bin(3000), "")
+UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: ILL(3000), min_hits:1, rand_weight:1, ""
+UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(illegal_bin_range(3100,3109), "")
+UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: ILL(3100 to 3109), min_hits:1, rand_weight:1, ""
+UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_1] add_bins(illegal_bin_transition((3201, 3203, 3205, 3209)), "")
+UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: ILL(3201->3203->3205->3209), min_hits:1, rand_weight:1, ""
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization among bins with single values
@@ -103,56 +103,56 @@ UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(NO_SAMPLE_COV)=> 28
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(NO_SAMPLE_COV)=> 40
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(NO_SAMPLE_COV)=> 44
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_6
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_8
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_9
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_10
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_11
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_12
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_13
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_14
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_15
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_16
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_17
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_18
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_19
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_20
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_21
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_22
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_23
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_24
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_25
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_26
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_27
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_28
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_29
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_30
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_31
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_32
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_33
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_34
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_35
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_36
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_37
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_38
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_39
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_40
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_41
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_42
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_43
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_44
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_45
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_46
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_47
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_48
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_49
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_50
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_51
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_52
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_53
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_54
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_55
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[1]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[2]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[3]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[4]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[5]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[6]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[7]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[8]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[9]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[10]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[11]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[12]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[13]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[14]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[15]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[16]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[17]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[18]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[19]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[20]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[21]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[22]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[23]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[24]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[25]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[26]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[27]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[28]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[29]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[30]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[31]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[32]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[33]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[34]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[35]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[36]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[37]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[38]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[39]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[40]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[41]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[42]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[43]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[44]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[45]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[46]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[47]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[48]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[49]
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_7[50]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
 UVVM: 
@@ -210,11 +210,11 @@ UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 244
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 211
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 240
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_56
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_57
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_58
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_59
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_60
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_8
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_9
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_10
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_11
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_12
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
 UVVM: 
@@ -277,11 +277,11 @@ UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 312
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 338
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 305
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_61
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_62
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_63
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_64
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_65
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_13
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_14
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_15
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_16
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_17
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
 UVVM: 
@@ -429,11 +429,11 @@ UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 443
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 447
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 443
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_66
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_67
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_68
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_69
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_70
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_18
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_19
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_20
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_21
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_22
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
 UVVM: 
@@ -513,10 +513,10 @@ UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 351
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 60
 UVVM: ID_FUNC_COV_RAND                   0.0 ns  TB seq.                        [Covpt_1] rand(SAMPLE_COV)=> 254
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_71
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_72
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_73
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_74
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_23
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_24
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_25
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_26
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
 UVVM: 
@@ -525,9 +525,105 @@ UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_RAND). 
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Calling rand() 1000 times
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_6 was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[1] was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7 was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[2] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[3] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[4] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[5] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[6] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[7] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[8] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[9] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[10] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[11] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[12] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[13] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[14] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[15] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[16] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[17] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[18] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[19] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[20] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[21] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[22] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[23] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[24] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[25] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[26] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[27] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[28] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[29] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[30] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[31] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[32] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[33] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[34] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[35] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[36] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[37] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[38] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[39] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[40] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[41] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[42] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[43] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[44] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[45] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[46] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[47] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[48] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[49] was selected for
+UVVM:                                                                           randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7[50] was selected for
 UVVM:                                                                           randomization'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_8 was selected for
 UVVM:                                                                           randomization'
@@ -567,112 +663,16 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM:                                                                           randomization'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_26 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_27 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_28 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_29 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_30 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_31 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_32 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_33 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_34 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_35 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_36 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_37 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_38 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_39 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_40 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_41 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_42 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_43 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_44 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_45 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_46 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_47 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_48 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_49 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_50 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_51 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_52 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_53 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_54 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_55 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_56 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_57 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_58 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_59 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_60 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_61 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_62 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_63 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_64 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_65 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_66 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_67 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_68 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_69 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_70 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_71 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_72 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_73 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_74 was selected for
-UVVM:                                                                           randomization'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Checking that ignore and invalid bins were never selected during randomization
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_bin => OK, for bin_5
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_bin => OK, for bin_6
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE SUMMARY REPORT (VERBOSE): TB seq. ***                                                                                                             
@@ -681,81 +681,81 @@ UVVM:      Coverpoint:              Covpt_1
 UVVM:      Coverage (for goal 100): Bins: 100.00%,  Hits: 100.00% 
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:                           BINS                           HITS            MIN HITS        HIT COVERAGE            NAME            ILLEGAL/IGNORE                          
-UVVM:                          (3000)                           0                N/A               N/A                 bin_3              ILLEGAL                              
-UVVM:                      (3100 to 3109)                       0                N/A               N/A                 bin_4              ILLEGAL                              
-UVVM:                 (3201->3203->3205->3209)                  0                N/A               N/A                 bin_5              ILLEGAL                              
-UVVM:                          (2000)                           0                N/A               N/A                 bin_0               IGNORE                              
-UVVM:                      (2100 to 2109)                       0                N/A               N/A                 bin_1               IGNORE                              
-UVVM:                 (2201->2203->2205->2209)                  0                N/A               N/A                 bin_2               IGNORE                              
-UVVM:                            (1)                            5                 1              100.00%               bin_6                 -                                 
-UVVM:                            (2)                            6                 1              100.00%               bin_7                 -                                 
-UVVM:                            (3)                            5                 1              100.00%               bin_8                 -                                 
-UVVM:                            (4)                            6                 1              100.00%               bin_9                 -                                 
-UVVM:                            (5)                            6                 1              100.00%              bin_10                 -                                 
-UVVM:                            (6)                            5                 1              100.00%              bin_11                 -                                 
-UVVM:                            (7)                            5                 1              100.00%              bin_12                 -                                 
-UVVM:                            (8)                            6                 1              100.00%              bin_13                 -                                 
-UVVM:                            (9)                            6                 1              100.00%              bin_14                 -                                 
-UVVM:                           (10)                            6                 1              100.00%              bin_15                 -                                 
-UVVM:                           (11)                            6                 1              100.00%              bin_16                 -                                 
-UVVM:                           (12)                            6                 1              100.00%              bin_17                 -                                 
-UVVM:                           (13)                            6                 1              100.00%              bin_18                 -                                 
-UVVM:                           (14)                            5                 1              100.00%              bin_19                 -                                 
-UVVM:                           (15)                            6                 1              100.00%              bin_20                 -                                 
-UVVM:                           (16)                            6                 1              100.00%              bin_21                 -                                 
-UVVM:                           (17)                            5                 1              100.00%              bin_22                 -                                 
-UVVM:                           (18)                            6                 1              100.00%              bin_23                 -                                 
-UVVM:                           (19)                            5                 1              100.00%              bin_24                 -                                 
-UVVM:                           (20)                            6                 1              100.00%              bin_25                 -                                 
-UVVM:                           (21)                            6                 1              100.00%              bin_26                 -                                 
-UVVM:                           (22)                            6                 1              100.00%              bin_27                 -                                 
-UVVM:                           (23)                            6                 1              100.00%              bin_28                 -                                 
-UVVM:                           (24)                            6                 1              100.00%              bin_29                 -                                 
-UVVM:                           (25)                            5                 1              100.00%              bin_30                 -                                 
-UVVM:                           (26)                            6                 1              100.00%              bin_31                 -                                 
-UVVM:                           (27)                            5                 1              100.00%              bin_32                 -                                 
-UVVM:                           (28)                            6                 1              100.00%              bin_33                 -                                 
-UVVM:                           (29)                            6                 1              100.00%              bin_34                 -                                 
-UVVM:                           (30)                            6                 1              100.00%              bin_35                 -                                 
-UVVM:                           (31)                            6                 1              100.00%              bin_36                 -                                 
-UVVM:                           (32)                            5                 1              100.00%              bin_37                 -                                 
-UVVM:                           (33)                            6                 1              100.00%              bin_38                 -                                 
-UVVM:                           (34)                            5                 1              100.00%              bin_39                 -                                 
-UVVM:                           (35)                            6                 1              100.00%              bin_40                 -                                 
-UVVM:                           (36)                            5                 1              100.00%              bin_41                 -                                 
-UVVM:                           (37)                            6                 1              100.00%              bin_42                 -                                 
-UVVM:                           (38)                            6                 1              100.00%              bin_43                 -                                 
-UVVM:                           (39)                            6                 1              100.00%              bin_44                 -                                 
-UVVM:                           (40)                            6                 1              100.00%              bin_45                 -                                 
-UVVM:                           (41)                            5                 1              100.00%              bin_46                 -                                 
-UVVM:                           (42)                            6                 1              100.00%              bin_47                 -                                 
-UVVM:                           (43)                            6                 1              100.00%              bin_48                 -                                 
-UVVM:                           (44)                            6                 1              100.00%              bin_49                 -                                 
-UVVM:                           (45)                            5                 1              100.00%              bin_50                 -                                 
-UVVM:                           (46)                            6                 1              100.00%              bin_51                 -                                 
-UVVM:                           (47)                            5                 1              100.00%              bin_52                 -                                 
-UVVM:                           (48)                            6                 1              100.00%              bin_53                 -                                 
-UVVM:                           (49)                            6                 1              100.00%              bin_54                 -                                 
-UVVM:                           (50)                            6                 1              100.00%              bin_55                 -                                 
-UVVM:                 (200, 201, 202, 203, 204)                 12                2              100.00%              bin_56                 -                                 
-UVVM:                 (210, 211, 212, 213, 214)                 12                2              100.00%              bin_57                 -                                 
-UVVM:                 (220, 221, 222, 223, 224)                 10                2              100.00%              bin_58                 -                                 
-UVVM:                 (230, 231, 232, 233, 234)                 12                2              100.00%              bin_59                 -                                 
-UVVM:                 (240, 241, 242, 243, 244)                 12                2              100.00%              bin_60                 -                                 
-UVVM:                       (300 to 309)                        16                3              100.00%              bin_61                 -                                 
-UVVM:                       (310 to 319)                        18                3              100.00%              bin_62                 -                                 
-UVVM:                       (320 to 329)                        15                3              100.00%              bin_63                 -                                 
-UVVM:                       (330 to 339)                        16                3              100.00%              bin_64                 -                                 
-UVVM:                       (340 to 349)                        17                3              100.00%              bin_65                 -                                 
-UVVM:                 (400->402->404->406->408)                 21                4              100.00%              bin_66                 -                                 
-UVVM:                 (410->412->414->416->418)                 23                4              100.00%              bin_67                 -                                 
-UVVM:                 (420->422->424->426->428)                 23                4              100.00%              bin_68                 -                                 
-UVVM:                 (438->436->434->432->430)                 23                4              100.00%              bin_69                 -                                 
-UVVM:                 (440->443->443->447->443)                 23                4              100.00%              bin_70                 -                                 
-UVVM:                           (60)                            28                5              100.00%              bin_71                 -                                 
-UVVM:                 (250, 251, 252, 253, 254)                 29                5              100.00%              bin_72                 -                                 
-UVVM:                       (350 to 359)                        28                5              100.00%              bin_73                 -                                 
-UVVM:                 (450->452->452->458->455)                 28                5              100.00%              bin_74                 -                                 
+UVVM:                          (3000)                           0                N/A               N/A                 bin_4              ILLEGAL                              
+UVVM:                      (3100 to 3109)                       0                N/A               N/A                 bin_5              ILLEGAL                              
+UVVM:                 (3201->3203->3205->3209)                  0                N/A               N/A                 bin_6              ILLEGAL                              
+UVVM:                          (2000)                           0                N/A               N/A                 bin_1               IGNORE                              
+UVVM:                      (2100 to 2109)                       0                N/A               N/A                 bin_2               IGNORE                              
+UVVM:                 (2201->2203->2205->2209)                  0                N/A               N/A                 bin_3               IGNORE                              
+UVVM:                            (1)                            5                 1              100.00%             bin_7[1]                -                                 
+UVVM:                            (2)                            6                 1              100.00%             bin_7[2]                -                                 
+UVVM:                            (3)                            5                 1              100.00%             bin_7[3]                -                                 
+UVVM:                            (4)                            6                 1              100.00%             bin_7[4]                -                                 
+UVVM:                            (5)                            6                 1              100.00%             bin_7[5]                -                                 
+UVVM:                            (6)                            5                 1              100.00%             bin_7[6]                -                                 
+UVVM:                            (7)                            5                 1              100.00%             bin_7[7]                -                                 
+UVVM:                            (8)                            6                 1              100.00%             bin_7[8]                -                                 
+UVVM:                            (9)                            6                 1              100.00%             bin_7[9]                -                                 
+UVVM:                           (10)                            6                 1              100.00%             bin_7[10]               -                                 
+UVVM:                           (11)                            6                 1              100.00%             bin_7[11]               -                                 
+UVVM:                           (12)                            6                 1              100.00%             bin_7[12]               -                                 
+UVVM:                           (13)                            6                 1              100.00%             bin_7[13]               -                                 
+UVVM:                           (14)                            5                 1              100.00%             bin_7[14]               -                                 
+UVVM:                           (15)                            6                 1              100.00%             bin_7[15]               -                                 
+UVVM:                           (16)                            6                 1              100.00%             bin_7[16]               -                                 
+UVVM:                           (17)                            5                 1              100.00%             bin_7[17]               -                                 
+UVVM:                           (18)                            6                 1              100.00%             bin_7[18]               -                                 
+UVVM:                           (19)                            5                 1              100.00%             bin_7[19]               -                                 
+UVVM:                           (20)                            6                 1              100.00%             bin_7[20]               -                                 
+UVVM:                           (21)                            6                 1              100.00%             bin_7[21]               -                                 
+UVVM:                           (22)                            6                 1              100.00%             bin_7[22]               -                                 
+UVVM:                           (23)                            6                 1              100.00%             bin_7[23]               -                                 
+UVVM:                           (24)                            6                 1              100.00%             bin_7[24]               -                                 
+UVVM:                           (25)                            5                 1              100.00%             bin_7[25]               -                                 
+UVVM:                           (26)                            6                 1              100.00%             bin_7[26]               -                                 
+UVVM:                           (27)                            5                 1              100.00%             bin_7[27]               -                                 
+UVVM:                           (28)                            6                 1              100.00%             bin_7[28]               -                                 
+UVVM:                           (29)                            6                 1              100.00%             bin_7[29]               -                                 
+UVVM:                           (30)                            6                 1              100.00%             bin_7[30]               -                                 
+UVVM:                           (31)                            6                 1              100.00%             bin_7[31]               -                                 
+UVVM:                           (32)                            5                 1              100.00%             bin_7[32]               -                                 
+UVVM:                           (33)                            6                 1              100.00%             bin_7[33]               -                                 
+UVVM:                           (34)                            5                 1              100.00%             bin_7[34]               -                                 
+UVVM:                           (35)                            6                 1              100.00%             bin_7[35]               -                                 
+UVVM:                           (36)                            5                 1              100.00%             bin_7[36]               -                                 
+UVVM:                           (37)                            6                 1              100.00%             bin_7[37]               -                                 
+UVVM:                           (38)                            6                 1              100.00%             bin_7[38]               -                                 
+UVVM:                           (39)                            6                 1              100.00%             bin_7[39]               -                                 
+UVVM:                           (40)                            6                 1              100.00%             bin_7[40]               -                                 
+UVVM:                           (41)                            5                 1              100.00%             bin_7[41]               -                                 
+UVVM:                           (42)                            6                 1              100.00%             bin_7[42]               -                                 
+UVVM:                           (43)                            6                 1              100.00%             bin_7[43]               -                                 
+UVVM:                           (44)                            6                 1              100.00%             bin_7[44]               -                                 
+UVVM:                           (45)                            5                 1              100.00%             bin_7[45]               -                                 
+UVVM:                           (46)                            6                 1              100.00%             bin_7[46]               -                                 
+UVVM:                           (47)                            5                 1              100.00%             bin_7[47]               -                                 
+UVVM:                           (48)                            6                 1              100.00%             bin_7[48]               -                                 
+UVVM:                           (49)                            6                 1              100.00%             bin_7[49]               -                                 
+UVVM:                           (50)                            6                 1              100.00%             bin_7[50]               -                                 
+UVVM:                 (200, 201, 202, 203, 204)                 12                2              100.00%               bin_8                 -                                 
+UVVM:                 (210, 211, 212, 213, 214)                 12                2              100.00%               bin_9                 -                                 
+UVVM:                 (220, 221, 222, 223, 224)                 10                2              100.00%              bin_10                 -                                 
+UVVM:                 (230, 231, 232, 233, 234)                 12                2              100.00%              bin_11                 -                                 
+UVVM:                 (240, 241, 242, 243, 244)                 12                2              100.00%              bin_12                 -                                 
+UVVM:                       (300 to 309)                        16                3              100.00%              bin_13                 -                                 
+UVVM:                       (310 to 319)                        18                3              100.00%              bin_14                 -                                 
+UVVM:                       (320 to 329)                        15                3              100.00%              bin_15                 -                                 
+UVVM:                       (330 to 339)                        16                3              100.00%              bin_16                 -                                 
+UVVM:                       (340 to 349)                        17                3              100.00%              bin_17                 -                                 
+UVVM:                 (400->402->404->406->408)                 21                4              100.00%              bin_18                 -                                 
+UVVM:                 (410->412->414->416->418)                 23                4              100.00%              bin_19                 -                                 
+UVVM:                 (420->422->424->426->428)                 23                4              100.00%              bin_20                 -                                 
+UVVM:                 (438->436->434->432->430)                 23                4              100.00%              bin_21                 -                                 
+UVVM:                 (440->443->443->447->443)                 23                4              100.00%              bin_22                 -                                 
+UVVM:                           (60)                            28                5              100.00%              bin_23                 -                                 
+UVVM:                 (250, 251, 252, 253, 254)                 29                5              100.00%              bin_24                 -                                 
+UVVM:                       (350 to 359)                        28                5              100.00%              bin_25                 -                                 
+UVVM:                 (450->452->452->458->455)                 28                5              100.00%              bin_26                 -                                 
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:      ====================================================================================================================================================================
 UVVM:      
@@ -1094,10 +1094,10 @@ UVVM:      % of Goal (uncapped):    Bins: 100.00%,  Hits: 300.00%
 UVVM:      Coverage (for goal 100): Bins: 100.00%,  Hits: 100.00% 
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:                           BINS                           HITS            MIN HITS        HIT COVERAGE            NAME            ILLEGAL/IGNORE                          
-UVVM:                           (23)                           150               100             100.00%               bin_0                 -                                 
-UVVM:                           (24)                           300               200             100.00%               bin_1                 -                                 
-UVVM:                           (25)                           450               300             100.00%               bin_2                 -                                 
-UVVM:                           (26)                           600               400             100.00%               bin_3                 -                                 
+UVVM:                           (23)                           150               100             100.00%               bin_1                 -                                 
+UVVM:                           (24)                           300               200             100.00%               bin_2                 -                                 
+UVVM:                           (25)                           450               300             100.00%               bin_3                 -                                 
+UVVM:                           (26)                           600               400             100.00%               bin_4                 -                                 
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:      ====================================================================================================================================================================
 UVVM:      

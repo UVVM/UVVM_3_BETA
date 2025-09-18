@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Enhanced Randomization &mdash; UVVM  documentation</title>
@@ -16,7 +16,7 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -83,15 +83,16 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="func_cov_pkg_overview.html">Functional Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vvc_framework.html">VVC Framework</a></li>
-<li class="toctree-l1"><a class="reference internal" href="protected_types.html">Protected types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fifo_collection.html">UVVM FIFO Collection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="generic_queue.html">UVVM Generic Queue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon MM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="association_list.html">UVVM Association List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI-Lite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI-Stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI4-Lite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI4-Stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_clock_generator.html">Bitvis VIP Clock Generator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_error_injection.html">Bitvis VIP Error Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_ethernet.html">Bitvis VIP Ethernet</a></li>
@@ -105,8 +106,9 @@
 <li class="toctree-l1"><a class="reference internal" href="vip_spec_cov.html">Bitvis VIP Specification Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_spi.html">Bitvis VIP SPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 
         </div>
@@ -137,8 +139,7 @@
 <span id="rand-pkg-overview"></span><h1>Enhanced Randomization<a class="headerlink" href="#enhanced-randomization" title="Link to this heading"></a></h1>
 <section id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<p>All the functionality for <strong>Enhanced Randomization</strong>, using protected types, can be found in <em>uvvm_util/src/rand_pkg.vhd</em>. For
-more information on protected types see <a class="reference internal" href="protected_types.html#protected-types"><span class="std std-ref">Protected types</span></a>.</p>
+<p>All the functionality for <strong>Enhanced Randomization</strong>, using protected types, can be found in <em>uvvm_util/src/rand_pkg.vhd</em>.</p>
 <p>For more simple functionality, not using protected types, refer to the <a class="reference internal" href="utility_library.html#basic-randomization"><span class="std std-ref">Basic Randomization</span></a>.</p>
 <p>For a more balanced randomization between small and large ranges/sets, the <a class="reference internal" href="optimized_rand.html#optimized-randomization"><span class="std std-ref">Optimized Randomization</span></a> under <em>uvvm_util/src/func_cov_pkg.vhd</em>
 may be used.</p>
@@ -522,7 +523,7 @@ parsing of the growing queue.</p>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>It is recommended to call <code class="docutils literal notranslate"><span class="pre">clear_rand_cyclic()</span></code> at the end of the testbench when using cyclic generation to deallocate the
+<p>It is recommended to call <code class="docutils literal notranslate"><span class="pre">clear_rand_cyclic()</span></code> at the end of the testbench when using cyclic generation to de-allocate the
 list/queue.</p>
 </div>
 </section>
@@ -762,7 +763,7 @@ The maximum length of the scope is defined by C_LOG_SCOPE_WIDTH. Both of these c
 <p>The number of decimal digits displayed in the real values logs can be adjusted with C_RAND_REAL_NUM_DECIMAL_DIGITS in adaptations_pkg.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Enhanced Randomization, Optimized Randomization and Functional Coverage were inpired by general statistics and similar
+<p>Enhanced Randomization, Optimized Randomization and Functional Coverage were inspired by general statistics and similar
 functionality in SystemVerilog and OSVVM.</p>
 </div>
 </section>
@@ -779,7 +780,7 @@ functionality in SystemVerilog and OSVVM.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Disclaimer: This IP and any part thereof are provided “as is”, without warranty of any kind, express or implied, including but
-not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the
+not limited to the warranties of merchantability, fitness for a particular purpose and non-infringement. In no event shall the
 authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or
 otherwise, arising from, out of or in connection with this IP.</p>
 </div>
@@ -797,7 +798,7 @@ otherwise, arising from, out of or in connection with this IP.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, UVVM.</p>
+    <p>&#169; Copyright 2025 by UVVM steering group. All rights reserved.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -1,6 +1,6 @@
-#######################################################################################################################
+##################################################################################################################################
 Bitvis VIP GMII
-#######################################################################################################################
+##################################################################################################################################
 
 .. _vip_gmii_bfm:
 
@@ -8,7 +8,7 @@ Bitvis VIP GMII
 BFM
 **********************************************************************************************************************************
 
-See `gmii_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_gmii/doc/gmii_bfm_QuickRef.pdf>`_
+See `gmii_bfm_QuickRef.pdf <../../../bitvis_vip_gmii/doc/gmii_bfm_QuickRef.pdf>`_
 
 .. _vip_gmii_vvc:
 
@@ -16,6 +16,6 @@ See `gmii_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_
 VVC
 **********************************************************************************************************************************
 
-See `gmii_vvc_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_gmii/doc/gmii_vvc_QuickRef.pdf>`_
+See `gmii_vvc_QuickRef.pdf <../../../bitvis_vip_gmii/doc/gmii_vvc_QuickRef.pdf>`_
 
 .. include:: rst_snippets/ip_disclaimer.rst

@@ -21,7 +21,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Enabling all alert levels in entire hierarchy. Minor alerts for all nodes triggered.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing NOTE with fourth_node
 UVVM: 
@@ -44,7 +43,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Expecting no major or minor alerts
 UVVM:      
 UVVM:      ====================================================================================================================================================================
@@ -61,7 +59,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing TB_NOTE with third_node
 UVVM: 
 UVVM: ***  TB_NOTE #1  ***
@@ -83,7 +80,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Expecting no major or minor alerts
 UVVM:      
 UVVM:      ====================================================================================================================================================================
@@ -100,7 +96,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing WARNING with second_node
 UVVM: 
 UVVM: ***  WARNING #1  ***
@@ -122,7 +117,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Expecting no major or minor alerts
 UVVM:      
 UVVM:      ====================================================================================================================================================================
@@ -139,7 +133,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing TB_WARNING with first_node
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
@@ -161,7 +154,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Expecting no major or minor alerts
 UVVM:      
 UVVM:      ====================================================================================================================================================================
@@ -178,7 +170,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing MANUAL_CHECK with TB seq
 UVVM: 
 UVVM: ***  MANUAL_CHECK #1  ***
@@ -200,7 +191,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Expecting no major or minor alerts
 UVVM:      
 UVVM:      ====================================================================================================================================================================
@@ -217,7 +207,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      *** INTERMEDIATE SUMMARY OF ALL ALERTS ***

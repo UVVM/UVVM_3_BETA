@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Utility Library &mdash; UVVM  documentation</title>
@@ -16,7 +16,7 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -127,7 +127,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#gen-pulse">gen_pulse()</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#synchronisation">Synchronisation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#synchronization">Synchronization</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#block-flag">block_flag()</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#unblock-flag">unblock_flag()</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#await-unblock-flag">await_unblock_flag()</a></li>
@@ -186,6 +186,18 @@
 <li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-report-alert-counters">t_report_alert_counters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-report-sb">t_report_sb</a></li>
 <li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-report-vvc">t_report_vvc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-byte-endianness">t_byte_endianness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-test-status">t_test_status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-extent-tickoff">t_extent_tickoff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-action-when-transfer-is-done">t_action_when_transfer_is_done</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-action-between-words">t_action_between_words</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-when-to-start-transfer">t_when_to_start_transfer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-stop-bits">t_stop_bits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-parity">t_parity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-necessary-condition">t_necessary_condition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-pos-ack-kind">t_pos_ack_kind</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-accept-all-zeros">t_accept_all_zeros</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types_pkg.html#t-association-list-status">t_association_list_status</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#message-ids">Message IDs</a></li>
@@ -212,15 +224,16 @@
 <li class="toctree-l1"><a class="reference internal" href="rand_pkg_overview.html">Enhanced Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="func_cov_pkg_overview.html">Functional Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vvc_framework.html">VVC Framework</a></li>
-<li class="toctree-l1"><a class="reference internal" href="protected_types.html">Protected types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fifo_collection.html">UVVM FIFO Collection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="generic_queue.html">UVVM Generic Queue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon MM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="association_list.html">UVVM Association List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI-Lite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI-Stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI4-Lite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI4-Stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_clock_generator.html">Bitvis VIP Clock Generator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_error_injection.html">Bitvis VIP Error Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_ethernet.html">Bitvis VIP Ethernet</a></li>
@@ -234,8 +247,9 @@
 <li class="toctree-l1"><a class="reference internal" href="vip_spec_cov.html">Bitvis VIP Specification Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_spi.html">Bitvis VIP SPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 
         </div>
@@ -714,14 +728,15 @@ value is shared_msg_id_panel.</p></td>
 <section id="await-value">
 <h4>await_value()<a class="headerlink" href="#await-value" title="Link to this heading"></a></h4>
 <p>Waits until the target signal equals the exp signal, or times out after max_time. An alert is asserted if the signal does not
-equal the expected value between min_time and max_time. <em>Note</em> that if the value changes to the expected value at exactly max_time,
-the timeout gets precedence. This procedure is a fallthrough procedure when <code class="docutils literal notranslate"><span class="pre">min_time</span> <span class="pre">=</span> <span class="pre">0</span> <span class="pre">ns</span></code>, and will not require a change.
-For a change to be required, see await_change_to_value() under.</p>
+equal the expected value between min_time and max_time, or if the target equals exp before min_time.
+<em>Note</em> that if the value changes to the expected value at exactly max_time, the timeout gets precedence.
+This procedure is a fall-through procedure when <code class="docutils literal notranslate"><span class="pre">min_time</span> <span class="pre">=</span> <span class="pre">0</span> <span class="pre">ns</span></code>, and will not require a change. For a change to be required.
+see await_change_to_value() under.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">sl</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">sl</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="n">match_strictness</span><span class="p">],</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
-<span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">slv</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">slv</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="n">match_strictness</span><span class="p">],</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
+<span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">slv</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">slv</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="n">match_strictness</span><span class="p">],</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">radix</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]]]])</span>
 <span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">bool</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">bool</span><span class="p">),</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
-<span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">u</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">u</span><span class="p">),</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
-<span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">s</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="p">),</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
+<span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">u</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">u</span><span class="p">),</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">radix</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]]]])</span>
+<span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">s</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">s</span><span class="p">),</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">radix</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]]]])</span>
 <span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">int</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">int</span><span class="p">),</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
 <span class="n">await_value</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">real</span><span class="p">),</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">real</span><span class="p">),</span><span class="w"> </span><span class="n">min_time</span><span class="p">,</span><span class="w"> </span><span class="n">max_time</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
 </pre></div>
@@ -785,6 +800,20 @@ For a change to be required, see await_change_to_value() under.</p>
 <td><p>string</p></td>
 <td><p>Describes the scope from which the log/alert originates.
 Default value is C_TB_SCOPE_DEFAULT.</p></td>
+</tr>
+<tr class="row-even"><td><p>constant</p></td>
+<td><p>radix</p></td>
+<td><p>in</p></td>
+<td><p><a class="reference internal" href="types_pkg.html#t-radix"><span class="std std-ref">t_radix</span></a></p></td>
+<td><p>Controls how the vector is represented in the log.
+Default value is HEX_BIN_IF_INVALID.</p></td>
+</tr>
+<tr class="row-odd"><td><p>constant</p></td>
+<td><p>format</p></td>
+<td><p>in</p></td>
+<td><p><a class="reference internal" href="types_pkg.html#t-format-zeros"><span class="std std-ref">t_format_zeros</span></a></p></td>
+<td><p>Controls how the vector is formatted in the log. Default
+value is KEEP_LEADING_0.</p></td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
 <td><p>msg_id</p></td>
@@ -928,7 +957,7 @@ unsigned.</p></td>
 </section>
 <section id="await-stable">
 <h4>await_stable()<a class="headerlink" href="#await-stable" title="Link to this heading"></a></h4>
-<p>Wait until the target signal has been stable for at least stable_req. Report an error if this does not occurr within the time
+<p>Wait until the target signal has been stable for at least stable_req. Report an error if this does not occur within the time
 specified by timeout. <em>Note</em> that <strong>stable</strong> refers to that the signal has not had an event (i.e. not changed value).</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">await_stable</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">bool</span><span class="p">),</span><span class="w"> </span><span class="n">stable_req</span><span class="p">,</span><span class="w"> </span><span class="n">stable_req_from</span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="p">,</span><span class="w"> </span><span class="n">timeout_from</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
 <span class="n">await_stable</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">sl</span><span class="p">),</span><span class="w"> </span><span class="n">stable_req</span><span class="p">,</span><span class="w"> </span><span class="n">stable_req_from</span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="p">,</span><span class="w"> </span><span class="n">timeout_from</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">alert_level</span><span class="p">],</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg_id_panel</span><span class="p">]]])</span>
@@ -2257,7 +2286,7 @@ Default value is C_TB_SCOPE_DEFAULT.</p></td>
 <span class="kt">string</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">to_string</span><span class="p">(</span><span class="n">val</span><span class="p">(</span><span class="n">t_natural_vector</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="n">radix</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">prefix</span><span class="p">]]])</span>
 <span class="kt">string</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">to_string</span><span class="p">(</span><span class="n">val</span><span class="p">(</span><span class="n">real_vector</span><span class="p">))</span>
 <span class="kt">string</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">to_string</span><span class="p">(</span><span class="n">val</span><span class="p">(</span><span class="n">time_vector</span><span class="p">))</span>
-<span class="kt">string</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">to_string</span><span class="p">(</span><span class="n">val</span><span class="p">(</span><span class="kt">string</span><span class="p">))</span><span class="w"> </span><span class="c1">-- Removes non printable ascii characters</span>
+<span class="kt">string</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">to_string</span><span class="p">(</span><span class="n">val</span><span class="p">(</span><span class="kt">string</span><span class="p">))</span><span class="w"> </span><span class="c1">-- Removes non printable ASCII characters</span>
 </pre></div>
 </div>
 <table class="docutils align-default">
@@ -2356,13 +2385,11 @@ is different depending on the overload.</p></td>
 <td><p>ascii_allow</p></td>
 <td><p>in</p></td>
 <td><p><a class="reference internal" href="types_pkg.html#t-ascii-allow"><span class="std std-ref">t_ascii_allow</span></a></p></td>
-<td><div class="line-block">
-<div class="line">Decide what to do with invisible control characters.</div>
-<div class="line">If ALLOW_ALL: return the character for any ascii_pos.</div>
-<div class="line">If ALLOW_PRINTABLE_ONLY: return the character only if
-it is printable.</div>
-<div class="line">Default value is ALLOW_ALL.</div>
-</div>
+<td><p>Decide what to do with invisible control characters.</p>
+<p>If ALLOW_ALL: return the character for any ascii_pos.</p>
+<p>If ALLOW_PRINTABLE_ONLY: return the character only if
+it is printable.</p>
+<p>Default value is ALLOW_ALL.</p>
 </td>
 </tr>
 </tbody>
@@ -2768,7 +2795,7 @@ replaced by the exchange character.</p>
 </section>
 <section id="pos-of-leftmost-non-zero">
 <h4>pos_of_leftmost_non_zero()<a class="headerlink" href="#pos-of-leftmost-non-zero" title="Link to this heading"></a></h4>
-<p>Returns the position of the leftmost character, which is not zero or whitespace, in the string. If not found, returns
+<p>Returns the position of the leftmost character, which is not zero or white-space, in the string. If not found, returns
 ‘result_if_not_found’.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="kt">natural</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">pos_of_leftmost_non_zero</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">result_if_not_found</span><span class="p">])</span>
 </pre></div>
@@ -2845,7 +2872,7 @@ replaced by the exchange character.</p>
 </section>
 <section id="pos-of-rightmost-non-whitespace">
 <h4>pos_of_rightmost_non_whitespace()<a class="headerlink" href="#pos-of-rightmost-non-whitespace" title="Link to this heading"></a></h4>
-<p>Returns the position of the rightmost character, which is not whitespace, in the string. If not found, returns ‘result_if_not_found’.</p>
+<p>Returns the position of the rightmost character, which is not white-space, in the string. If not found, returns ‘result_if_not_found’.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="kt">natural</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">pos_of_rightmost_non_whitespace</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">result_if_not_found</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -3185,14 +3212,12 @@ falling edge.</p>
 <td><p>blocking_mode</p></td>
 <td><p>in</p></td>
 <td><p><a class="reference internal" href="types_pkg.html#t-blocking-mode"><span class="std std-ref">t_blocking_mode</span></a></p></td>
-<td><div class="line-block">
-<div class="line">When BLOCKING, the procedure blocks the caller until
-the pulse is done.</div>
-<div class="line">When NON_BLOCKING, the procedure starts the pulse and
+<td><p>When BLOCKING, the procedure blocks the caller until
+the pulse is done.</p>
+<p>When NON_BLOCKING, the procedure starts the pulse and
 schedules the end of the pulse so that the caller can
-continue immediately.</div>
-<div class="line">Default value is BLOCKING.</div>
-</div>
+continue immediately.</p>
+<p>Default value is BLOCKING.</p>
 </td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
@@ -3232,8 +3257,8 @@ value is shared_msg_id_panel.</p></td>
 </div>
 </section>
 </section>
-<section id="synchronisation">
-<h3>Synchronisation<a class="headerlink" href="#synchronisation" title="Link to this heading"></a></h3>
+<section id="synchronization">
+<h3>Synchronization<a class="headerlink" href="#synchronization" title="Link to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>It is recommended to use a constant for flag_name to avoid typing errors in methods block_flag(), unblock_flag() and
@@ -3241,7 +3266,7 @@ await_unblock_flag().</p>
 </div>
 <section id="block-flag">
 <h4>block_flag()<a class="headerlink" href="#block-flag" title="Link to this heading"></a></h4>
-<p>Blocks a flag to allow synchronisation between processes. Adds a new blocked flag if it does not already exist. Maximum number of
+<p>Blocks a flag to allow synchronization between processes. Adds a new blocked flag if it does not already exist. Maximum number of
 flags can be modified in adaptations_pkg. Generates an alert with already_blocked_severity if the flag is already blocked.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">block_flag</span><span class="p">(</span><span class="n">flag_name</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">already_blocked_severity</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">]])</span>
 </pre></div>
@@ -3410,7 +3435,7 @@ Default value is C_TB_SCOPE_DEFAULT.</p></td>
 </section>
 <section id="await-barrier">
 <span id="id6"></span><h4>await_barrier()<a class="headerlink" href="#await-barrier" title="Link to this heading"></a></h4>
-<p>The procedure can be used to synchronise between several sequencers. When the procedure is called, it waits for all sequencers
+<p>The procedure can be used to synchronize between several sequencers. When the procedure is called, it waits for all sequencers
 using the same barrier_signal to reach their call of await_barrier().</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">await_barrier</span><span class="p">(</span><span class="n">barrier_signal</span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">timeout_severity</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">]])</span>
 </pre></div>
@@ -3512,13 +3537,11 @@ Default value is C_TB_SCOPE_DEFAULT.</p></td>
 <td><p>mode</p></td>
 <td><p>in</p></td>
 <td><p><a class="reference internal" href="types_pkg.html#t-normalization-mode"><span class="std std-ref">t_normalization_mode</span></a></p></td>
-<td><div class="line-block">
-<div class="line">Used for sanity checks, it can be one of:</div>
-<div class="line">ALLOW_WIDER : Allow only value’length &gt;= target’length</div>
-<div class="line">ALLOW_NARROWER : Allow only value’length &lt;= target’legth</div>
-<div class="line">ALLOW_WIDER_NARROWER : Allow both of the above</div>
-<div class="line">ALLOW_EXACT_ONLY: Allow only value’length = target’legth</div>
-</div>
+<td><p>Used for sanity checks, it can be one of:</p>
+<p>ALLOW_WIDER : Allow only value’length &gt;= target’length</p>
+<p>ALLOW_NARROWER : Allow only value’length &lt;= target’legth</p>
+<p>ALLOW_WIDER_NARROWER : Allow both of the above</p>
+<p>ALLOW_EXACT_ONLY: Allow only value’length = target’legth</p>
 </td>
 </tr>
 <tr class="row-odd"><td><p>constant</p></td>
@@ -3726,12 +3749,10 @@ the next rising_edge and afterwards until time_to_edge before rising_edge.</p>
 <td><p>bfm_sync</p></td>
 <td><p>in</p></td>
 <td><p><a class="reference internal" href="types_pkg.html#t-bfm-sync"><span class="std std-ref">t_bfm_sync</span></a></p></td>
-<td><div class="line-block">
-<div class="line">SYNC_ON_CLOCK_ONLY: waits until the falling edge of
-the clk signal.</div>
-<div class="line">SYNC_WITH_SETUP_AND_HOLD: waits until the setup time
-before the clock’s rising_edge</div>
-</div>
+<td><p>SYNC_ON_CLOCK_ONLY: waits until the falling edge of
+the clk signal.</p>
+<p>SYNC_WITH_SETUP_AND_HOLD: waits until the setup time
+before the clock’s rising_edge</p>
 </td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
@@ -3793,13 +3814,11 @@ consecutive to be able to calculate the correct clock period.</p>
 <td><p>bfm_sync</p></td>
 <td><p>in</p></td>
 <td><p><a class="reference internal" href="types_pkg.html#t-bfm-sync"><span class="std std-ref">t_bfm_sync</span></a></p></td>
-<td><div class="line-block">
-<div class="line">SYNC_ON_CLOCK_ONLY: waits until one quarter of the
+<td><p>SYNC_ON_CLOCK_ONLY: waits until one quarter of the
 clock period (measured with the falling and rising
-edges) after the clock’s rising_edge.</div>
-<div class="line">SYNC_WITH_SETUP_AND_HOLD: waits until the hold time
-after the clock’s rising_edge.</div>
-</div>
+edges) after the clock’s rising_edge.</p>
+<p>SYNC_WITH_SETUP_AND_HOLD: waits until the hold time
+after the clock’s rising_edge.</p>
 </td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
@@ -3996,7 +4015,7 @@ original timeout.</p></td>
 </section>
 <section id="reinitialize-watchdog">
 <h4>reinitialize_watchdog()<a class="headerlink" href="#reinitialize-watchdog" title="Link to this heading"></a></h4>
-<p>Reinitializes the watchdog timer with a new timeout.</p>
+<p>Re-initializes the watchdog timer with a new timeout.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">reinitialize_watchdog</span><span class="p">(</span><span class="n">watchdog_ctrl</span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -4096,6 +4115,18 @@ This should normally be called at the end of the simulation.</p>
 <li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-report-alert-counters">t_report_alert_counters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-report-sb">t_report_sb</a></li>
 <li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-report-vvc">t_report_vvc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-byte-endianness">t_byte_endianness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-test-status">t_test_status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-extent-tickoff">t_extent_tickoff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-action-when-transfer-is-done">t_action_when_transfer_is_done</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-action-between-words">t_action_between_words</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-when-to-start-transfer">t_when_to_start_transfer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-stop-bits">t_stop_bits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-parity">t_parity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-necessary-condition">t_necessary_condition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-pos-ack-kind">t_pos_ack_kind</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-accept-all-zeros">t_accept_all_zeros</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types_pkg.html#t-association-list-status">t_association_list_status</a></li>
 </ul>
 </div>
 </section>
@@ -4112,7 +4143,7 @@ This should normally be called at the end of the simulation.</p>
 <tr class="row-even"><td colspan="2"><p>– <strong>Bitvis utility methods</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p>NO_ID</p></td>
-<td><p>Used as default prior to setting actual ID when transfering ID as a field in a record</p></td>
+<td><p>Used as default prior to setting actual ID when transferring ID as a field in a record</p></td>
 </tr>
 <tr class="row-even"><td><p>ID_UTIL_BURIED</p></td>
 <td><p>Used for buried log messages where msg and scope cannot be modified from outside</p></td>
@@ -4142,7 +4173,7 @@ This should normally be called at the end of the simulation.</p>
 <td><p>Used for logging when a gen_pulse procedure starts pulsing a signal.</p></td>
 </tr>
 <tr class="row-odd"><td><p>ID_BLOCKING</p></td>
-<td><p>Used for logging when using synchronisation flags</p></td>
+<td><p>Used for logging when using synchronization flags</p></td>
 </tr>
 <tr class="row-even"><td><p>ID_WATCHDOG</p></td>
 <td><p>Used for logging the activity of the watchdog</p></td>
@@ -4250,7 +4281,7 @@ generation of random stimuli</p></td>
 <td><p>Notify that a packet checksum has been transmitted or received</p></td>
 </tr>
 <tr class="row-odd"><td><p>ID_PACKET_GAP</p></td>
-<td><p>Notify that an interpacket gap is in process</p></td>
+<td><p>Notify that an inter-packet gap is in process</p></td>
 </tr>
 <tr class="row-even"><td><p>ID_PACKET_PAYLOAD</p></td>
 <td><p>Notify that a packet payload has been transmitted or received</p></td>
@@ -4420,7 +4451,7 @@ summary (total summary will be correct).</p></li>
 <div class="line">In UVVM mostly use the scope to describe components, e.g. VVCs. It can also be smaller structures, but it has to have its own
 sequencer. A good way to set up the hierarchy is to let every scope register themselves with the default parent scope, and then
 in addition make every parent register each of its children. This is because the child scope doesn’t have to have the same
-parent scope in all testbenches/testharnesses, i.e. the child doesn’t know its parent.</div>
+parent scope in all testbenches/test-harnesses, i.e. the child doesn’t know its parent.</div>
 </div>
 <ul class="simple">
 <li><p>In the child, call add_to_alert_hierarchy(&lt;child scope&gt;). This will add the scope of the child to the hierarchy with the default
@@ -4679,10 +4710,10 @@ constant VOID : t_void
 </section>
 </section>
 <section id="adaptations-package">
-<h2>Adaptations package<a class="headerlink" href="#adaptations-package" title="Link to this heading"></a></h2>
-<p>The adaptations_pkg.vhd is intended for local modifications to library behaviour and log layout. This way only one file needs to
+<span id="adaptations-pkg"></span><h2>Adaptations package<a class="headerlink" href="#adaptations-package" title="Link to this heading"></a></h2>
+<p>The adaptations_pkg.vhd is intended for local modifications to library behavior and log layout. This way only one file needs to
 merge when a new version of the library is released. This package may of course also be used to set up a company or project
-specific behaviour and layout.</p>
+specific behavior and layout.</p>
 <p>The package has constants for customizing functionality such as:</p>
 <blockquote>
 <div><ul class="simple">
@@ -4746,7 +4777,7 @@ msg_id ID_UVVM_SEND_CMD will be shown</p></td>
 </section>
 <section id="compilation">
 <h2>Compilation<a class="headerlink" href="#compilation" title="Link to this heading"></a></h2>
-<p>The UVVM Utility Library must be compiled with VHDL 2008.</p>
+<p>The UVVM Utility Library must be compiled with VHDL-2008 or newer.</p>
 <table class="docutils align-default" id="id11">
 <caption><span class="caption-text">Compile order for the UVVM Utility Library</span><a class="headerlink" href="#id11" title="Link to this table"></a></caption>
 <thead>
@@ -4840,18 +4871,18 @@ use of protected types and interface objects not being globally static. <strong>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Disclaimer: This IP and any part thereof are provided “as is”, without warranty of any kind, express or implied, including but
-not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the
+not limited to the warranties of merchantability, fitness for a particular purpose and non-infringement. In no event shall the
 authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or
 otherwise, arising from, out of or in connection with this IP.</p>
 </div>
 <p class="rubric">Footnotes</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="f1" role="note">
+<aside class="footnote brackets" id="f1" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id5">2</a>)</span>
-<p>IEEE = Method is native for VHDL2008 (method is listed here for completeness).</p>
+<p>IEEE = Method is native for VHDL-2008 (method is listed here for completeness).</p>
 </aside>
-<aside class="footnote brackets" id="f2" role="note">
+<aside class="footnote brackets" id="f2" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">2</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://www.aldec.com/en/support/resources/multimedia/webinars/1673">https://www.aldec.com/en/support/resources/multimedia/webinars/1673</a></p>
 </aside>
@@ -4870,7 +4901,7 @@ otherwise, arising from, out of or in connection with this IP.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, UVVM.</p>
+    <p>&#169; Copyright 2025 by UVVM steering group. All rights reserved.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -14,6 +14,10 @@
 -- Description : See library quick reference (under 'doc') and README-file(s)
 ---------------------------------------------------------------------------------------------
 
+---------------------------------------------------------------------------------------------
+-- Description : See library quick reference (under 'doc') and README-file(s)
+---------------------------------------------------------------------------------------------
+
 --================================================================================================================================
 --  Support package
 --================================================================================================================================
@@ -76,6 +80,7 @@ end package vvc_methods_support_pkg;
 library uvvm_util;
 use work.vvc_methods_support_pkg.all;
 use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
 
 package protected_vvc_status_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
@@ -90,6 +95,7 @@ package protected_vvc_status_pkg is new uvvm_util.protected_generic_types_pkg
 library uvvm_util;
 use work.vvc_methods_support_pkg.all;
 use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
 
 package protected_vvc_config_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
@@ -105,6 +111,7 @@ library uvvm_util;
 use uvvm_util.types_pkg.all;
 use uvvm_util.adaptations_pkg.all;
 use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
 
 package protected_msg_id_panel_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
@@ -127,6 +134,8 @@ library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 
 use work.wishbone_bfm_pkg.all;
+use work.vvc_transaction_pkg.all;
+use work.protected_transaction_group_pkg.all;
 use work.vvc_cmd_pkg.all;
 use work.vvc_cmd_shared_variables_pkg.all;
 use work.td_target_support_pkg.all;
@@ -194,6 +203,38 @@ package vvc_methods_pkg is
     constant alert_level         : in t_alert_level  := ERROR;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
     constant parent_msg_id_panel : in t_msg_id_panel := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
+  );
+
+  --==========================================================================================
+  -- Transaction info methods
+  --==========================================================================================
+  procedure set_global_vvc_transaction_info (
+    signal   vvc_transaction_info_trigger : inout std_logic;
+    variable vvc_transaction_info_group   : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
+    constant instance_idx                 : in natural;
+    constant channel                      : in t_channel;
+    constant vvc_cmd                      : in t_vvc_cmd_record;
+    constant vvc_config                   : in t_vvc_config;
+    constant transaction_status           : in t_transaction_status;
+    constant scope                        : in string := C_VVC_CMD_SCOPE_DEFAULT
+  );
+
+  procedure set_global_vvc_transaction_info (
+    signal   vvc_transaction_info_trigger : inout std_logic;
+    variable vvc_transaction_info_group   : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
+    constant instance_idx                 : in natural;
+    constant channel                      : in t_channel;
+    constant vvc_cmd                      : in t_vvc_cmd_record;
+    constant vvc_result                   : in t_vvc_result;
+    constant transaction_status           : in t_transaction_status;
+    constant scope                        : in string := C_VVC_CMD_SCOPE_DEFAULT
+  );
+
+  procedure reset_vvc_transaction_info (
+    variable vvc_transaction_info_group : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
+    constant instance_idx               : in natural;
+    constant channel                    : in t_channel;
+    constant vvc_cmd                    : in t_vvc_cmd_record
   );
 
 end package vvc_methods_pkg;
@@ -321,5 +362,81 @@ package body vvc_methods_pkg is
     end if;
     send_command_to_vvc(VVCT, std.env.resolution_limit, scope, v_msg_id_panel);
   end procedure;
+
+  --==========================================================================================
+  -- Transaction info methods
+  --==========================================================================================
+  procedure set_global_vvc_transaction_info(
+    signal   vvc_transaction_info_trigger : inout std_logic;
+    variable vvc_transaction_info_group   : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
+    constant instance_idx                 : in natural;
+    constant channel                      : in t_channel;
+    constant vvc_cmd                      : in t_vvc_cmd_record;
+    constant vvc_config                   : in t_vvc_config;
+    constant transaction_status           : in t_transaction_status;
+    constant scope                        : in string := C_VVC_CMD_SCOPE_DEFAULT) is
+    variable v_transaction_info_group : t_transaction_group := vvc_transaction_info_group.get(instance_idx, channel);
+  begin
+    case vvc_cmd.operation is
+      when WRITE | READ | CHECK =>
+        v_transaction_info_group.bt.operation          := vvc_cmd.operation;
+        v_transaction_info_group.bt.addr               := vvc_cmd.addr;
+        v_transaction_info_group.bt.data               := vvc_cmd.data;
+        v_transaction_info_group.bt.vvc_meta.msg       := vvc_cmd.msg;
+        v_transaction_info_group.bt.vvc_meta.cmd_idx   := vvc_cmd.cmd_idx;
+        v_transaction_info_group.bt.transaction_status := transaction_status;
+        vvc_transaction_info_group.set(v_transaction_info_group, instance_idx, channel);
+        gen_pulse(vvc_transaction_info_trigger, 0 ns, "pulsing global vvc_transaction_info trigger", scope, ID_NEVER);
+
+      when others =>
+        alert(TB_ERROR, "VVC operation not recognized", scope);
+    end case;
+
+    wait for 0 ns;
+  end procedure set_global_vvc_transaction_info;
+
+  procedure set_global_vvc_transaction_info(
+    signal   vvc_transaction_info_trigger : inout std_logic;
+    variable vvc_transaction_info_group   : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
+    constant instance_idx                 : in natural;
+    constant channel                      : in t_channel;
+    constant vvc_cmd                      : in t_vvc_cmd_record;
+    constant vvc_result                   : in t_vvc_result;
+    constant transaction_status           : in t_transaction_status;
+    constant scope                        : in string := C_VVC_CMD_SCOPE_DEFAULT) is
+    variable v_transaction_info_group : t_transaction_group := vvc_transaction_info_group.get(instance_idx, channel);
+  begin
+    case vvc_cmd.operation is
+      when READ =>
+        v_transaction_info_group.bt.data               := vvc_result;
+        v_transaction_info_group.bt.transaction_status := transaction_status;
+        vvc_transaction_info_group.set(v_transaction_info_group, instance_idx, channel);
+        gen_pulse(vvc_transaction_info_trigger, 0 ns, "pulsing global vvc_transaction_info trigger", scope, ID_NEVER);
+
+      when others =>
+        alert(TB_ERROR, "VVC operation does not update vvc_result", scope);
+    end case;
+
+    wait for 0 ns;
+  end procedure set_global_vvc_transaction_info;
+
+  procedure reset_vvc_transaction_info(
+    variable vvc_transaction_info_group : inout work.protected_transaction_group_pkg.t_generic_array; -- v3 t_transaction_group;
+    constant instance_idx               : in natural;
+    constant channel                    : in t_channel;
+    constant vvc_cmd                    : in t_vvc_cmd_record) is
+    variable v_transaction_info_group : t_transaction_group := vvc_transaction_info_group.get(instance_idx, channel);
+  begin
+    case vvc_cmd.operation is
+      when WRITE | READ | CHECK =>
+        v_transaction_info_group.bt := C_BASE_TRANSACTION_SET_DEFAULT;
+
+      when others =>
+        null;
+    end case;
+    vvc_transaction_info_group.set(v_transaction_info_group, instance_idx, channel);
+
+    wait for 0 ns;
+  end procedure reset_vvc_transaction_info;
 
 end package body vvc_methods_pkg;

@@ -1,6 +1,6 @@
-#######################################################################################################################
-Bitvis VIP AXI
-#######################################################################################################################
+##################################################################################################################################
+Bitvis VIP AXI4
+##################################################################################################################################
 
 .. _vip_axi_bfm:
 
@@ -8,7 +8,7 @@ Bitvis VIP AXI
 BFM
 **********************************************************************************************************************************
 
-See `axi_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_axi/doc/axi_bfm_QuickRef.pdf>`_
+See `axi_bfm_QuickRef.pdf <../../../bitvis_vip_axi/doc/axi_bfm_QuickRef.pdf>`_
 
 .. _vip_axi_vvc:
 
@@ -16,6 +16,6 @@ See `axi_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_a
 VVC
 **********************************************************************************************************************************
 
-See `axi_vvc_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_axi/doc/axi_vvc_QuickRef.pdf>`_
+See `axi_vvc_QuickRef.pdf <../../../bitvis_vip_axi/doc/axi_vvc_QuickRef.pdf>`_
 
 .. include:: rst_snippets/ip_disclaimer.rst

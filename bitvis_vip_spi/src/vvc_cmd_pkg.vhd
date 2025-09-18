@@ -39,8 +39,8 @@ package vvc_cmd_pkg is
   --==========================================================================================
   type t_vvc_cmd_record is record
     -- VVC dedicated fields
-    data                         : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
-    data_exp                     : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
+    data                         : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
+    data_exp                     : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
     num_words                    : natural;
     word_length                  : natural;
     when_to_start_transfer       : t_when_to_start_transfer;

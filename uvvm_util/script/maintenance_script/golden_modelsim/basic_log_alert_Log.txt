@@ -38,6 +38,7 @@ UVVM:                ID_FUNC_COV_RAND             : DISABLED
 UVVM:                ID_FUNC_COV_SAMPLE           : DISABLED
 UVVM:                ID_FUNC_COV_CONFIG           : DISABLED
 UVVM:                ID_POS_ACK                   : ENABLED
+UVVM:                ID_UVVM_ASSERTION            : ENABLED
 UVVM:                ID_LOG_HDR                   : ENABLED
 UVVM:                ID_LOG_HDR_LARGE             : ENABLED
 UVVM:                ID_LOG_HDR_XL                : ENABLED

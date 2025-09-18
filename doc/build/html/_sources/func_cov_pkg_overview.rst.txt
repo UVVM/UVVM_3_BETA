@@ -26,7 +26,6 @@ compliance with requirements.
 
 Coverpoints and bins
 =================================================================================================================================
-
 Each point of the design that we wish to test is referred to as a *coverpoint*. A coverpoint can for instance be an input port, 
 output port or an internal register.
 
@@ -61,6 +60,7 @@ how many times the coverpoint has been sampled with the corresponding values of 
 Sometimes we want to monitor the values of multiple points of our design at the same time. In this case, we can create a coverpoint 
 containing a *cross*. A cross is a type of container that can hold a combination of multiple bins or coverpoints, where every 
 combination of the values covered by the crossed bins or coverpoints must have been sampled during testing for the cross to be covered. 
+
 
 In Figure 2, we can see a cross named *src_addr_x_dst_addr* which contains eight different bins. Each bin contains different 
 combinations of values for *src_addr* and *dst_addr*.
@@ -112,7 +112,6 @@ hit coverage, the coverpoint will have full coverage.
     rand_addr_int := my_coverpoint.rand(NO_SAMPLE_COV);
     rand_addr     <= to_unsigned(rand_addr_int,rand_addr'length);
 
-
 **********************************************************************************************************************************
 Getting started
 **********************************************************************************************************************************
@@ -155,7 +154,6 @@ type *t_coverpoint* and call the ``add_bins()`` and ``sample_coverage()`` proced
 **********************************************************************************************************************************
 Creating and adding bins
 **********************************************************************************************************************************
-
 Bins are generated using one of the bin generation functions defined in the functional coverage package, and added to a coverpoint 
 using the ``add_bins()`` procedure.
 This is necessary for several reasons: better readability, avoiding conflicts with overloads which have similar parameters and 
@@ -235,8 +233,10 @@ The bin functions may be concatenated to add several bins at once.
 
 .. note::
 
-    The maximum number of bins which can be added at once using a single ``add_bins()`` call is limited by C_FC_MAX_NUM_NEW_BINS 
-    defined in adaptations_pkg.
+    * The maximum number of bins which can be added at once using a single ``add_bins()`` call is limited by C_FC_MAX_NUM_NEW_BINS 
+      defined in adaptations_pkg.
+    * If many bins are added at once using concatenation, there will be a temporary increase in memory usage due to the big array
+      being created to hold all the bins. However, after ``add_bins()`` has finished, the memory will be released.
 
 Ignore bins
 ==================================================================================================================================
@@ -340,18 +340,44 @@ when the list becomes full. These constants are defined in adaptations_pkg.
 Moreover, the procedures ``set_num_allocated_bins()`` and ``set_num_allocated_bins_increment()`` can be used to reconfigure a 
 coverpoint's respective values.
 
+.. _bin_name:
+
 Bin name
 ==================================================================================================================================
-Bins can be named by using the optional parameter *bin_name* in the ``add_bins()`` procedure. If no name is given to the bin, a 
-default name will be automatically given. Having a bin name is useful when reading the reports.
+Bins can be named by using the optional parameter *bin_name* in the ``add_bins()`` and ``add_cross()`` procedures. If no name is
+given, a default name with an index appended will be given. The default bin name is *bin_<idx>* and is set by the
+C_FC_DEFAULT_BIN_NAME constant in the adaptations_pkg. If multiple bins are given to ``add_bins()`` (by using ``bin_range()``,
+``bin_vector()``, or concatenation), or if a call to ``add_cross()`` results in multiple cross bins, the bin name will be indexed
+as shown in the examples below. All bin name indices starts from 1.
+
+A warning is issued when duplicate bin names are detected. This warning can be turned off by setting the
+C_FC_BIN_NAME_DUPLICATE_WARNING constant in the adaptations_pkg.vhd to ``false``.
+
+Having bin names is useful when reading the reports.
 
 .. code-block::
 
-    add_bins(bin, [bin_name])
+    coverpoint_1.add_bins(bin(0));                        -- bin name: bin_1
+    coverpoint_1.add_bins(bin(255), "bin_max");           -- bin name: bin_max
+    coverpoint_1.add_bins(bin_range(0, 32, 4), "addr");   -- bin names: addr[1], addr[2], addr[3], addr[4]
+    coverpoint_1.add_bins(bin(0) & bin(100), "two_bins"); -- bin names: two_bins[1], two_bins[2]
+    coverpoint_1.add_bins(bin(1000));                     -- bin name: bin_2
+    coverpoint_1.add_bins(bin_range(0, 100, 4));          -- bin names: bin_3[1], bin_3[2], bin_3[3], bin_3[4]
 
-    my_coverpoint.add_bins(bin(255), "bin_max");
+    coverpoint_2.add_cross(bin(0), bin(10));                                    -- bin name: bin_1
+    coverpoint_2.add_cross(bin(0), bin(100), "cross_bin_a");                    -- bin name: cross_bin_a
+    coverpoint_2.add_cross(bin(0), bin(50), bin(100), "cross_bin_b");           -- bin name: cross_bin_b
+    coverpoint_2.add_cross(bin(0) & bin(5) & bin(10), bin(100), "cross_bin_c"); -- bin names: cross_bin_c[1], cross_bin_c[2], cross_bin_c[3]
+    coverpoint_2.add_cross(bin_range(0, 10, 3), bin(100), "cross_bin_d");       -- bin names: cross_bin_d[1], cross_bin_d[2], cross_bin_d[3]
+    coverpoint_2.add_cross(bin(10), bin(10000));                                -- bin name: bin_2
+    coverpoint_2.add_cross(bin(5), bin_range(0, 100, 3));                       -- bin names: bin_3[1], bin_3[2], bin_3[3]
 
-The maximum length of the name is determined by C_FC_MAX_NAME_LENGTH defined in adaptations_pkg.
+The maximum length of the name is determined by C_FC_MAX_NAME_LENGTH defined in adaptations_pkg. Longer names will be truncated
+without warning.
+
+.. note::
+
+   It is recommended not to use bin names that may be generated automatically as input to the ``add_bins()`` and ``add_cross()`` procedures.
 
 Minimum coverage
 ==================================================================================================================================
@@ -393,7 +419,6 @@ Crosses are made using the ``add_cross()`` procedure and can be made either betw
 
 Crossing bins
 ==================================================================================================================================
-
 This is a "faster" way of creating the crosses and useful when we need specific combinations of values. A cross between bins is 
 added to a coverpoint by calling the ``add_cross()`` procedure in combination with :ref:`bin functions <bin_functions>`. 
 The ``add_cross()`` overloads support up to 5 crossed elements. 
@@ -442,7 +467,6 @@ The bin functions may also be concatenated to add several bins at once.
 
 Crossing coverpoints
 ==================================================================================================================================
-
 This alternative is useful when the coverpoints are already created and we don't want to repeat the declaration of the bins. The 
 ``add_cross()`` overloads support up to 16 crossed elements. **Beta release only supports up to 5 crossed elements.**
 
@@ -511,7 +535,7 @@ Overlapping bins
 If a sampled value is contained in more than one valid bin (not ignore or illegal), all the valid bins will collect the coverage, 
 i.e. increment the number of hits.
 
-In case this is unintended behaviour in the testbench, an alert can be generated when overlapping valid bins are sampled, by using 
+In case this is unintended behavior in the testbench, an alert can be generated when overlapping valid bins are sampled, by using 
 the procedure ``set_bin_overlap_alert_level()``, to select the severity of the alert.
 
 .. code-block::
@@ -799,7 +823,7 @@ report shows 3 extra lines:
 * **Goal** = configured goal value.
 * **% of Goal** = percentage of the covered goal, stops at 100%.
 * **% of Goal (uncapped)** = percentage of the covered goal without limits. This is useful to see if there are bins 
-  which are oversampled.
+  which are over-sampled.
 
 .. code-block:: none
 
@@ -876,7 +900,7 @@ When using ``load_coverage_db()``, the following applies for the given coverpoin
     * The bins matching with the loaded bins (same type, values, min_hits and rand_weight) are also overwritten.
     * Any loaded bins which are not found in the given coverpoint are added.
     * Any bins in the given coverpoint which are not found in the loaded coverpoint are kept. However, depending on the 
-      *new_bins_acceptance* parameter, an alert can be generated whenever this occurs. The default behaviour is to generate a 
+      *new_bins_acceptance* parameter, an alert can be generated whenever this occurs. The default behavior is to generate a 
       TB_WARNING alert to ensure that all the testcases collect coverage from the same bins. However, for instance when running 
       two testcases in a certain order, one might add extra bins in the second testcase which are irrelevant for the first one, 
       and in this case the alert can be removed.
@@ -1199,7 +1223,7 @@ The maximum number of coverpoints that can be created is determined by C_FC_MAX_
 
 .. note::
 
-    Enhanced Randomization, Optimized Randomization and Functional Coverage were inpired by general statistics and similar 
+    Enhanced Randomization, Optimized Randomization and Functional Coverage were inspired by general statistics and similar 
     functionality in SystemVerilog and OSVVM.
 
 .. _func_cov_pkg:
@@ -1216,5 +1240,7 @@ all the type definitions inside *func_cov_pkg*.
    func_cov_pkg_t_coverpoint.rst
    func_cov_pkg_methods.rst
    func_cov_pkg_types.rst
+
+
 
 .. include:: rst_snippets/ip_disclaimer.rst

@@ -1,0 +1,44 @@
+# Mac OS index files
+.DS_Store
+
+# MS Word backup files
+~$*.doc*
+
+# VS Code
+uvvm_internal.code-workspace
+vhdl_ls.toml
+/uvvm_util/sim
+
+# Sigasi
+.project
+.pydevproject
+.library_mapping.xml
+.settings
+
+# Emacs
+*.*~
+
+# GHDL compilations
+*.cf
+
+# Modelsim compilations
+*.ini
+transcript
+
+# Riviera-PRO compilations
+*.cfg
+*.cmd
+
+# Python pyc
+__pycache__/
+.pytest_cache/
+
+# rst
+*.doctree
+*.pickle
+
+# Release
+release/hdlregression/
+releasedb_coverpoint.txt
+releasedb_cross_max.txt
+releasedb_cross.txt

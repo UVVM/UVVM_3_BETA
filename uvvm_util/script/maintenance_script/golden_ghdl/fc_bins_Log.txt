@@ -13,10 +13,10 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  MY_SCOPE                       
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  MY_SCOPE                         [MY_COVERPOINT] Adding bins: (101), min_hits:1, rand_weight:1, ""
 UVVM: ID_SEQUENCER                     100.0 ns  p_sampling                     Coverpoint initialized, ready to sample
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(10000)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(-101)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(-100)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(100)
@@ -25,10 +25,10 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  MY_SCOPE                       
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(-102)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(102)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(103)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  MY_SCOPE                       [MY_COVERPOINT] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -49,9 +49,9 @@ UVVM:
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_2] add_bins(bin((220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_2] Adding bins: (220, 221, 222, 223, 224, 225, 226, 227, 228, 229), min_hits:1,
 UVVM:                                                                             rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_2] sample_coverage(202)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_2] sample_coverage(204)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_2] sample_coverage(206)
@@ -82,9 +82,9 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_2] sample_coverage(207)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_2] sample_coverage(209)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_2] sample_coverage(230)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_2] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -113,21 +113,21 @@ UVVM:
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_3] add_bins(, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_3] Adding bins: , min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[4]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[5]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[3]
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_8
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_9
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_10
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_11
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_12
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_13
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_14
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_3] sample_coverage(300)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_3] sample_coverage(301)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_3] sample_coverage(302)
@@ -172,21 +172,21 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_3] sample_coverage(344)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_3] sample_coverage(354)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_3] sample_coverage(356)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[4]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[5]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[3]
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_8
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_9
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_10
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_11
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_12
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_13
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_14
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_3] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -202,20 +202,20 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_4] Adding bins: (0),(1),(2),(3), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_4] add_bins(bin_vector(LEN:2, num_bins:0), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_4] Adding bins: (0),(1),(2),(3), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_8
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_9
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_10
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_11
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_12
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_13
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[4]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[4]
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_4] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_4] sample_coverage(1)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_4] sample_coverage(2)
@@ -224,20 +224,20 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_4] sample_coverage(4)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_4] sample_coverage(5)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_4] sample_coverage(6)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_8
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_9
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_10
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_11
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_12
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_13
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4[4]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5[4]
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_4] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -262,11 +262,11 @@ UVVM:
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_5] add_bins(bin_transition((430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_5] Adding bins: (430->431->432->433->434->435->436->437->438->439), min_hits:1,
 UVVM:                                                                             rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_5] sample_coverage(401)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_5] sample_coverage(403)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_5] sample_coverage(401)
@@ -425,11 +425,11 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_5] sample_coverage(437)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_5] sample_coverage(438)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_5] sample_coverage(440)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_5] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -443,10 +443,10 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_6] Adding bins: IGN(2000), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_6] add_bins(ignore_bin(2001), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_6] Adding bins: IGN(2001), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_6] sample_coverage(-2001)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_6] sample_coverage(-2000)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_6] sample_coverage(2000)
@@ -455,10 +455,10 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_6] sample_coverage(-2002)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_6] sample_coverage(2002)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_6] sample_coverage(2003)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_6] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -479,8 +479,8 @@ UVVM:
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_7] add_bins(, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_7] Adding bins: , min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_7] sample_coverage(2100)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_7] sample_coverage(2101)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_7] sample_coverage(2102)
@@ -496,8 +496,8 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_7] sample_coverage(2111)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_7] sample_coverage(2114)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_7] sample_coverage(2116)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_7] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -521,10 +521,10 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM:                                                                           2229, 2230)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_8] Adding bins: IGN(2220->2221->2222->2223->2224->2225->2226->2227->2228->2229),
 UVVM:                                                                             min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_8] sample_coverage(2201)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_8] sample_coverage(2203)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_8] sample_coverage(2201)
@@ -643,10 +643,10 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_8] sample_coverage(2227)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_8] sample_coverage(2228)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_8] sample_coverage(2230)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_8] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -662,10 +662,10 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_9] Adding bins: ILL(3000), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_9] add_bins(illegal_bin(3001), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_9] Adding bins: ILL(3001), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 4. 
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_9] sample_coverage(-3001)
 UVVM: 
@@ -695,10 +695,10 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_9] sample_coverage(-3002)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_9] sample_coverage(3002)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_9] sample_coverage(3003)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_9] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -721,8 +721,8 @@ UVVM:
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_10] add_bins(, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_10] Adding bins: , min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 11. 
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_10] sample_coverage(3100)
 UVVM: 
@@ -794,8 +794,8 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_10] sample_coverage(3111)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_10] sample_coverage(3114)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_10] sample_coverage(3116)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_10] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -821,10 +821,10 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM:                                                                           3228, 3229, 3230)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_11] Adding bins: ILL(3220->3221->3222->3223->3224->3225->3226->3227->3228->3229),
 UVVM:                                                                             min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 26. 
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_11] sample_coverage(3201)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_11] sample_coverage(3203)
@@ -1074,10 +1074,10 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_11] sample_coverage(3227)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_11] sample_coverage(3228)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_11] sample_coverage(3230)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_11] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -1087,20 +1087,29 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM:                                                                           num_bins:2),bin_transition((4300, 4302, 4304, 4305)), "concatenated")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_12] Adding bins: (4000),(4100, 4110, 4120),(4200 to 4204),(4205 to
 UVVM:                                                                             4209),(4300->4302->4304->4305), min_hits:1, rand_weight:1, "concatenated"
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_12] add_bins(bin_range(4400,
 UVVM:                                                                           4450),ignore_bin(4401),ignore_bin_range(4410,4420),ignore_bin_transition((4400, 4425, 4450)),
 UVVM:                                                                           "concatenated")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_12] Adding bins: (4400 to 4450),IGN(4401),IGN(4410 to 4420),IGN(4400->4425->4450),
 UVVM:                                                                             min_hits:1, rand_weight:1, "concatenated"
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated
+UVVM: 
+UVVM: ***  TB_WARNING #5  ***
+UVVM:           100 ns   TB seq.
+UVVM:                    append_bin_name_and_check(concatenated)=> The bin name: 'concatenated' has already been used.
+UVVM:                    This warning can be turned off by setting the
+UVVM:                    C_FC_BIN_NAME_DUPLICATION_WARNING constant in the
+UVVM:                    adaptations_pkg to 'false'
+UVVM: 
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[4]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[5]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[4]
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_12] sample_coverage(4000)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_12] sample_coverage(4100)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_12] sample_coverage(4110)
@@ -1129,15 +1138,15 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_12] sample_coverage(4400)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_12] sample_coverage(4425)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_12] sample_coverage(4450)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[4]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[5]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for concatenated[1]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[2]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[3]
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[4]
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_num_bins => OK, for int 6. 'Checking number of valid bins'
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_num_bins => OK, for int 3. 'Checking number of invalid bins'
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
@@ -1150,15 +1159,15 @@ UVVM:      Coverpoint:              Covpt_12
 UVVM:      Coverage (for goal 100): Bins: 100.00%,  Hits: 100.00% 
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:                           BINS                           HITS            MIN HITS        HIT COVERAGE            NAME            ILLEGAL/IGNORE                          
-UVVM:                          (4401)                           1                N/A               N/A             concatenated            IGNORE                              
-UVVM:                      (4410 to 4420)                       2                N/A               N/A             concatenated            IGNORE                              
-UVVM:                    (4400->4425->4450)                     1                N/A               N/A             concatenated            IGNORE                              
-UVVM:                          (4000)                           1                 1              100.00%           concatenated              -                                 
-UVVM:                    (4100, 4110, 4120)                     3                 1              100.00%           concatenated              -                                 
-UVVM:                      (4200 to 4204)                       5                 1              100.00%           concatenated              -                                 
-UVVM:                      (4205 to 4209)                       5                 1              100.00%           concatenated              -                                 
-UVVM:                 (4300->4302->4304->4305)                  1                 1              100.00%           concatenated              -                                 
-UVVM:                      (4400 to 4450)                       6                 1              100.00%           concatenated              -                                 
+UVVM:                          (4401)                           1                N/A               N/A            concatenated[2]          IGNORE                              
+UVVM:                      (4410 to 4420)                       2                N/A               N/A            concatenated[3]          IGNORE                              
+UVVM:                    (4400->4425->4450)                     1                N/A               N/A            concatenated[4]          IGNORE                              
+UVVM:                          (4000)                           1                 1              100.00%          concatenated[1]            -                                 
+UVVM:                    (4100, 4110, 4120)                     3                 1              100.00%          concatenated[2]            -                                 
+UVVM:                      (4200 to 4204)                       5                 1              100.00%          concatenated[3]            -                                 
+UVVM:                      (4205 to 4209)                       5                 1              100.00%          concatenated[4]            -                                 
+UVVM:                 (4300->4302->4304->4305)                  1                 1              100.00%          concatenated[5]            -                                 
+UVVM:                      (4400 to 4450)                       6                 1              100.00%          concatenated[1]            -                                 
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:      ====================================================================================================================================================================
 UVVM:      
@@ -1168,36 +1177,37 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing bins and ignore bins with transitions of values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5001, 5010)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5001->5010), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5001, 5020)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5001->5020), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5001, 5030)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5001->5030), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5002, 5010)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5002->5010), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5002, 5020)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5002->5020), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5002, 5030)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5002->5030), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5003, 5010)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5003->5010), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5003, 5020)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5003->5020), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5003, 5030)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5003->5030), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5004, 5010)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5004->5010), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5004, 5020)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5004->5020), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5004, 5030)), "transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5004->5030), min_hits:1, rand_weight:1, "transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(ignore_bin_transition((5000, 5001, 5010)), "ignore_transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: IGN(5000->5001->5010), min_hits:1, rand_weight:1, "ignore_transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(ignore_bin_transition((5000, 5002)), "ignore_transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: IGN(5000->5002), min_hits:1, rand_weight:1, "ignore_transition"
-UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(ignore_bin_transition((5003, 5010)), "ignore_transition")
-UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: IGN(5003->5010), min_hits:1, rand_weight:1, "ignore_transition"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5001, 5010)), "transition_1")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5001->5010), min_hits:1, rand_weight:1, "transition_1"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5001, 5020)), "transition_2")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5001->5020), min_hits:1, rand_weight:1, "transition_2"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5001, 5030)), "transition_3")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5001->5030), min_hits:1, rand_weight:1, "transition_3"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5002, 5010)), "transition_4")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5002->5010), min_hits:1, rand_weight:1, "transition_4"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5002, 5020)), "transition_5")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5002->5020), min_hits:1, rand_weight:1, "transition_5"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5002, 5030)), "transition_6")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5002->5030), min_hits:1, rand_weight:1, "transition_6"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5003, 5010)), "transition_7")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5003->5010), min_hits:1, rand_weight:1, "transition_7"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5003, 5020)), "transition_8")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5003->5020), min_hits:1, rand_weight:1, "transition_8"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5003, 5030)), "transition_9")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5003->5030), min_hits:1, rand_weight:1, "transition_9"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5004, 5010)), "transition_10")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5004->5010), min_hits:1, rand_weight:1, "transition_10"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5004, 5020)), "transition_11")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5004->5020), min_hits:1, rand_weight:1, "transition_11"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(bin_transition((5000, 5004, 5030)), "transition_12")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: (5000->5004->5030), min_hits:1, rand_weight:1, "transition_12"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(ignore_bin_transition((5000, 5001, 5010)), "ignore_transition_1")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: IGN(5000->5001->5010), min_hits:1, rand_weight:1,
+UVVM:                                                                             "ignore_transition_1"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(ignore_bin_transition((5000, 5002)), "ignore_transition_2")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: IGN(5000->5002), min_hits:1, rand_weight:1, "ignore_transition_2"
+UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(ignore_bin_transition((5003, 5010)), "ignore_transition_3")
+UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: IGN(5003->5010), min_hits:1, rand_weight:1, "ignore_transition_3"
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_13] add_bins(ignore_bin(5004), "ignore_value")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_13] Adding bins: IGN(5004), min_hits:1, rand_weight:1, "ignore_value"
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_13] sample_coverage(5000)
@@ -1236,21 +1246,21 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_13] sample_coverage(5000)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_13] sample_coverage(5004)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_13] sample_coverage(5030)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for ignore_transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for ignore_transition
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for ignore_transition
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_2
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_4
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_5
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_6
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_7
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_8
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_9
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_10
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_11
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for transition_12
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for ignore_transition_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for ignore_transition_2
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for ignore_transition_3
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for ignore_value
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_13] delete_coverpoint()
 UVVM: 
@@ -1260,7 +1270,7 @@ UVVM: --------------------------------------------------------------------------
 UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9. 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(500), min_hits:7, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (500), min_hits:7, rand_weight:7, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 0.00%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 0.00%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(500)
@@ -1284,16 +1294,16 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(500)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: 
-UVVM: ***  TB_WARNING #5  ***
+UVVM: ***  TB_WARNING #6  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(229), min_hits:18, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(229), min_hits:18, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (229), min_hits:18, rand_weight:18, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 50.00%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 28.00%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(229)
@@ -1350,31 +1360,31 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(229)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
 UVVM: 
-UVVM: ***  TB_WARNING #6  ***
+UVVM: ***  TB_WARNING #7  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(102), min_hits:1, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(102), min_hits:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (102), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 66.67%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 96.15%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(102)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
 UVVM: 
-UVVM: ***  TB_WARNING #7  ***
+UVVM: ***  TB_WARNING #8  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(184), min_hits:17, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(184), min_hits:17, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (184), min_hits:17, rand_weight:17, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 75.00%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 60.47%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(184)
@@ -1428,16 +1438,16 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(184)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
 UVVM: 
-UVVM: ***  TB_WARNING #8  ***
+UVVM: ***  TB_WARNING #9  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(268), min_hits:14, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(268), min_hits:14, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (268), min_hits:14, rand_weight:14, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 80.00%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 75.44%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(268)
@@ -1482,16 +1492,16 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(268)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
 UVVM: 
-UVVM: ***  TB_WARNING #9  ***
+UVVM: ***  TB_WARNING #10  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(366), min_hits:13, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(366), min_hits:13, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (366), min_hits:13, rand_weight:13, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 83.33%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 81.43%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(366)
@@ -1533,16 +1543,16 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(366)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
 UVVM: 
-UVVM: ***  TB_WARNING #10  ***
+UVVM: ***  TB_WARNING #11  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(483), min_hits:9, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(483), min_hits:9, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (483), min_hits:9, rand_weight:9, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 85.71%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 88.61%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(483)
@@ -1572,16 +1582,16 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(483)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
 UVVM: 
-UVVM: ***  TB_WARNING #11  ***
+UVVM: ***  TB_WARNING #12  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(186), min_hits:10, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(186), min_hits:10, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (186), min_hits:10, rand_weight:10, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_8
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 87.50%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 88.76%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(186)
@@ -1614,16 +1624,16 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(186)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_8
 UVVM: 
-UVVM: ***  TB_WARNING #12  ***
+UVVM: ***  TB_WARNING #13  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(460), min_hits:19, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(460), min_hits:19, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (460), min_hits:19, rand_weight:19, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_8
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_9
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 88.89%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 82.41%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(460)
@@ -1683,22 +1693,22 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(460)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_8
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_9
 UVVM: 
-UVVM: ***  TB_WARNING #13  ***
+UVVM: ***  TB_WARNING #14  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    add_bins(bin(190), min_hits:1, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(190), min_hits:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (190), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_9
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_10
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 90.00%
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 99.08%
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_14] sample_coverage(190)
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_9
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_10
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      100 ns *** COVERAGE SUMMARY REPORT (VERBOSE): TB seq. ***                                                                                                           
@@ -1707,16 +1717,16 @@ UVVM:      Coverpoint:              Covpt_14
 UVVM:      Coverage (for goal 100): Bins: 100.00%,  Hits: 100.00% 
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:                           BINS                           HITS            MIN HITS        HIT COVERAGE            NAME            ILLEGAL/IGNORE                          
-UVVM:                           (500)                           7                 7              100.00%               bin_0                 -                                 
-UVVM:                           (229)                           18                18             100.00%               bin_1                 -                                 
-UVVM:                           (102)                           1                 1              100.00%               bin_2                 -                                 
-UVVM:                           (184)                           17                17             100.00%               bin_3                 -                                 
-UVVM:                           (268)                           14                14             100.00%               bin_4                 -                                 
-UVVM:                           (366)                           13                13             100.00%               bin_5                 -                                 
-UVVM:                           (483)                           9                 9              100.00%               bin_6                 -                                 
-UVVM:                           (186)                           10                10             100.00%               bin_7                 -                                 
-UVVM:                           (460)                           19                19             100.00%               bin_8                 -                                 
-UVVM:                           (190)                           1                 1              100.00%               bin_9                 -                                 
+UVVM:                           (500)                           7                 7              100.00%               bin_1                 -                                 
+UVVM:                           (229)                           18                18             100.00%               bin_2                 -                                 
+UVVM:                           (102)                           1                 1              100.00%               bin_3                 -                                 
+UVVM:                           (184)                           17                17             100.00%               bin_4                 -                                 
+UVVM:                           (268)                           14                14             100.00%               bin_5                 -                                 
+UVVM:                           (366)                           13                13             100.00%               bin_6                 -                                 
+UVVM:                           (483)                           9                 9              100.00%               bin_7                 -                                 
+UVVM:                           (186)                           10                10             100.00%               bin_8                 -                                 
+UVVM:                           (460)                           19                19             100.00%               bin_9                 -                                 
+UVVM:                           (190)                           1                 1              100.00%              bin_10                 -                                 
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:      ====================================================================================================================================================================
 UVVM:      
@@ -1736,7 +1746,7 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_15] Adding bins: (1003), min_hits:5, rand_weight:1, "my_bin_3"
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_15] add_bins(bin(1004), min_hits:5, rand_weight:1, "my_bin_long_name_abcdefghijklmno")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_15] Adding bins: (1004), min_hits:5, rand_weight:1, "my_bin_long_name_abcdefghijklmno"
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for my_bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for my_bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for my_bin_3
@@ -1749,7 +1759,7 @@ UVVM:      Coverpoint:              Covpt_15
 UVVM:      Coverage (for goal 100): Bins: 0.00%,    Hits: 0.00%   
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:                           BINS                           HITS            MIN HITS        HIT COVERAGE            NAME            ILLEGAL/IGNORE                          
-UVVM:                          (1000)                           0                 1               0.00%                bin_0                 -                                 
+UVVM:                          (1000)                           0                 1               0.00%                bin_1                 -                                 
 UVVM:                          (1001)                           0                 1               0.00%              my_bin_1                -                                 
 UVVM:                          (1002)                           0                 5               0.00%              my_bin_2                -                                 
 UVVM:                          (1003)                           0                 5               0.00%              my_bin_3                -                                 
@@ -1791,7 +1801,7 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 4. 
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2000)
 UVVM: 
-UVVM: ***  TB_WARNING #14  ***
+UVVM: ***  TB_WARNING #15  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    [Covpt_16] There is an overlap between 3 bins.
 UVVM: 
@@ -1799,7 +1809,7 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2113)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2114)
 UVVM: 
-UVVM: ***  TB_WARNING #15  ***
+UVVM: ***  TB_WARNING #16  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    [Covpt_16] There is an overlap between 2 bins.
 UVVM: 
@@ -1807,24 +1817,24 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2248)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2249)
 UVVM: 
-UVVM: ***  TB_WARNING #16  ***
+UVVM: ***  TB_WARNING #17  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    [Covpt_16] There is an overlap between 2 bins.
 UVVM: 
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2250)
 UVVM: 
-UVVM: ***  TB_WARNING #17  ***
+UVVM: ***  TB_WARNING #18  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    [Covpt_16] There is an overlap between 2 bins.
 UVVM: 
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2251)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_3
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_4
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_5
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_6
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_7
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_16] delete_coverpoint()
 UVVM: 
 UVVM: 
@@ -1926,8 +1936,8 @@ UVVM:                    [Covpt_19] sample_coverage(3215)=> Sampled illegal_bin_
 UVVM: 
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_19] sample_coverage(3216)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_19] sample_coverage(3220)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_0
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      100 ns *** COVERAGE SUMMARY REPORT (VERBOSE): TB seq. ***                                                                                                           
@@ -1936,8 +1946,8 @@ UVVM:      Coverpoint:              Covpt_19
 UVVM:      Coverage (for goal 100): Bins: 0.00%,    Hits: 0.00%   
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:                           BINS                           HITS            MIN HITS        HIT COVERAGE            NAME            ILLEGAL/IGNORE                          
-UVVM:                      (3205 to 3215)                       4                N/A               N/A                 bin_1              ILLEGAL                              
-UVVM:                      (3200 to 3220)                       8                N/A               N/A                 bin_0               IGNORE                              
+UVVM:                      (3205 to 3215)                       4                N/A               N/A                 bin_2              ILLEGAL                              
+UVVM:                      (3200 to 3220)                       8                N/A               N/A                 bin_1               IGNORE                              
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:      ====================================================================================================================================================================
 UVVM:      
@@ -2103,7 +2113,7 @@ UVVM:                                REGARDED   EXPECTED  IGNORED      Comment?
 UVVM:                NOTE         :      0         0         0         ok
 UVVM:                TB_NOTE      :      0         0         0         ok
 UVVM:                WARNING      :     49        49         0         ok
-UVVM:                TB_WARNING   :     17        17         0         ok
+UVVM:                TB_WARNING   :     18        18         0         ok
 UVVM:                MANUAL_CHECK :      0         0         0         ok
 UVVM:                ERROR        :      0         0         0         ok
 UVVM:                TB_ERROR     :     10        10         0         ok

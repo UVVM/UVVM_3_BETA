@@ -157,7 +157,6 @@ use work.vvc_transaction_pkg.all;
 use work.protected_transaction_group_pkg.all;
 use work.vvc_cmd_pkg.all;
 use work.vvc_cmd_shared_variables_pkg.all;
-use work.monitor_cmd_pkg.all;
 use work.td_target_support_pkg.all;
 use work.vvc_methods_support_pkg.all;
 use work.protected_vvc_status_pkg.all;

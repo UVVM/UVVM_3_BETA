@@ -33,6 +33,8 @@ if {[catch {eval "vsim -version"} message] == 0} {
   # puts "Version is: $simulator_version"
   if {[regexp -nocase {modelsim} $simulator_version]} {
     quietly set simulator "modelsim"
+  } elseif {[regexp -nocase {questasim} $simulator_version]} {
+    quietly set simulator "modelsim"
   } elseif {[regexp -nocase {aldec} $simulator_version]} {
     quietly set simulator "rivierapro"
   } else {
@@ -48,7 +50,7 @@ if {[catch {eval "vsim -version"} message] == 0} {
 if {[batch_mode]} {
   if { [string equal -nocase $simulator "rivierapro"] } {
     # Special for Riviera-PRO
-    onerror {abort all; quit -code 1 -force}
+    onerror {quit -code 1 -force}
    } else {
     onerror {abort all; exit -f -code 1}
   }
@@ -93,12 +95,12 @@ if {![file exists $target_path]} {
 quietly vlib $target_path/$lib_name
 quietly vmap $lib_name $target_path/$lib_name
 
-# These two core libraries are needed by every VIP (except the IRQC and UART demos),
+# These two core libraries are needed by every VIP (except the IRQC and UART demos, and specification coverage),
 # therefore we should map them in case they were compiled from different directories
 # which would cause the references to be in a different file.
 # First check if the libraries are in the specified target path, if not, then look
 # in the default UVVM structure.
-if {$lib_name != "uvvm_util" && $lib_name != "bitvis_irqc" && $lib_name != "bitvis_uart" && $lib_name != "bitvis_vip_spec_cov"} {
+if {$lib_name != "uvvm_util" && $lib_name != "uvvm_assertions" && $lib_name != "bitvis_irqc" && $lib_name != "bitvis_uart" && $lib_name != "bitvis_vip_spec_cov"} {
   echo "Mapping uvvm_util and uvvm_vvc_framework"
   if {[file exists $target_path/uvvm_util]} {
     quietly vmap uvvm_util $target_path/uvvm_util
@@ -109,6 +111,15 @@ if {$lib_name != "uvvm_util" && $lib_name != "bitvis_irqc" && $lib_name != "bitv
     quietly vmap uvvm_vvc_framework $target_path/uvvm_vvc_framework
   } else {
     quietly vmap uvvm_vvc_framework $source_path/../uvvm_vvc_framework/sim/uvvm_vvc_framework
+  }
+}
+# uvvm_assertions only requires uvvm_util and therefore we dont compile uvvm_vvc_framework
+if {$lib_name == "uvvm_assertions"} {
+  echo "Mapping uvvm_util"
+  if {[file exists $target_path/uvvm_util]} {
+    quietly vmap uvvm_util $target_path/uvvm_util
+  } else {
+    quietly vmap uvvm_util $source_path/../uvvm_util/sim/uvvm_util
   }
 }
 

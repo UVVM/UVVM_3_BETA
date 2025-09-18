@@ -789,6 +789,7 @@ package body axistream_bfm_pkg is
       v_check_ok := v_check_ok and check_value(config.hold_time < config.clock_period / 2, TB_FAILURE, "Sanity check: Check that hold_time do not exceed clock_period/2.", scope, ID_NEVER, msg_id_panel, v_proc_call.all);
     end if;
     if not(v_check_ok) then
+      deallocate(v_proc_call);
       return;
     end if;
 
@@ -1286,6 +1287,7 @@ package body axistream_bfm_pkg is
       alert(alert_level, v_all_alerts_line.all, scope);
     end if;
 
+    deallocate(v_all_alerts_line);
   end procedure;
 
   -- SLV overload

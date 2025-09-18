@@ -399,7 +399,7 @@ C_FC_DEFAULT_NUM_BINS_ALLOCATED_INCREMENT defined in adaptations_pkg. ::
 
 delete_coverpoint()
 ----------------------------------------------------------------------------------------------------------------------------------
-Deallocates the list of bins and resets all configuration settings to their default values. ::
+De-allocates the list of bins and resets all configuration settings to their default values. ::
 
     delete_coverpoint(VOID)
     delete_coverpoint(msg_id_panel)
@@ -447,7 +447,11 @@ Bin functions may be concatenated to add several bins at once. ::
 |          |                    |        |                              | automatically be 0.                                   |
 +----------+--------------------+--------+------------------------------+-------------------------------------------------------+
 | constant | bin_name           | in     | string                       | Name of the bin. Max length is C_FC_MAX_NAME_LENGTH.  |
-|          |                    |        |                              | Default value is "bin_<idx>".                         |
+|          |                    |        |                              | The default value is "bin_<idx>", and is determined by|
+|          |                    |        |                              | the C_FC_DEFAULT_BIN_NAME constant in the             |
+|          |                    |        |                              | adaptations_pkg. If the call results in multiple bins |
+|          |                    |        |                              | the bin name is indexed as described in               |
+|          |                    |        |                              | :ref:`bin name <bin_name>`.                           |
 +----------+--------------------+--------+------------------------------+-------------------------------------------------------+
 | constant | msg_id_panel       | in     | t_msg_id_panel               | Controls verbosity within a specified scope. Default  |
 |          |                    |        |                              | value is shared_msg_id_panel.                         |
@@ -488,7 +492,11 @@ which return a t_new_bin_array. Bin functions may be concatenated to add several
 |          |                    |        |                              | automatically be 0.                                   |
 +----------+--------------------+--------+------------------------------+-------------------------------------------------------+
 | constant | bin_name           | in     | string                       | Name of the bin. Max length is C_FC_MAX_NAME_LENGTH.  |
-|          |                    |        |                              | Default value is "bin_<idx>".                         |
+|          |                    |        |                              | The default value is "bin_<idx>", and is determined by|
+|          |                    |        |                              | the C_FC_DEFAULT_BIN_NAME constant in the             |
+|          |                    |        |                              | adaptations_pkg. If the call results in multiple cross|
+|          |                    |        |                              | bins the bin name is indexed as described in          |
+|          |                    |        |                              | :ref:`bin name <bin_name>`.                           |
 +----------+--------------------+--------+------------------------------+-------------------------------------------------------+
 | constant | msg_id_panel       | in     | t_msg_id_panel               | Controls verbosity within a specified scope. Default  |
 |          |                    |        |                              | value is shared_msg_id_panel.                         |
@@ -542,7 +550,11 @@ Adds a cross between two coverpoints to the coverpoint. Note that the coverpoint
 |          |                    |        |                              | automatically be 0.                                   |
 +----------+--------------------+--------+------------------------------+-------------------------------------------------------+
 | constant | bin_name           | in     | string                       | Name of the bin. Max length is C_FC_MAX_NAME_LENGTH.  |
-|          |                    |        |                              | Default value is "bin_<idx>".                         |
+|          |                    |        |                              | The default value is "bin_<idx>", and is determined by|
+|          |                    |        |                              | the C_FC_DEFAULT_BIN_NAME constant in the             |
+|          |                    |        |                              | adaptations_pkg. If the call results in multiple cross|
+|          |                    |        |                              | bins the bin name is indexed as described in          |
+|          |                    |        |                              | :ref:`bin name <bin_name>`.                           |
 +----------+--------------------+--------+------------------------------+-------------------------------------------------------+
 | constant | msg_id_panel       | in     | t_msg_id_panel               | Controls verbosity within a specified scope. Default  |
 |          |                    |        |                              | value is shared_msg_id_panel.                         |
@@ -706,7 +718,7 @@ by using the file_name parameter. To see an example of the generated report clic
 
 report_config()
 ----------------------------------------------------------------------------------------------------------------------------------
-Prints a report containing the coverpoints's configuration parameters. The report can also be printed to a separate file by using 
+Prints a report containing the coverpoint's configuration parameters. The report can also be printed to a separate file by using 
 the file_name parameter. To see an example of the generated report click :ref:`here <func_cov_pkg_config_report>`. ::
 
     report_config(VOID)

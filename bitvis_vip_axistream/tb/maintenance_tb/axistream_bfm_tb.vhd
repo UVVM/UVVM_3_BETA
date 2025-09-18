@@ -468,6 +468,9 @@ begin
 
     await_barrier(global_barrier, 1 us, "Synchronizing slave");
     -- TC: Testing BFM receive() timeouts at max_wait_cycles
+    if GC_USE_SETUP_AND_HOLD then
+      increment_expected_alerts(TB_WARNING, 1); -- Because of time stamp truncate warning
+    end if;
     v_axistream_bfm_config.ready_low_at_word_num := 0;
     increment_expected_alerts_and_stop_limit(ERROR, 1);
     axistream_receive(v_data_array, v_num_bytes, v_user_array, v_strb_array, v_id_array, v_dest_array, "invalid receive", clk, axistream_if_s, C_SCOPE, shared_msg_id_panel.get(VOID), v_axistream_bfm_config);

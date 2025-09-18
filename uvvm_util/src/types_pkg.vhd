@@ -277,6 +277,21 @@ package types_pkg is
   constant C_DEPRECATE_SETTING               : t_deprecate_setting := DEPRECATE_ONCE;
   shared variable deprecated_subprogram_list : t_deprecate_list    := (others => (others => ' '));
 
+  type t_relational_operator is (LT, GT, EQ, LE, GE, NE);
+  type t_arithmetic_operator is (ADD, SUB, MULT, DIV);
+
+  -----------------------------------------
+  -- UVVM ASSERTIONS
+  -----------------------------------------
+  type t_pos_ack_kind is (EVERY, FIRST);
+  type t_shift_one_ness_cond is (ANY_BIT_ALERT, LAST_BIT_ALERT, ANY_BIT_ALERT_NO_PIPE, LAST_BIT_ALERT_NO_PIPE);
+  type t_accept_all_zeros is (ALL_ZERO_ALLOWED, ALL_ZERO_NOT_ALLOWED);
+
+  -------------------------------------
+  -- Association list
+  -------------------------------------
+  type t_association_list_status is (ASSOCIATION_LIST_SUCCESS, ASSOCIATION_LIST_FAILURE);
+
 end package types_pkg;
 
 package body types_pkg is

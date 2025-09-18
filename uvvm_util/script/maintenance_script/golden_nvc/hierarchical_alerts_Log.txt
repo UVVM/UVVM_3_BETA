@@ -328,7 +328,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Verifying parent scope!'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
@@ -345,7 +344,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Verifying that expected alerts propagate correctly.
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Verifying expected alerts!'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Verifying expected alerts!'
@@ -376,7 +374,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Verifying that alerts propagate correctly for all alert levels
 UVVM: 
 UVVM: ***  NOTE #1  ***
@@ -678,7 +675,6 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Verifying hierarchical stop limits
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 0. 'Verifying top level stop limit default implicitly!'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 0. 'Verifying top level stop limit default explicitly!'

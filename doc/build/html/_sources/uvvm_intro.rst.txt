@@ -47,19 +47,17 @@ The really great benefit here is the unique overview, readability, maintainabili
 the best testbench architecture possible - much in the same way as a good architecture is also critical for any complex design.
 Another major benefit here is that any number of commands may be issued at the same time from the test sequencer - thus allowing 
 full control of when an access is to be performed, and the commands are understandable "even" for a software developer ;-) 
-The commands may be queued, skewed, delayed, synchronised, etc. - and a super-set for applying constrained random or other 
+The commands may be queued, skewed, delayed, synchronized, etc. - and a super-set for applying constrained random or other 
 sequences of data may of course also be applied. This yields an excellent control over your testbench and VVCs.
 
 For debugging you can select logging of a command when it is issued from the sequencer, when it is received by the VVC, when it is 
 initiated by the VVC and/or when it has been executed towards the DUT. This allows full overview of all actions in your complete 
 testbench.
 
-UVVM is free and open source and has standardised the way to build good testbench architectures and VVCs so that reuse is dead 
+UVVM is free and open source and has standardized the way to build good testbench architectures and VVCs so that reuse is dead 
 simple, and allows the FPGA community to share VVCs that will work together in a well-structured test harness.
 
 You may of course combine UVVM with any other legacy or 3rd party testbenches or verification models.
-`This post on LinkedIn <https://www.linkedin.com/pulse/what-uvvm-espen-tallaksen>`_ will give you some more info on why you should 
-use this library.
 
 **********************************************************************************************************************************
 Main Features
@@ -79,10 +77,12 @@ Main Features
 * A logging and alert system that supports full verbosity control of functionality and hierarchy
 * A logging system that lets you easily see how your commands propagate from your central test sequencer to your VVCs - through 
   the execution queue - until it is executed and completed towards the DUT
-* Allows 3rd party randomization and functional coverage to be included in the central test sequencer - or even better - inside 
+* Allows randomization and functional coverage to be included in the central test sequencer - or even better - inside 
   the VVCs in the local sequencers for better control and encapsulation
 * Simple integration with regression test tools like Jenkins
 * Quick references are available for UVVM Utility Library, VVC Framework and all the BFMs/VVCs
+
+.. _uvvm_vvcs_and_bfms:
 
 **********************************************************************************************************************************
 Available VVCs and BFMs
@@ -92,15 +92,18 @@ to handle just the AXI4-Lite interface with everything else being your proprieta
 
 * Avalon MM
 * Avalon ST - master and slave
+* AXI4
 * AXI4-Lite
 * AXI-Stream - master and slave
-* SBI (Simple Bus Interface - A single cycle simple parallel bus interface)
-* UART
-* SPI - master and slave
-* I2C - master and slave
+* Ethernet
+* GMII - transmit and receive
 * GPIO
-* GMII
-* RGMII
+* I2C - master and slave
+* RGMII - transmit and receive
+* SBI (Simple Bus Interface - A single cycle simple parallel bus interface)
+* SPI - master and slave
+* UART
+* Wishbone
 * More are coming
 
 .. important::
@@ -113,13 +116,13 @@ to handle just the AXI4-Lite interface with everything else being your proprieta
 **********************************************************************************************************************************
 Prerequisites
 **********************************************************************************************************************************
-UVVM is tool and library independent, but it must be compiled with VHDL-2008.
+UVVM is tool and library independent, but it must be compiled with VHDL-2008 or newer.
 The latest release of UVVM has been tested with the following simulators:
 
-* ModelSim
-* Riviera-PRO
-* Questa
 * GHDL
+* ModelSim/Questa
+* NVC
+* Riviera-PRO
 
 UVVM will work with all VHDL-2008 compatible simulators.
 
@@ -133,13 +136,13 @@ Introduction to VVC Framework - including manuals
 All documents including powerpoint presentations are available in the *uvvm_vvc_framework/doc* directory on GitHub. These are just 
 fast access links to some interesting info:
 
-* `The critically missing VHDL testbench feature - Finally a structured approach - A brief introduction <https://github.com/UVVM/UVVM/tree/master/uvvm_vvc_framework/doc/The_critically_missing_VHDL_TB_feature.ppsx>`_
-* `VVC Framework Manual - The user manual <https://github.com/UVVM/UVVM/tree/master/uvvm_vvc_framework/doc/VVC_Framework_Manual.pdf>`_
+* `The critically missing VHDL testbench feature - Finally a structured approach - A brief introduction <../../../uvvm_vvc_framework/doc/The_critically_missing_VHDL_TB_feature.ppsx>`_
+* `VVC Framework Manual - The user manual <../../../uvvm_vvc_framework/doc/VVC_Framework_Manual.pdf>`_
 	
 **********************************************************************************************************************************
 License
 **********************************************************************************************************************************
-| Copyright 2024 UVVM  
+| Copyright 2025 UVVM
 | Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. 
   You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
 

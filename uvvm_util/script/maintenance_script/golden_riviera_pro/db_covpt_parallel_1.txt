@@ -18,7 +18,7 @@ TRUE
 200
 50
 6
-bin_0
+bin_1
 0 1 -1
 0 1 10 
 single
@@ -27,17 +27,17 @@ single
 multiple
 3 9 30
 0 3 30 35 39 
-range
+range[1]
 5 15 40
 3 2 40 44 
-range
+range[2]
 5 15 40
 3 2 45 49 
 transition
 1 5 50
 6 10 50 51 52 53 54 55 56 57 58 59 
 8
-bin_6
+bin_2
 0 0 0
 1 1 100 
 ignore_single
@@ -49,7 +49,7 @@ ignore_range
 ignore_transition
 2 0 0
 7 4 132 134 136 138 
-bin_10
+bin_3
 0 0 0
 2 1 200 
 illegal_single

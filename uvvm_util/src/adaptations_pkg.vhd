@@ -98,6 +98,8 @@ package adaptations_pkg is
     ID_FUNC_COV_CONFIG,                 -- Used for logging functional coverage configuration changes
     -- General
     ID_POS_ACK,                         -- To write a positive acknowledge on a check
+    -- UVVM assertions
+    ID_UVVM_ASSERTION,                  -- Used for logging UVVM assertions
     -- Directly inside test sequencers
     ID_LOG_HDR,                         -- ONLY allowed in test sequencer, Log section headers
     ID_LOG_HDR_LARGE,                   -- ONLY allowed in test sequencer, Large log section headers
@@ -226,6 +228,7 @@ package adaptations_pkg is
   -- where EXTENDED prints all received data with error, and BRIEF exclusively prints first mismatched word.
   -- Applies to RGMII, GMII, Avalon-ST and AXI-Stream
   constant C_ERROR_REPORT_EXTENT : t_error_report_extent := EXTENDED;
+
   --------------------------------------------------------------------------------------------------------------------------------
   -- Alert handling
   --------------------------------------------------------------------------------------------------------------------------------
@@ -286,13 +289,16 @@ package adaptations_pkg is
   --------------------------------------------------------------------------------------------------------------------------------
   -- Functional Coverage
   --------------------------------------------------------------------------------------------------------------------------------
-  constant C_FC_MAX_NUM_NEW_BINS                     : positive := 1000; -- Maximum number of bins which can be added using a single add_bins() call
-  constant C_FC_MAX_PROC_CALL_LENGTH                 : positive := 100;  -- Maximum string length used for logging a single bin function
-  constant C_FC_MAX_NAME_LENGTH                      : positive := 20;   -- Maximum string length used for coverpoint and bin names
-  constant C_FC_MAX_NUM_BIN_VALUES                   : positive := 10;   -- Maximum number of values that can be given in bin() and bin_transition()
-  constant C_FC_MAX_NUM_COVERPOINTS                  : positive := 20;   -- Maximum number of coverpoints
-  constant C_FC_DEFAULT_INITIAL_NUM_BINS_ALLOCATED   : positive := 1;    -- Default value used for the number of bins allocated when a coverpoint is created
-  constant C_FC_DEFAULT_NUM_BINS_ALLOCATED_INCREMENT : positive := 10;   -- Default value used to increment the number of bins allocated in a coverpoint when the max is reached
+  constant C_FC_MAX_NUM_NEW_BINS                     : positive := 1000;   -- Maximum number of bins which can be added using a single add_bins() call
+  constant C_FC_MAX_PROC_CALL_LENGTH                 : positive := 100;    -- Maximum string length used for logging a single bin function
+  constant C_FC_MAX_NAME_LENGTH                      : positive := 20;     -- Maximum string length used for coverpoint and bin names
+  constant C_FC_MAX_UCDB_NAME_LENGTH                 : positive := 50;     -- Maximum length of name+values string used when writing bins to UCDB
+  constant C_FC_MAX_NUM_BIN_VALUES                   : positive := 10;     -- Maximum number of values that can be given in bin() and bin_transition()
+  constant C_FC_MAX_NUM_COVERPOINTS                  : positive := 20;     -- Maximum number of coverpoints
+  constant C_FC_DEFAULT_INITIAL_NUM_BINS_ALLOCATED   : positive := 1;      -- Default value used for the number of bins allocated when a coverpoint is created
+  constant C_FC_DEFAULT_NUM_BINS_ALLOCATED_INCREMENT : positive := 10;     -- Default value used to increment the number of bins allocated in a coverpoint when the max is reached
+  constant C_FC_BIN_NAME_DUPLICATE_WARNING           : boolean  := true;   -- Issue a warning if a bin name is used multiple times
+  constant C_FC_DEFAULT_BIN_NAME                     : string   := "bin_"; -- This string will get an index appended when bins are added to a coverpoint, e.g. bin_1
 
   --------------------------------------------------------------------------------------------------------------------------------
   -- Scoreboard
@@ -327,6 +333,13 @@ package adaptations_pkg is
   constant C_AXISTREAM_BFM_MAX_TSTRB_BITS : positive := 32; -- Must be large enough for number of data bytes per transfer, C_MAX_TSTRB_BITS >= tdata/8
   constant C_AXISTREAM_BFM_MAX_TID_BITS   : positive := 8;  -- Recommended maximum in protocol specification (ARM IHI0051A)
   constant C_AXISTREAM_BFM_MAX_TDEST_BITS : positive := 4;  -- Recommended maximum in protocol specification (ARM IHI0051A)
+
+
+  -------------------------------------------------------------------------------------------------------------------
+  -- UVVM Assertions
+  -------------------------------------------------------------------------------------------------------------------
+  -- Maximum number of cycles to wait for an assertion to complete
+  constant C_MAX_CYCLES            : positive := 1000; -- NOTE: is only used in trigger->trigger window assertions as the array keeping track requires a size.
 
 
   -- =============================================================================================================================

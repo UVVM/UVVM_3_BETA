@@ -1,8 +1,8 @@
 # library uvvm_util
 ../src/types_pkg.vhd
 ../src/adaptations_pkg.vhd
-../src/string_methods_pkg.vhd
 ../src/protected_generic_types_pkg.vhd
+../src/string_methods_pkg.vhd
 ../src/protected_types_pkg.vhd
 ../src/global_signals_and_shared_variables_pkg.vhd
 ../src/hierarchy_linked_list_pkg.vhd
@@ -14,7 +14,9 @@
 ../src/data_queue_pkg.vhd
 ../src/data_fifo_pkg.vhd
 ../src/data_stack_pkg.vhd
+../src/dummy_rand_extension_pkg.vhd
 ../src/rand_pkg.vhd
+../src/dummy_func_cov_extension_pkg.vhd
+../src/association_list_pkg.vhd
 ../src/func_cov_pkg.vhd
 ../src/uvvm_util_context.vhd
-

@@ -1,6 +1,6 @@
-#######################################################################################################################
-Bitvis VIP AXI-Stream
-#######################################################################################################################
+##################################################################################################################################
+Bitvis VIP AXI4-Stream
+##################################################################################################################################
 
 .. _vip_axistream_bfm:
 
@@ -8,7 +8,7 @@ Bitvis VIP AXI-Stream
 BFM
 **********************************************************************************************************************************
 
-See `axistream_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_axistream/doc/axistream_bfm_QuickRef.pdf>`_
+See `axistream_bfm_QuickRef.pdf <../../../bitvis_vip_axistream/doc/axistream_bfm_QuickRef.pdf>`_
 
 .. _vip_axistream_vvc:
 
@@ -16,6 +16,6 @@ See `axistream_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis
 VVC
 **********************************************************************************************************************************
 
-See `axistream_vvc_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_axistream/doc/axistream_vvc_QuickRef.pdf>`_
+See `axistream_vvc_QuickRef.pdf <../../../bitvis_vip_axistream/doc/axistream_vvc_QuickRef.pdf>`_
 
 .. include:: rst_snippets/ip_disclaimer.rst

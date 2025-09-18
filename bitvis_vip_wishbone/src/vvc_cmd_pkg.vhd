@@ -10,9 +10,10 @@
 -- Note : Any functionality not explicitly described in the documentation is subject to change at any time
 ----------------------------------------------------------------------------------------------------------------------------------
 
---================================================================================================================================
---  VVC command package
---================================================================================================================================
+------------------------------------------------------------------------------------------
+-- Description   : See library quick reference (under 'doc') and README-file(s)
+------------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -23,30 +24,13 @@ context uvvm_util.uvvm_util_context;
 library uvvm_vvc_framework;
 use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
 
+use work.vvc_transaction_pkg.all;
+
+--========================================================================================================================
+--========================================================================================================================
 package vvc_cmd_pkg is
 
-  --==========================================================================================
-  -- t_operation
-  -- - VVC and BFM operations
-  --==========================================================================================
-  type t_operation is (
-    -- UVVM common
-    NO_OPERATION,
-    ENABLE_LOG_MSG,
-    DISABLE_LOG_MSG,
-    FLUSH_COMMAND_QUEUE,
-    FETCH_RESULT,
-    INSERT_DELAY,
-    TERMINATE_CURRENT_COMMAND,
-    -- VVC local
-    WRITE, READ, CHECK
-  );
-
-  -- Constants for the maximum sizes to use in this VVC. Can be modified in adaptations_pkg.
-  constant C_VVC_CMD_DATA_MAX_LENGTH   : natural := C_WISHBONE_VVC_CMD_DATA_MAX_LENGTH;
-  constant C_VVC_CMD_ADDR_MAX_LENGTH   : natural := C_WISHBONE_VVC_CMD_ADDR_MAX_LENGTH;
-  constant C_VVC_CMD_STRING_MAX_LENGTH : natural := C_WISHBONE_VVC_CMD_STRING_MAX_LENGTH;
-  constant C_VVC_MAX_INSTANCE_NUM      : natural := C_WISHBONE_VVC_MAX_INSTANCE_NUM;
+  alias t_operation is work.vvc_transaction_pkg.t_operation;
 
   --==========================================================================================
   -- t_vvc_cmd_record
@@ -72,7 +56,7 @@ package vvc_cmd_pkg is
     delay               : time;
     quietness           : t_quietness;
     parent_msg_id_panel : t_msg_id_panel;
-  end record;
+  end record t_vvc_cmd_record;
 
   constant C_VVC_CMD_DEFAULT : t_vvc_cmd_record := (
     addr                => (others => '0'),
@@ -106,6 +90,7 @@ package vvc_cmd_pkg is
   --   It can also be defined as a record if multiple return values shall be transported from the BFM
   --==========================================================================================
   subtype t_vvc_result is std_logic_vector(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
+
   type t_vvc_result_queue_element is record
     cmd_idx : natural;                  -- from UVVM handshake mechanism
     result  : t_vvc_result;
@@ -137,6 +122,7 @@ end package body vvc_cmd_pkg;
 ----------------------------------------------------------------------
 library uvvm_util;
 use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
 
 package protected_vvc_cmd_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
@@ -150,6 +136,7 @@ package protected_vvc_cmd_pkg is new uvvm_util.protected_generic_types_pkg
 ----------------------------------------------------------------------
 library uvvm_util;
 use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
 
 package protected_vvc_response_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
@@ -163,6 +150,7 @@ package protected_vvc_response_pkg is new uvvm_util.protected_generic_types_pkg
 ----------------------------------------------------------------------
 library uvvm_util;
 use work.vvc_cmd_pkg.all;
+use work.vvc_transaction_pkg.all;
 
 package protected_vvc_last_received_cmd_idx_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(

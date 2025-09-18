@@ -447,7 +447,7 @@ package body ti_vvc_framework_support_pkg is
   end procedure;
 
   -- Lists all the registered VVCs
-  procedure report_vvcs(
+  procedure report_vvcs_summary(
     constant void : in t_void
   ) is
     constant C_PREFIX : string := C_LOG_PREFIX & "     ";
@@ -470,9 +470,11 @@ package body ti_vvc_framework_support_pkg is
     -- Print report bottom line
     write(v_line, fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF & LF);
 
-    -- Write the info string to transcript
+    -- Format the report
     wrap_lines(v_line, 1, 1, C_LOG_LINE_WIDTH - C_PREFIX'length);
     prefix_lines(v_line, C_PREFIX);
+
+    -- Write the report to the log destination
     write_line_to_log_destination(v_line);
     DEALLOCATE(v_line);
   end procedure;
@@ -540,7 +542,7 @@ package body ti_vvc_framework_support_pkg is
         report_scoreboards(void);
       end if;
       if print_vvcs = REPORT_VVCS then
-        report_vvcs(void);
+        report_vvcs_summary(void);
       end if;
       if print_alert_counters = REPORT_ALERT_COUNTERS then
         report_alert_counters(INTERMEDIATE);
@@ -720,8 +722,10 @@ package body ti_vvc_framework_support_pkg is
     constant instance_idx : natural;
     constant channel      : t_channel
   ) return string is
+    constant C_VVC_NAME_NORMALISED       : string(1 to vvc_name'length) := vvc_name;
     constant C_INSTANCE_IDX_STR          : string  := to_string(instance_idx);
-    constant C_CHANNEL_STR               : string  := to_upper(to_string(channel));
+    constant C_CHANNEL_STR               : string := to_upper(to_string(channel));
+    constant C_CHANNEL_STR_NORMALISED    : string(1 to C_CHANNEL_STR'length) := C_CHANNEL_STR;
     constant C_SCOPE_LENGTH              : natural := vvc_name'length + C_INSTANCE_IDX_STR'length + C_CHANNEL_STR'length + 2; -- +2 because of the two added commas
     variable v_vvc_name_truncation_value : integer;
     variable v_channel_truncation_value  : integer;
@@ -735,24 +739,24 @@ package body ti_vvc_framework_support_pkg is
 
     -- If C_SCOPE_LENGTH is not greater than allowed width, return scope
     if C_SCOPE_LENGTH <= C_LOG_SCOPE_WIDTH then
-      return vvc_name & "," & C_INSTANCE_IDX_STR & "," & C_CHANNEL_STR;
+      return C_VVC_NAME_NORMALISED & "," & C_INSTANCE_IDX_STR & "," & C_CHANNEL_STR_NORMALISED;
 
     -- If C_SCOPE_LENGTH is greater than allowed width
 
     -- Check if vvc_name is greater than minimum width to truncate
-    elsif vvc_name'length <= C_MINIMUM_VVC_NAME_SCOPE_WIDTH then
-      return vvc_name & "," & C_INSTANCE_IDX_STR & "," & C_CHANNEL_STR(1 to (C_CHANNEL_STR'length - (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH)));
+    elsif C_VVC_NAME_NORMALISED'length <= C_MINIMUM_VVC_NAME_SCOPE_WIDTH then
+      return C_VVC_NAME_NORMALISED & "," & C_INSTANCE_IDX_STR & "," & C_CHANNEL_STR_NORMALISED(1 to (C_CHANNEL_STR_NORMALISED'length - (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH)));
 
     -- Check if channel is greater than minimum width to truncate
-    elsif C_CHANNEL_STR'length <= C_MINIMUM_CHANNEL_SCOPE_WIDTH then
-      return vvc_name(1 to (vvc_name'length - (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH))) & "," & C_INSTANCE_IDX_STR & "," & C_CHANNEL_STR;
+    elsif C_CHANNEL_STR_NORMALISED'length <= C_MINIMUM_CHANNEL_SCOPE_WIDTH then
+      return C_VVC_NAME_NORMALISED(1 to (C_VVC_NAME_NORMALISED'length - (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH))) & "," & C_INSTANCE_IDX_STR & "," & C_CHANNEL_STR_NORMALISED;
 
     -- If both vvc_name and channel is to be truncated
     else
 
       -- Calculate linear scaling of truncation between vvc_name and channel: (a*x)/(a+b), (b*x)/(a+b)
-      v_vvc_name_truncation_idx  := integer(round(real(vvc_name'length * (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH))) / real(vvc_name'length + C_CHANNEL_STR'length));
-      v_channel_truncation_value := integer(round(real(C_CHANNEL_STR'length * (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH))) / real(vvc_name'length + C_CHANNEL_STR'length));
+      v_vvc_name_truncation_idx  := integer(round(real(C_VVC_NAME_NORMALISED'length * (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH))) / real(C_VVC_NAME_NORMALISED'length + C_CHANNEL_STR_NORMALISED'length));
+      v_channel_truncation_value := integer(round(real(C_CHANNEL_STR_NORMALISED'length * (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH))) / real(C_VVC_NAME_NORMALISED'length + C_CHANNEL_STR_NORMALISED'length));
 
       -- In case division ended with .5 and both rounded up
       if (v_vvc_name_truncation_idx + v_channel_truncation_value) > (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH) then
@@ -760,8 +764,8 @@ package body ti_vvc_framework_support_pkg is
       end if;
 
       -- Character index to truncate
-      v_vvc_name_truncation_idx := vvc_name'length - v_vvc_name_truncation_idx;
-      v_channel_truncation_idx  := C_CHANNEL_STR'length - v_channel_truncation_value;
+      v_vvc_name_truncation_idx := C_VVC_NAME_NORMALISED'length - v_vvc_name_truncation_idx;
+      v_channel_truncation_idx  := C_CHANNEL_STR_NORMALISED'length - v_channel_truncation_value;
 
       -- If bellow minimum name width
       while v_vvc_name_truncation_idx < C_MINIMUM_VVC_NAME_SCOPE_WIDTH loop
@@ -775,7 +779,7 @@ package body ti_vvc_framework_support_pkg is
         v_vvc_name_truncation_idx := v_vvc_name_truncation_idx - 1;
       end loop;
 
-      return vvc_name(1 to v_vvc_name_truncation_idx) & "," & C_INSTANCE_IDX_STR & "," & C_CHANNEL_STR(1 to v_channel_truncation_idx);
+      return C_VVC_NAME_NORMALISED(1 to v_vvc_name_truncation_idx) & "," & C_INSTANCE_IDX_STR & "," & C_CHANNEL_STR_NORMALISED(1 to v_channel_truncation_idx);
 
     end if;
   end function;
@@ -784,8 +788,9 @@ package body ti_vvc_framework_support_pkg is
     constant vvc_name     : string;
     constant instance_idx : natural
   ) return string is
-    constant C_INSTANCE_IDX_STR : string  := to_string(instance_idx);
-    constant C_SCOPE_LENGTH     : integer := vvc_name'length + C_INSTANCE_IDX_STR'length + 1; -- +1 because of the added comma
+    constant C_VVC_NAME_NORMALISED  : string(1 to vvc_name'length) := vvc_name;
+    constant C_INSTANCE_IDX_STR     : string  := to_string(instance_idx);
+    constant C_SCOPE_LENGTH         : integer := vvc_name'length + C_INSTANCE_IDX_STR'length + 1; -- +1 because of the added comma
   begin
 
     if (C_MINIMUM_VVC_NAME_SCOPE_WIDTH + C_INSTANCE_IDX_STR'length + 1) > C_LOG_SCOPE_WIDTH then -- +1 because of the added comma
@@ -794,11 +799,11 @@ package body ti_vvc_framework_support_pkg is
 
     -- If C_SCOPE_LENGTH is not greater than allowed width, return scope
     if C_SCOPE_LENGTH <= C_LOG_SCOPE_WIDTH then
-      return vvc_name & "," & C_INSTANCE_IDX_STR;
+      return C_VVC_NAME_NORMALISED & "," & C_INSTANCE_IDX_STR;
 
     -- If C_SCOPE_LENGTH is greater than allowed width truncate vvc_name
     else
-      return vvc_name(1 to (vvc_name'length - (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH))) & "," & C_INSTANCE_IDX_STR;
+      return C_VVC_NAME_NORMALISED(1 to (C_VVC_NAME_NORMALISED'length - (C_SCOPE_LENGTH - C_LOG_SCOPE_WIDTH))) & "," & C_INSTANCE_IDX_STR;
 
     end if;
   end function;
@@ -939,6 +944,7 @@ package body ti_vvc_framework_support_pkg is
     elsif list_action = KEEP_LIST then
       log(ID_AWAIT_COMPLETION_LIST, v_proc_call.all & "=> Keeping all VVCs in the list. " & add_msg_delimiter(msg) & format_command_idx(v_local_cmd_idx), scope, msg_id_panel);
     end if;
+    deallocate(v_proc_call);
   end procedure;
 
   procedure await_completion(
@@ -1039,12 +1045,14 @@ package body ti_vvc_framework_support_pkg is
   ) is
     variable v_last_value   : std_logic := tracked_signal'last_value;
   begin
-    -- Exclude checks for signal transitions from 'U', 'L' to/from '0', 'H' to/from '1'
+    -- Exclude checks for signal transitions from 'U', 'L' to/from '0', 'H' to/from '1', 'X' to '0'/'1'
     if not (v_last_value = 'U' or
            (v_last_value = 'L' and tracked_signal = '0') or
            (v_last_value = '0' and tracked_signal = 'L') or
            (v_last_value = 'H' and tracked_signal = '1') or
-           (v_last_value = '1' and tracked_signal = 'H')) then
+           (v_last_value = '1' and tracked_signal = 'H') or
+           (v_last_value = 'X' and tracked_signal = '0') or
+           (v_last_value = 'X' and tracked_signal = '1')) then
       if tracked_signal'event then
         alert(alert_level, "Unwanted activity detected. " & signal_name & " changed from " &
           to_string(tracked_signal'last_value) & " to " & to_string(tracked_signal), scope);
@@ -1063,12 +1071,14 @@ package body ti_vvc_framework_support_pkg is
   begin
     -- Loop through each bit in the vector and check for unwanted activity
     for i in 0 to tracked_signal'length - 1 loop
-      -- Exclude signal transitions from 'U', 'L' to/from '0', 'H' to/from '1'
+      -- Exclude signal transitions from 'U', 'L' to/from '0', 'H' to/from '1', 'X' to '0'/'1'
       if not (v_last_value(i) = 'U' or
              (v_last_value(i) = 'L' and tracked_signal(i) = '0') or
              (v_last_value(i) = '0' and tracked_signal(i) = 'L') or
              (v_last_value(i) = 'H' and tracked_signal(i) = '1') or
-             (v_last_value(i) = '1' and tracked_signal(i) = 'H')) then
+             (v_last_value(i) = '1' and tracked_signal(i) = 'H') or
+             (v_last_value(i) = 'X' and tracked_signal(i) = '0') or
+             (v_last_value(i) = 'X' and tracked_signal(i) = '1')) then
         v_is_unwanted_activity := true;
       end if;
     end loop;

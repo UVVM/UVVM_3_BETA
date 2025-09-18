@@ -254,66 +254,69 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #5  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(229), min_hits:18, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
-UVVM:                    correct.
+UVVM:                    append_bin_name_and_check(concatenated)=> The bin name: 'concatenated' has already been used.
+UVVM:                    This warning can be turned off by setting the
+UVVM:                    C_FC_BIN_NAME_DUPLICATION_WARNING constant in the
+UVVM:                    adaptations_pkg to 'false'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #6  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(102), min_hits:1, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    add_bins(bin(229), min_hits:18, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #7  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(184), min_hits:17, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    add_bins(bin(102), min_hits:1, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #8  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(268), min_hits:14, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    add_bins(bin(184), min_hits:17, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #9  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(366), min_hits:13, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    add_bins(bin(268), min_hits:14, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #10  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(483), min_hits:9, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    add_bins(bin(366), min_hits:13, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #11  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(186), min_hits:10, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    add_bins(bin(483), min_hits:9, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #12  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(460), min_hits:19, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    add_bins(bin(186), min_hits:10, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #13  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    add_bins(bin(190), min_hits:1, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    add_bins(bin(460), min_hits:19, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
 UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #14  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    [Covpt_16] There is an overlap between 3 bins.
+UVVM:                    add_bins(bin(190), min_hits:1, "")=> Coverpoint has already been sampled, adding more bins is not recommended otherwise their coverage might not be
+UVVM:                    correct.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #15  ***
 UVVM:           100 ns   TB seq.
-UVVM:                    [Covpt_16] There is an overlap between 2 bins.
+UVVM:                    [Covpt_16] There is an overlap between 3 bins.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #16  ***
@@ -322,6 +325,11 @@ UVVM:                    [Covpt_16] There is an overlap between 2 bins.
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #17  ***
+UVVM:           100 ns   TB seq.
+UVVM:                    [Covpt_16] There is an overlap between 2 bins.
+UVVM: 
+UVVM: 
+UVVM: ***  TB_WARNING #18  ***
 UVVM:           100 ns   TB seq.
 UVVM:                    [Covpt_16] There is an overlap between 2 bins.
 UVVM: 

@@ -14,18 +14,6 @@
 -- Description   : See library quick reference (under 'doc') and README-file(s)
 ------------------------------------------------------------------------------------------
 
-----------------------------------------------------------------------
--- Protected type: alert_attention_counters
-----------------------------------------------------------------------
-
-use work.types_pkg.all;
-
-package protected_alert_attention_counters_pkg is new work.protected_generic_types_pkg
-    generic map(
-        t_generic_element => t_alert_attention_counters,
-        c_generic_default => (others => (others => 0))
-    );
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.math_real.all;
@@ -45,13 +33,12 @@ package methods_pkg is
 
   constant C_UVVM_VERSION : string := "v3 BETA";
 
-  -- -- ============================================================================
-  -- -- Initialisation and license
-  -- -- ============================================================================
-  --   procedure initialise_util(
-  --     constant dummy  : in t_void
-  --     );
-  --
+  -- ============================================================================
+  -- Initialization
+  -- ============================================================================
+  procedure initialize_util(
+    constant dummy : in t_void
+  );
 
   -- ============================================================================
   -- File handling (that needs to use other utility methods)
@@ -115,19 +102,6 @@ package methods_pkg is
     log_destination     : t_log_destination    := shared_default_log_destination.get(VOID);
     log_file_name       : string               := C_LOG_FILE_NAME;
     open_mode           : file_open_kind       := append_mode
-  );
-
-  procedure write_to_file(
-    file_name        : string;
-    open_mode        : file_open_kind;
-    variable my_line : inout line
-  );
-
-  procedure write_line_to_log_destination(
-    variable log_line        : inout line;
-    constant log_destination : in t_log_destination := shared_default_log_destination.get(VOID);
-    constant log_file_name   : in string            := C_LOG_FILE_NAME;
-    constant open_mode       : in file_open_kind    := append_mode
   );
 
   procedure enable_log_msg(
@@ -3318,32 +3292,10 @@ package body methods_pkg is
   constant C_BITVIS_LIBRARY_RELEASE_INFO_SHOWN : boolean := show_uvvm_utility_library_release_info(VOID);
 
   -- ============================================================================
-  -- Initialisation and license
+  -- Initialization
   -- ============================================================================
-
-  --   -- Executed a single time ONLY
-  --   procedure pot_show_license(
-  --     constant dummy  : in t_void
-  --     ) is
-  --   begin
-  --     if not shared_license_shown then
-  --       show_license(v_trial_license);
-  --       shared_license_shown := true;
-  --     end if;
-  --   end;
-
-  --   -- Executed a single time ONLY
-  --   procedure initialise_util(
-  --     constant dummy  : in t_void
-  --     ) is
-  --   begin
-  --     set_log_file_name(C_LOG_FILE_NAME);
-  --     set_alert_file_name(C_ALERT_FILE_NAME);
-  --     shared_license_shown.set(1);
-  --     shared_initialised_util.set(true);
-  --   end;
-
-  procedure pot_initialise_util(
+  -- Executed a single time ONLY
+  procedure initialize_util(
     constant dummy : in t_void
   ) is
     variable v_minimum_log_line_width : natural := 0;
@@ -3373,15 +3325,7 @@ package body methods_pkg is
         end if;
       end if;
 
-      bitvis_assert(C_LOG_LINE_WIDTH >= v_minimum_log_line_width, failure, "C_LOG_LINE_WIDTH is too low. Needs to higher than " & to_string(v_minimum_log_line_width) & ". ", C_SCOPE);
-
-      --show_license(VOID);
-      --       if C_SHOW_uvvm_utilITY_LIBRARY_INFO then
-      --         show_uvvm_utility_library_info(VOID);
-      --       end if;
-      --       if C_SHOW_uvvm_utilITY_LIBRARY_RELEASE_INFO then
-      --         show_uvvm_utility_library_release_info(VOID);
-      --       end if;
+      bitvis_assert(C_LOG_LINE_WIDTH >= v_minimum_log_line_width, failure, "C_LOG_LINE_WIDTH is too low. Needs to higher than " & to_string(v_minimum_log_line_width) & ". ", "methods_pkg.initialize_util()");
     end if;
   end;
 
@@ -3389,6 +3333,7 @@ package body methods_pkg is
     variable line_to_be_deallocated : inout line
   ) is
   begin
+    deprecate(get_procedure_name_from_instance_name(deallocate_line_if_exists'instance_name), "deallocating a null-line shall have no effect according to the LRM. Just use deallocate()");
     if line_to_be_deallocated /= null then
       deallocate(line_to_be_deallocated);
     end if;
@@ -3555,70 +3500,6 @@ package body methods_pkg is
     return v_result(1 to v_result_width);
   end function align_log_time;
 
-  -- Writes Line to a file without modifying the contents of the line
-  -- Not yet available in VHDL
-  procedure tee(
-    file     file_handle : text;
-    variable my_line     : inout line
-  ) is
-    variable v_line : line;
-  begin
-    write(v_line, my_line.all);
-    writeline(file_handle, v_line);
-  end procedure tee;
-
-  -- Open, append/write to and close file. Also deallocates contents of the line
-  procedure write_to_file(
-    file_name        : string;
-    open_mode        : file_open_kind;
-    variable my_line : inout line
-  ) is
-    file v_specified_file_pointer : text;
-  begin
-    file_open(v_specified_file_pointer, file_name, open_mode);
-    writeline(v_specified_file_pointer, my_line);
-    file_close(v_specified_file_pointer);
-  end procedure write_to_file;
-
-  procedure write_line_to_log_destination(
-    variable log_line        : inout line;
-    constant log_destination : in t_log_destination := shared_default_log_destination.get(VOID);
-    constant log_file_name   : in string            := C_LOG_FILE_NAME;
-    constant open_mode       : in file_open_kind    := append_mode) is
-  begin
-    -- Write the info string to the target file
-    if log_file_name'length = 0 and (log_destination = LOG_ONLY or log_destination = CONSOLE_AND_LOG) then
-      -- Output file specified, but file name was invalid.
-      alert(TB_ERROR, "log called with log_destination " & to_upper(to_string(log_destination)) & ", but log file name was empty.");
-    elsif log_line = null then
-      -- Line specified is null
-      alert(TB_WARNING, "log called with NULL line");
-    else
-      case log_destination is
-        when CONSOLE_AND_LOG =>
-          tee(OUTPUT, log_line);        -- write to transcript, while keeping the line contents
-          -- write to file
-          if log_file_name = C_LOG_FILE_NAME then
-            -- If the log file is the default file, it is not necessary to open and close it again
-            writeline(LOG_FILE, log_line);
-          else
-            -- If the log file is a custom file name, the file will have to be opened.
-            write_to_file(log_file_name, open_mode, log_line);
-          end if;
-        when CONSOLE_ONLY =>
-          writeline(OUTPUT, log_line);  -- Write to console and deallocate line
-        when LOG_ONLY =>
-          if log_file_name = C_LOG_FILE_NAME then
-            -- If the log file is the default file, it is not necessary to open and close it again
-            writeline(LOG_FILE, log_line);
-          else
-            -- If the log file is a custom file name, the file will have to be opened.
-            write_to_file(log_file_name, open_mode, log_line);
-          end if;
-      end case;
-    end if;
-  end procedure;
-
   procedure log(
     msg_id          : t_msg_id;
     msg             : string;
@@ -3628,6 +3509,7 @@ package body methods_pkg is
     log_file_name   : string            := C_LOG_FILE_NAME;
     open_mode       : file_open_kind    := append_mode
   ) is
+    constant C_MSG_NORMALISED              : string(1 to msg'length) := msg;
     variable v_msg                         : line;
     variable v_msg_indent                  : line;
     variable v_msg_indent_width            : natural;
@@ -3643,7 +3525,7 @@ package body methods_pkg is
   begin
     -- Check if message ID is enabled
     if (msg_id_panel(msg_id) = ENABLED) then
-      pot_initialise_util(VOID);        -- Only executed the first time called
+      initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
 
       -- Prepare strings for msg_id and scope
       v_log_msg_id := to_upper(justify(to_string(msg_id), left, C_LOG_MSG_ID_WIDTH, KEEP_LEADING_SPACE, ALLOW_TRUNCATE));
@@ -3664,8 +3546,8 @@ package body methods_pkg is
       if msg'length > 1 then
         if C_USE_BACKSLASH_R_AS_LF then
           loop
-            if (msg(v_idx to v_idx + 1) = "\r") then
-              write(v_info_final, LF);  -- Start transcript with an empty line
+            if (C_MSG_NORMALISED(v_idx to v_idx + 1) = "\r") then
+              write(v_info_final, LF); -- Start transcript with an empty line
               v_idx := v_idx + 2;
             else
               write(v_msg, remove_initial_chars(msg, v_idx - 1));
@@ -3681,13 +3563,13 @@ package body methods_pkg is
       write(v_msg_indent, to_string(C_MSG_ID_INDENT(msg_id)));
       v_msg_indent_width := v_msg_indent'length;
       write(v_info, v_msg_indent.all);
-      deallocate_line_if_exists(v_msg_indent);
+      deallocate(v_msg_indent);
 
       -- Then add the message it self (after replacing \n with LF
       if msg'length > 1 then
         write(v_info, to_string(replace_backslash_n_with_lf(v_msg.all)));
       end if;
-      deallocate_line_if_exists(v_msg);
+      deallocate(v_msg);
 
       if not C_SINGLE_LINE_LOG then
         -- Modify and align info-string if additional lines are required (after wrapping lines)
@@ -3720,8 +3602,8 @@ package body methods_pkg is
       shared_current_log_hdr.set(v_current_log_hdr);
       shared_log_hdr_for_waveview.set(v_shared_log_hdr_for_waveview);
 
-      write(v_info_final, v_info.all);  -- include actual info
-      deallocate_line_if_exists(v_info);
+      write(v_info_final, v_info.all); -- include actual info
+      deallocate(v_info);
       -- Handle rest of potential log header
       if (msg_id = ID_LOG_HDR) then
         write(v_info_final, LF & fill_string('-', (C_LOG_LINE_WIDTH - C_LOG_PREFIX_WIDTH)));
@@ -3734,35 +3616,9 @@ package body methods_pkg is
       -- Add prefix to all lines
       prefix_lines(v_info_final);
 
-      -- Write the info string to the target file
-      if log_file_name'length = 0 and (log_destination = LOG_ONLY or log_destination = CONSOLE_AND_LOG) then
-        -- Output file specified, but file name was invalid.
-        alert(TB_ERROR, "log called with log_destination " & to_upper(to_string(log_destination)) & ", but log file name was empty.");
-      else
-        case log_destination is
-          when CONSOLE_AND_LOG =>
-            tee(OUTPUT, v_info_final);  -- write to transcript, while keeping the line contents
-            -- write to file
-            if log_file_name = C_LOG_FILE_NAME then
-              -- If the log file is the default file, it is not necessary to open and close it again
-              writeline(LOG_FILE, v_info_final);
-            else
-              -- If the log file is a custom file name, the file will have to be opened.
-              write_to_file(log_file_name, open_mode, v_info_final);
-            end if;
-          when CONSOLE_ONLY =>
-            writeline(OUTPUT, v_info_final); -- Write to console and deallocate line
-          when LOG_ONLY =>
-            if log_file_name = C_LOG_FILE_NAME then
-              -- If the log file is the default file, it is not necessary to open and close it again
-              writeline(LOG_FILE, v_info_final);
-            else
-              -- If the log file is a custom file name, the file will have to be opened.
-              write_to_file(log_file_name, open_mode, v_info_final);
-            end if;
-        end case;
-        deallocate_line_if_exists(v_info_final);
-      end if;
+      -- Write the info string to the log destination
+      write_line_to_log_destination(v_info_final, log_destination, log_file_name, open_mode);
+      deallocate(v_info_final);
     end if;
   end;
 
@@ -3779,7 +3635,7 @@ package body methods_pkg is
     log(C_TB_MSG_ID_DEFAULT, msg, scope, msg_id_panel, log_destination, log_file_name, open_mode);
   end procedure log;
 
-  -- Logging for multi line text. Also deallocates the text_block, for consistency.
+  -- Logging for multi line text. Also empty the text_block, for consistency.
   procedure log_text_block(
     msg_id              : t_msg_id;
     variable text_block : inout line;
@@ -3801,34 +3657,14 @@ package body methods_pkg is
       alert(TB_ERROR, "log_text_block called with log_destination " & to_upper(to_string(log_destination)) & ", but log file name was empty.");
     -- Check if message ID is enabled
     elsif (msg_id_panel(msg_id) = ENABLED) then
-      pot_initialise_util(VOID);        -- Only executed the first time called
+      initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
 
       v_text_block_is_empty := (text_block = null);
 
       if (formatting = UNFORMATTED) then
         if (not v_text_block_is_empty) then
           -- Write the info string to the target file without any header, footer or indentation
-
-          case log_destination is
-            when CONSOLE_AND_LOG =>
-              tee(OUTPUT, text_block);  -- Write to console, but keep text_block
-              -- Write to log and deallocate text_block. Open specified file if not open.
-              if log_file_name = C_LOG_FILE_NAME then
-                writeline(LOG_FILE, text_block);
-              else
-                write_to_file(log_file_name, open_mode, text_block);
-              end if;
-            when CONSOLE_ONLY =>
-              writeline(OUTPUT, text_block); -- Write to console and deallocate text_block
-            when LOG_ONLY =>
-              -- Write to log and deallocate text_block. Open specified file if not open.
-              if log_file_name = C_LOG_FILE_NAME then
-                writeline(LOG_FILE, text_block);
-              else
-                write_to_file(log_file_name, open_mode, text_block);
-              end if;
-          end case;
-
+          write_line_to_log_destination(text_block, log_destination, log_file_name, open_mode);
         end if;
       elsif not (v_text_block_is_empty and (log_if_block_empty = SKIP_LOG_IF_BLOCK_EMPTY)) then
 
@@ -3848,46 +3684,10 @@ package body methods_pkg is
         write(v_log_body, LF & fill_string('*', (C_LOG_LINE_WIDTH - C_LOG_PREFIX_WIDTH)) & LF);
         prefix_lines(v_log_body);
 
-        case log_destination is
-
-          when CONSOLE_AND_LOG =>
-            -- Write header to console
-            tee(OUTPUT, v_header_line);
-            -- Write header to file, and open/close if not default log file
-            if log_file_name = C_LOG_FILE_NAME then
-              writeline(LOG_FILE, v_header_line);
-            else
-              write_to_file(log_file_name, open_mode, v_header_line);
-            end if;
-            -- Write header message to specified destination
-            log(msg_id, msg_header, scope, msg_id_panel, CONSOLE_AND_LOG, log_file_name, append_mode);
-            -- Write log body to console
-            tee(OUTPUT, v_log_body);
-            -- Write log body to specified file
-            if log_file_name = C_LOG_FILE_NAME then
-              writeline(LOG_FILE, v_log_body);
-            else
-              write_to_file(log_file_name, append_mode, v_log_body);
-            end if;
-
-          when CONSOLE_ONLY =>
-            -- Write to console and deallocate all lines
-            writeline(OUTPUT, v_header_line);
-            log(msg_id, msg_header, scope, msg_id_panel, CONSOLE_ONLY);
-            writeline(OUTPUT, v_log_body);
-
-          when LOG_ONLY =>
-            -- Write to log and deallocate text_block. Open specified file if not open.
-            if log_file_name = C_LOG_FILE_NAME then
-              writeline(LOG_FILE, v_header_line);
-              log(msg_id, msg_header, scope, msg_id_panel, LOG_ONLY);
-              writeline(LOG_FILE, v_log_body);
-            else
-              write_to_file(log_file_name, open_mode, v_header_line);
-              log(msg_id, msg_header, scope, msg_id_panel, LOG_ONLY, log_file_name, append_mode);
-              write_to_file(log_file_name, append_mode, v_log_body);
-            end if;
-        end case;
+        -- Write the info string to the log destination
+        write_line_to_log_destination(v_header_line, log_destination, log_file_name, open_mode);
+        log(msg_id, msg_header, scope, msg_id_panel, log_destination, log_file_name, append_mode);
+        write_line_to_log_destination(v_log_body, log_destination, log_file_name, append_mode);
 
         -- Deallocate text block to give writeline()-like behaviour
         -- for formatted output
@@ -4088,7 +3888,7 @@ package body methods_pkg is
   -- ============================================================================
 
   -- Shared variable for all the alert counters for different attention
-  shared variable shared_alert_attention_counters : work.protected_alert_attention_counters_pkg.t_generic;
+  shared variable shared_alert_attention_counters : t_protected_alert_attention_counters;
 
   procedure alert(
     constant alert_level : t_alert_level;
@@ -4100,7 +3900,7 @@ package body methods_pkg is
     constant C_ATTENTION : t_attention := get_alert_attention(alert_level);
   begin
     if alert_level /= NO_ALERT then
-      pot_initialise_util(VOID);        -- Only executed the first time called
+      initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
 
       if C_ENABLE_HIERARCHICAL_ALERTS then
         -- Call the hierarchical alert function
@@ -4113,6 +3913,7 @@ package body methods_pkg is
         if get_alert_attention(alert_level) = IGNORE then
           --       protected_alert_counters.increment(alert_level, IGNORE);
           increment_alert_counter(alert_level, IGNORE);
+          deallocate(v_msg);
         else
           --protected_alert_counters.increment(alert_level, REGARD);
           increment_alert_counter(alert_level, REGARD);
@@ -4133,7 +3934,7 @@ package body methods_pkg is
             replace(v_msg, LF, ' ');
             write(v_info, to_upper(to_string(alert_level)) & " #" & to_string(get_alert_counter(alert_level)) & "  ***" & justify(to_string(now, C_LOG_TIME_BASE), right, C_LOG_TIME_WIDTH) & "   " & to_string(scope) & "        " & v_msg.all);
           end if;
-          deallocate_line_if_exists(v_msg);
+          deallocate(v_msg);
 
           -- 4. Write stop message if stop-limit is reached for number of this alert
           if (get_alert_stop_limit(alert_level) /= 0) and (get_alert_counter(alert_level) >= get_alert_stop_limit(alert_level)) then
@@ -4153,10 +3954,9 @@ package body methods_pkg is
           end if;
 
           prefix_lines(v_info);
-          tee(OUTPUT, v_info);
-          tee(ALERT_FILE, v_info);
-          writeline(LOG_FILE, v_info);
-          deallocate_line_if_exists(v_info);
+          tee_and_keep_line(ALERT_FILE, v_info); -- Write to file, while keeping the line contents
+          write_line_to_log_destination(v_info);
+          deallocate(v_info);
 
           -- 6. Stop simulation if stop-limit is reached for number of this alert
           if (get_alert_stop_limit(alert_level) /= 0) then
@@ -4271,12 +4071,10 @@ package body methods_pkg is
   procedure report_alert_counters(
     constant order : in t_order
   ) is
-    variable v_alert_attention_counters : t_alert_attention_counters;
   begin
-    pot_initialise_util(VOID);          -- Only executed the first time called
+    initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
     if not C_ENABLE_HIERARCHICAL_ALERTS then
-      v_alert_attention_counters := shared_alert_attention_counters.get(VOID);
-      to_string(v_alert_attention_counters, order);
+      shared_alert_attention_counters.to_string(order);
     else
       print_hierarchical_log(order);
     end if;
@@ -4297,7 +4095,7 @@ package body methods_pkg is
     constant C_PREFIX : string := C_LOG_PREFIX & "     ";
     variable v_line   : line;
   begin
-    pot_initialise_util(VOID);          -- Only executed the first time called
+    initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
     write(v_line,
           LF &
           fill_string('-', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
@@ -4312,12 +4110,12 @@ package body methods_pkg is
     end loop;
     write(v_line, fill_string('-', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF);
 
+    -- Format the report
     wrap_lines(v_line, 1, 1, C_LOG_LINE_WIDTH - C_PREFIX'length);
     prefix_lines(v_line, C_PREFIX);
 
-    -- Write the info string to the target file
-    tee(OUTPUT, v_line);
-    writeline(LOG_FILE, v_line);
+    -- Write the report to the log destination
+    write_line_to_log_destination(v_line);
     deallocate(v_line);
   end;
 
@@ -4327,7 +4125,7 @@ package body methods_pkg is
     constant C_PREFIX : string := C_LOG_PREFIX & "     ";
     variable v_line   : line;
   begin
-    pot_initialise_util(VOID);          -- Only executed the first time called
+    initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
     write(v_line,
           LF &
           fill_string('-', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
@@ -4343,12 +4141,12 @@ package body methods_pkg is
     end loop;
     write(v_line, fill_string('-', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF);
 
+    -- Format the report
     wrap_lines(v_line, 1, 1, C_LOG_LINE_WIDTH - C_PREFIX'length);
     prefix_lines(v_line, C_PREFIX);
 
-    -- Write the info string to the target file
-    tee(OUTPUT, v_line);
-    writeline(LOG_FILE, v_line);
+    -- Write the report to the log destination
+    write_line_to_log_destination(v_line);
     deallocate(v_line);
   end;
 
@@ -4429,13 +4227,11 @@ package body methods_pkg is
     alert_level : t_alert_level;
     attention   : t_attention := REGARD
   ) return natural is
-    variable v_alert_attention_counters : t_alert_attention_counters;
   begin
     if alert_level = NO_ALERT then
       return 0;
     else
-      v_alert_attention_counters := shared_alert_attention_counters.get(VOID);
-      return v_alert_attention_counters(alert_level)(attention);
+      return shared_alert_attention_counters.get(alert_level, attention);
     end if;
   end function;
 
@@ -4445,7 +4241,6 @@ package body methods_pkg is
     number      : natural     := 1
   ) is
     variable v_uvvm_status              : t_uvvm_status := shared_uvvm_status.get(VOID);
-    variable v_alert_attention_counters : t_alert_attention_counters;
     type alert_array is array (1 to 6) of t_alert_level;
     constant C_ALERT_CHECK_ARRAY : alert_array   := (warning, TB_WARNING, error, TB_ERROR, failure, TB_FAILURE);
     alias found_unexpected_simulation_warnings_or_worse is v_uvvm_status.found_unexpected_simulation_warnings_or_worse;
@@ -4453,9 +4248,7 @@ package body methods_pkg is
     alias mismatch_on_expected_simulation_warnings_or_worse is v_uvvm_status.mismatch_on_expected_simulation_warnings_or_worse;
     alias mismatch_on_expected_simulation_errors_or_worse is v_uvvm_status.mismatch_on_expected_simulation_errors_or_worse;
   begin
-    v_alert_attention_counters := shared_alert_attention_counters.get(VOID);
-    v_alert_attention_counters(alert_level)(attention) := v_alert_attention_counters(alert_level)(attention) + number;
-    shared_alert_attention_counters.set(v_alert_attention_counters);
+    shared_alert_attention_counters.increment(alert_level, attention, number);
 
     -- Update simulation status
     if (attention = REGARD) or (attention = EXPECT) then
@@ -4512,6 +4305,7 @@ package body methods_pkg is
     constant order : in t_order
   ) is
   begin
+    initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
     shared_check_counters.to_string(order);
   end procedure report_check_counters;
 
@@ -4529,6 +4323,7 @@ package body methods_pkg is
     constant C_PREFIX : string := C_LOG_PREFIX & "     ";
     variable v_line   : line;
   begin
+    initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
     -- Print report header
     write(v_line, LF & fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF);
     write(v_line, timestamp_header(now, justify("*** SUMMARY OF SCOREBOARDS***", LEFT, C_LOG_LINE_WIDTH - C_PREFIX'length, SKIP_LEADING_SPACE, DISALLOW_TRUNCATE)) & LF);
@@ -4547,9 +4342,11 @@ package body methods_pkg is
     -- Print report bottom line
     write(v_line, fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF & LF);
 
-    -- Write the info string to transcript
+    -- Format the report
     wrap_lines(v_line, 1, 1, C_LOG_LINE_WIDTH - C_PREFIX'length);
     prefix_lines(v_line, C_PREFIX);
+
+    -- Write the report to the log destination
     write_line_to_log_destination(v_line);
     DEALLOCATE(v_line);
   end procedure;
@@ -4608,7 +4405,7 @@ package body methods_pkg is
     alias a_vector                 : std_logic_vector(vector'length - 1 downto 0) is vector;
     constant C_RESULT_IF_NOT_FOUND : integer := -1; -- To indicate not found
   begin
-    bitvis_assert(vector'length > 0, error, "idx_leftmost_p1_in_p2()", "String input is empty");
+    bitvis_assert(vector'length > 0, error, "String input is empty", "methods_pkg.idx_leftmost_p1_in_p2()");
     for i in a_vector'left downto a_vector'right loop
       if (a_vector(i) = target) then
         return i;
@@ -4863,10 +4660,11 @@ package body methods_pkg is
 
     -- Match length of short string with long string
     function pad_short_string(short, long : string) return string is
-      variable v_padding : string(1 to (long'length - short'length)) := (others => '0');
+      constant C_SHORT_NORMALISED : string(1 to short'length) := short;
+      variable v_padding          : string(1 to (long'length - short'length)) := (others => '0');
     begin
       -- Include leading 'x"'
-      return short(1 to 2) & v_padding & short(3 to short'length);
+      return C_SHORT_NORMALISED(1 to 2) & v_padding & C_SHORT_NORMALISED(3 to short'length);
     end function pad_short_string;
 
     -- Function to represent signed value as string if value_type is "signed"
@@ -5165,8 +4963,8 @@ package body methods_pkg is
   begin
     shared_check_counters.increment(CHECK_VALUE);
 
-    check_value(v_dir_check_ok = true, TB_WARNING, "array directions do not match", scope);
-    check_value(v_len_check_ok = true, TB_ERROR, "array lengths do not match", scope);
+    check_value(v_dir_check_ok = true, TB_WARNING, "array directions do not match", scope, ID_NEVER, msg_id_panel);
+    check_value(v_len_check_ok = true, TB_ERROR, "array lengths do not match", scope, ID_NEVER, msg_id_panel);
 
     if v_len_check_ok and v_dir_check_ok then
       for idx in exp'range loop
@@ -5223,8 +5021,8 @@ package body methods_pkg is
   begin
     shared_check_counters.increment(CHECK_VALUE);
 
-    check_value(v_dir_check_ok = true, TB_WARNING, "array directions do not match", scope);
-    check_value(v_len_check_ok = true, TB_ERROR, "array lengths do not match", scope);
+    check_value(v_dir_check_ok = true, TB_WARNING, "array directions do not match", scope, ID_NEVER, msg_id_panel);
+    check_value(v_len_check_ok = true, TB_ERROR, "array lengths do not match", scope, ID_NEVER, msg_id_panel);
 
     if v_len_check_ok and v_dir_check_ok then
       for idx in exp'range loop
@@ -5281,8 +5079,8 @@ package body methods_pkg is
   begin
     shared_check_counters.increment(CHECK_VALUE);
 
-    check_value(v_dir_check_ok = true, TB_WARNING, "array directions do not match", scope);
-    check_value(v_len_check_ok = true, TB_ERROR, "array lengths do not match", scope);
+    check_value(v_dir_check_ok = true, TB_WARNING, "array directions do not match", scope, ID_NEVER, msg_id_panel);
+    check_value(v_len_check_ok = true, TB_ERROR, "array lengths do not match", scope, ID_NEVER, msg_id_panel);
 
     for idx in exp'range loop
       -- do not count CHECK_VALUE multiple times
@@ -5920,8 +5718,8 @@ package body methods_pkg is
   begin
     shared_check_counters.increment(CHECK_VALUE);
 
-    check_value(v_dir_check_ok = true, TB_WARNING, "array directions do not match", scope);
-    check_value(v_len_check_ok = true, TB_ERROR, "array lengths do not match", scope);
+    check_value(v_dir_check_ok = true, TB_WARNING, "array directions do not match", scope, ID_NEVER, msg_id_panel);
+    check_value(v_len_check_ok = true, TB_ERROR, "array lengths do not match", scope, ID_NEVER, msg_id_panel);
     -- do not count called CHECK_VALUE
     shared_check_counters.decrement(CHECK_VALUE, 2);
 
@@ -5974,8 +5772,8 @@ package body methods_pkg is
   begin
     shared_check_counters.increment(CHECK_VALUE);
 
-    check_value(v_dir_check_ok = true, warning, "array directions do not match", scope);
-    check_value(v_len_check_ok = true, warning, "array lengths do not match", scope);
+    check_value(v_dir_check_ok = true, warning, "array directions do not match", scope, ID_NEVER, msg_id_panel);
+    check_value(v_len_check_ok = true, warning, "array lengths do not match", scope, ID_NEVER, msg_id_panel);
     -- do not count called CHECK_VALUE
     shared_check_counters.decrement(CHECK_VALUE, 2);
 
@@ -6028,8 +5826,8 @@ package body methods_pkg is
   begin
     shared_check_counters.increment(CHECK_VALUE);
 
-    check_value(v_dir_check_ok = true, warning, "array directions do not match", scope);
-    check_value(v_len_check_ok = true, warning, "array lengths do not match", scope);
+    check_value(v_dir_check_ok = true, warning, "array directions do not match", scope, ID_NEVER, msg_id_panel);
+    check_value(v_len_check_ok = true, warning, "array lengths do not match", scope, ID_NEVER, msg_id_panel);
     -- do not count called CHECK_VALUE
     shared_check_counters.decrement(CHECK_VALUE, 2);
 
@@ -7391,11 +7189,13 @@ package body methods_pkg is
   ) is
     variable v_length : integer := v_target'length;
     variable v_rand   : integer;
+    variable v_bit    : std_logic_vector(0 downto 0);
   begin
     -- Iterate through each bit and randomly set to 0 or 1
     for i in 0 to v_length - 1 loop
       random(0, 1, v_seed1, v_seed2, v_rand);
-      v_target(i downto i) := std_logic_vector(to_unsigned(v_rand, 1));
+      v_bit       := std_logic_vector(to_unsigned(v_rand, 1));
+      v_target(i) := v_bit(0);
     end loop;
   end;
 
@@ -7729,7 +7529,7 @@ package body methods_pkg is
     -- The ascending parameter should match the array direction. We could also just remove the ascending
     -- parameter and use the t'ascending attribute.
     bitvis_assert((slv_array'ascending and ascending) or (not (slv_array'ascending) and not (ascending)), ERROR,
-                  "convert_slv_array_to_byte_array()", "slv_array direction doesn't match ascending parameter");
+      "slv_array direction doesn't match ascending parameter", "methods_pkg.convert_slv_array_to_byte_array()");
 
     v_ascending_vector := slv_array(0)'ascending;
 
@@ -9728,6 +9528,7 @@ package body methods_pkg is
         elsif print_alert_counters = REPORT_ALERT_COUNTERS_FINAL then
           report_alert_counters(FINAL);
         end if;
+        deallocate(v_line);
         return true;
       end if;
     else
@@ -9793,6 +9594,7 @@ package body methods_pkg is
     check_value(timeout > 0 ns, TB_FAILURE, "timeout must be greater than 0", scope, ID_NEVER, msg_id_panel, v_proc_call.all);
     check_value(sb_poll_time > 0 ns, TB_FAILURE, "sb_poll_time must be greater than 0", scope, ID_NEVER, msg_id_panel, v_proc_call.all);
     if timeout <= 0 ns or sb_poll_time <= 0 ns then
+      deallocate(v_proc_call);
       return;
     end if;
 

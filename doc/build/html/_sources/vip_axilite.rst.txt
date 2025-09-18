@@ -1,6 +1,6 @@
-#######################################################################################################################
-Bitvis VIP AXI-Lite
-#######################################################################################################################
+##################################################################################################################################
+Bitvis VIP AXI4-Lite
+##################################################################################################################################
 
 .. _vip_axilite_bfm:
 
@@ -8,7 +8,7 @@ Bitvis VIP AXI-Lite
 BFM
 **********************************************************************************************************************************
 
-See `axilite_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_axilite/doc/axilite_bfm_QuickRef.pdf>`_
+See `axilite_bfm_QuickRef.pdf <../../../bitvis_vip_axilite/doc/axilite_bfm_QuickRef.pdf>`_
 
 .. _vip_axilite_vvc:
 
@@ -16,6 +16,6 @@ See `axilite_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_v
 VVC
 **********************************************************************************************************************************
 
-See `axilite_vvc_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_axilite/doc/axilite_vvc_QuickRef.pdf>`_
+See `axilite_vvc_QuickRef.pdf <../../../bitvis_vip_axilite/doc/axilite_vvc_QuickRef.pdf>`_
 
 .. include:: rst_snippets/ip_disclaimer.rst

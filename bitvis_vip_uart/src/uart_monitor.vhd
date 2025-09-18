@@ -119,38 +119,42 @@ architecture behave of uart_monitor is
         v_transaction_info.bt.transaction_status := IN_PROGRESS;
         transaction_info.set(v_transaction_info, instance_idx, channel);
 
-        -- Align sampling point to middle of bit period
-        wait for shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time + (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2);
+        -- Align to end of start bit
+        wait for shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time;
       else
         -- Second stop bit interpreted as start bit transaction is active
         log(ID_FRAME_INITIATE, C_LOG_PREFIX & "Second stop bit interpreted as start bit.", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
         v_transaction_info                       := transaction_info.get(instance_idx, channel);
         v_transaction_info.bt.transaction_status := IN_PROGRESS;
         transaction_info.set(v_transaction_info, instance_idx, channel);
-
-        -- Align sampling to middle of bit
-        if (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2) > uart_line'last_event then
-          wait for (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2) - uart_line'last_event + shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time;
-        else
-          wait for shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time - uart_line'last_event + (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2);
-        end if;
+        -- Align to end of start bit
+        wait for (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time - uart_line'last_event);
       end if;
 
       -- Data bits
       for i in 0 to shared_uart_monitor_config.get(instance_idx, channel).interface_config.num_data_bits - 1 loop
+        -- Align sampling point to middle of bit period
+        wait for (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2);
         v_data(i) := uart_line;
-        wait for shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time;
+        wait for (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2);
       end loop;
 
-      -- Parity bit
-      if shared_uart_monitor_config.get(instance_idx, channel).interface_config.parity = PARITY_ODD then
-        v_parity_error := xor(v_data & uart_line) = '0';
-      elsif shared_uart_monitor_config.get(instance_idx, channel).interface_config.parity = PARITY_EVEN then
-        v_parity_error := xor(v_data & uart_line) = '1';
+      if shared_uart_monitor_config.get(instance_idx, channel).interface_config.parity = PARITY_NONE then
+        v_parity_error := false;
+      else
+        -- middle of the parity bit
+        wait for (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2);
+        -- Parity bit
+        if shared_uart_monitor_config.get(instance_idx, channel).interface_config.parity = PARITY_ODD then
+          v_parity_error := xor(v_data & uart_line) = '0';
+        elsif shared_uart_monitor_config.get(instance_idx, channel).interface_config.parity = PARITY_EVEN then
+          v_parity_error := xor(v_data & uart_line) = '1';
+        end if;
+        wait for (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2);
       end if;
 
-      -- First stop bit
-      wait for shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time;
+      -- First stop bit (middle of the first stop bit)
+      wait for (shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time / 2);
       if uart_line /= '1' then
         v_stop_bit_error(0) := true;
       end if;

@@ -764,9 +764,10 @@ package body spec_cov_pkg is
       -- Log result to transcript
       log(ID_SPEC_COV, "Logging requirement " & requirement & " [" & priv_test_status_to_string(v_requirement_status) & "]. '" & priv_get_description(requirement) & "'. " & msg, scope);
       -- Log to file
-      write(v_requirement_to_file_line, requirement & C_SPEC_COV_CONFIG_DEFAULT.csv_delimiter & priv_get_default_testcase_name & C_SPEC_COV_CONFIG_DEFAULT.csv_delimiter & priv_test_status_to_string(v_requirement_status));
       if priv_result_file_exists.get(VOID) = true then
+        write(v_requirement_to_file_line, requirement & C_SPEC_COV_CONFIG_DEFAULT.csv_delimiter & priv_get_default_testcase_name & C_SPEC_COV_CONFIG_DEFAULT.csv_delimiter & priv_test_status_to_string(v_requirement_status));
         writeline(RESULT_FILE, v_requirement_to_file_line);
+        deallocate(v_requirement_to_file_line);
       end if;
       -- Increment number of tick off for this requirement
       priv_inc_num_requirement_tick_offs(requirement);
@@ -873,13 +874,12 @@ package body spec_cov_pkg is
     priv_requirements_in_array.set(0);
 
     -- Add closing line
-    write(v_checksum_string, priv_get_summary_string);
-
     if priv_result_file_exists.get(VOID) = true then
-        writeline(RESULT_FILE, v_checksum_string);
+      write(v_checksum_string, priv_get_summary_string);
+      writeline(RESULT_FILE, v_checksum_string);
+      deallocate(v_checksum_string);
+      file_close(RESULT_FILE);
     end if;
-
-    file_close(RESULT_FILE);
 
     -- Clear initialization flag. initialize_req_cov() must be called again before another tickoff can be done
     priv_req_cov_initialized.set(false);
@@ -913,6 +913,7 @@ package body spec_cov_pkg is
     write(v_settings_to_file_line, "TESTCASE_NAME: " & priv_get_default_testcase_name & LF);
     write(v_settings_to_file_line, "DELIMITER: " & shared_spec_cov_config.get(VOID).csv_delimiter & LF);
     writeline(RESULT_FILE, v_settings_to_file_line);
+    deallocate(v_settings_to_file_line);
   end procedure priv_initialize_result_file;
 
   --
@@ -1046,6 +1047,7 @@ package body spec_cov_pkg is
 
                 priv_requirements_in_array.set(priv_requirements_in_array.get(VOID) + 1);
               else
+                deallocate(v_sub_requirement);
                 v_req_valid := false;
               end if;
             end loop;
@@ -1090,6 +1092,7 @@ package body spec_cov_pkg is
         v_description := new string'("no description");
       end if;
       log(ID_SPEC_COV_REQS, "Requirement: " & priv_requirement_array.get_requirement(index) & ", " & v_description.all, C_SCOPE);
+      deallocate(v_description);
       -- log testcases to terminal
       if priv_requirement_array.get_num_tcs(index) > 0 then
         write(v_line, string'("  TC: "));
@@ -1100,11 +1103,11 @@ package body spec_cov_pkg is
           write(v_line, priv_requirement_array.get_tc_list_element(index, i));
         end loop;
         log(ID_SPEC_COV_REQS, v_line.all, C_SCOPE);
+        deallocate(v_line);
       end if;
     else
       log(ID_SPEC_COV_REQS, "Requirement entry was not valid", C_SCOPE);
     end if;
-    deallocate(v_line);
   end procedure priv_log_entry;
 
   --

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Activity Watchdog &mdash; UVVM  documentation</title>
+  <title>&lt;no title&gt; &mdash; UVVM  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -51,15 +51,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../rand_pkg_overview.html">Enhanced Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../func_cov_pkg_overview.html">Functional Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../optimized_rand.html">Optimized Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vvc_framework.html">VVC Framework</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../protected_types.html">Protected types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fifo_collection.html">UVVM FIFO Collection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../generic_queue.html">UVVM Generic Queue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../vip_avalon_mm.html">Bitvis VIP Avalon MM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../association_list.html">UVVM Association List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../vip_axi.html">Bitvis VIP AXI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../vip_axilite.html">Bitvis VIP AXI-Lite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../vip_axistream.html">Bitvis VIP AXI-Stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vip_axi.html">Bitvis VIP AXI4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vip_axilite.html">Bitvis VIP AXI4-Lite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vip_axistream.html">Bitvis VIP AXI4-Stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vip_clock_generator.html">Bitvis VIP Clock Generator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vip_error_injection.html">Bitvis VIP Error Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vip_ethernet.html">Bitvis VIP Ethernet</a></li>
@@ -73,8 +74,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../vip_spec_cov.html">Bitvis VIP Specification Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vip_spi.html">Bitvis VIP SPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vip_uart.html">Bitvis VIP UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../vip_wishbone.html">Bitvis VIP Wishbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vip_wishbone.html">Bitvis VIP Wishbone (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 </ul>
 
         </div>
@@ -91,7 +93,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Activity Watchdog</li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/rst_snippets/vip_activity_watchdog.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -101,15 +103,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="activity-watchdog">
-<h1>Activity Watchdog<a class="headerlink" href="#activity-watchdog" title="Link to this heading"></a></h1>
-<p>The VVCs support a centralized VVC activity register which the activity watchdog uses to monitor the VVC activities. The VVCs will
+  <p>The VVCs support a centralized VVC activity register which the activity watchdog uses to monitor the VVC activities. The VVCs will
 register their presence to the VVC activity register at start-up, and report when ACTIVE and INACTIVE, using dedicated VVC
 activity register methods, and trigger the global_trigger_vvc_activity_register signal during simulations. The activity watchdog
 is continuously monitoring the VVC activity register for VVC inactivity and raises an alert if no VVC activity is registered
 within the specified timeout period.</p>
+<p>Include <code class="docutils literal notranslate"><span class="pre">activity_watchdog(num_exp_vvc,</span> <span class="pre">timeout,</span> <span class="pre">[alert_level,</span> <span class="pre">[msg]])</span></code> in the testbench to start using the activity watchdog.
+Note that setting the exact number of expected VVCs in the VVC activity register can be omitted by setting num_exp_vvc = 0.</p>
 <p>More information can be found in <a class="reference internal" href="../vvc_framework.html#vvc-framework-activity-watchdog"><span class="std std-ref">Essential Mechanisms - Activity Watchdog</span></a>.</p>
-</section>
 
 
            </div>
@@ -119,7 +120,7 @@ within the specified timeout period.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, UVVM.</p>
+    <p>&#169; Copyright 2025 by UVVM steering group. All rights reserved.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

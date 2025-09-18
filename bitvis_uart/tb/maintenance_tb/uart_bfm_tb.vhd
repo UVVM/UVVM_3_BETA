@@ -73,7 +73,6 @@ architecture func of uart_bfm_tb is
     num_bytes_to_log_before_expected_data => 10,
     id_for_bfm                            => ID_BFM,
     id_for_bfm_wait                       => ID_BFM_WAIT,
-    id_for_bfm_poll                       => ID_BFM_POLL,
     id_for_bfm_poll_summary               => ID_BFM_POLL_SUMMARY,
     id_for_bfm_terminate_cmd              => ID_TERMINATE_CMD,
     error_injection                       => C_BFM_ERROR_INJECTION_INACTIVE
@@ -92,7 +91,6 @@ architecture func of uart_bfm_tb is
     num_bytes_to_log_before_expected_data => 10,
     id_for_bfm                            => ID_BFM,
     id_for_bfm_wait                       => ID_BFM_WAIT,
-    id_for_bfm_poll                       => ID_BFM_POLL,
     id_for_bfm_poll_summary               => ID_BFM_POLL_SUMMARY,
     id_for_bfm_terminate_cmd              => ID_TERMINATE_CMD,
     error_injection                       => C_BFM_ERROR_INJECTION_INACTIVE

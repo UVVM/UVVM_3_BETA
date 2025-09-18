@@ -26,6 +26,7 @@ use work.adaptations_pkg.all;
 use work.string_methods_pkg.all;
 use work.global_signals_and_shared_variables_pkg.all;
 use work.methods_pkg.all;
+use work.vendor_rand_extension_pkg.all;
 
 package rand_pkg is
 
@@ -1273,6 +1274,12 @@ package rand_pkg is
       constant set_of_values : in integer_vector;
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
 
+      -- Requires Questa One 2026.1 and newer
+    procedure excl_range(
+      constant min          : in integer;
+      constant max          : in integer;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
+
     procedure add_val_weight(
       constant value        : in integer;
       constant weight       : in natural;
@@ -1283,6 +1290,16 @@ package rand_pkg is
       constant max_value    : in integer;
       constant weight       : in natural;
       constant mode         : in t_weight_mode  := NA;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
+
+    -- Requires Questa One 2026.1 and newer
+    procedure vector_sum_min(
+      constant min          : in integer;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
+
+    -- Requires Questa One 2026.1 and newer
+    procedure vector_sum_max(
+      constant max          : in integer;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
 
     ------------------------------------------------------------
@@ -1308,6 +1325,12 @@ package rand_pkg is
     procedure excl_val_real(
       constant set_of_values : in real_vector;
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
+
+    -- Requires Questa One 2026.1 and newer
+    procedure excl_range_real(
+      constant min          : in real;
+      constant max          : in real;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
 
     procedure add_val_weight_real(
       constant value        : in real;
@@ -1349,6 +1372,13 @@ package rand_pkg is
     procedure excl_val_time(
       constant set_of_values : in time_vector;
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
+
+    -- Requires Questa One 2026.1 and newer
+    procedure excl_range_time(
+      constant min          : in time;
+      constant max          : in time;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
+
 
     procedure add_val_weight_time(
       constant value        : in time;
@@ -1465,6 +1495,93 @@ package rand_pkg is
       constant length       : positive;
       constant msg_id_panel : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return std_logic_vector;
+
+    ------------------------------------------------------------
+    -- Get Value (Requires Questa One 2026.1 and newer)
+    ------------------------------------------------------------
+    impure function get_value(
+      constant VOID : t_void)
+    return integer;
+
+    impure function get_value(
+      constant VOID : t_void)
+    return real;
+
+    impure function get_value(
+      constant VOID : t_void)
+    return time;
+
+    impure function get_value(
+      constant length : positive)
+    return integer_vector;
+
+    impure function get_value(
+      constant length : positive)
+    return real_vector;
+
+    impure function get_value(
+      constant length : positive)
+    return time_vector;
+
+    impure function get_value(
+      constant length : positive)
+    return signed;
+
+    impure function get_value(
+      constant length : positive)
+    return unsigned;
+
+    impure function get_value(
+      constant length : positive)
+    return std_logic_vector;
+
+    ------------------------------------------------------------
+    -- Linking Variables (Requires Questa One 2026.1 and newer)
+    ------------------------------------------------------------
+    -- Requires Questa One 2026.1 and newer
+    impure function create_rand(
+      constant VOID : t_void)
+    return integer;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure link(
+      constant op   : t_relational_operator;
+      constant var2 : integer);
+
+    -- Requires Questa One 2026.1 and newer
+    procedure link(
+      constant arith_op        : t_arithmetic_operator;
+      constant var2            : integer;
+      constant op              : t_relational_operator;
+      constant val_or_var_id_3 : integer;
+      constant is_var_id_3     : boolean := false);
+
+    -- Requires Questa One 2026.1 and newer
+    procedure unlink(
+      constant var2 : integer);
+
+    -- Requires Questa One 2026.1 and newer
+    procedure unlink(
+      constant VOID : t_void);
+
+    ------------------------------------------------------------
+    -- Bitwise Constraints
+    ------------------------------------------------------------
+    -- Requires Questa One 2026.1 and newer
+    procedure nonzero_bitwise_and(
+      constant mask : integer);
+
+    -- Requires Questa One 2026.1 and newer
+    procedure zero_bitwise_and(
+      constant mask : integer);
+
+    -- Requires Questa One 2026.1 and newer
+    procedure force_bits_to(
+      constant mask : string);
+
+    -- Requires Questa One 2026.1 and newer
+    procedure one_hot(
+      constant VOID : t_void);
 
   end protected t_rand;
 
@@ -1694,6 +1811,9 @@ package body rand_pkg is
                                                                                     weighted_config => false);
     variable priv_uns_constraints         : t_uns_constraints                   := (ran_incl => new t_null_range_uns_vec);
     variable priv_sig_constraints         : t_sig_constraints                   := (ran_incl => new t_null_range_sig_vec);
+
+    -- Requires Questa One 2026.1 and newer
+    variable v_vendor_var_id              : integer                             := -1;
 
     -- The number of attempts for a random value to be generated with exclude constraints is multiplied by this constant
     constant C_NUM_INVALID_TRIES : natural := 10;
@@ -2200,16 +2320,29 @@ package body rand_pkg is
       end if;
     end procedure;
 
+    -- Requires Questa One 2026.1 and newer
+    procedure check_and_initialize_vendor_varid(
+      constant VOID : t_void) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        if (v_vendor_var_id = -1) then
+          v_vendor_var_id := vendor_create_rand_var;
+        end if;
+      end if;
+    end procedure;
+
     ------------------------------------------------------------
     -- Configuration
     ------------------------------------------------------------
     procedure set_name(
-      constant name : in string) is
+      constant name : in string
+    ) is
+      constant C_NAME_NORMALISED : string(1 to name'length) := name;
     begin
-      if name'length > C_RAND_MAX_NAME_LENGTH then
-        priv_name := name(1 to C_RAND_MAX_NAME_LENGTH);
+      if C_NAME_NORMALISED'length > C_RAND_MAX_NAME_LENGTH then
+        priv_name := C_NAME_NORMALISED(1 to C_RAND_MAX_NAME_LENGTH);
       else
-        priv_name := name & fill_string(NUL, C_RAND_MAX_NAME_LENGTH - name'length);
+        priv_name := C_NAME_NORMALISED & fill_string(NUL, C_RAND_MAX_NAME_LENGTH - C_NAME_NORMALISED'length);
       end if;
     end procedure;
 
@@ -2221,12 +2354,14 @@ package body rand_pkg is
     end function;
 
     procedure set_scope(
-      constant scope : in string) is
+      constant scope : in string
+    ) is
+      constant C_SCOPE_NORMALISED : string(1 to scope'length) := scope;
     begin
-      if scope'length > C_LOG_SCOPE_WIDTH then
-        priv_scope := scope(1 to C_LOG_SCOPE_WIDTH);
+      if C_SCOPE_NORMALISED'length > C_LOG_SCOPE_WIDTH then
+        priv_scope := C_SCOPE_NORMALISED(1 to C_LOG_SCOPE_WIDTH);
       else
-        priv_scope := scope & fill_string(NUL, C_LOG_SCOPE_WIDTH - scope'length);
+        priv_scope := C_SCOPE_NORMALISED & fill_string(NUL, C_LOG_SCOPE_WIDTH - C_SCOPE_NORMALISED'length);
       end if;
     end procedure;
 
@@ -2361,7 +2496,9 @@ package body rand_pkg is
       DEALLOCATE(priv_cyclic_current_function);
       priv_cyclic_current_function := new string'("");
       DEALLOCATE(priv_cyclic_list);
-      priv_cyclic_queue.reset(VOID);
+      if priv_cyclic_queue.get_scope(VOID) /= "" then
+        priv_cyclic_queue.reset(VOID);
+      end if;
     end procedure;
 
     procedure report_config(
@@ -2372,6 +2509,7 @@ package body rand_pkg is
       variable v_line                    : line;
       variable v_multi_method_configured : boolean;
     begin
+      initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
       -- Print report header
       write(v_line, LF & fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
         "***  REPORT OF RANDOM GENERATOR CONFIGURATION ***" & LF &
@@ -2450,9 +2588,11 @@ package body rand_pkg is
       -- Print report bottom line
       write(v_line, fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF & LF);
 
-      -- Write the info string to transcript
+      -- Format the report
       wrap_lines(v_line, 1, 1, C_LOG_LINE_WIDTH - C_PREFIX'length);
       prefix_lines(v_line, C_PREFIX);
+
+      -- Write the report to the log destination
       write_line_to_log_destination(v_line);
       DEALLOCATE(v_line);
     end procedure;
@@ -2467,6 +2607,13 @@ package body rand_pkg is
     begin
       priv_seed1 := C_RAND_INIT_SEED_1;
       priv_seed2 := C_RAND_INIT_SEED_2;
+      
+      -- Requires Questa One 2026.1 and newer
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_set_seed(v_vendor_var_id, str);
+        return;
+      end if;
       -- Create the seeds by accumulating the ASCII values of the string,
       -- multiplied by a factor so they are widely spread, and making sure
       -- they don't overflow the positive range.
@@ -2483,6 +2630,11 @@ package body rand_pkg is
       constant seed1 : in positive;
       constant seed2 : in positive) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_set_seed_ints(v_vendor_var_id, seed1, seed2);
+        return;
+      end if;
       priv_seed1 := seed1;
       priv_seed2 := seed2;
     end procedure;
@@ -2490,6 +2642,11 @@ package body rand_pkg is
     procedure set_rand_seeds(
       constant seeds : in t_positive_vector(0 to 1)) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_set_seed_ints(v_vendor_var_id, seeds(0), seeds(1));
+        return;
+      end if;
       priv_seed1 := seeds(0);
       priv_seed2 := seeds(1);
     end procedure;
@@ -2498,6 +2655,11 @@ package body rand_pkg is
       variable seed1 : out positive;
       variable seed2 : out positive) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_get_seed_ints(v_vendor_var_id, seed1, seed2);
+        return;
+      end if;
       seed1 := priv_seed1;
       seed2 := priv_seed2;
     end procedure;
@@ -2507,6 +2669,11 @@ package body rand_pkg is
     return t_positive_vector is
       variable v_ret : t_positive_vector(0 to 1);
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_get_seed_ints(v_vendor_var_id, v_ret(0), v_ret(1));
+        return v_ret;
+      end if;
       v_ret(0) := priv_seed1;
       v_ret(1) := priv_seed2;
       return v_ret;
@@ -2542,6 +2709,7 @@ package body rand_pkg is
       if min_value > max_value then
         alert(TB_ERROR, v_proc_call.all & "=> min_value must be less than max_value", priv_scope);
         priv_ret_valid := false;
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if cyclic_mode = CYCLIC and priv_rand_dist = GAUSSIAN then
@@ -2617,6 +2785,7 @@ package body rand_pkg is
         when others =>
           alert(TB_ERROR, v_proc_call.all & "=> Randomization distribution not supported: " & to_upper(to_string(priv_rand_dist)), priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
       end case;
 
@@ -2646,6 +2815,7 @@ package body rand_pkg is
       if specifier /= ONLY then
         alert(TB_ERROR, v_proc_call.all & "=> Invalid parameter: " & to_upper(to_string(specifier)), priv_scope);
         priv_ret_valid := false;
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if priv_rand_dist = GAUSSIAN then
@@ -2878,6 +3048,7 @@ package body rand_pkg is
       if min_value > max_value then
         alert(TB_ERROR, v_proc_call.all & "=> min_value must be less than max_value", priv_scope);
         priv_ret_valid := false;
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -2893,6 +3064,7 @@ package body rand_pkg is
         when others =>
           alert(TB_ERROR, v_proc_call.all & "=> Randomization distribution not supported: " & to_upper(to_string(priv_rand_dist)), priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
       end case;
 
@@ -2918,6 +3090,7 @@ package body rand_pkg is
       if specifier /= ONLY then
         alert(TB_ERROR, v_proc_call.all & "=> Invalid parameter: " & to_upper(to_string(specifier)), priv_scope);
         priv_ret_valid := false;
+        deallocate(v_proc_call);
         return real'left;
       end if;
       if priv_rand_dist = GAUSSIAN then
@@ -3136,6 +3309,7 @@ package body rand_pkg is
       if min_value > max_value then
         alert(TB_ERROR, v_proc_call.all & "=> min_value must be less than max_value", priv_scope);
         priv_ret_valid := false;
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -3146,10 +3320,12 @@ package body rand_pkg is
         when GAUSSIAN =>
           alert(TB_ERROR, v_proc_call.all & "=> Randomization distribution not supported: " & to_upper(to_string(priv_rand_dist)), priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
         when others =>
           alert(TB_ERROR, v_proc_call.all & "=> Randomization distribution not supported: " & to_upper(to_string(priv_rand_dist)), priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
       end case;
 
@@ -3184,6 +3360,7 @@ package body rand_pkg is
       if specifier /= ONLY then
         alert(TB_ERROR, v_proc_call.all & "=> Invalid parameter: " & to_upper(to_string(specifier)), priv_scope);
         priv_ret_valid := false;
+        deallocate(v_proc_call);
         return time'left;
       end if;
 
@@ -4325,10 +4502,12 @@ package body rand_pkg is
 
       if min_value >= max_value then
         alert(TB_ERROR, v_proc_call.all & "=> min_value must be less than max_value", priv_scope);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if min_value'length > length or max_value'length > length then
         alert(TB_ERROR, v_proc_call.all & "=> unsigned min_value and max_value lengths must be less or equal than length", priv_scope);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if priv_rand_dist = GAUSSIAN then
@@ -4395,6 +4574,7 @@ package body rand_pkg is
       create_proc_call(C_LOCAL_CALL, ext_proc_call, v_proc_call);
 
       if not check_parameters_within_range(length, integer_vector(set_of_values), C_LOCAL_CALL, signed_values => false) then
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       -- Generate a random value within the set of values
@@ -4610,10 +4790,12 @@ package body rand_pkg is
 
       if min_value >= max_value then
         alert(TB_ERROR, v_proc_call.all & "=> min_value must be less than max_value", priv_scope);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if min_value'length > length or max_value'length > length then
         alert(TB_ERROR, v_proc_call.all & "=> signed min_value and max_value lengths must be less or equal than length", priv_scope);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if priv_rand_dist = GAUSSIAN then
@@ -4676,6 +4858,7 @@ package body rand_pkg is
       create_proc_call(C_LOCAL_CALL, ext_proc_call, v_proc_call);
 
       if not check_parameters_within_range(length, set_of_values, v_proc_call.all, signed_values => true) then
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       -- Generate a random value within the set of values
@@ -5093,6 +5276,7 @@ package body rand_pkg is
       for i in weighted_vector'range loop
         if weighted_vector(i).min_value > weighted_vector(i).max_value then
           alert(TB_ERROR, v_proc_call.all & "=> The min_value parameter must be less or equal than max_value", priv_scope);
+          deallocate(v_proc_call);
           return v_ret;
         end if;
         v_mode := weighted_vector(i).mode when weighted_vector(i).mode /= NA else COMBINED_WEIGHT;
@@ -5108,6 +5292,7 @@ package body rand_pkg is
       end loop;
       if v_acc_weight = 0 then
         alert(TB_ERROR, v_proc_call.all & "=> The total weight of the values must be greater than 0", priv_scope);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -5204,6 +5389,7 @@ package body rand_pkg is
       for i in weighted_vector'range loop
         if weighted_vector(i).min_value > weighted_vector(i).max_value then
           alert(TB_ERROR, v_proc_call.all & "=> The min_value parameter must be less or equal than max_value", priv_scope);
+          deallocate(v_proc_call);
           return v_ret;
         end if;
         v_mode := weighted_vector(i).mode when weighted_vector(i).mode /= NA else COMBINED_WEIGHT;
@@ -5213,12 +5399,14 @@ package body rand_pkg is
         -- Use the same weight for each value in the range -> Not possible to know every value within the range
         elsif v_mode = INDIVIDUAL_WEIGHT then
           alert(TB_ERROR, v_proc_call.all & "=> INDIVIDUAL_WEIGHT not supported for real type", priv_scope);
+          deallocate(v_proc_call);
           return v_ret;
         end if;
         v_acc_weighted_vector(i) := v_acc_weight;
       end loop;
       if v_acc_weight = 0 then
         alert(TB_ERROR, v_proc_call.all & "=> The total weight of the values must be greater than 0", priv_scope);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -5325,6 +5513,7 @@ package body rand_pkg is
       for i in weighted_vector'range loop
         if weighted_vector(i).min_value > weighted_vector(i).max_value then
           alert(TB_ERROR, v_proc_call.all & "=> The min_value parameter must be less or equal than max_value", priv_scope);
+          deallocate(v_proc_call);
           return v_ret;
         end if;
         v_mode := weighted_vector(i).mode when weighted_vector(i).mode /= NA else COMBINED_WEIGHT;
@@ -5334,12 +5523,14 @@ package body rand_pkg is
         -- Use the same weight for each value in the range -> Not possible to know every value within the range
         elsif v_mode = INDIVIDUAL_WEIGHT then
           alert(TB_ERROR, v_proc_call.all & "=> INDIVIDUAL_WEIGHT not supported for time type", priv_scope);
+          deallocate(v_proc_call);
           return v_ret;
         end if;
         v_acc_weighted_vector(i) := v_acc_weight;
       end loop;
       if v_acc_weight = 0 then
         alert(TB_ERROR, v_proc_call.all & "=> The total weight of the values must be greater than 0", priv_scope);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -6241,6 +6432,11 @@ package body rand_pkg is
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_range([" & to_string(min_value) & ":" & to_string(max_value) & "])";
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_range_int(v_vendor_var_id, min_value, max_value, 0);
+        return;
+      end if;
       -- Check only integer constraints have been configured
       if not (check_configured_constraints("INTEGER", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6262,6 +6458,11 @@ package body rand_pkg is
       constant value        : in integer;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_range_int(v_vendor_var_id, value, value, 0);
+        return;
+      end if;
       add_val((0 => value), msg_id_panel);
     end procedure;
 
@@ -6270,6 +6471,11 @@ package body rand_pkg is
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_val" & to_string(set_of_values);
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_vals_int(v_vendor_var_id, set_of_values);
+        return;
+      end if;
       -- Check only integer constraints have been configured
       if not (check_configured_constraints("INTEGER", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6287,6 +6493,11 @@ package body rand_pkg is
       constant value        : in integer;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_range_int(v_vendor_var_id, value, value, 0);
+        return;
+      end if;
       excl_val((0 => value), msg_id_panel);
     end procedure;
 
@@ -6295,6 +6506,11 @@ package body rand_pkg is
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "excl_val" & to_string(set_of_values);
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_vals_int(v_vendor_var_id, set_of_values);
+        return;
+      end if;
       -- Check only integer constraints have been configured
       if not (check_configured_constraints("INTEGER", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6304,12 +6520,31 @@ package body rand_pkg is
       priv_int_constraints.val_excl(priv_int_constraints.val_excl'length - 1 - (set_of_values'length - 1) to priv_int_constraints.val_excl'length - 1) := set_of_values;
     end procedure;
 
+    -- Requires Questa One 2026.1 and newer
+    procedure excl_range(
+      constant min          : in integer;
+      constant max          : in integer;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
+    begin
+        if (C_VENDOR_EXTENSION_IS_ENABLED) then
+          check_and_initialize_vendor_varid(void);
+          vendor_add_exclude_range_int(v_vendor_var_id, min, max, 0);
+        else
+          alert(TB_ERROR, "Procedure excl_range() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        end if;
+    end procedure;
+
     procedure add_val_weight(
       constant value        : in integer;
       constant weight       : in natural;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_val_weight(" & to_string(value) & "," & to_string(weight) & ")";
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_add_range_weight_int(v_vendor_var_id, value, value, weight);
+        return;
+      end if;
       -- Check only integer constraints have been configured
       if not (check_configured_constraints("INTEGER", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6329,6 +6564,11 @@ package body rand_pkg is
       constant C_LOCAL_CALL  : string := "add_range_weight([" & to_string(min_value) & ":" & to_string(max_value) & "]," & to_string(weight) & return_string1_if_true_otherwise_string2("," & to_upper(to_string(mode)), "", mode /= NA) & ")";
       variable v_weight_mode : t_weight_mode;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_add_range_weight_int(v_vendor_var_id, min_value, max_value, weight);
+        return;
+      end if;
       -- Check only integer constraints have been configured
       if not (check_configured_constraints("INTEGER", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6343,6 +6583,32 @@ package body rand_pkg is
       priv_int_constraints.weighted(priv_int_constraints.weighted'length - 1) := (min_value, max_value, weight, v_weight_mode);
       priv_int_constraints.weighted_config                                    := true;
     end procedure;
+    
+    -- Requires Questa One 2026.1 and newer
+    procedure vector_sum_max(
+      constant max          : in integer;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
+    begin
+        if (C_VENDOR_EXTENSION_IS_ENABLED) then
+          check_and_initialize_vendor_varid(void);
+          vendor_add_vector_sum_max(v_vendor_var_id, max);
+        else
+          alert(TB_ERROR, "Procedure vector_sum_max() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        end if;
+    end procedure;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure vector_sum_min(
+      constant min          : in integer;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
+    begin
+        if (C_VENDOR_EXTENSION_IS_ENABLED) then
+          check_and_initialize_vendor_varid(void);
+          vendor_add_vector_sum_min(v_vendor_var_id, min);
+        else
+          alert(TB_ERROR, "Procedure vector_sum_min() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        end if;
+    end procedure;
 
     ------------------------------------------------------------
     -- Real constraints
@@ -6353,6 +6619,11 @@ package body rand_pkg is
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_range_real([" & format_real(min_value) & ":" & format_real(max_value) & "])";
     begin
+        if (C_VENDOR_EXTENSION_IS_ENABLED) then
+          check_and_initialize_vendor_varid(void);
+          vendor_add_include_range_real(v_vendor_var_id, min_value, max_value, 0);
+          return;
+        end if;
       -- Check only real constraints have been configured
       if not (check_configured_constraints("REAL", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6372,6 +6643,11 @@ package body rand_pkg is
       constant value        : in real;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_range_real(v_vendor_var_id, value, value, 0);
+        return;
+      end if;
       add_val_real((0 => value), msg_id_panel);
     end procedure;
 
@@ -6380,6 +6656,11 @@ package body rand_pkg is
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_val_real" & format_real(set_of_values);
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_vals_real(v_vendor_var_id, set_of_values);
+        return;
+      end if;
       -- Check only real constraints have been configured
       if not (check_configured_constraints("REAL", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6397,6 +6678,11 @@ package body rand_pkg is
       constant value        : in real;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_range_real(v_vendor_var_id, value, value, 0);
+        return;
+      end if;
       excl_val_real((0 => value), msg_id_panel);
     end procedure;
 
@@ -6405,6 +6691,11 @@ package body rand_pkg is
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "excl_val_real" & format_real(set_of_values);
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_vals_real(v_vendor_var_id, set_of_values);
+        return;
+      end if;
       -- Check only real constraints have been configured
       if not (check_configured_constraints("REAL", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6414,12 +6705,31 @@ package body rand_pkg is
       priv_real_constraints.val_excl(priv_real_constraints.val_excl'length - 1 - (set_of_values'length - 1) to priv_real_constraints.val_excl'length - 1) := set_of_values;
     end procedure;
 
+    -- Requires Questa One 2026.1 and newer
+    procedure excl_range_real(
+      constant min          : in real;
+      constant max          : in real;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
+    begin
+        if (C_VENDOR_EXTENSION_IS_ENABLED) then
+          check_and_initialize_vendor_varid(void);
+          vendor_add_exclude_range_real(v_vendor_var_id, min, max, 0);
+        else
+          alert(TB_ERROR, "Procedure excl_range_real() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        end if;
+    end procedure;
+
     procedure add_val_weight_real(
       constant value        : in real;
       constant weight       : in natural;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_val_weight_real(" & format_real(value) & "," & to_string(weight) & ")";
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_add_range_weight_real(v_vendor_var_id, value, value, weight);
+        return;
+      end if;
       -- Check only real constraints have been configured
       if not (check_configured_constraints("REAL", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6437,6 +6747,11 @@ package body rand_pkg is
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_range_weight_real([" & format_real(min_value) & ":" & format_real(max_value) & "]," & to_string(weight) & ")";
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_add_range_weight_real(v_vendor_var_id, min_value, max_value, weight);
+        return;
+      end if;
       -- Check only real constraints have been configured
       if not (check_configured_constraints("REAL", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6461,6 +6776,11 @@ package body rand_pkg is
       constant msg_id_panel    : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_range_time([" & to_string(min_value, get_time_unit(min_value)) & ":" & to_string(max_value, get_time_unit(max_value)) & "])";
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_range_time(v_vendor_var_id, min_value, max_value, 0);
+        return;
+      end if;
       -- Check only time constraints have been configured
       if not (check_configured_constraints("TIME", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6488,6 +6808,11 @@ package body rand_pkg is
       constant value        : in time;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_range_time(v_vendor_var_id, value, value, 0);
+        return;
+      end if;
       add_val_time((0 => value), msg_id_panel);
     end procedure;
 
@@ -6496,6 +6821,11 @@ package body rand_pkg is
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_val_time" & to_string(set_of_values);
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_vals_time(v_vendor_var_id, set_of_values);
+        return;
+      end if;
       -- Check only time constraints have been configured
       if not (check_configured_constraints("TIME", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6513,6 +6843,11 @@ package body rand_pkg is
       constant value        : in time;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_range_time(v_vendor_var_id, value, value, 0);
+        return;
+      end if;
       excl_val_time((0 => value), msg_id_panel);
     end procedure;
 
@@ -6521,6 +6856,11 @@ package body rand_pkg is
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "excl_val_time" & to_string(set_of_values);
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_vals_time(v_vendor_var_id, set_of_values);
+        return;
+      end if;
       -- Check only time constraints have been configured
       if not (check_configured_constraints("TIME", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6530,12 +6870,31 @@ package body rand_pkg is
       priv_time_constraints.val_excl(priv_time_constraints.val_excl'length - 1 - (set_of_values'length - 1) to priv_time_constraints.val_excl'length - 1) := set_of_values;
     end procedure;
 
+    -- Requires Questa One 2026.1 and newer
+    procedure excl_range_time(
+      constant min          : in time;
+      constant max          : in time;
+      constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
+    begin
+        if (C_VENDOR_EXTENSION_IS_ENABLED) then
+          check_and_initialize_vendor_varid(void);
+          vendor_add_exclude_range_time(v_vendor_var_id, min, max, 0);
+        else
+          alert(TB_ERROR, "Procedure excl_range_time() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        end if;
+    end procedure;
+
     procedure add_val_weight_time(
       constant value        : in time;
       constant weight       : in natural;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_val_weight_time(" & to_string(value, get_time_unit(value)) & "," & to_string(weight) & ")";
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_add_range_weight_time(v_vendor_var_id, value, value, weight);
+        return;
+      end if;
       -- Check only time constraints have been configured
       if not (check_configured_constraints("TIME", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6557,6 +6916,11 @@ package body rand_pkg is
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_range_weight_time([" & to_string(min_value, get_time_unit(min_value)) & ":" & to_string(max_value, get_time_unit(max_value)) & "]," & to_string(weight) & ")";
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_add_range_weight_time(v_vendor_var_id, min_value, max_value, weight);
+        return;
+      end if;
       -- Check only time constraints have been configured
       if not (check_configured_constraints("TIME", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6585,6 +6949,11 @@ package body rand_pkg is
       constant C_LOCAL_CALL : string := "add_range_unsigned([" & to_string(min_value, HEX, KEEP_LEADING_0, INCL_RADIX) & ":" & to_string(max_value, HEX, KEEP_LEADING_0, INCL_RADIX) & "])";
       alias C_MAX_LENGTH is C_RAND_MM_MAX_LONG_VECTOR_LENGTH;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_range_unsigned(v_vendor_var_id, min_value, max_value);
+        return;
+      end if;
       -- Check only unsigned constraints have been configured
       if not (check_configured_constraints("UNSIGNED", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6614,6 +6983,11 @@ package body rand_pkg is
       constant C_LOCAL_CALL : string := "add_range_signed([" & to_string(min_value, HEX, KEEP_LEADING_0, INCL_RADIX) & ":" & to_string(max_value, HEX, KEEP_LEADING_0, INCL_RADIX) & "])";
       alias C_MAX_LENGTH is C_RAND_MM_MAX_LONG_VECTOR_LENGTH;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_range_signed(v_vendor_var_id, min_value, max_value);
+        return;
+      end if;
       -- Check only signed constraints have been configured
       if not (check_configured_constraints("SIGNED", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6687,6 +7061,11 @@ package body rand_pkg is
       constant C_LOCAL_CALL : string := "clear_constraints()";
       variable v_proc_call  : line;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_clear_constraints(v_vendor_var_id);
+        return;
+      end if;
       create_proc_call(C_LOCAL_CALL, ext_proc_call, v_proc_call);
       log_proc_call(ID_RAND_CONF, v_proc_call.all, ext_proc_call, v_proc_call, msg_id_panel);
       DEALLOCATE(v_proc_call);
@@ -6774,6 +7153,10 @@ package body rand_pkg is
       variable v_num_ranges          : natural := priv_int_constraints.ran_incl'length;
       variable v_ret                 : integer;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        return vendor_randomize_int(v_vendor_var_id);
+      end if;
       create_proc_call(C_LOCAL_CALL_1, ext_proc_call, v_proc_call);
       v_ran_incl_configured := '1' when v_num_ranges > 0 else '0';
       v_val_incl_configured := '1' when priv_int_constraints.val_incl'length > 0 else '0';
@@ -6781,6 +7164,7 @@ package body rand_pkg is
 
       -- Check only integer constraints are configured
       if not (check_configured_constraints("INTEGER", v_proc_call.all, is_config => false)) then
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -6796,6 +7180,7 @@ package body rand_pkg is
                     priv_scope, ID_NEVER, caller_name => C_LOCAL_CALL_2);
         v_ret := rand_range_weight_mode(priv_int_constraints.weighted.all, msg_id_panel, C_LOCAL_CALL_2);
         log(ID_RAND_GEN, C_LOCAL_CALL_2 & "=> " & to_string(v_ret), priv_scope, msg_id_panel);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -6868,6 +7253,7 @@ package body rand_pkg is
         when others =>
           alert(TB_ERROR, v_proc_call.all & "=> Unexpected constraints: " & to_string(unsigned'(v_ran_incl_configured & v_val_incl_configured & v_val_excl_configured)), priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
       end case;
 
@@ -6896,6 +7282,10 @@ package body rand_pkg is
       variable v_num_ranges          : natural := priv_real_constraints.ran_incl'length;
       variable v_ret                 : real;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        return vendor_randomize_real(v_vendor_var_id);
+      end if;
       create_proc_call(C_LOCAL_CALL_1, ext_proc_call, v_proc_call);
       v_ran_incl_configured := '1' when v_num_ranges > 0 else '0';
       v_val_incl_configured := '1' when priv_real_constraints.val_incl'length > 0 else '0';
@@ -6903,6 +7293,7 @@ package body rand_pkg is
 
       -- Check only real constraints are configured
       if not (check_configured_constraints("REAL", v_proc_call.all, is_config => false)) then
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if priv_cyclic_mode = CYCLIC then
@@ -6919,6 +7310,7 @@ package body rand_pkg is
                     priv_scope, ID_NEVER, caller_name => C_LOCAL_CALL_2);
         v_ret := rand_range_weight_mode(priv_real_constraints.weighted.all, msg_id_panel, C_LOCAL_CALL_2);
         log(ID_RAND_GEN, C_LOCAL_CALL_2 & "=> " & to_string(v_ret), priv_scope, msg_id_panel);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -6948,6 +7340,7 @@ package body rand_pkg is
         when "001" =>
           alert(TB_ERROR, v_proc_call.all & "=> Real random generator needs ""include"" constraints", priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
         ----------------------------------------
         -- RANGE + SET OF VALUES
@@ -6990,11 +7383,13 @@ package body rand_pkg is
         when "000" =>
           alert(TB_ERROR, v_proc_call.all & "=> Real random generator must be constrained", priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
 
         when others =>
           alert(TB_ERROR, v_proc_call.all & "=> Unexpected constraints: " & to_string(unsigned'(v_ran_incl_configured & v_val_incl_configured & v_val_excl_configured)), priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
       end case;
 
@@ -7023,6 +7418,10 @@ package body rand_pkg is
       variable v_num_ranges          : natural := priv_time_constraints.ran_incl'length;
       variable v_ret                 : time;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        return vendor_randomize_time(v_vendor_var_id);
+      end if;
       create_proc_call(C_LOCAL_CALL_1, ext_proc_call, v_proc_call);
       v_ran_incl_configured := '1' when v_num_ranges > 0 else '0';
       v_val_incl_configured := '1' when priv_time_constraints.val_incl'length > 0 else '0';
@@ -7030,10 +7429,12 @@ package body rand_pkg is
 
       -- Check only time constraints are configured
       if not (check_configured_constraints("TIME", v_proc_call.all, is_config => false)) then
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if priv_rand_dist = GAUSSIAN then
         alert(TB_ERROR, v_proc_call.all & "=> " & to_upper(to_string(priv_rand_dist)) & " distribution not supported for time type.", priv_scope);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
       if priv_cyclic_mode = CYCLIC then
@@ -7050,6 +7451,7 @@ package body rand_pkg is
                     priv_scope, ID_NEVER, caller_name => C_LOCAL_CALL_2);
         v_ret := rand_range_weight_mode(priv_time_constraints.weighted.all, priv_weight_time_resolution, msg_id_panel, C_LOCAL_CALL_2);
         log(ID_RAND_GEN, C_LOCAL_CALL_2 & "=> " & to_string(v_ret, get_time_unit(v_ret)), priv_scope, msg_id_panel);
+        deallocate(v_proc_call);
         return v_ret;
       end if;
 
@@ -7079,6 +7481,7 @@ package body rand_pkg is
         when "001" =>
           alert(TB_ERROR, v_proc_call.all & "=> Time random generator needs ""include"" constraints", priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
         ----------------------------------------
         -- RANGE + SET OF VALUES
@@ -7121,11 +7524,13 @@ package body rand_pkg is
         when "000" =>
           alert(TB_ERROR, v_proc_call.all & "=> Time random generator must be constrained", priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
 
         when others =>
           alert(TB_ERROR, v_proc_call.all & "=> Unexpected constraints: " & to_string(unsigned'(v_ran_incl_configured & v_val_incl_configured & v_val_excl_configured)), priv_scope);
           priv_ret_valid := false;
+          deallocate(v_proc_call);
           return v_ret;
       end case;
 
@@ -7149,6 +7554,12 @@ package body rand_pkg is
     begin
       v_val_incl_configured := '1' when priv_int_constraints.val_incl'length > 0 else '0';
       v_val_excl_configured := '1' when priv_int_constraints.val_excl'length > 0 else '0';
+
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randomize_int_array(v_vendor_var_id, length, v_ret);
+        return v_ret;
+      end if;
 
       -- Check only integer constraints are configured
       if not (check_configured_constraints("INTEGER", C_LOCAL_CALL_1, is_config => false)) then
@@ -7217,6 +7628,12 @@ package body rand_pkg is
     begin
       v_val_incl_configured := '1' when priv_real_constraints.val_incl'length > 0 else '0';
       v_val_excl_configured := '1' when priv_real_constraints.val_excl'length > 0 else '0';
+
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randomize_real_array(v_vendor_var_id, length, v_ret);
+        return v_ret;
+      end if;
 
       -- Check only real constraints are configured
       if not (check_configured_constraints("REAL", C_LOCAL_CALL_1, is_config => false)) then
@@ -7290,6 +7707,12 @@ package body rand_pkg is
       v_val_incl_configured := '1' when priv_time_constraints.val_incl'length > 0 else '0';
       v_val_excl_configured := '1' when priv_time_constraints.val_excl'length > 0 else '0';
 
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randomize_time_array(v_vendor_var_id, length, v_ret);
+        return v_ret;
+      end if;
+
       -- Check only time constraints are configured
       if not (check_configured_constraints("TIME", C_LOCAL_CALL_1, is_config => false)) then
         return v_ret;
@@ -7353,6 +7776,12 @@ package body rand_pkg is
       variable v_ret                     : unsigned(length - 1 downto 0);
       variable v_check_ok                : boolean := true;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randomize_unsigned(v_vendor_var_id, length, v_ret);
+        return v_ret;
+      end if;
+
       v_ran_incl_configured     := '1' when priv_int_constraints.ran_incl'length > 0 else '0';
       v_val_incl_configured     := '1' when priv_int_constraints.val_incl'length > 0 else '0';
       v_val_excl_configured     := '1' when priv_int_constraints.val_excl'length > 0 else '0';
@@ -7467,6 +7896,12 @@ package body rand_pkg is
       variable v_ret                     : signed(length - 1 downto 0);
       variable v_check_ok                : boolean := true;
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randomize_signed(v_vendor_var_id, length, v_ret);
+        return v_ret;
+      end if;
+
       v_ran_incl_configured     := '1' when priv_int_constraints.ran_incl'length > 0 else '0';
       v_val_incl_configured     := '1' when priv_int_constraints.val_incl'length > 0 else '0';
       v_val_excl_configured     := '1' when priv_int_constraints.val_excl'length > 0 else '0';
@@ -7571,10 +8006,283 @@ package body rand_pkg is
       constant msg_id_panel : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return std_logic_vector is
       variable v_ret : unsigned(length - 1 downto 0);
+      variable vendor_v_ret : std_logic_vector(length - 1 downto 0);
     begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randomize_slv(v_vendor_var_id, length, vendor_v_ret);
+        return vendor_v_ret;
+      end if;
+
       v_ret := randm(length, msg_id_panel, "slv");
       return std_logic_vector(v_ret);
     end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant VOID : t_void)
+    return integer is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        return vendor_randvar_get_value_int(v_vendor_var_id);
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return 0;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant VOID : t_void)
+    return real is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        return vendor_randvar_get_value_real(v_vendor_var_id);
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return 0.0;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant VOID : t_void)
+    return time is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        return vendor_randvar_get_value_time(v_vendor_var_id);
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return 0 ns;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant length : positive)
+    return integer_vector is
+      variable retval : integer_vector(0 to length-1);
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_get_value_int_array(v_vendor_var_id, retval);
+        return retval;
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return retval;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant length : positive)
+    return real_vector is
+      variable retval : real_vector(0 to length-1);
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_get_value_real_array(v_vendor_var_id, retval);
+        return retval;
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return retval;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant length : positive)
+    return time_vector is
+      variable retval : time_vector(0 to length-1);
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_get_value_time_array(v_vendor_var_id, retval);
+        return retval;
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return retval;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant length : positive)
+    return signed is
+      variable retval : signed(length-1 downto 0);
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_get_value_signed(v_vendor_var_id, retval);
+        return retval;
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return retval;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant length : positive)
+    return unsigned is
+      variable retval : unsigned(length-1 downto 0);
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_get_value_unsigned(v_vendor_var_id, retval);
+        return retval;
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return retval;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function get_value(
+      constant length : positive)
+    return std_logic_vector is
+      variable retval : std_logic_vector(length-1 downto 0);
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_get_value_slv(v_vendor_var_id, retval);
+        return retval;
+      else
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return retval;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    impure function create_rand(
+      constant VOID : t_void)
+    return integer is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        return v_vendor_var_id;
+      else
+        alert(TB_ERROR, "Function create_rand() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return 0;
+      end if;
+    end function;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure link(
+      constant op   : t_relational_operator;
+      constant var2 : integer) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_add_link(v_vendor_var_id, var2, t_relational_operator'pos(op));
+        return;
+      else
+        alert(TB_ERROR, "Procedure link() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return;
+      end if;
+    end procedure;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure link(
+      constant arith_op        : t_arithmetic_operator;
+      constant var2            : integer;
+      constant op              : t_relational_operator;
+      constant val_or_var_id_3 : integer;
+      constant is_var_id_3     : boolean := false) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_add_link2(v_vendor_var_id, var2, t_relational_operator'pos(op), t_arithmetic_operator'pos(arith_op), val_or_var_id_3, boolean'pos(is_var_id_3));
+        return;
+      end if;
+    end procedure;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure unlink(
+      constant var2: integer) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_delete_link(v_vendor_var_id, var2);
+        return;
+      else
+        alert(TB_ERROR, "Procedure link() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return;
+      end if;
+    end procedure;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure unlink(
+      constant VOID: t_void) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_delete_link(v_vendor_var_id, -1);
+        return;
+      else
+        alert(TB_ERROR, "Procedure unlink() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return;
+      end if;
+    end procedure;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure nonzero_bitwise_and(
+      constant mask : integer) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_nonzero_bitwise_and(v_vendor_var_id, mask);
+        return;
+      else
+        alert(TB_ERROR, "Procedure nonzero_bitwise_and() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return;
+      end if;
+    end procedure;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure zero_bitwise_and(
+      constant mask : integer) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_zero_bitwise_and(v_vendor_var_id, mask);
+        return;
+      else
+        alert(TB_ERROR, "Procedure zero_bitwise_and() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return;
+      end if;
+    end procedure;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure force_bits_to(
+      constant mask : string) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_force_bits_to(v_vendor_var_id, mask);
+        return;
+      else
+        alert(TB_ERROR, "Procedure force_bits_to() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return;
+      end if;
+    end procedure;
+
+    -- Requires Questa One 2026.1 and newer
+    procedure one_hot(
+      constant VOID : t_void) is
+    begin
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_randvar_one_hot(v_vendor_var_id);
+        return;
+      else
+        alert(TB_ERROR, "Procedure one_hot() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        return;
+      end if;
+    end procedure;
 
   end protected body t_rand;
 

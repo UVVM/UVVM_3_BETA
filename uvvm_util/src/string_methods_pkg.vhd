@@ -14,6 +14,20 @@
 -- Description   : See library quick reference (under 'doc') and README-file(s)
 ------------------------------------------------------------------------------------------
 
+----------------------------------------------------------------------
+-- Protected type: t_log_destination
+----------------------------------------------------------------------
+use work.types_pkg.all;
+
+package protected_log_destination_pkg is new work.protected_generic_types_pkg
+  generic map(
+    t_generic_element => t_log_destination,
+    c_generic_default => CONSOLE_AND_LOG
+  );
+
+--================================================================================================================================
+--  String package
+--================================================================================================================================
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -25,8 +39,11 @@ use ieee.math_real.all;
 
 use work.types_pkg.all;
 use work.adaptations_pkg.all;
+use work.protected_log_destination_pkg.all;
 
 package string_methods_pkg is
+
+  shared variable shared_default_log_destination : work.protected_log_destination_pkg.t_generic;
 
   -- Need a low level "alert" in the form of a simple assertion (as string handling may also fail)
   procedure bitvis_assert(
@@ -283,6 +300,13 @@ package string_methods_pkg is
     prefix : t_radix_prefix := EXCL_RADIX -- Insert radix prefix in string?
   ) return string;
 
+  impure function to_string(
+    val    : t_positive_vector;
+    radix  : t_radix        := DEC;
+    format : t_format_zeros := SKIP_LEADING_0; -- | KEEP_LEADING_0
+    prefix : t_radix_prefix := EXCL_RADIX -- Insert radix prefix in string?
+  ) return string;
+
   function to_string(
     val : real_vector
   ) return string;
@@ -318,16 +342,6 @@ package string_methods_pkg is
     justified : side := right
   ) return string;
 
-  procedure to_string(
-    val   : t_alert_attention_counters;
-    order : t_order := FINAL
-  );
-
-  procedure to_string(
-    val   : t_check_counters_array;
-    order : t_order := FINAL
-  );
-
   function ascii_to_char(
     ascii_pos   : integer range 0 to 255;
     ascii_allow : t_ascii_allow := ALLOW_ALL
@@ -356,6 +370,17 @@ package string_methods_pkg is
   function get_basename(
     constant path : string
   ) return string;
+
+  procedure tee_and_keep_line(
+    file     file_handle :       text;
+    variable my_line     : inout line
+  );
+
+  procedure write_line_to_log_destination(
+    variable log_line        : inout line;
+    constant log_destination : in t_log_destination := shared_default_log_destination.get(VOID);
+    constant log_file_name   : in string            := C_LOG_FILE_NAME;
+    constant open_mode       : in file_open_kind    := append_mode);
 
 end package string_methods_pkg;
 
@@ -410,18 +435,19 @@ package body string_methods_pkg is
     width : natural;
     side  : side := LEFT
   ) return string is
-    variable v_result : string(1 to maximum(1, width));
+    constant C_VAL_NORMALISED : string(1 to val'length) := val;
+    variable v_result         : string(1 to maximum(1, width));
   begin
     if (width = 0) then
       return "";
-    elsif (width <= val'length) then
-      return val(1 to width);
+    elsif (width <= C_VAL_NORMALISED'length) then
+      return C_VAL_NORMALISED(1 to width);
     else
       v_result := (others => char);
       if side = LEFT then
-        v_result(1 to val'length) := val;
+        v_result(1 to C_VAL_NORMALISED'length) := C_VAL_NORMALISED;
       else
-        v_result(v_result'length - val'length + 1 to v_result'length) := val;
+        v_result(v_result'length - C_VAL_NORMALISED'length + 1 to v_result'length) := C_VAL_NORMALISED;
       end if;
     end if;
     return v_result;
@@ -434,21 +460,22 @@ package body string_methods_pkg is
     justified : side            := RIGHT;
     format    : t_format_string := AS_IS -- No defaults on 4 first param - to avoid ambiguity with std.textio
   ) return string is
-    constant C_VAL_LENGTH : natural            := val'length;
-    variable v_result     : string(1 to width) := (others => ' ');
+    constant C_VAL_LENGTH     : natural                   := val'length;
+    constant C_VAL_NORMALISED : string(1 to C_VAL_LENGTH) := val;
+    variable v_result         : string(1 to width)        := (others => ' ');
   begin
     -- return val if width is too small
     if C_VAL_LENGTH >= width then
       if (format = TRUNCATE) then
-        return val(1 to width);
+        return C_VAL_NORMALISED(1 to width);
       else
-        return val;
+        return C_VAL_NORMALISED;
       end if;
     end if;
     if justified = left then
-      v_result(1 to C_VAL_LENGTH) := val;
+      v_result(1 to C_VAL_LENGTH) := C_VAL_NORMALISED;
     elsif justified = right then
-      v_result(width - C_VAL_LENGTH + 1 to width) := val;
+      v_result(width - C_VAL_LENGTH + 1 to width) := C_VAL_NORMALISED;
     end if;
     return v_result;
   end function;
@@ -734,6 +761,7 @@ package body string_methods_pkg is
       write(v_msg_line, string'(" "));
     end if;
     bitvis_assert(v_line'length > 0, ERROR, "No process name found", "get_process_name_from_instance_name()");
+    deallocate(v_msg_line);
     return return_and_deallocate;
   end;
 
@@ -761,6 +789,7 @@ package body string_methods_pkg is
       write(v_msg_line, string'(" "));
     end if;
     bitvis_assert(v_line'length > 0, ERROR, "No entity name found", "get_entity_name_from_instance_name()");
+    deallocate(v_msg_line);
     return return_and_deallocate;
   end;
 
@@ -809,36 +838,37 @@ package body string_methods_pkg is
   function replace_backslash_n_with_lf(
     source : string
   ) return string is
-    variable v_source_idx : natural := 0;
-    variable v_dest_idx   : natural := 0;
-    variable v_dest       : string(1 to source'length);
+    constant C_SOURCE_NORMALISED  : string(1 to source'length) := source;
+    variable v_source_idx         : natural := 0;
+    variable v_dest_idx           : natural := 0;
+    variable v_dest               : string(1 to source'length);
   begin
-    if source'length = 0 then
+    if C_SOURCE_NORMALISED'length = 0 then
       return "";
     else
       if C_USE_BACKSLASH_N_AS_LF then
         loop
           v_source_idx := v_source_idx + 1;
           v_dest_idx   := v_dest_idx + 1;
-          if (v_source_idx < source'length) then
-            if (source(v_source_idx to v_source_idx + 1) /= "\n") then
-              v_dest(v_dest_idx) := source(v_source_idx);
+          if (v_source_idx < C_SOURCE_NORMALISED'length) then
+            if (C_SOURCE_NORMALISED(v_source_idx to v_source_idx + 1) /= "\n") then
+              v_dest(v_dest_idx) := C_SOURCE_NORMALISED(v_source_idx);
             else
               v_dest(v_dest_idx) := LF;
               v_source_idx       := v_source_idx + 1; -- Additional increment as two chars (\n) are consumed
-              if (v_source_idx = source'length) then
+              if (v_source_idx = C_SOURCE_NORMALISED'length) then
                 exit;
               end if;
             end if;
           else
             -- Final character in string
-            v_dest(v_dest_idx) := source(v_source_idx);
+            v_dest(v_dest_idx) := C_SOURCE_NORMALISED(v_source_idx);
             exit;
           end if;
         end loop;
       else
-        v_dest     := source;
-        v_dest_idx := source'length;
+        v_dest     := C_SOURCE_NORMALISED;
+        v_dest_idx := C_SOURCE_NORMALISED'length;
       end if;
       return v_dest(1 to v_dest_idx);
     end if;
@@ -847,16 +877,17 @@ package body string_methods_pkg is
   function replace_backslash_r_with_lf(
     source : string
   ) return string is
-    variable v_source_idx : natural := 0;
-    variable v_dest_idx   : natural := 0;
-    variable v_dest       : string(1 to source'length);
+    constant C_SOURCE_NORMALISED  : string(1 to source'length) := source;
+    variable v_source_idx         : natural := 0;
+    variable v_dest_idx           : natural := 0;
+    variable v_dest               : string(1 to source'length);
   begin
-    if source'length = 0 then
+    if C_SOURCE_NORMALISED'length = 0 then
       return "";
     else
       if C_USE_BACKSLASH_R_AS_LF then
         loop
-          if (source(v_source_idx to v_source_idx + 1) = "\r") then
+          if (C_SOURCE_NORMALISED(v_source_idx to v_source_idx + 1) = "\r") then
             v_dest_idx         := v_dest_idx + 1;
             v_dest(v_dest_idx) := LF;
             v_source_idx       := v_source_idx + 2;
@@ -875,11 +906,12 @@ package body string_methods_pkg is
     source : string;
     num    : natural
   ) return string is
+    constant C_SOURCE_NORMALISED  : string(1 to source'length) := source;
   begin
-    if source'length <= num then
+    if C_SOURCE_NORMALISED'length <= num then
       return "";
     else
-      return source(1 + num to source'right);
+      return C_SOURCE_NORMALISED(1 + num to C_SOURCE_NORMALISED'right);
     end if;
   end;
 
@@ -896,8 +928,7 @@ package body string_methods_pkg is
     write(v_text_lines, text_string);
     wrap_lines(v_text_lines, alignment_pos1, alignment_pos2, line_width);
     v_result_width                := v_text_lines'length;
-    bitvis_assert(v_result_width <= v_result'length, FAILURE,
-                  " String is too long after wrapping. Increase v_result string size.", "wrap_lines()");
+    bitvis_assert(v_result_width  <= v_result'length, FAILURE, " String is too long after wrapping. Increase v_result string size.", "wrap_lines()");
     v_result(1 to v_result_width) := v_text_lines.all;
     deallocate(v_text_lines);
     return v_result(1 to v_result_width);
@@ -1500,6 +1531,16 @@ package body string_methods_pkg is
     return to_string(integer_vector(val), radix, format, prefix);
   end function;
 
+  impure function to_string(
+    val    : t_positive_vector;
+    radix  : t_radix        := DEC;
+    format : t_format_zeros := SKIP_LEADING_0; -- | KEEP_LEADING_0
+    prefix : t_radix_prefix := EXCL_RADIX -- Insert radix prefix in string?
+  ) return string is
+  begin
+    return to_string(integer_vector(val), radix, format, prefix);
+  end function;
+
   function to_string(
     val : real_vector
   ) return string is
@@ -1611,129 +1652,6 @@ package body string_methods_pkg is
     return to_upper(justify(C_INNER_STR, justified, width));
   end function;
 
-  procedure to_string(
-    val   : t_alert_attention_counters;
-    order : t_order := FINAL
-  ) is
-    variable v_line                            : line;
-    variable v_line_copy                       : line;
-    variable v_more_than_expected_alerts       : boolean := false;
-    variable v_less_than_expected_alerts       : boolean := false;
-    variable v_more_than_expected_minor_alerts : boolean := false;
-    variable v_less_than_expected_minor_alerts : boolean := false;
-    constant C_PREFIX                          : string  := C_LOG_PREFIX & "     ";
-
-    -- NOTE, TB_NOTE, WARNING, TB_WARNING, MANUAL_CHECK
-  begin
-    if order = INTERMEDIATE then
-      write(v_line,
-            LF &
-            fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
-            "*** INTERMEDIATE SUMMARY OF ALL ALERTS ***" & LF &
-            fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
-            "                          REGARDED   EXPECTED  IGNORED      Comment?" & LF);
-    else                                -- order=FINAL
-      write(v_line,
-            LF & fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
-            "*** FINAL SUMMARY OF ALL ALERTS ***" & LF &
-            fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
-            "                          REGARDED   EXPECTED  IGNORED      Comment?" & LF);
-    end if;
-
-    for i in NOTE to t_alert_level'right loop
-      write(v_line, "          " & to_upper(to_string(i, 13, LEFT)) & ": "); -- Severity
-      for j in t_attention'left to t_attention'right loop
-        write(v_line, to_string(integer'(val(i)(j)), 6, RIGHT, KEEP_LEADING_SPACE) & "    ");
-      end loop;
-      if (val(i)(REGARD) = val(i)(EXPECT)) then
-        write(v_line, "     ok" & LF);
-      else
-        write(v_line, "     *** " & to_string(i, 0) & " ***" & LF);
-        if (i > MANUAL_CHECK) then
-          if (val(i)(REGARD) < val(i)(EXPECT)) then
-            v_less_than_expected_alerts := true;
-          else
-            v_more_than_expected_alerts := true;
-          end if;
-        else
-          if (val(i)(REGARD) < val(i)(EXPECT)) then
-            v_less_than_expected_minor_alerts := true;
-          else
-            v_more_than_expected_minor_alerts := true;
-          end if;
-        end if;
-      end if;
-    end loop;
-    write(v_line, fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF);
-    -- Print a conclusion when called from the FINAL part of the test sequencer
-    -- but not when called from in the middle of the test sequence (order=INTERMEDIATE)
-    if order = FINAL then
-      if v_more_than_expected_alerts then
-        write(v_line, ">> Simulation FAILED, with unexpected serious alert(s)" & LF);
-      elsif v_less_than_expected_alerts then
-        write(v_line, ">> Simulation FAILED: Mismatch between counted and expected serious alerts" & LF);
-      elsif v_more_than_expected_minor_alerts or v_less_than_expected_minor_alerts then
-        write(v_line, ">> Simulation SUCCESS: No mismatch between counted and expected serious alerts, but mismatch in minor alerts" & LF);
-      else
-        write(v_line, ">> Simulation SUCCESS: No mismatch between counted and expected serious alerts" & LF);
-      end if;
-      write(v_line, fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF & LF);
-    end if;
-
-    wrap_lines(v_line, 1, 1, C_LOG_LINE_WIDTH - C_PREFIX'length);
-    prefix_lines(v_line, C_PREFIX);
-
-    -- Write the info string to the target file
-    write(v_line_copy, v_line.all);     -- copy line
-    writeline(OUTPUT, v_line);
-    writeline(LOG_FILE, v_line_copy);
-    deallocate(v_line);
-    deallocate(v_line_copy);
-  end;
-
-  procedure to_string(
-    val   : t_check_counters_array;
-    order : t_order := FINAL
-  ) is
-    variable v_line                      : line;
-    variable v_line_copy                 : line;
-    variable v_more_than_expected_alerts : boolean := false;
-    variable v_less_than_expected_alerts : boolean := false;
-    constant C_PREFIX                    : string  := C_LOG_PREFIX & "     ";
-  begin
-    if order = INTERMEDIATE then
-      write(v_line,
-            LF &
-            fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
-            "*** INTERMEDIATE SUMMARY OF ALL CHECK COUNTERS ***" & LF &
-            fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF);
-    else                                -- order=FINAL
-      write(v_line,
-            LF &
-            fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF &
-            "*** FINAL SUMMARY OF ALL CHECK COUNTERS ***" & LF &
-            fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF);
-    end if;
-
-    for i in CHECK_VALUE to t_check_type'right loop
-      write(v_line, "          " & to_upper(to_string(i, 22, LEFT)) & ": ");
-      write(v_line, to_string(integer'(val(i)), 10, RIGHT, KEEP_LEADING_SPACE) & "    ");
-      write(v_line, "" & LF);
-    end loop;
-
-    write(v_line, fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF & LF);
-
-    wrap_lines(v_line, 1, 1, C_LOG_LINE_WIDTH - C_PREFIX'length);
-    prefix_lines(v_line, C_PREFIX);
-
-    -- Write the info string to the target file
-    write(v_line_copy, v_line.all);     -- copy line
-    writeline(OUTPUT, v_line);
-    writeline(LOG_FILE, v_line_copy);
-    deallocate(v_line);
-    deallocate(v_line_copy);
-  end;
-
   -- Convert from ASCII to character
   -- Inputs:
   -- ascii_pos (integer) : ASCII number input
@@ -1815,7 +1733,9 @@ package body string_methods_pkg is
   -- Returns a string with a timestamp and a text. Used in report headers
   function timestamp_header(
     value : time;
-    txt   : string) return string is
+    txt   : string
+  ) return string is
+    constant C_TXT_NORMALISED  : string(1 to txt'length) := txt;
     variable v_line            : line;
     variable v_delimiter_pos   : natural;
     variable v_timestamp_width : natural;
@@ -1843,8 +1763,8 @@ package body string_methods_pkg is
     v_result(v_timestamp_width to v_timestamp_width) := " ";
 
     -- add time string to return string
-    v_return := v_result(1 to v_timestamp_width) & txt(1 to txt'length - v_timestamp_width);
-    return v_return(1 to txt'length);
+    v_return := v_result(1 to v_timestamp_width) & C_TXT_NORMALISED(1 to C_TXT_NORMALISED'length - v_timestamp_width);
+    return v_return(1 to C_TXT_NORMALISED'length);
   end function timestamp_header;
 
   -- Returns the the substring from the character after the last path
@@ -1888,5 +1808,64 @@ package body string_methods_pkg is
       end if;
     end if;
   end function get_basename;
+
+  -- Writes a line to a file handle without modifying the contents of the line
+  procedure tee_and_keep_line(
+    file     file_handle :       text;
+    variable my_line     : inout line
+  ) is
+    variable v_line : line;
+  begin
+    write(v_line, my_line.all);
+    writeline(file_handle, v_line);
+    deallocate(v_line);
+  end procedure;
+
+  -- Writes a line to the specified log destination and clears the content of the line
+  procedure write_line_to_log_destination(
+    variable log_line        : inout line;
+    constant log_destination : in t_log_destination := shared_default_log_destination.get(VOID);
+    constant log_file_name   : in string            := C_LOG_FILE_NAME;
+    constant open_mode       : in file_open_kind    := append_mode) is
+    file v_file_handle : text;
+  begin
+    if log_file_name'length = 0 and (log_destination = LOG_ONLY or log_destination = CONSOLE_AND_LOG) then
+      -- Output file specified, but file name was invalid.
+      bitvis_assert(false, ERROR, "log called with log_destination " & to_upper(to_string(log_destination)) & ", but log file name was empty.", "write_line_to_log_destination()");
+    elsif log_line = null then
+      -- Line specified is null
+      bitvis_assert(false, WARNING, "log called with NULL line", "write_line_to_log_destination()");
+    else
+      case log_destination is
+        when CONSOLE_AND_LOG =>
+          -- Write to console while keeping the line contents
+          tee_and_keep_line(OUTPUT, log_line);
+          -- Write to log and empty the line contents
+          if log_file_name = C_LOG_FILE_NAME then
+            -- If the log file is the default file, it is not necessary to open and close it again
+            writeline(LOG_FILE, log_line);
+          else
+            -- If the log file is a custom file name, the file will have to be opened
+            file_open(v_file_handle, log_file_name, open_mode);
+            writeline(v_file_handle, log_line);
+            file_close(v_file_handle);
+          end if;
+        when CONSOLE_ONLY =>
+          -- Write to console and empty the line contents
+          writeline(OUTPUT, log_line);
+        when LOG_ONLY =>
+          -- Write to log and empty the line contents
+          if log_file_name = C_LOG_FILE_NAME then
+            -- If the log file is the default file, it is not necessary to open and close it again
+            writeline(LOG_FILE, log_line);
+          else
+            -- If the log file is a custom file name, the file will have to be opened
+            file_open(v_file_handle, log_file_name, open_mode);
+            writeline(v_file_handle, log_line);
+            file_close(v_file_handle);
+          end if;
+      end case;
+    end if;
+  end procedure;
 
 end package body string_methods_pkg;

@@ -1,6 +1,6 @@
-#######################################################################################################################
+##################################################################################################################################
 Bitvis VIP UART
-#######################################################################################################################
+##################################################################################################################################
 
 .. _vip_uart_bfm:
 
@@ -8,7 +8,7 @@ Bitvis VIP UART
 BFM
 **********************************************************************************************************************************
 
-See `uart_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_uart/doc/uart_bfm_QuickRef.pdf>`_
+See `uart_bfm_QuickRef.pdf <../../../bitvis_vip_uart/doc/uart_bfm_QuickRef.pdf>`_
 
 .. _vip_uart_vvc:
 
@@ -16,12 +16,12 @@ See `uart_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_
 VVC
 **********************************************************************************************************************************
 
-See `uart_vvc_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_uart/doc/uart_vvc_QuickRef.pdf>`_
+See `uart_vvc_QuickRef.pdf <../../../bitvis_vip_uart/doc/uart_vvc_QuickRef.pdf>`_
 
 **********************************************************************************************************************************
 Monitor
 **********************************************************************************************************************************
 
-See `uart_monitor_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_uart/doc/uart_monitor_QuickRef.pdf>`_
+See `uart_monitor_QuickRef.pdf <../../../bitvis_vip_uart/doc/uart_monitor_QuickRef.pdf>`_
 
 .. include:: rst_snippets/ip_disclaimer.rst

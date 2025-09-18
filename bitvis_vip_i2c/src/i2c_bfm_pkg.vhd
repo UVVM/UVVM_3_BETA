@@ -1489,6 +1489,7 @@ package body i2c_bfm_pkg is
           else
             -- NACK
             alert(config.slave_mode_address_severity, v_proc_call.all & " wrong slave address!" & " Expected: " & to_string(config.slave_mode_address, BIN, KEEP_LEADING_0) & ", Got: " & to_string(unsigned(v_bfm_rx_data(7 downto 1)), BIN, KEEP_LEADING_0) & add_msg_delimiter(msg), scope);
+            deallocate(v_proc_call);
             return;
           end if;
         else
@@ -1507,6 +1508,7 @@ package body i2c_bfm_pkg is
           else
             -- NACK
             alert(config.slave_mode_address_severity, v_proc_call.all & " first byte was other than expected! " & add_msg_delimiter(msg), scope);
+            deallocate(v_proc_call);
             return;
           end if;
 
@@ -1522,6 +1524,7 @@ package body i2c_bfm_pkg is
           else
             -- NACK
             alert(config.slave_mode_address_severity, v_proc_call.all & " wrong slave address!" & " Expected: " & to_string(config.slave_mode_address, BIN, KEEP_LEADING_0) & ", Got: " & to_string(v_received_addr, BIN, KEEP_LEADING_0) & add_msg_delimiter(msg), scope);
+            deallocate(v_proc_call);
             return;
           end if;
 

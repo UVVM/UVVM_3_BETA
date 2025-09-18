@@ -28,6 +28,8 @@ library bitvis_vip_scoreboard;
 use bitvis_vip_scoreboard.generic_sb_support_pkg.all;
 
 use work.wishbone_bfm_pkg.all;
+use work.vvc_transaction_pkg.all;
+use work.vvc_transaction_shared_variables_pkg.all;
 use work.vvc_cmd_pkg.all;
 use work.vvc_cmd_shared_variables_pkg.all;
 use work.td_target_support_pkg.all;
@@ -81,7 +83,9 @@ architecture behave of wishbone_vvc is
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
   shared variable result_queue  : work.td_result_queue_pkg.t_generic_queue;
 
-  -- VVC Activity 
+  -- Transaction info
+  alias vvc_transaction_info_trigger        : std_logic is global_wishbone_vvc_transaction_trigger(GC_INSTANCE_IDX);
+  -- VVC Activity
   signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
@@ -294,6 +298,9 @@ begin
         -- VVC dedicated operations
         --===================================
         when WRITE =>
+          -- Set VVC Transaction Info
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_wishbone_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_SCOPE);
+
           -- Normalise address and data
           v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "wishbone_write() called with too wide address. " & v_cmd.msg);
           v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data", "v_normalised_data", "wishbone_write() called with too wide data. " & v_cmd.msg);
@@ -308,7 +315,13 @@ begin
                          msg_id_panel => v_msg_id_panel,
                          config       => v_vvc_config.bfm_config);
 
+          -- Update vvc transaction info
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_wishbone_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_SCOPE);
+
         when READ =>
+          -- Set VVC Transaction Info
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_wishbone_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_SCOPE);
+
           -- Normalise address and data
           v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "wishbone_read() called with too wide address. " & v_cmd.msg);
 
@@ -333,7 +346,13 @@ begin
                                                         result       => v_read_data);
           end if;
 
+          -- Update vvc transaction info
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_wishbone_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_read_data, COMPLETED, C_SCOPE);
+
         when CHECK =>
+          -- Set VVC Transaction Info
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_wishbone_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, IN_PROGRESS, C_SCOPE);
+
           -- Normalise address and data
           v_normalised_addr := normalize_and_check(v_cmd.addr, v_normalised_addr, ALLOW_WIDER_NARROWER, "v_cmd.addr", "v_normalised_addr", "wishbone_check() called with too wide address. " & v_cmd.msg);
           v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "v_cmd.data", "v_normalised_data", "wishbone_check() called with too wide data. " & v_cmd.msg);
@@ -349,6 +368,9 @@ begin
                          scope        => C_SCOPE,
                          msg_id_panel => v_msg_id_panel,
                          config       => v_vvc_config.bfm_config);
+
+          -- Update vvc transaction info
+          set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_wishbone_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd, v_vvc_config, COMPLETED, C_SCOPE);
 
         -- UVVM common operations
         --===================================
@@ -384,7 +406,8 @@ begin
 
       last_cmd_idx_executed <= v_cmd.cmd_idx;
 
-      wait for 0 ns; -- This delta cycle is needed to update last_cmd_idx_executed, other VVCs have it inside reset_vvc_transaction_info()
+      -- Set VVC Transaction Info back to default values
+      reset_vvc_transaction_info(shared_wishbone_vvc_transaction_info, GC_INSTANCE_IDX, NA, v_cmd);
     end loop;
   end process;
   --========================================================================================================================
@@ -447,5 +470,5 @@ begin
   end process p_unwanted_activity;
   --========================================================================================================================
 
-end behave;
+end architecture behave;
 

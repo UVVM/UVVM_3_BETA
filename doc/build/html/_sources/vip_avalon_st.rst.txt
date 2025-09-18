@@ -1,6 +1,6 @@
-#######################################################################################################################
+##################################################################################################################################
 Bitvis VIP Avalon-ST
-#######################################################################################################################
+##################################################################################################################################
 
 .. _vip_avalon_st_bfm:
 
@@ -8,7 +8,7 @@ Bitvis VIP Avalon-ST
 BFM
 **********************************************************************************************************************************
 
-See `avalon_st_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_avalon_st/doc/avalon_st_bfm_QuickRef.pdf>`_
+See `avalon_st_bfm_QuickRef.pdf <../../../bitvis_vip_avalon_st/doc/avalon_st_bfm_QuickRef.pdf>`_
 
 .. _vip_avalon_st_vvc:
 
@@ -16,6 +16,6 @@ See `avalon_st_bfm_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis
 VVC
 **********************************************************************************************************************************
 
-See `avalon_st_vvc_QuickRef.pdf <https://github.com/UVVM/UVVM/tree/master/bitvis_vip_avalon_st/doc/avalon_st_vvc_QuickRef.pdf>`_
+See `avalon_st_vvc_QuickRef.pdf <../../../bitvis_vip_avalon_st/doc/avalon_st_vvc_QuickRef.pdf>`_
 
 .. include:: rst_snippets/ip_disclaimer.rst

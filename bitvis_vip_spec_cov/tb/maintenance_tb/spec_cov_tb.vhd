@@ -273,7 +273,7 @@ begin
         log(ID_SEQUENCER, "Call cond_tick_off_req_cov(REQ_COND_TICKOFF) expecting tick off.", C_SCOPE);
         -- expecting tick off
         cond_tick_off_req_cov("REQ_COND_TICKOFF", PASS, "tick_off_req_cov(), with conditional disabled REQ_COND_TICKOFF tick off.", LIST_EVERY_TICKOFF, C_SCOPE);
-        
+
         -- End testcase
         finalize_req_cov(VOID);
       end if;
@@ -311,12 +311,12 @@ begin
       end if;
 
     ---==========================================================================
-        --
+    --
     -- The following tests are intended for verifying the run_spec_cov.py post 
     -- processing script, and will not explicitly test the spec_cov_pkg.
     --
     ---==========================================================================
-        
+
     elsif GC_TESTCASE = "test_mix_listed_input_reqs" then
         --
         -- This test will use req/map-files with a mix between the old and the new requirement listing formats.

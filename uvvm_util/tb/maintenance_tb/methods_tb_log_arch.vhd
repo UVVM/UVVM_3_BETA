@@ -317,11 +317,9 @@ begin
       set_log_destination(CONSOLE_AND_LOG, QUIET);
       log(ID_SEQUENCER, "Line to console and log", C_SCOPE);
 
-      -- Provoking errors
-      set_alert_stop_limit(TB_ERROR, 53);
+      -- Provoking errors. Since they are in string_methods_pkg the errors will be printed as assertions
       log(ID_SEQUENCER, "log with error", C_SCOPE, shared_msg_id_panel.get(VOID), CONSOLE_AND_LOG, "");
       log(ID_SEQUENCER, "log with error", C_SCOPE, shared_msg_id_panel.get(VOID), LOG_ONLY, "");
-      increment_expected_alerts(TB_ERROR, 2);
 
     ------------------------------------------------------------------------------------------------------------------------------
     elsif GC_TESTCASE = "log_header_formatting" then

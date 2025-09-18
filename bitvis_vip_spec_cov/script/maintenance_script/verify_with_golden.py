@@ -22,7 +22,7 @@ def main():
     for golden_list_item in golden_file_list:
         if golden_list_item not in filelist:
             print("Missing from file list: "+ golden_list_item)
-
+    
     failing_verify_file = []
 
     for filename in filelist:
@@ -48,9 +48,11 @@ def main():
                         failing_verify_file.append(filename)
                         error_found = True
                         break
-            else:
+            else: # Line number mismatch
                 failing_verify_file.append(filename)
                 error_found = True
+
+
 
             # Remove OK files
             if not(error_found):

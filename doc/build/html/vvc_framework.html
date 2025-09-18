@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VVC Framework &mdash; UVVM  documentation</title>
@@ -16,13 +16,13 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Protected types" href="protected_types.html" />
-    <link rel="prev" title="Optimized Randomization" href="optimized_rand.html" /> 
+    <link rel="next" title="t_vvc_operation" href="ti_vvc_framework_support_pkg.html" />
+    <link rel="prev" title="UVVM Assertions (BETA)" href="uvvm_assertions.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="rand_pkg_overview.html">Enhanced Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="func_cov_pkg_overview.html">Functional Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">VVC Framework</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#uvvm-methods">UVVM Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#await-uvvm-completion">await_uvvm_completion()</a></li>
@@ -80,6 +81,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#essential-mechanisms">Essential Mechanisms</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#libraries">Libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#context-files">Context files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#types">Types</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#t-vvc-result">t_vvc_result</a></li>
 </ul>
@@ -205,18 +207,40 @@
 <li class="toctree-l4"><a class="reference internal" href="#td-vvc-entity-support-pkg-vhd">td_vvc_entity_support_pkg.vhd</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#vvc-generator-script">VVC Generator script</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-script">Running the script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modifying-the-created-vhdl-files">Modifying the created VHDL files</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="protected_types.html">Protected types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ti-vvc-framework-support-package">TI VVC Framework Support Package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ti_vvc_framework_support_pkg.html">t_vvc_operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-direction">t_direction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-field-position">t_field_position</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-hvvc-to-bridge">t_hvvc_to_bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-bridge-to-hvvc">t_bridge_to_hvvc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-dut-if-field-config">t_dut_if_field_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-dut-if-field-config-array">t_dut_if_field_config_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-dut-if-field-config-direction-array">t_dut_if_field_config_direction_array</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ti-protected-types">TI Protected Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ti_protected_types_pkg.html">t_vvc_list</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="fifo_collection.html">UVVM FIFO Collection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="generic_queue.html">UVVM Generic Queue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon MM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="association_list.html">UVVM Association List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI-Lite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI-Stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI4-Lite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI4-Stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_clock_generator.html">Bitvis VIP Clock Generator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_error_injection.html">Bitvis VIP Error Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_ethernet.html">Bitvis VIP Ethernet</a></li>
@@ -230,8 +254,9 @@
 <li class="toctree-l1"><a class="reference internal" href="vip_spec_cov.html">Bitvis VIP Specification Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_spi.html">Bitvis VIP SPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 
         </div>
@@ -387,13 +412,14 @@ and at the end of the wait. The procedure will report an alert if not all comman
 The severity of this alert will be TB_ERROR. It is also possible to broadcast by setting vvc_select to ALL_VVCS (<a class="reference internal" href="types_pkg.html#t-vvc-select"><span class="std std-ref">t_vvc_select</span></a>)
 or to multicast using ALL_CHANNELS/ALL_INSTANCES (<a class="reference internal" href="#vvc-framework-broadcasting"><span class="std std-ref">multicast</span></a>.).</p>
 <p>To await the completion of one out of several VVCs in a group use the overload with the vvc_list. The vvc_list of type
-<a class="reference internal" href="protected_types.html#t-vvc-list"><span class="std std-ref">t_vvc_list</span></a> (protected type) is a local variable that needs to be declared in the sequencer. This overload will block
+<a class="reference internal" href="ti_protected_types_pkg.html#t-vvc-list"><span class="std std-ref">t_vvc_list</span></a> (protected type) is a local variable that needs to be declared in the sequencer. This overload will block
 the sequencer while waiting, but not the VVCs, so they can continue to receive commands from other sequencers.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <ul class="simple">
 <li><p>To use the vvc_list, the package <code class="docutils literal notranslate"><span class="pre">uvvm_vvc_framework.ti_protected_types_pkg.all</span></code> must be included in the testbench.</p></li>
-<li><p>The command with the vvc_list requires VVCs supporting the VVC activity register introduced in UVVM release v2020.05.19</p></li>
+<li><p>The command with the vvc_list requires VVCs supporting the VVC activity register introduced in UVVM release v2020.05.19.</p></li>
+<li><p>Combining old VVCs not supporting VVC activity register and new VVCs is not supported by await_completion().</p></li>
 </ul>
 </div>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">await_completion</span><span class="p">(</span><span class="n">vvc_target</span><span class="p">,</span><span class="w"> </span><span class="n">vvc_instance_idx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">vvc_channel</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="n">wanted_idx</span><span class="p">],</span><span class="w"> </span><span class="n">timeout</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">]])</span>
@@ -450,7 +476,7 @@ Default vvc_select is ALL_OF.</p></td>
 <tr class="row-odd"><td><p>constant</p></td>
 <td><p>vvc_list</p></td>
 <td><p>in</p></td>
-<td><p><a class="reference internal" href="protected_types.html#t-vvc-list"><span class="std std-ref">t_vvc_list</span></a></p></td>
+<td><p><a class="reference internal" href="ti_protected_types_pkg.html#t-vvc-list"><span class="std std-ref">t_vvc_list</span></a></p></td>
 <td><p>A list of protected type containing one or several VVC
 IDs (name, instance, channel). VVC IDs can be added to
 the VVC list by using the add_to_vvc_list() procedure.</p></td>
@@ -517,7 +543,7 @@ Default value is C_VVC_CMD_SCOPE_DEFAULT.</p></td>
 </section>
 <section id="add-to-vvc-list">
 <h3>add_to_vvc_list()<a class="headerlink" href="#add-to-vvc-list" title="Link to this heading"></a></h3>
-<p>Adds the VVC to a <a class="reference internal" href="protected_types.html#t-vvc-list"><span class="std std-ref">t_vvc_list</span></a>. The protected VVC list can be used with <code class="docutils literal notranslate"><span class="pre">await_completion()</span></code> to block the sequencer
+<p>Adds the VVC to a <a class="reference internal" href="ti_protected_types_pkg.html#t-vvc-list"><span class="std std-ref">t_vvc_list</span></a>. The protected VVC list can be used with <code class="docutils literal notranslate"><span class="pre">await_completion()</span></code> to block the sequencer
 while waiting for the completion of VVC commands. The vvc_list can be cleared using the <code class="docutils literal notranslate"><span class="pre">clear_list(VOID)</span></code> method.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">add_to_vvc_list</span><span class="p">(</span><span class="n">vvc_target</span><span class="p">,</span><span class="w"> </span><span class="n">vvc_instance_idx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">vvc_channel</span><span class="p">],</span><span class="w"> </span><span class="n">vvc_list</span><span class="p">)</span>
 </pre></div>
@@ -554,7 +580,7 @@ differentiate between VVCs.</p></td>
 <tr class="row-odd"><td><p>constant</p></td>
 <td><p>vvc_list</p></td>
 <td><p>in</p></td>
-<td><p><a class="reference internal" href="protected_types.html#t-vvc-list"><span class="std std-ref">t_vvc_list</span></a></p></td>
+<td><p><a class="reference internal" href="ti_protected_types_pkg.html#t-vvc-list"><span class="std std-ref">t_vvc_list</span></a></p></td>
 <td><p>A protected type list where the VVC IDs (name, instance,
 channel) are stored for use with await_completion() when
 waiting for several VVCs to finish command execution.</p></td>
@@ -1166,7 +1192,7 @@ reducing the number of command instructions needed in the testbench.</p>
 <p>This section explains some of the essential mechanisms necessary for running VVC Framework, in addition to helpful and important
 VVC status and configuration records which are accessible directly from the testbench.
 More details on the VVC Framework and the command mechanism can be found in the
-<a class="reference external" href="https://github.com/UVVM/UVVM/tree/master/uvvm_vvc_framework/doc/VVC_Framework_Manual.pdf">VVC Framework Manual</a>.</p>
+<a class="reference external" href="../../../uvvm_vvc_framework/doc/VVC_Framework_Manual.pdf">VVC Framework Manual</a>.</p>
 <section id="libraries">
 <h3>Libraries<a class="headerlink" href="#libraries" title="Link to this heading"></a></h3>
 <p>In order to use a VVC the following libraries need to be included:</p>
@@ -1175,9 +1201,38 @@ More details on the VVC Framework and the command mechanism can be found in the
 
 <span class="k">library</span><span class="w"> </span><span class="nn">uvvm_vvc_framework</span><span class="p">;</span>
 <span class="k">use</span><span class="w"> </span><span class="nn">uvvm_vvc_framework.ti_vvc_framework_support_pkg.</span><span class="k">all</span><span class="p">;</span>
-
-<span class="k">library</span><span class="w"> </span><span class="nn">bitvis_vip_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="context-files">
+<h3>Context files<a class="headerlink" href="#context-files" title="Link to this heading"></a></h3>
+<p>The context files are created to simplify the inclusion of necessary libraries used in UVVM.</p>
+<ul>
+<li><p>Each VVC has its own context file, which is located in <code class="docutils literal notranslate"><span class="pre">&lt;vip&gt;/src/vvc_context.vhd</span></code>.</p></li>
+<li><p>The utility library also has its own context file which includes all the packages in the utility library, and is located in
+<code class="docutils literal notranslate"><span class="pre">uvvm_util/src/uvvm_util_context.vhd</span></code>.</p></li>
+<li><p>There are also two “main” context files <code class="docutils literal notranslate"><span class="pre">misc/context/uvvm_support_context.vhd</span></code> and <code class="docutils literal notranslate"><span class="pre">misc/context/uvvm_all_context.vhd</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The UVVM support context file includes the UVVM functionality except for VVCs and BFMs, i.e. utility library, scoreboard,
+spec_cov, and UVVM assertions.</p></li>
+<li><p>The UVVM all context file includes all inclusive UVVM libraries, i.e. all VIPs, uvvm_vvc_frame_work, and uvvm_support_context.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>The usage of these context files are shown below:</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="k">library</span><span class="w"> </span><span class="nn">bitvis_vip_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="n">context</span><span class="w"> </span><span class="n">bitvis_vip_</span><span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="p">.</span><span class="n">vvc_context</span><span class="p">;</span>
+
+<span class="k">library</span><span class="w"> </span><span class="nn">uvvm_util</span><span class="p">;</span>
+<span class="n">context</span><span class="w"> </span><span class="n">uvvm_util</span><span class="p">.</span><span class="n">uvvm_util_context</span><span class="p">;</span>
+
+<span class="k">library</span><span class="w"> </span><span class="nn">uvvm_context</span><span class="p">;</span>
+<span class="n">context</span><span class="w"> </span><span class="n">uvvm_context</span><span class="p">.</span><span class="n">uvvm_support_context</span><span class="p">;</span>
+
+<span class="k">library</span><span class="w"> </span><span class="nn">uvvm_context</span><span class="p">;</span>
+<span class="n">context</span><span class="w"> </span><span class="n">uvvm_context</span><span class="p">.</span><span class="n">uvvm_all_context</span><span class="p">;</span>
 </pre></div>
 </div>
 </section>
@@ -1199,7 +1254,7 @@ different VVCs.</p>
 <section id="t-vvc-result">
 <span id="id4"></span><h4>t_vvc_result<a class="headerlink" href="#t-vvc-result" title="Link to this heading"></a></h4>
 <p>The common type t_vvc_result is always defined with the max length of fetched data that the VVC supports (see the definition of
-t_vvc_result in its corresponding vvc_cmd_pkg). Therefore it is recommended to define the range of the desired data output after
+t_vvc_result in its corresponding vvc_cmd_pkg.vhd). Therefore it is recommended to define the range of the desired data output after
 the fetch_result method has been completed.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">--Example:</span>
 <span class="k">variable</span><span class="w"> </span><span class="n">v_data</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="n">t_vvc_result</span><span class="p">;</span>
@@ -1293,10 +1348,10 @@ synchronizing VVCs in the test sequencer using the await_completion() method.</p
 <p>When using a wave viewer during simulation, the transaction shared variable provides helpful information regarding current VVC
 operation and transaction information such as address and data. Note that the accessible fields depend on the VVC and its
 implementation. An example of two SBI VVCs performing FIFO write operations, followed by check operations, is shown in Figure 1.</p>
-<figure class="align-center" id="id12">
+<figure class="align-center" id="id13">
 <a class="reference internal image-reference" href="_images/transaction_info_wave_view.png"><img alt="VVC transaction info waveview" src="_images/transaction_info_wave_view.png" style="width: 800pt;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 1 VVC Transaction info example</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+<p><span class="caption-text">Figure 1 VVC Transaction info example</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
@@ -1330,15 +1385,13 @@ of expected VVCs registered in the VVC activity register but will not have any e
 <tr class="row-even"><td><p>num_exp_vvc</p></td>
 <td><p>natural</p></td>
 <td><p>&lt;none&gt;</p></td>
-<td><div class="line-block">
-<div class="line">Expected number of VVCs which is expected to be registered in
-the VVC activity register (including any clock generator VVC).</div>
-<div class="line">Note 1: each channel is counted as an independent VVC expected
-to be registered in the VVC activity register.</div>
-<div class="line">Note 2: setting num_exp_vvc = 0 will disable checking of number
+<td><p>Expected number of VVCs which is expected to be registered in
+the VVC activity register (including any clock generator VVC).</p>
+<p>Note 1: each channel is counted as an independent VVC expected
+to be registered in the VVC activity register.</p>
+<p>Note 2: setting num_exp_vvc = 0 will disable checking of number
 of expected VVCs vs actual number of VVCs registered in the VVC
-activity register.</div>
-</div>
+activity register.</p>
 </td>
 </tr>
 <tr class="row-odd"><td><p>timeout</p></td>
@@ -1386,10 +1439,10 @@ changed to a different value. To disable this feature in the testbench, e.g. for
 <p>If multiple slave VVCs with a common bus are connected to the same master DUT as seen in Figure 2, unwanted activity detection
 will give alerts on the inactive slave VVCs. For instance, when the data is expected on I2C slave VVC 1, an alert will be
 initiated from I2C slave VVC 2 and 3.</p>
-<figure class="align-center" id="id13">
-<a class="reference internal image-reference" href="images/vvc_framework/multiple_slave_VVCs_example.png"><img alt="False unwanted activity detection" src="images/vvc_framework/multiple_slave_VVCs_example.png" style="width: 550pt;" /></a>
+<figure class="align-center" id="id14">
+<a class="reference internal image-reference" href="_images/multiple_slave_VVCs_example.png"><img alt="False unwanted activity detection" src="_images/multiple_slave_VVCs_example.png" style="width: 550pt;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 2 A false unwanted activity detection scenario when multiple slave VVCs are connected to the same master DUT</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
+<p><span class="caption-text">Figure 2 A false unwanted activity detection scenario when multiple slave VVCs are connected to the same master DUT</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>In order to avoid getting any false alerts, the unwanted activity must be disabled on the inactive VVCs
@@ -1437,8 +1490,9 @@ as shown below example. Note that the unwanted activity detection must be enable
 </div>
 <p>When the reset signal is set, signal transitions may occur from the uninitialized value ‘U’. Additionally, using pull-up or pull-down
 resistors in the design may cause signal transitions from the weak 1 state ‘H’ to the logic high ‘1’ or from the weak 0 state ‘L’
-to the logic low ‘0’, and vice versa. These are intended behaviors that should not be monitored by the unwanted activity detection.
-The signal transitions that are excluded from unwanted activity detection are summarized below.</p>
+to the logic low ‘0’, and vice versa. It is also possible for signal transitions to occur from the unknown state ‘X’ to the logic low ‘0’
+or logic high ‘1’ when simulating Verilog components during the initialization. These are all intended behaviors that should not be monitored by
+the unwanted activity detection. The signal transitions that are excluded from unwanted activity detection are summarized below.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>From</p></th>
@@ -1461,6 +1515,9 @@ The signal transitions that are excluded from unwanted activity detection are su
 <tr class="row-even"><td><p>‘1’</p></td>
 <td><p>‘H’</p></td>
 </tr>
+<tr class="row-odd"><td><p>‘X’</p></td>
+<td><p>‘0’, ‘1’</p></td>
+</tr>
 </tbody>
 </table>
 <p>For a VVC specific description of this feature, see the Unwanted Activity Detection section in each VVC QuickRef.</p>
@@ -1469,7 +1526,7 @@ The signal transitions that are excluded from unwanted activity detection are su
 <ul class="simple">
 <li><p>For VVCs with a valid signal, the unwanted activity detection is ignored when the valid signal goes low within one clock period
 after the VVC becomes inactive. This is to handle the situation when the read command exits before the next rising edge,
-causing signal transitions during the first clock cycle after the VVC is inactive. See each VVC QuickRef for more infomation.</p></li>
+causing signal transitions during the first clock cycle after the VVC is inactive. See each VVC QuickRef for more information.</p></li>
 <li><p>The ready signals in all interfaces, e.g. tready in AXI-Stream, are not monitored in unwanted activity detection when the
 VVC is a master device. The ready signal is allowed to be set independently of the valid signal, and there is no method to
 differentiate between the unwanted activity and intended activity. See each VVC QuickRef for more information.</p></li>
@@ -1488,7 +1545,7 @@ a mechanism for getting the transaction information directly from the VVC.</p>
 <section id="purpose">
 <span id="vvc-framework-transaction-info-purpose"></span><h4>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h4>
 <p>By enabling the distribution of transaction info, models or any other parts of the testbench can see exactly what accesses have
-been made on the various interfaces of the DUT, so that the expected DUT behaviour and outputs may be checked. Let us illustrate
+been made on the various interfaces of the DUT, so that the expected DUT behavior and outputs may be checked. Let us illustrate
 this with a really simple testbench scenario to verify a UART peripheral with an AXI-lite register/CPU interface on one side and
 the UART RX and TX ports on the other side. The test sequencer may command the AXI-lite BFM or VVC to write a data byte into the
 UART TX register, and then it must be checked that the data byte is transmitted out on the DUT TX output some time later.</p>
@@ -1496,7 +1553,7 @@ UART TX register, and then it must be checked that the data byte is transmitted 
 <div><ol class="loweralpha simple">
 <li><p>A simple testbench approach could be to have the test sequencer also telling the receiving UART BFM or VVC exactly what to
 expect. This is a straightforward approach, but requires more action and data control inside the test sequencer. This could
-of course all be handled in a super-procedure, but for any undetermined behaviour inside the BFM or VVC, like random data
+of course all be handled in a super-procedure, but for any undetermined behavior inside the BFM or VVC, like random data
 generation or error injection, that would not work. See Figure 3.</p></li>
 <li><p>A more advanced approach is to have a model overlooking the DUT accesses, generate the expected data and tell the receiving
 BFM or VVC to check for that data. See Figure 4.</p></li>
@@ -1507,31 +1564,31 @@ from a model. See Figure 5.</p></li>
 <p>However, for the two latter approaches the model needs information about exactly what happened (the transaction) on the various
 DUT interfaces, so that it can generate the correct expected data. For the model it doesn’t matter if the transaction info comes
 from a Monitor or from a VVC, as long as the information is correct.</p>
-<p>The model could of course look at the interfaces and analyse the actual transactions, but distributing this task to the VVC or
+<p>The model could of course look at the interfaces and analyze the actual transactions, but distributing this task to the VVC or
 Monitor makes the testbench far more structured and significantly improves overview, maintenance, extensibility and reuse – at
 least for anything above medium simple verification challenges.</p>
 <p>Another purpose of providing transaction information is for progress viewing and debugging – typically via the wave view or
 simulation transcripts.</p>
 <table class="docutils align-default">
 <tbody>
-<tr class="row-odd"><td><figure class="align-center" id="id14">
+<tr class="row-odd"><td><figure class="align-center" id="id15">
 <img alt="Direct transaction transfer A" src="_images/direct_transaction_transfer_example_A.png" />
 <figcaption>
-<p><span class="caption-text">Figure 3 Distribution of Transaction Info Approach A</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
-</figcaption>
-</figure>
-</td>
-<td><figure class="align-center" id="id15">
-<img alt="Direct transaction transfer B" src="_images/direct_transaction_transfer_example_B.png" />
-<figcaption>
-<p><span class="caption-text">Figure 4 Distribution of Transaction Info Approach B</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+<p><span class="caption-text">Figure 3 Distribution of Transaction Info Approach A</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </td>
 <td><figure class="align-center" id="id16">
+<img alt="Direct transaction transfer B" src="_images/direct_transaction_transfer_example_B.png" />
+<figcaption>
+<p><span class="caption-text">Figure 4 Distribution of Transaction Info Approach B</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-center" id="id17">
 <img alt="Direct transaction transfer C" src="_images/direct_transaction_transfer_example_C.png" />
 <figcaption>
-<p><span class="caption-text">Figure 5 Distribution of Transaction Info Approach C</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+<p><span class="caption-text">Figure 5 Distribution of Transaction Info Approach C</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </td>
@@ -1569,15 +1626,15 @@ transmit of N consecutive bytes. No compound transaction needs to be defined.</p
 transaction info is provided from the VVC or Monitor, different types of information will be available. Common for both is that
 they always provide info about the operation (read, write, transmit, etc.) and often also any other protocol specific info. For a
 UART this could be data and parity, for an SBI it could be address and data, and for Ethernet, the packet fields.</p>
-<p>This minimum is normally what the Monitor can provide from just analysing the interface, and this is also normally enough for a
+<p>This minimum is normally what the Monitor can provide from just analyzing the interface, and this is also normally enough for a
 model to generate expected DUT outputs. The VVC on the other hand, can provide more info, which could be useful for instance for
 progress viewing and debugging.</p>
-<p>The transaction information is organised as a transaction record with some predefined fields as shown below. Table 1 shows the
+<p>The transaction information is organized as a transaction record with some predefined fields as shown below. Table 1 shows the
 general transaction record, whereas table 2 shows a concrete example for the SBI.</p>
 <p>Note that for a given interface/protocol, the VVC and the Monitor will use the same interface dedicated transaction record type -
 with some fields potentially unused.</p>
-<table class="docutils align-default" id="id17">
-<caption><span class="caption-text">Table 1 - General transaction record t_base_transaction. The fields in bold indicate optional or protocol dedicated fields</span><a class="headerlink" href="#id17" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id18">
+<caption><span class="caption-text">Table 1 - General transaction record t_base_transaction. The fields in bold indicate optional or protocol dedicated fields</span><a class="headerlink" href="#id18" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Type</p></th>
@@ -1587,46 +1644,37 @@ with some fields potentially unused.</p>
 <tbody>
 <tr class="row-even"><td><p>operation</p></td>
 <td><p>t_operation</p></td>
-<td><div class="line-block">
-<div class="line">Protocol operation on the given DUT interface. E.g. NO_OPERATION,
-WRITE, READ, TRANSMIT, POLL_UNTIL, …</div>
-<div class="line">NO_OPERATION is default and thus used when there is no access.</div>
-<div class="line">All operations will be separated with a NO_OPERATION for at least
+<td><p>Protocol operation on the given DUT interface. E.g. NO_OPERATION,
+WRITE, READ, TRANSMIT, POLL_UNTIL, …</p>
+<p>NO_OPERATION is default and thus used when there is no access.</p>
+<p>All operations will be separated with a NO_OPERATION for at least
 1 delta cycle, e.g. NO_OPERATION - WRITE - NO_OPERATION - READ -
-NO_OPERATION.</div>
-</div>
+NO_OPERATION.</p>
 </td>
 </tr>
-<tr class="row-odd"><td><div class="line-block">
-<div class="line"><strong>&lt;optional protocol</strong></div>
-<div class="line"><strong>dedicated
-field(s)&gt;</strong></div>
-</div>
+<tr class="row-odd"><td><p><strong>&lt;optional protocol</strong></p>
+<p><strong>dedicated field(s)&gt;</strong></p>
 </td>
 <td><p><strong>&lt;protocol dedicated&gt;</strong></p></td>
-<td><div class="line-block">
-<div class="line">One or more fields required to complete the transaction info.</div>
-<div class="line">E.g. for UART: single field ‘data’; for SBI: field 1: ‘addr’,
+<td><p>One or more fields required to complete the transaction info.</p>
+<p>E.g. for UART: single field ‘data’; for SBI: field 1: ‘addr’,
 field 2: ‘data’; for Ethernet: most Ethernet fields as separate
-fields, or a better solution, include as a complete sub-record.</div>
-</div>
+fields, or a better solution, include as a complete sub-record.</p>
 </td>
 </tr>
 <tr class="row-even"><td><p>transaction_status</p></td>
 <td><p>t_transaction_status</p></td>
-<td><div class="line-block">
-<div class="line">Handled slightly different from a VVC and a Monitor.</div>
-<div class="line">VVC: Will show IN_PROGRESS during the transaction, then COMPLETED
+<td><p>Handled slightly different from a VVC and a Monitor.</p>
+<p>VVC: Will show IN_PROGRESS during the transaction, then COMPLETED
 when the transaction ends (for one delta cycle) and finally
 INACTIVE until the next transaction (for at least one delta
-cycle).</div>
-<div class="line">Monitor: Will show FAILED or SUCCEEDED immediately as soon as
+cycle).</p>
+<p>Monitor: Will show FAILED or SUCCEEDED immediately as soon as
 this is 100% certain - and keep this info for the display period
 defined in the Monitor configuration record, or until the start
-of the next transaction,</div>
-<div class="line">whichever occurs first. Other than that, it will show IN_PROGRESS
-when active or INACTIVE when not.</div>
-</div>
+of the next transaction,</p>
+<p>whichever occurs first. Other than that, it will show IN_PROGRESS
+when active or INACTIVE when not.</p>
 </td>
 </tr>
 <tr class="row-odd"><td><p>vvc_meta</p></td>
@@ -1642,20 +1690,18 @@ Typically parity or stop-bit error in an UART or a CRC error in an
 Ethernet. If no error injection or detection has been implemented,
 this sub-record may be left out.</p></td>
 </tr>
-<tr class="row-odd"><td colspan="3"><div class="line-block">
-<div class="line"><em>Note: For transaction info from a VVC, the record reflects the command status, i.e. the status assumed by the VVC when
+<tr class="row-odd"><td colspan="3"><p><em>Note: For transaction info from a VVC, the record reflects the command status, i.e. the status assumed by the VVC when
 initiating the command, whereas the Monitor will set up the record only after knowing whether the transaction has failed
-or succeeded.</em></div>
-<div class="line"><em>However, the transaction info from a VVC is also updated at the end of the command, which can be useful to fetch the data
-from read/receive operations.</em></div>
-<div class="line"><em>The VVC does not know the BFM status, and this is fine because the BFM will issue an alert for unexpected behaviour.</em></div>
-</div>
+or succeeded.</em></p>
+<p><em>However, the transaction info from a VVC is also updated at the end of the command, which can be useful to fetch the data
+from read/receive operations.</em></p>
+<p><em>The VVC does not know the BFM status, and this is fine because the BFM will issue an alert for unexpected behavior.</em></p>
 </td>
 </tr>
 </tbody>
 </table>
-<table class="docutils align-default" id="id18">
-<caption><span class="caption-text">Table 2 - SBI specific transaction record t_base_transaction. The fields in bold indicate protocol dedicated fields</span><a class="headerlink" href="#id18" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id19">
+<caption><span class="caption-text">Table 2 - SBI specific transaction record t_base_transaction. The fields in bold indicate protocol dedicated fields</span><a class="headerlink" href="#id19" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Type</p></th>
@@ -1712,7 +1758,7 @@ like a process).</p>
 <li><p>A VVC will update its Transaction Info leaf transaction details at the start of the transaction when the BFM is called, then
 again when the transaction is completed, and turned off one delta cycle afterwards.</p></li>
 <li><p>A Monitor will set its Transaction Info record after the transaction is finished (or transaction status is known) and keep
-it on for a pre-defined time - or until the next transaction is finished if earlier.</p></li>
+it on for a predefined time - or until the next transaction is finished if earlier.</p></li>
 </ul>
 </div>
 <div class="admonition hint">
@@ -1726,8 +1772,8 @@ recommended that the model triggers on the VVC/Monitor trigger signal and checks
 and then samples the transaction value.</p></li>
 </ul>
 </div>
-<table class="docutils align-default" id="id19">
-<caption><span class="caption-text">Table 3 - Maximum transaction group record t_transaction_group - for an SBI interface</span><a class="headerlink" href="#id19" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id20">
+<caption><span class="caption-text">Table 3 - Maximum transaction group record t_transaction_group - for an SBI interface</span><a class="headerlink" href="#id20" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Type</p></th>
@@ -1745,8 +1791,8 @@ and then samples the transaction value.</p></li>
 </tr>
 </tbody>
 </table>
-<table class="docutils align-default" id="id20">
-<caption><span class="caption-text">Table 4 - Maximum transaction group record t_transaction_group - for an Avalon MM interface</span><a class="headerlink" href="#id20" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id21">
+<caption><span class="caption-text">Table 4 - Maximum transaction group record t_transaction_group - for an Avalon MM interface</span><a class="headerlink" href="#id21" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Field</p></th>
 <th class="head"><p>Type</p></th>
@@ -1787,9 +1833,9 @@ t_transaction_status type, which is defined in types_pkg).</p>
 also responsible for filling out the vvc_meta record field.</p></li>
 </ul>
 </div></blockquote>
-<table class="docutils align-default" id="id21">
+<table class="docutils align-default" id="id22">
 <caption><span class="caption-text">Table 5 - Transaction Info record <strong>t_&lt;if&gt;_transaction_group</strong> for an UART interface - accessible via
-       <strong>shared_uart_vvc_transaction_info(vvc_idx)</strong> t_uart_transaction_group_array</span><a class="headerlink" href="#id21" title="Link to this table"></a></caption>
+       <strong>shared_uart_vvc_transaction_info(vvc_idx)</strong> t_uart_transaction_group_array</span><a class="headerlink" href="#id22" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"><p>Type</p></th>
@@ -1864,13 +1910,11 @@ to true</p></td>
 <tr class="row-odd"><td><p>ct <a class="footnote-reference brackets" href="#f5" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a></p></td>
 <td><p>t_compound_transaction</p></td>
 <td><p>C_COMPOUND_TRANSACTION_SET_DEFAULT</p></td>
-<td><div class="line-block">
-<div class="line">Transaction Info record entry for compound transaction</div>
-<div class="line">Note that sub-record entries would typically have the same
-entries as for a base transaction, and that this entry does
-not have to be suited for all interface Transaction Info
-records.</div>
-</div>
+<td><p>Transaction Info record entry for compound transaction</p>
+<p>Note that sub-record entries would typically have the same
+entries as for a base transaction, and that this entry does</p>
+<p>not have to be suited for all interface Transaction Info
+records.</p>
 </td>
 </tr>
 </tbody>
@@ -1878,26 +1922,26 @@ records.</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="f1" role="note">
+<aside class="footnote brackets" id="f1" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">1</a><span class="fn-bracket">]</span></span>
 <p>Record field <strong>address</strong> is not applicable for all interface types, e.g. UART, and is only shown here for
 informational purposes.</p>
 </aside>
-<aside class="footnote brackets" id="f2" role="note">
+<aside class="footnote brackets" id="f2" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">2</a><span class="fn-bracket">]</span></span>
 <p>Transaction status <strong>FAILED</strong> and <strong>SUCCEEDED</strong> are only applicable for Monitor Transaction Info records and not for
 VVC Transaction Info records. Whereas <strong>COMPLETED</strong> is applicable only for VVCs and not Monitors.</p>
 </aside>
-<aside class="footnote brackets" id="f3" role="note">
+<aside class="footnote brackets" id="f3" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">3</a><span class="fn-bracket">]</span></span>
 <p>Record field <strong>error_info</strong> and its sub-record fields can be omitted if no error injection is implemented in the BFM.</p>
 </aside>
-<aside class="footnote brackets" id="f4" role="note">
+<aside class="footnote brackets" id="f4" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id8">1</a>,<a role="doc-backlink" href="#id9">2</a>)</span>
 <p><strong>error_info</strong> sub-record fields <strong>parity_bit_error</strong> and <strong>stop_bit_error</strong> are examples of UART error injection.</p>
 </aside>
-<aside class="footnote brackets" id="f5" role="note">
+<aside class="footnote brackets" id="f5" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">5</a><span class="fn-bracket">]</span></span>
 <p>Record entry <strong>ct</strong> will consist of similar record fields as <strong>bt</strong>, and might not always be necessary. This applies
 to record entry <strong>st</strong> as well (not shown here).</p>
@@ -1951,8 +1995,8 @@ involves the following 3 steps:</p>
 using transaction info and a stand-alone process when not performed by a VVC. The same approach is shown in Figure 7 with a simple
 DUT Model process, demonstrating how DUT modelling can be accomplished using transaction info and a stand-alone process. Note that
 Figure 6 uses aliasing to simplify and improve code readability, while Figure 7 uses full transaction info names.</p>
-<div class="literal-block-wrapper docutils container" id="id22">
-<div class="code-block-caption"><span class="caption-text">Figure 6 VVC Scoreboard Support – with aliasing</span><a class="headerlink" href="#id22" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id23">
+<div class="code-block-caption"><span class="caption-text">Figure 6 VVC Scoreboard Support – with aliasing</span><a class="headerlink" href="#id23" title="Link to this code"></a></div>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">p_vvc_sb_support</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">process</span>
 <span class="w">  </span><span class="c1">-- transaction info handles</span>
 <span class="w">  </span><span class="k">alias</span><span class="w"> </span><span class="n">sbi_transaction_trigger</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="kt">std_logic</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">global_sbi_vvc_transaction_trigger</span><span class="p">(</span><span class="n">C_SBI_VVC_1</span><span class="p">);</span>
@@ -1989,8 +2033,8 @@ Figure 6 uses aliasing to simplify and improve code readability, while Figure 7 
 <p>Figure 6 demonstrates the setup of a VVC Scoreboard Support process that operates with the 3 steps listed in
 <a class="reference internal" href="#vvc-framework-transaction-info-mechanism"><span class="std std-ref">Transaction Info Mechanism</span></a>. For simple scoreboard elements, such as std_logic_vector,
 these scoreboard approaches are already performed by the VVCs.</p>
-<div class="literal-block-wrapper docutils container" id="id23">
-<div class="code-block-caption"><span class="caption-text">Figure 7 DUT Model – no aliasing</span><a class="headerlink" href="#id23" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id24">
+<div class="code-block-caption"><span class="caption-text">Figure 7 DUT Model – no aliasing</span><a class="headerlink" href="#id24" title="Link to this code"></a></div>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">p_dut_model</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">process</span>
 <span class="k">begin</span>
 <span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="n">true</span><span class="w"> </span><span class="k">loop</span><span class="o">:</span>
@@ -2025,8 +2069,8 @@ these scoreboard approaches are already performed by the VVCs.</p>
 <a class="reference internal" href="#vvc-framework-transaction-info-mechanism"><span class="std std-ref">Transaction Info Mechanism</span></a> applies. The only difference is that the scoreboard
 element is of a more complex type, i.e. a record element. Figure 8 demonstrates a VVC scoreboard support approach using a complex
 record element.</p>
-<div class="literal-block-wrapper docutils container" id="id24">
-<div class="code-block-caption"><span class="caption-text">Figure 8 VVC Scoreboard Support – complex scoreboard element</span><a class="headerlink" href="#id24" title="Link to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id25">
+<div class="code-block-caption"><span class="caption-text">Figure 8 VVC Scoreboard Support – complex scoreboard element</span><a class="headerlink" href="#id25" title="Link to this code"></a></div>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">-- define complex Avalon ST scoreboard type</span>
 <span class="k">type</span><span class="w"> </span><span class="n">t_avalon_st_element</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">record</span>
 <span class="w">  </span><span class="n">channel_value</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">std_logic_vector</span><span class="p">(</span><span class="n">C_CH_WIDTH</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="k">downto</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
@@ -2111,14 +2155,14 @@ central sequencer issuing a terminate_current_command() or terminate_all_command
 </section>
 </section>
 <section id="protocol-aware-error-injection">
-<h3>Protocol Aware Error Injection<a class="headerlink" href="#protocol-aware-error-injection" title="Link to this heading"></a></h3>
+<span id="vvc-framework-error-injection"></span><h3>Protocol Aware Error Injection<a class="headerlink" href="#protocol-aware-error-injection" title="Link to this heading"></a></h3>
 <p>Error injection into the DUT could be very useful in a testbench in order to test how the DUT handles interface errors when these
-errors are: a) to be detected and corrected, b) detected only, and c) not detected but may or may not affect the behaviour.</p>
+errors are: a) to be detected and corrected, b) detected only, and c) not detected but may or may not affect the behavior.</p>
 <p>Protocol aware error injection is defined here as intelligent error injection, given knowledge about the interface and protocol,
-e.g. to inject a parity error in a protocol rather than just inverting or delaying a signal without pre-defined detailed support
+e.g. to inject a parity error in a protocol rather than just inverting or delaying a signal without predefined detailed support
 to do this at the right place. The latter is supported by a dedicated “brute force” error injection VIP ‘bitvis_vip_error_injection’
 in UVVM.</p>
-<p>UVVM has a pre-defined methodology for handling protocol aware error injection in a structured way.</p>
+<p>UVVM has a predefined methodology for handling protocol aware error injection in a structured way.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Only some VVCs and BFMs currently support error injection. The principles shown for these VVCs and BFMs may be applied
@@ -2129,9 +2173,9 @@ directly also for user defined VIP.</p>
 <p>Error injection may be applied randomly, with no limitations. For UVVM however, we recommend the following approach:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>No randomization of behaviour inside BFMs when this could affect the DUT behaviour or output (and a monitor would be
+<li><p>No randomization of behavior inside BFMs when this could affect the DUT behavior or output (and a monitor would be
 required to check the actual DUT stimuli). Hence BFM procedures should only be called with parameters explicitly defining
-the interface behaviour (from the BFM side). Thus no parity error randomization inside. The only exception is for behaviour
+the interface behavior (from the BFM side). Thus no parity error randomization inside. The only exception is for behavior
 that should not affect the DUT. Thus the position of a data bit error could be randomized inside the BFM.</p></li>
 <li><p>It is recommended that more advanced VVCs include randomization - in order to distribute this away from the test sequencer
 and increase the re-use value of a VVC. Thus a VVC may be told to apply say 10% parity errors for a UART_VVC transmission
@@ -2189,7 +2233,7 @@ advanced transactions may of course also request error injection directly or ind
 <h4>Naming and type usage<a class="headerlink" href="#naming-and-type-usage" title="Link to this heading"></a></h4>
 <p>The error injection sub-record will be VVC and BFM dedicated, and thus any names and types may be used, and even sub-records under
 ‘error_injection’ is required. The VVC and BFM error injection records may differ or be the same. The only requirement is that
-readability is prioritised. Values should be checked against legal ranges or values.</p>
+readability is prioritized. Values should be checked against legal ranges or values.</p>
 </section>
 </section>
 <section id="built-in-randomization">
@@ -2205,10 +2249,10 @@ may be applied directly also for a user defined VIP.</p>
 <section id="uvvm-vip-randomization-principles">
 <h4>UVVM VIP randomization principles<a class="headerlink" href="#uvvm-vip-randomization-principles" title="Link to this heading"></a></h4>
 <p>Randomization may of course be applied with no limitations in a UVVM based testbench. For UVVM VIP however, we recommend the same
-general approach as for error injection randomizations:</p>
+general approach as for error injection randomization:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>No randomization of data inside BFMs as this would affect the DUT behaviour or output (and a monitor would be required to
+<li><p>No randomization of data inside BFMs as this would affect the DUT behavior or output (and a monitor would be required to
 check the actual DUT stimuli). Hence BFM procedures should only be called with explicit data.</p></li>
 <li><p>It is recommended that more advanced VVCs include functionality for randomization of data - in order to distribute this
 away from the test sequencer and increase the re-use value of a VVC. Thus, a VVC may be told to apply random data, in which
@@ -2237,10 +2281,8 @@ to allow users to add more profiles.</p>
 <td><p>Uniform distribution</p></td>
 </tr>
 <tr class="row-odd"><td><p>RANDOM_FAVOUR_EDGES</p></td>
-<td><div class="line-block">
-<div class="line">Significantly more edge cases, where “edge” differs between various interfaces.</div>
-<div class="line">E.g. UART: Cover patterns like 01111111, 00000000, 11111111, 11111110, 01010101, 10101010.</div>
-</div>
+<td><p>Significantly more edge cases, where “edge” differs between various interfaces.</p>
+<p>E.g. UART: Cover patterns like 01111111, 00000000, 11111111, 11111110, 01010101, 10101010.</p>
 </td>
 </tr>
 <tr class="row-even"><td><p>&lt;user-defined&gt;</p></td>
@@ -2333,16 +2375,10 @@ UART_VVC, use the receive-command (and not the expect-command) to forward receiv
 <td><p>Data is passed on to the Scoreboard for the given VVC</p></td>
 </tr>
 <tr class="row-odd"><td><p>FROM_BUFFER</p></td>
-<td><p>Data is sourced from the UVVM global buffer</p></td>
+<td><p>Data is sourced from the UVVM global buffer. Not yet implemented.</p></td>
 </tr>
 <tr class="row-even"><td><p>TO_BUFFER</p></td>
 <td><p>Data is also sent to the UVVM global buffer</p></td>
-</tr>
-<tr class="row-odd"><td><p>TO_FILE</p></td>
-<td><p>TBD – Not yet implemented (Do not use – as this may change)</p></td>
-</tr>
-<tr class="row-even"><td><p>FROM_FILE</p></td>
-<td><p>TBD – Not yet implemented (Do not use – as this may change)</p></td>
 </tr>
 <tr class="row-odd"><td><p>&lt;user-defined&gt;</p></td>
 <td></td>
@@ -2356,7 +2392,7 @@ UART_VVC, use the receive-command (and not the expect-command) to forward receiv
 </section>
 </section>
 <section id="controlling-property-checkers">
-<h3>Controlling Property Checkers<a class="headerlink" href="#controlling-property-checkers" title="Link to this heading"></a></h3>
+<span id="vvc-framework-property-checkers"></span><h3>Controlling Property Checkers<a class="headerlink" href="#controlling-property-checkers" title="Link to this heading"></a></h3>
 <p>A major VVC advantage is that lots of very useful additional functionality may be added inside the VVC entity, meaning that all
 the verification support for a given interface can be encapsulated inside a single VHDL entity. A major advantage of UVVM is that
 adding additional functionality and controlling it from the test sequencers is really simple.</p>
@@ -2370,9 +2406,9 @@ turned on and off for more flexibility.</p>
 <section id="property-check-configuration">
 <h4>Property check configuration<a class="headerlink" href="#property-check-configuration" title="Link to this heading"></a></h4>
 <p>In UVVM, turning checkers on and off is controlled by the VVC configuration (see <a class="reference internal" href="#vvc-framework-status-config-transaction-info"><span class="std std-ref">VVC Status, Configuration and Transaction Information</span></a>),
-and often additional control of the checker behaviour is also required. Thus, it is recommended to include the checker control for
+and often additional control of the checker behavior is also required. Thus, it is recommended to include the checker control for
 each individual check in a dedicated sub-record. An example on this (for the UART VVC) is shown below. See <a class="reference internal" href="vip_uart.html#vip-uart-vvc"><span class="std std-ref">UART VVC</span></a> for implementation.</p>
-<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="n">bit_rate_checker</span><span class="w">              </span><span class="c1">-- Sub-record containing all control of the property checker behaviour</span>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="n">bit_rate_checker</span><span class="w">              </span><span class="c1">-- Sub-record containing all control of the property checker behavior</span>
 <span class="w">    </span><span class="p">.</span><span class="n">enable</span><span class="w">      </span><span class="kt">boolean</span><span class="w">       </span><span class="c1">-- Enables or disables the complete bit rate checker</span>
 <span class="w">    </span><span class="p">.</span><span class="n">min_period</span><span class="w">  </span><span class="kt">time</span>
 <span class="w">    </span><span class="p">.</span><span class="n">alert_level</span><span class="w"> </span><span class="n">t_alert_level</span>
@@ -2456,7 +2492,7 @@ provide parts of what the VVC can provide.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>No monitor can provide info about compound transactions.</p></li>
-<li><p>For a split transaction protocol like Avalon - only the sub-transactions could be provided (which could be analysed at the
+<li><p>For a split transaction protocol like Avalon - only the sub-transactions could be provided (which could be analyzed at the
 higher level to provide Base transactions).</p></li>
 <li><p>A monitor cannot provide meta data like command index or command message.</p></li>
 </ul>
@@ -2561,10 +2597,10 @@ connected to the DUT.</p>
 referred to only as the VVC. Communications between the HVVC and VVC is handled by the HVVC-to-VVC Bridge. Data is transferred
 between the HVVC and HVVC-to-VVC Bridge on a common interface and converted in the HVVC-to-VVC Bridge to/from the specific
 interface of the VVC used. An example of this concept used on Ethernet is seen in Figure 9.</p>
-<figure class="align-center" id="id25">
+<figure class="align-center" id="id26">
 <a class="reference internal image-reference" href="_images/hvvc_to_vvc_bridge.png"><img alt="HVVC-to-VVC Bridge" src="_images/hvvc_to_vvc_bridge.png" style="width: 550pt;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 9 Example of HVVC-to-VVC Bridge implemented in an Ethernet HVVC</span><a class="headerlink" href="#id25" title="Link to this image"></a></p>
+<p><span class="caption-text">Figure 9 Example of HVVC-to-VVC Bridge implemented in an Ethernet HVVC</span><a class="headerlink" href="#id26" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <section id="hvvc-usage">
@@ -2620,7 +2656,7 @@ once you understand the VVC mechanisms.</p>
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Go through <a class="reference external" href="https://github.com/UVVM/UVVM/tree/master/uvvm_vvc_framework/doc/The_critically_missing_VHDL_TB_feature.ppsx">The critically missing VHDL testbench feature - Finally a structured approach - A brief introduction</a> - for a
+<li><p>Go through <a class="reference external" href="../../../uvvm_vvc_framework/doc/The_critically_missing_VHDL_TB_feature.ppsx">The critically missing VHDL testbench feature - Finally a structured approach - A brief introduction</a> - for a
 presentation on cycle related corner cases and the need for a far more structured verification approach, and to understand
 the basic concepts, the communication and handshake between the central sequencer and the VVCs.</p></li>
 <li><p>If your VVC is going to access a DUT interface, you need to have a BFM (Bus Functional Model) for that interface -
@@ -2668,7 +2704,7 @@ and prefixed with “ti_*” for “target independent”.</p></li>
 natural type is ok.</p></td>
 </tr>
 <tr class="row-even"><td><p>GC_&lt;name&gt;_CONFIG</p></td>
-<td><p>Recommended. Allows predefined BFM behaviour to be set up for every VVC.</p></td>
+<td><p>Recommended. Allows predefined BFM behavior to be set up for every VVC.</p></td>
 </tr>
 <tr class="row-odd"><td><p>GC_CMD_QUEUE_*</p></td>
 <td><p>Needed to limit the queue size and to generate a warning if more elements in the queue than ever expected.</p></td>
@@ -2706,7 +2742,7 @@ Used as inter process flags.</p></li>
 <p>The constructor is run once only - immediately when starting the simulation. The procedure:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Initialises VVC with BFM config and the queue with queue name.</p></li>
+<li><p>Initializes VVC with BFM config and the queue with queue name.</p></li>
 <li><p>Allows constructor log for VVC info (using ID_CONSTRUCTOR), and VVC Queue info (using ID_CONSTRUCTOR_SUB).</p></li>
 </ul>
 </div></blockquote>
@@ -2728,7 +2764,7 @@ next command from the sequencer.</p>
 <div class="line">Step 0</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">initialize_interpreter()</span></code></div>
 <div class="line-block">
-<div class="line">- Initialises parameters to default passive/initial values (e.g. terminate_current_cmd.set := ‘0’).</div>
+<div class="line">- Initializes parameters to default passive/initial values (e.g. terminate_current_cmd.set := ‘0’).</div>
 </div>
 </div>
 <div class="line-block">
@@ -2775,7 +2811,7 @@ command queue.</p>
 <div class="line">Step 0</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">initialize_executor()</span></code></div>
 <div class="line-block">
-<div class="line">- Initialises parameters to default passive/initial values (e.g. terminate_current_cmd.reset := ‘0’).</div>
+<div class="line">- Initializes parameters to default passive/initial values (e.g. terminate_current_cmd.reset := ‘0’).</div>
 </div>
 </div>
 <div class="line-block">
@@ -2867,8 +2903,66 @@ function in this package.</p>
 <h4>t_vvc_cmd_record<a class="headerlink" href="#t-vvc-cmd-record" title="Link to this heading"></a></h4>
 <p>Record type used for relaying a command from the testbench sequencer to the VVC. The record contains fields needed in the common
 UVVM procedures (listed under the “Common UVVM fields” comment), and VVC specific fields needed to relay data to the VVC executor.
-The VVC specific data fields should contain any data fields that the BFM procedures might need, e.g. data, address, timeouts etc.
-There is also a default for this type called C_VVC_CMD_DEFAULT in this package.</p>
+There is a default constant for this type called C_VVC_CMD_DEFAULT in this package.</p>
+<p>The VVC mandatory data fields are the following:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Record element</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>operation</p></td>
+<td><p>Commanded VVC operation</p></td>
+</tr>
+<tr class="row-odd"><td><p>command_type</p></td>
+<td><p>Determines whether it is an immediate or queued command. Immediate commands are handled by the
+Interpreter and queued commands by the Executor.</p></td>
+</tr>
+<tr class="row-even"><td><p>proc_call</p></td>
+<td><p>Procedure call used in log messages.</p></td>
+</tr>
+<tr class="row-odd"><td><p>msg</p></td>
+<td><p>User-defined message used in log messages.</p></td>
+</tr>
+<tr class="row-even"><td><p>msg_id</p></td>
+<td><p>Message ID used in enable_log_msg and disable_log_msg commands.</p></td>
+</tr>
+<tr class="row-odd"><td><p>quietness</p></td>
+<td><p>Whether to print or not a log message when using enable_log_msg and disable_log_msg commands.</p></td>
+</tr>
+<tr class="row-even"><td><p>data_routing</p></td>
+<td><p>Where to store the data from read/receive commands.</p></td>
+</tr>
+<tr class="row-odd"><td><p>alert_level</p></td>
+<td><p>Alert level when data does not match in check/expect commands.</p></td>
+</tr>
+<tr class="row-even"><td><p>parent_msg_id_panel</p></td>
+<td><p>Message ID panel from the parent HVVC which is used to print log messages in the lower-level VVC.</p></td>
+</tr>
+<tr class="row-odd"><td><p>delay</p></td>
+<td><p>Delay in time units for the insert_delay command.</p></td>
+</tr>
+<tr class="row-even"><td><p>cmd_idx</p></td>
+<td><p>Command index.</p></td>
+</tr>
+<tr class="row-odd"><td><p>gen_integer_array</p></td>
+<td><p>Generic integer array (0 to 1).</p>
+<p>-&gt;(0) Used as delay in clock cycles in the insert_delay command.</p>
+<p>-&gt;(0) Used as wanted cmd_idx in the fetch_result command.</p>
+<p>-&gt;(0) Used as wanted cmd_idx in old await_completion and await_any_completion commands. DEPRECATED</p>
+<p>-&gt;(1) Used awaiting_completion_idx in old await_any_completion command. DEPRECATED.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p>gen_boolean</p></td>
+<td><p>Generic boolean. Used in old await_completion command. DEPRECATED.</p></td>
+</tr>
+<tr class="row-odd"><td><p>timeout</p></td>
+<td><p>Timeout used in old await_completion command. DEPRECATED.</p></td>
+</tr>
+</tbody>
+</table>
+<p>The VVC specific data fields should contain any data fields that the BFM procedures might need, e.g. data, address, timeouts etc.</p>
 </section>
 <section id="constants">
 <h4>Constants<a class="headerlink" href="#constants" title="Link to this heading"></a></h4>
@@ -2904,7 +2998,10 @@ the VVC/BFM configuration will differ for each VVC. The record contents are:</p>
 <div><ul class="simple">
 <li><p>inter_bfm_delay: A record containing the potential inter-bfm delay specifications, e.g. if BFM accesses shall be separated
 with a given time.</p></li>
+<li><p>cmd_queue_count_*: Command queue specifications.</p></li>
+<li><p>result_queue_count_*: Result queue specifications.</p></li>
 <li><p>bfm_config: A record containing all settings for the BFM, e.g. clock periods, message IDs etc.</p></li>
+<li><p>msg_id_panel: The ID panel that the VVC shall use.</p></li>
 <li><p>unwanted_activity_severity: Severity of alert for the unwanted activity detection.</p></li>
 </ul>
 </div></blockquote>
@@ -3055,15 +3152,161 @@ and interpreter, and the interpreter procedures called interpreter_*, e.g. inter
 about the interpreter_* procedures, please see <a class="reference internal" href="#vvc-framework-methods"><span class="std std-ref">Common VVC Methods</span></a>. For more information about the other methods in this
 package, see <a class="reference internal" href="#vvc-framework-name-vvc"><span class="std std-ref">&lt;name&gt;_vvc.vhd</span></a>. In addition to the procedures, the td_vvc_entity_support_pkg.vhd also contains types
 for VVC labels and executor results. The result array is also defined and its shared variable is instantiated in this package.</p>
+</section>
+</section>
+<section id="vvc-generator-script">
+<h3>VVC Generator script<a class="headerlink" href="#vvc-generator-script" title="Link to this heading"></a></h3>
+<p><strong>Quick Summary</strong></p>
+<ol class="arabic simple">
+<li><p>Run the script from the command line with <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">vvc_generator.py</span></code> and follow the instructions.</p></li>
+<li><p>Modify the generated code as instructed wherever the key --&lt;USER_INPUT&gt; is found.</p></li>
+<li><p>If necessary, update the t_channel type in UVVM-Util adaptations_pkg if new channels (other than RX and TX) are used.</p></li>
+</ol>
+<section id="introduction">
+<h4>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h4>
+<p>The VVC Generator is a Python 3 script that generates VVCs and accompanying support files, including the command package, methods
+package, a BFM skeleton and if necessary, a VVC wrapper for multi-channel VVCs.</p>
+</section>
+<section id="id12">
+<h4>Prerequisites<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
+<p>In order to run the script, it is necessary to have Python installed. To run the script from the command line, the python interpreter
+path needs to be added to the Path environmental variable. Only Python 3 is supported.</p>
+</section>
+<section id="running-the-script">
+<h4>Running the script<a class="headerlink" href="#running-the-script" title="Link to this heading"></a></h4>
+<p>The script can be run from the command line by running: <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">vvc_generator.py</span></code></p>
+<p>The script will query the user for information about the VVC during the script:</p>
+<ol class="arabic">
+<li><p>First, it will ask for the <strong>VVC name</strong>. Please enter the VVC name without spaces. This name needs to be usable in the VHDL code,
+i.e. don’t use any other characters than “a-z”, “A-Z”, “0-9” or “_”. Any name must start with a letter.</p></li>
+<li><p>Then, the script will ask if <strong>extended features</strong> should be added. If you type ‘y’ and Enter, it will ask whether you want to
+add the following features, which you can select by typing ‘y’ or ‘n’ and pressing Enter after each one:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Scoreboard</strong></p></li>
+<li><p><strong>Transaction info</strong></p></li>
+<li><p><strong>Unwanted activity detection</strong></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Afterwards, the script will ask to select the <strong>number of concurrent channels</strong> to use in the VVC. Channels are a way of
+implementing more than one concurrent process which will use the BFM procedures. For example, when implementing a VVC for a bus
+which can only read OR write at the same time you would not need multiple channels. The SBI example VVC is an example of this.
+When implementing a full duplex VVC, e.g. UART, it would make sense to use multiple channels since TX and RX will operate
+concurrently. If you are implementing a VVC with concurrent channels, please type a number between 2 and 99 and press Enter.
+If not, press Enter to select the default ‘1’.</p></li>
+<li><p>If you choose a number other than the default ‘1’, you will be asked to <strong>name each channel</strong>, one at a time. The channel names
+follow the same naming restrictions as the VVC name, stated in step 1. The script will generate new leaf VVCs for each channel
+name you enter, it will also generate a wrapper VVC that you can include in your test harness instead of including each leaf VVC
+individually. You must update the t_channel type in UVVM-Util adaptations_pkg if you use channel names other than RX and TX.</p></li>
+<li><p>Finally, the script will ask:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If VVC has 1 concurrent channel: whether the <strong>VVC shall have multiple executors</strong>. If you type ‘n’ and Enter, the script
+will not need any further information. If you type ‘y’ and Enter, it will ask to type a number between 2 and 3 for the
+<strong>number of concurrent executors</strong> including the cmd_executor. Then, the script will ask to <strong>name each executor</strong>, one at
+a time. The executor names follow the same naming restrictions as the VVC name, stated in step 1.</p></li>
+<li><p>If VVC has several concurrent channels: <strong>how many channels shall have multiple executors</strong>. If you want a single executor
+in each channel press Enter to select the default ‘0’, the script will not need any further information. Otherwise, type the
+number of channels which shall have multiple executors and press Enter. The script will then ask for each channel, whether
+it <strong>shall contain multiple executors</strong> for which you can answer ‘y’ or ‘n’. If you answer ‘y’ for a given channel, you will
+be then asked to type a number between 2 and 3 for the <strong>number of concurrent executors</strong> including the cmd_executor. Then,
+the script will ask to <strong>name each executor</strong>, one at a time. The executor names follow the same naming restrictions as the
+VVC name, stated in step 1.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>When the script has gathered all the information it needs, it will generate the VHDL files in the ‘output’ directory.
+The naming of the files will be (&lt;name&gt; is the VVC name, and &lt;channel&gt; is a channel name):</p>
+<ul class="simple">
+<li><p><em>&lt;name&gt;_vvc.vhd</em></p>
+<ul>
+<li><p>If this is a single channel VVC, this will be the main VVC file which includes all VVC logic (e.g. executor and interpreter)</p></li>
+<li><p>If this is a multi-channel VVC, this file will be the wrapper for all the leaf VVCs.</p></li>
+</ul>
+</li>
+<li><p><em>&lt;name&gt;_&lt;channel&gt;_vvc.vhd</em></p>
+<ul>
+<li><p>These files will consist of the VVC implementation for each VVC channel (leaf VVC).</p></li>
+<li><p>These files will only be generated if there are multiple channels for this VVC.</p></li>
+</ul>
+</li>
+<li><p><em>&lt;name&gt;_bfm_pkg.vhd</em></p>
+<ul>
+<li><p>This file is a suggested setup for the user BFM. It contains the necessary config records and types needed for UVVM to function
+properly. It does not contain any actual BFM procedures.</p></li>
+</ul>
+</li>
+<li><p><em>vvc_cmd_pkg.vhd</em></p>
+<ul>
+<li><p>This file contains the VVC operations and command records in which the VVC data is placed.</p></li>
+</ul>
+</li>
+<li><p><em>vvc_methods_pkg.vhd</em></p>
+<ul>
+<li><p>This file contains VVC configuration and status records, and examples of how to implement the VVC methods.</p></li>
+</ul>
+</li>
+<li><p><em>vvc_context.vhd</em></p>
+<ul>
+<li><p>This file contains the necessary packages that are used when simulating a VVC.</p></li>
+</ul>
+</li>
+<li><p><em>vvc_sb_pkg.vhd</em></p>
+<ul>
+<li><p>This file contains the Scoreboard package used for the internal VVC Scoreboard.</p></li>
+<li><p>This file will only be generated if the Scoreboard feature was selected.</p></li>
+</ul>
+</li>
+<li><p><em>vvc_transaction_pkg.vhd</em></p>
+<ul>
+<li><p>This file contains the types used for the transaction info.</p></li>
+<li><p>This file will only be generated if the Transaction info feature was selected.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="modifying-the-created-vhdl-files">
+<h4>Modifying the created VHDL files<a class="headerlink" href="#modifying-the-created-vhdl-files" title="Link to this heading"></a></h4>
+<p>After the script has completed, the files need some user interaction before they are ready to use. In all places marked with
+“--&lt;USER_INPUT&gt;” there will be instructions on how to properly modify the VVC for your BFM. Additionally, if you created a VVC
+with multiple channels, please make sure to add these channels to the t_channel type located in the UVVM-Util adaptations_pkg.vhd
+file. By default, this type only contains ‘TX’ and ‘RX’ channels but more can be added to fit any project.</p>
+</section>
+</section>
+</section>
+<section id="ti-vvc-framework-support-package">
+<h2>TI VVC Framework Support Package<a class="headerlink" href="#ti-vvc-framework-support-package" title="Link to this heading"></a></h2>
+<p>Type definitions used in the VVC Framework.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ti_vvc_framework_support_pkg.html">t_vvc_operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-direction">t_direction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-field-position">t_field_position</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-hvvc-to-bridge">t_hvvc_to_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-bridge-to-hvvc">t_bridge_to_hvvc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-dut-if-field-config">t_dut_if_field_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-dut-if-field-config-array">t_dut_if_field_config_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ti_vvc_framework_support_pkg.html#t-dut-if-field-config-direction-array">t_dut_if_field_config_direction_array</a></li>
+</ul>
+</div>
+</section>
+<section id="ti-protected-types">
+<h2>TI Protected Types<a class="headerlink" href="#ti-protected-types" title="Link to this heading"></a></h2>
+<p>Protected type definitions used in the VVC Framework.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ti_protected_types_pkg.html">t_vvc_list</a></li>
+</ul>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Disclaimer: This IP and any part thereof are provided “as is”, without warranty of any kind, express or implied, including but
-not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the
+not limited to the warranties of merchantability, fitness for a particular purpose and non-infringement. In no event shall the
 authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or
 otherwise, arising from, out of or in connection with this IP.</p>
 </div>
-</section>
-</section>
 </section>
 </section>
 
@@ -3071,14 +3314,14 @@ otherwise, arising from, out of or in connection with this IP.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="optimized_rand.html" class="btn btn-neutral float-left" title="Optimized Randomization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="protected_types.html" class="btn btn-neutral float-right" title="Protected types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="uvvm_assertions.html" class="btn btn-neutral float-left" title="UVVM Assertions (BETA)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ti_vvc_framework_support_pkg.html" class="btn btn-neutral float-right" title="t_vvc_operation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, UVVM.</p>
+    <p>&#169; Copyright 2025 by UVVM steering group. All rights reserved.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

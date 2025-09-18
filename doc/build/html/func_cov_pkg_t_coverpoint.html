@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>t_coverpoint (protected) &mdash; UVVM  documentation</title>
@@ -16,7 +16,7 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -109,15 +109,16 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vvc_framework.html">VVC Framework</a></li>
-<li class="toctree-l1"><a class="reference internal" href="protected_types.html">Protected types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fifo_collection.html">UVVM FIFO Collection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="generic_queue.html">UVVM Generic Queue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon MM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="association_list.html">UVVM Association List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI-Lite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI-Stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI4-Lite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI4-Stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_clock_generator.html">Bitvis VIP Clock Generator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_error_injection.html">Bitvis VIP Error Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_ethernet.html">Bitvis VIP Ethernet</a></li>
@@ -131,8 +132,9 @@
 <li class="toctree-l1"><a class="reference internal" href="vip_spec_cov.html">Bitvis VIP Specification Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_spi.html">Bitvis VIP SPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 
         </div>
@@ -816,7 +818,7 @@ C_FC_DEFAULT_NUM_BINS_ALLOCATED_INCREMENT defined in adaptations_pkg.</p>
 </section>
 <section id="delete-coverpoint">
 <h2>delete_coverpoint()<a class="headerlink" href="#delete-coverpoint" title="Link to this heading"></a></h2>
-<p>Deallocates the list of bins and resets all configuration settings to their default values.</p>
+<p>De-allocates the list of bins and resets all configuration settings to their default values.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">delete_coverpoint</span><span class="p">(</span><span class="n">VOID</span><span class="p">)</span>
 <span class="n">delete_coverpoint</span><span class="p">(</span><span class="n">msg_id_panel</span><span class="p">)</span>
 </pre></div>
@@ -900,7 +902,11 @@ automatically be 0.</p></td>
 <td><p>in</p></td>
 <td><p>string</p></td>
 <td><p>Name of the bin. Max length is C_FC_MAX_NAME_LENGTH.
-Default value is “bin_&lt;idx&gt;”.</p></td>
+The default value is “bin_&lt;idx&gt;”, and is determined by
+the C_FC_DEFAULT_BIN_NAME constant in the
+adaptations_pkg. If the call results in multiple bins
+the bin name is indexed as described in
+<a class="reference internal" href="func_cov_pkg_overview.html#bin-name"><span class="std std-ref">bin name</span></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
 <td><p>msg_id_panel</p></td>
@@ -968,7 +974,11 @@ automatically be 0.</p></td>
 <td><p>in</p></td>
 <td><p>string</p></td>
 <td><p>Name of the bin. Max length is C_FC_MAX_NAME_LENGTH.
-Default value is “bin_&lt;idx&gt;”.</p></td>
+The default value is “bin_&lt;idx&gt;”, and is determined by
+the C_FC_DEFAULT_BIN_NAME constant in the
+adaptations_pkg. If the call results in multiple cross
+bins the bin name is indexed as described in
+<a class="reference internal" href="func_cov_pkg_overview.html#bin-name"><span class="std std-ref">bin name</span></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
 <td><p>msg_id_panel</p></td>
@@ -1049,7 +1059,11 @@ automatically be 0.</p></td>
 <td><p>in</p></td>
 <td><p>string</p></td>
 <td><p>Name of the bin. Max length is C_FC_MAX_NAME_LENGTH.
-Default value is “bin_&lt;idx&gt;”.</p></td>
+The default value is “bin_&lt;idx&gt;”, and is determined by
+the C_FC_DEFAULT_BIN_NAME constant in the
+adaptations_pkg. If the call results in multiple cross
+bins the bin name is indexed as described in
+<a class="reference internal" href="func_cov_pkg_overview.html#bin-name"><span class="std std-ref">bin name</span></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
 <td><p>msg_id_panel</p></td>
@@ -1299,7 +1313,7 @@ Default value is HIDE_RAND_WEIGHT.</p></td>
 </section>
 <section id="report-config">
 <h2>report_config()<a class="headerlink" href="#report-config" title="Link to this heading"></a></h2>
-<p>Prints a report containing the coverpoints’s configuration parameters. The report can also be printed to a separate file by using
+<p>Prints a report containing the coverpoint’s configuration parameters. The report can also be printed to a separate file by using
 the file_name parameter. To see an example of the generated report click <a class="reference internal" href="func_cov_pkg_overview.html#func-cov-pkg-config-report"><span class="std std-ref">here</span></a>.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">report_config</span><span class="p">(</span><span class="n">VOID</span><span class="p">)</span>
 <span class="n">report_config</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">open_mode</span><span class="p">])</span>
@@ -1486,7 +1500,7 @@ adding the first configuration or bin).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, UVVM.</p>
+    <p>&#169; Copyright 2025 by UVVM steering group. All rights reserved.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UVVM FIFO Collection &mdash; UVVM  documentation</title>
@@ -16,13 +16,13 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="UVVM Generic Queue" href="generic_queue.html" />
-    <link rel="prev" title="Protected types" href="protected_types.html" /> 
+    <link rel="prev" title="t_vvc_list" href="ti_protected_types_pkg.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,8 +53,8 @@
 <li class="toctree-l1"><a class="reference internal" href="rand_pkg_overview.html">Enhanced Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="func_cov_pkg_overview.html">Functional Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vvc_framework.html">VVC Framework</a></li>
-<li class="toctree-l1"><a class="reference internal" href="protected_types.html">Protected types</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">UVVM FIFO Collection</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#functional-parameters">Functional Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
@@ -72,11 +72,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="generic_queue.html">UVVM Generic Queue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon MM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="association_list.html">UVVM Association List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI-Lite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI-Stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axilite.html">Bitvis VIP AXI4-Lite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_axistream.html">Bitvis VIP AXI4-Stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_clock_generator.html">Bitvis VIP Clock Generator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_error_injection.html">Bitvis VIP Error Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_ethernet.html">Bitvis VIP Ethernet</a></li>
@@ -90,8 +91,9 @@
 <li class="toctree-l1"><a class="reference internal" href="vip_spec_cov.html">Bitvis VIP Specification Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_spi.html">Bitvis VIP SPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 
         </div>
@@ -260,7 +262,7 @@ behave in the same way as the uvvm_fifo_get() function.</p>
 </section>
 <section id="uvvm-fifo-deallocate">
 <h3>uvvm_fifo_deallocate()<a class="headerlink" href="#uvvm-fifo-deallocate" title="Link to this heading"></a></h3>
-<p>This function deallocates the FIFO buffer, all the FIFO pointers are reset.</p>
+<p>This function de-allocates the FIFO buffer, all the FIFO pointers are reset.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">uvvm_fifo_deallocate</span><span class="p">(</span><span class="n">VOID</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -271,7 +273,7 @@ behave in the same way as the uvvm_fifo_get() function.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Disclaimer: This IP and any part thereof are provided “as is”, without warranty of any kind, express or implied, including but
-not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the
+not limited to the warranties of merchantability, fitness for a particular purpose and non-infringement. In no event shall the
 authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or
 otherwise, arising from, out of or in connection with this IP.</p>
 </div>
@@ -283,14 +285,14 @@ otherwise, arising from, out of or in connection with this IP.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="protected_types.html" class="btn btn-neutral float-left" title="Protected types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ti_protected_types_pkg.html" class="btn btn-neutral float-left" title="t_vvc_list" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="generic_queue.html" class="btn btn-neutral float-right" title="UVVM Generic Queue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, UVVM.</p>
+    <p>&#169; Copyright 2025 by UVVM steering group. All rights reserved.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

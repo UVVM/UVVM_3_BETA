@@ -332,8 +332,8 @@ begin
     variable tx_word                    : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
     variable rx_word                    : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
     variable tx_word_2                  : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
-    variable master_word_array          : t_slv_array(GC_DATA_ARRAY_WIDTH - 1 downto 0)(GC_DATA_WIDTH - 1 downto 0);
-    variable slave_word_array           : t_slv_array(GC_DATA_ARRAY_WIDTH - 1 downto 0)(GC_DATA_WIDTH - 1 downto 0);
+    variable master_word_array          : t_slv_array(0 to GC_DATA_ARRAY_WIDTH - 1)(GC_DATA_WIDTH - 1 downto 0);
+    variable slave_word_array           : t_slv_array(0 to GC_DATA_ARRAY_WIDTH - 1)(GC_DATA_WIDTH - 1 downto 0);
     variable slave_tx_data_word         : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
     variable master_tx_data_word        : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
     variable result              : std_logic_vector(bitvis_vip_spi.vvc_transaction_pkg.C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
@@ -562,7 +562,7 @@ begin
     end procedure;
 
     procedure spi_master_check_only(
-      constant data                         : in t_slv_array(GC_DATA_ARRAY_WIDTH-1 downto 0)(GC_DATA_WIDTH-1 downto 0);
+      constant data                         : in t_slv_array(0 to GC_DATA_ARRAY_WIDTH-1)(GC_DATA_WIDTH-1 downto 0);
       constant vvc_instance_idx             : natural                           := C_VVC_IDX_MASTER_1;
       constant alert_level                  : in t_alert_level                  := TB_ERROR;
       constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
@@ -822,6 +822,7 @@ begin
       ----------------------------------------------------------------------------------------------------------------------------
       log(ID_LOG_HDR, "Slave start on next SS", C_SCOPE);
       ----------------------------------------------------------------------------------------------------------------------------
+      increment_expected_alerts(TB_WARNING, 1); -- Because of time stamp truncate warning
       for idx in 1 to 5 loop
         tx_word := random(GC_DATA_WIDTH); --std_logic_vector(to_unsigned(idx, GC_DATA_WIDTH)); --random(GC_DATA_WIDTH);
         -- transfer missed word
@@ -867,8 +868,8 @@ begin
           slave_word_array(idx)  := random(GC_DATA_WIDTH);
         end loop;
         -- transmit and check
-        spi_master_transmit_and_check(master_word_array(v_num_words - 1 downto 0), slave_word_array(v_num_words - 1 downto 0), C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
-        spi_slave_transmit_and_check(slave_word_array(v_num_words - 1 downto 0), master_word_array(v_num_words - 1 downto 0), C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
+        spi_master_transmit_and_check(master_word_array(0 to v_num_words - 1), slave_word_array( 0 to v_num_words - 1), C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
+        spi_slave_transmit_and_check( slave_word_array (0 to v_num_words - 1), master_word_array(0 to v_num_words - 1), C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
       end loop;
 
       await_master_tx_completion(50 ms);
@@ -918,8 +919,8 @@ begin
           slave_word_array(idx)  := random(GC_DATA_WIDTH);
         end loop;
         -- transmit and check
-        spi_slave_transmit_and_check(slave_word_array(v_num_words - 1 downto 0), master_word_array(v_num_words - 1 downto 0), C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
-        spi_master_transmit_and_check(master_word_array(v_num_words - 1 downto 0), slave_word_array(v_num_words - 1 downto 0), C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
+        spi_slave_transmit_and_check(slave_word_array(0 to v_num_words - 1), master_word_array(0 to v_num_words - 1), C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
+        spi_master_transmit_and_check(master_word_array(0 to v_num_words - 1), slave_word_array(0 to v_num_words - 1), C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
         for i in 0 to v_num_words - 2 loop
           check_inter_word_delay(150 ns);
         end loop;
@@ -964,7 +965,7 @@ begin
         end loop;
         spi_slave_receive_only(iteration, C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
         v_cmd_idx := get_last_received_cmd_idx(SPI_VVCT, C_VVC_IDX_SLAVE_1);
-        spi_master_transmit_only(master_word_array(iteration - 1 downto 0), C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
+        spi_master_transmit_only(master_word_array(0 to iteration - 1), C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
         await_slave_rx_completion(50 ms);
         await_master_tx_completion(50 ms);
         for i in 1 to iteration loop
@@ -980,7 +981,7 @@ begin
         end loop;
         spi_master_receive_only(iteration, C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
         v_cmd_idx := get_last_received_cmd_idx(SPI_VVCT, C_VVC_IDX_MASTER_1);
-        spi_slave_transmit_only(master_word_array(iteration - 1 downto 0), C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
+        spi_slave_transmit_only(master_word_array(0 to iteration - 1), C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
         await_slave_rx_completion(50 ms);
         await_master_tx_completion(50 ms);
         for i in 1 to iteration loop
@@ -1030,7 +1031,7 @@ begin
         end loop;
         spi_master_receive_only(iteration, C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
         v_cmd_idx := get_last_received_cmd_idx(SPI_VVCT, C_VVC_IDX_MASTER_1);
-        spi_slave_transmit_only(master_word_array(iteration - 1 downto 0), C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
+        spi_slave_transmit_only(master_word_array(0 to iteration - 1), C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
         terminate_current_command(SPI_VVCT, C_VVC_IDX_SLAVE_1);
         await_slave_rx_completion(50 ms);
         await_master_tx_completion(50 ms);
@@ -1073,6 +1074,7 @@ begin
       ----------------------------------------------------------------------------------------------------------------------------
       log(ID_LOG_HDR, "Single-word transfer", C_SCOPE);
       ----------------------------------------------------------------------------------------------------------------------------
+      increment_expected_alerts(TB_WARNING, 1); -- Because of time stamp truncate warning
       for iteration in 0 to 10 loop
         tx_word := random(GC_DATA_WIDTH);
         -- Master TX must be active for any transactions to occur; drives sclk and ss_n
@@ -1109,7 +1111,7 @@ begin
         for idx in 0 to v_num_words - 1 loop
           master_word_array(idx) := random(GC_DATA_WIDTH);
         end loop;
-        spi_slave_check_only(master_word_array(v_num_words - 1 downto 0), C_SPI_VVC_2);
+        spi_slave_check_only(master_word_array(0 to v_num_words - 1), C_SPI_VVC_2);
         for idx in 0 to v_num_words - 1 loop
           sbi_master_write(master_word_array(idx)); -- this will cause dut to write on SPI
         end loop;
@@ -1178,7 +1180,7 @@ begin
           master_word_array(idx) := random(GC_DATA_WIDTH);
         end loop;
         -- start slave
-        spi_slave_check_only(master_word_array(v_num_words - 1 downto 0), C_SPI_VVC_2, START_TRANSFER_IMMEDIATE);
+        spi_slave_check_only(master_word_array(0 to v_num_words - 1), C_SPI_VVC_2, START_TRANSFER_IMMEDIATE);
         -- master DUT start multi-word transfer
         for idx in 0 to v_num_words - 1 loop
           sbi_master_write(master_word_array(idx));
@@ -1417,6 +1419,7 @@ begin
       -- Set single-word inter_bfm_delay
       set_single_word_inter_bfm_delay;
 
+      increment_expected_alerts(TB_WARNING, 1); -- Because of time stamp truncate warning
       tx_word := random(GC_DATA_WIDTH);
       SPI_VVC_SB.add_expected(C_VVC_IDX_SLAVE_1, pad_spi_sb(tx_word));
       spi_slave_receive_only(SPI_VVCT, C_VVC_IDX_SLAVE_1, TO_SB, "SPI Slave receive data and send to SB");
@@ -1435,6 +1438,7 @@ begin
       ----------------------------------------------------------------------------------------------------------------------------
       log(ID_LOG_HDR_LARGE, "Testing Unwanted Activity Detection in VVC", C_SCOPE);
       ----------------------------------------------------------------------------------------------------------------------------
+      increment_expected_alerts(TB_WARNING, 1); -- Because of time stamp truncate warning
       for i in 0 to 2 loop
         -- Test different alert severity configurations
         if i = 0 then

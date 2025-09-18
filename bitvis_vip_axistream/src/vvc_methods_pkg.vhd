@@ -380,8 +380,14 @@ package body vvc_methods_pkg is
     variable v_data_byte_array : t_slv_array(0 to (data_array'length*C_DATA_ARRAY_BYTES_PER_WORD)-1)(7 downto 0);
     variable v_check_ok        : boolean          := true;
   begin
+    -- Sanity check
     v_check_ok := v_check_ok and check_value(data_array'length > 0, TB_ERROR, "Sanity check: data_array length must be > 0", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL); -- Sanity check to avoid confusing fatal error
     v_check_ok := v_check_ok and check_value(data_array(data_array'low)'length mod 8 = 0, TB_ERROR, "Sanity check: Check that data_array word is N*byte", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(data_array'ascending, TB_ERROR, "Sanity check: Check that data_array is ascending (defined with 'to'), for byte order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(user_array'ascending, TB_ERROR, "Sanity check: Check that user_array is ascending (defined with 'to'), for word order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(strb_array'ascending, TB_ERROR, "Sanity check: Check that strb_array is ascending (defined with 'to'), for word order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(id_array'ascending, TB_ERROR, "Sanity check: Check that id_array is ascending (defined with 'to'), for word order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(dest_array'ascending, TB_ERROR, "Sanity check: Check that dest_array is ascending (defined with 'to'), for word order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
     if not(v_check_ok) then
       return;
     end if;
@@ -581,8 +587,14 @@ package body vvc_methods_pkg is
     variable v_data_byte_array : t_slv_array(0 to (data_array'length*C_DATA_ARRAY_BYTES_PER_WORD)-1)(7 downto 0);
     variable v_check_ok        : boolean          := true;
   begin
+    -- Sanity check
     v_check_ok := v_check_ok and check_value(data_array'length > 0, TB_ERROR, "Sanity check: data_array length must be > 0", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL); -- Sanity check to avoid confusing fatal error
     v_check_ok := v_check_ok and check_value(data_array(data_array'low)'length mod 8 = 0, TB_ERROR, "Sanity check: Check that data_array word is N*byte", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(data_array'ascending, TB_ERROR, "Sanity check: Check that data_array is ascending (defined with 'to'), for byte order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(user_array'ascending, TB_ERROR, "Sanity check: Check that user_array is ascending (defined with 'to'), for word order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(strb_array'ascending, TB_ERROR, "Sanity check: Check that strb_array is ascending (defined with 'to'), for word order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(id_array'ascending, TB_ERROR, "Sanity check: Check that id_array is ascending (defined with 'to'), for word order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
+    v_check_ok := v_check_ok and check_value(dest_array'ascending, TB_ERROR, "Sanity check: Check that dest_array is ascending (defined with 'to'), for word order clarity", scope, ID_NEVER, shared_vvc_msg_id_panel.get(vvc_instance_idx), C_PROC_CALL);
     if not(v_check_ok) then
       return;
     end if;
@@ -652,9 +664,9 @@ package body vvc_methods_pkg is
     -- Default expected strb, id, dest
     -- Don't know #bytes in AXIStream tdata, so *_array length is unknown.
     -- Make the array as short as possible for best simulation time during the check performed in the BFM.
-    constant C_STRB_ARRAY : t_strb_array(0 downto 0) := (others => (others => '-'));
-    constant C_ID_ARRAY   : t_id_array(0 downto 0)   := (others => (others => '-'));
-    constant C_DEST_ARRAY : t_dest_array(0 downto 0) := (others => (others => '-'));
+    constant C_STRB_ARRAY : t_strb_array(0 to 0) := (others => (others => '-'));
+    constant C_ID_ARRAY   : t_id_array(0 to 0)   := (others => (others => '-'));
+    constant C_DEST_ARRAY : t_dest_array(0 to 0) := (others => (others => '-'));
   begin
     axistream_expect(VVCT, vvc_instance_idx, data_array, user_array, C_STRB_ARRAY, C_ID_ARRAY, C_DEST_ARRAY, msg, alert_level, scope, parent_msg_id_panel);
   end procedure;
@@ -673,9 +685,9 @@ package body vvc_methods_pkg is
     -- Default expected strb, id, dest
     -- Don't know #bytes in AXIStream tdata, so *_array length is unknown.
     -- Make the array as short as possible for best simulation time during the check performed in the BFM.
-    constant C_STRB_ARRAY : t_strb_array(0 downto 0) := (others => (others => '-'));
-    constant C_ID_ARRAY   : t_id_array(0 downto 0)   := (others => (others => '-'));
-    constant C_DEST_ARRAY : t_dest_array(0 downto 0) := (others => (others => '-'));
+    constant C_STRB_ARRAY : t_strb_array(0 to 0) := (others => (others => '-'));
+    constant C_ID_ARRAY   : t_id_array(0 to 0)   := (others => (others => '-'));
+    constant C_DEST_ARRAY : t_dest_array(0 to 0) := (others => (others => '-'));
   begin
     axistream_expect(VVCT, vvc_instance_idx, data_array, user_array, C_STRB_ARRAY, C_ID_ARRAY, C_DEST_ARRAY, msg, alert_level, scope, parent_msg_id_panel);
   end procedure;
@@ -693,7 +705,7 @@ package body vvc_methods_pkg is
     -- Default user data
     -- Don't know #bytes in AXIStream tdata, so user_array length is unknown.
     -- Make the array as short as possible for best simulation time during the check performed in the BFM.
-    constant C_USER_ARRAY : t_user_array(0 downto 0) := (others => (others => '-'));
+    constant C_USER_ARRAY : t_user_array(0 to 0) := (others => (others => '-'));
   begin
     -- Use another overload to fill in the rest: strb_array, id_array, dest_array
     axistream_expect(VVCT, vvc_instance_idx, data_array, C_USER_ARRAY, msg, alert_level, scope, parent_msg_id_panel);
@@ -712,7 +724,7 @@ package body vvc_methods_pkg is
     -- Default user data
     -- Don't know #bytes in AXIStream tdata, so user_array length is unknown.
     -- Make the array as short as possible for best simulation time during the check performed in the BFM.
-    constant C_USER_ARRAY : t_user_array(0 downto 0) := (others => (others => '-'));
+    constant C_USER_ARRAY : t_user_array(0 to 0) := (others => (others => '-'));
   begin
     -- Use another overload to fill in the rest: strb_array, id_array, dest_array
     axistream_expect(VVCT, vvc_instance_idx, data_array, C_USER_ARRAY, msg, alert_level, scope, parent_msg_id_panel);

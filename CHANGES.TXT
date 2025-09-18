@@ -10,7 +10,74 @@ CHANGES.TXT in each module's sub-directory.
 ----------------------------------------------------------------------
 
 
-v3.0 BETA 202X.XX.XX
+v3.0 BETA 2025.09.18
+--------------------
+- Added a check for duplicated VVC ID in the activity register in ti_protected_types_pkg.
+- Updated unwanted activity detection to ignore signal transitions from 'X' to '0'/'1'.
+- Fixed TB_WARNING when calling clear_rand_cyclic() in enhanced randomization.
+- Updated wait statement in spi_slave_transmit_and_receive() which allows NVC to run without errors.
+- Added vvc_transaction_pkg to Wishbone VVC.
+- Added UVVM assertions and demo testbench to its own folder.
+- Added a generic association list data structure.
+- Made default bin names 1-indexed.
+- Changed bin naming so that each resulting bin from a call to add_bin() or add_cross() gets an index (1 to the
+  number of resulting bins) in square brackets appended to the given name if the call results in more than one bin.
+- Added the constant C_FC_BIN_NAME_DUPLICATE_WARNING to the adaptations_pkg to enable warning of duplicate bin names.
+- Added the constant C_FC_DEFAULT_BIN_NAME to the adaptations_pkg that sets the default bin name.
+- Added range constraints to SPI VVC generics to make sure they are within legal range.
+- Added checks to make sure input arrays to axistream VVC procedures have ascending range.
+- Fixed functional coverage reports not being written to log/console when written also to a separate file.
+- Fixed some report methods not being written to the correct shared_default_log_destination.
+- Fixed some report methods crashing the simulation when used at the very start of the simulation due to an unopened log file.
+- Moved Markdown documentation files to main HTML documentation.
+- Added misc folder to the root directory, and placed the UVVM context files and vendor extensions packages for Questa.
+- Added context section in the Essential Mechanisms documentation.
+- Fixed bin_vector() not supporting sizes of 31 bits. Added a note to the documentation that it is the maximum supported size.
+- Fixed bin_range() not handling correctly a range of 0 to 2**31-1.
+- Changed the index range of the data arrays accepted by the SPI VVC commands from descending to ascending. This change is not
+  backwards compatible.
+- Merged func_cov related vendor extension packages into single package. Other minor modifications to test version of Questa vendor
+  extensions.
+- Added QuestaSim support to all compile scripts. From pull request by user tijmenvn.
+- Updated .sh scripts to use bash shebang.
+- Added missing files in ghdl_compile_all_and_simulate.sh scripts.
+
+
+v3.0 BETA 2025.04.04
+--------------------
+- Updated unwanted activity detection to ignore signal transitions from 'U', 'L' to/from '0', 'H' to/from '1'.
+- Added a common procedure for unwanted activity detection in the VVC framework support package.
+- Updated vvc_generator.py with fixes for ignored signal transitions in unwanted activity detection.
+- Changed default names for log and alert files to UVVM_Log.txt and UVVM_Alert.txt
+- SPI VIP: Fixed bug where slave BFM exited too late for multi-word transfers in some configurations.
+- Updated vvc_generator.py with fixes for runtime errors in the VVCs.
+- Spec cov: New output formats, added support for compound reqs in req list. 
+- Fixed set_rand_seeds(string) procedure being dependent on previous seed values.
+- Spec cov: Alert TB_FAILURE if number of input requirements exceeds configured limit.
+- Updated vvc_generator.py to add missing delta cycle needed to update the last_cmd_idx_executed when not using transaction info.
+- Spec cov: Fixed crash when opening an empty requirement file or non existing partial coverage directory.
+- Methods_pkg: Modified alert text for mode_error in check_file_open_status
+- Added methods to control randomization seeds in uvvm_util.
+- Updated the random methods used in BFMs and VVCs to use the mechanism to control randomization seeds.
+- Updated several .do files in order to allow compatibility between QuestaSim and Riviera Pro.
+- Print an alert and reduce the resolution in the random(time) functions whenever the resolution parameter is bigger than the range.
+- Use the lowest time unit among the range parameters instead of the simulator resolution limit for the random(time) functions.
+- Added time_resolution parameter to rand(), rand_range_weight() and rand_range_weight_mode() time functions for single-method approach.
+- Added time_resolution parameter to add_range_time() and added new procedure set_range_weight_time_resolution() for multi-method approach.
+- Fixed logging and distribution of range values in randm() when using time values.
+- Added random valid and ready configuration in Avalon-ST BFM and updated the Avalon-ST documentation.
+- Moved the random configuration constants from axistream_bfm_pkg to bfm_common_pkg.
+- Removed support for don't care operator in expected value in gpio_check_stable() BFM procedure and updated the GPIO documentation.
+- Fixed issue with multiple subsequent calls to the clocked gen_pulse procedure.
+- Removed unused type t_pulse_continuation.
+- Added radix and prefix parameters to the integer, signed, and unsigned versions of check_value_in_range and await_change_to_value.
+- Added get_basename(string) to the string_methods package to get the file name from a path string.
+- Added scalable time units in check_stable().
+- Changed C_SPI_VVC_DATA_ARRAY_WIDTH from 31 to 32 in adaptations_pkg.
+- Removed the deallocate call from tee. The user should take care of memory management.
+
+
+v3.0 BETA 2024.09.10
 --------------------
 - Fixed bug where queue status in VVC depends on undefined process execution order, issue #201.
 - Fixed incorrect log messages in AXI-Stream BFM package.
@@ -101,36 +168,6 @@ v3.0 BETA 202X.XX.XX
 - Check correctly whether a cmd_idx has been executed in await_completion and fetch_result procedures for Avalon-MM, AXI and AXI-Lite VVCs.
 - Added a delta cycle in Wishbone VVC executor so that the last_cmd_idx_executed is updated before being stored in the activity register.
 - Updated vvc_generator.py with fixes for VVCs with multiple executors.
-- Updated unwanted activity detection to ignore signal transitions from 'U', 'L' to/from '0', 'H' to/from '1'.
-- Added a common procedure for unwanted activity detection in the VVC framework support package.
-- Updated vvc_generator.py with fixes for ignored signal transitions in unwanted activity detection.
-- Changed default names for log and alert files to UVVM_Log.txt and UVVM_Alert.txt
-- SPI VIP: Fixed bug where slave BFM exited too late for multi-word transfers in some configurations.
-- Updated vvc_generator.py with fixes for runtime errors in the VVCs.
-- Spec cov: New output formats, added support for compound reqs in req list. 
-- Fixed set_rand_seeds(string) procedure being dependent on previous seed values.
-- Spec cov: Alert TB_FAILURE if number of input requirements exceeds configured limit.
-- Updated vvc_generator.py to add missing delta cycle needed to update the last_cmd_idx_executed when not using transaction info.
-- Spec cov: Fixed crash when opening an empty requirement file or non existing partial coverage directory.
-- Methods_pkg: Modified alert text for mode_error in check_file_open_status
-- Added methods to control randomization seeds in uvvm_util.
-- Updated the random methods used in BFMs and VVCs to use the mechanism to control randomization seeds.
-- Updated several .do files in order to allow compatibility between QuestaSim and Riviera Pro.
-- Print an alert and reduce the resolution in the random(time) functions whenever the resolution parameter is bigger than the range.
-- Use the lowest time unit among the range parameters instead of the simulator resolution limit for the random(time) functions.
-- Added time_resolution parameter to rand(), rand_range_weight() and rand_range_weight_mode() time functions for single-method approach.
-- Added time_resolution parameter to add_range_time() and added new procedure set_range_weight_time_resolution() for multi-method approach.
-- Fixed logging and distribution of range values in randm() when using time values.
-- Added random valid and ready configuration in Avalon-ST BFM and updated the Avalon-ST documentation.
-- Moved the random configuration constants from axistream_bfm_pkg to bfm_common_pkg.
-- Removed support for don't care operator in expected value in gpio_check_stable() BFM procedure and updated the GPIO documentation.
-- Fixed issue with multiple subsequent calls to the clocked gen_pulse procedure.
-- Removed unused type t_pulse_continuation.
-- Added radix and prefix parameters to the integer, signed, and unsigned versions of check_value_in_range and await_change_to_value.
-- Added get_basename(string) to the string_methods package to get the file name from a path string.
-- Added scalable time units in check_stable().
-- Changed C_SPI_VVC_DATA_ARRAY_WIDTH from 31 to 32 in adaptations_pkg.
-- Removed the deallocate call from tee. The user should take care of memory management.
 
 
 v3.0 BETA 2023.09.04

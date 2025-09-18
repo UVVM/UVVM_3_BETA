@@ -408,11 +408,11 @@ begin
                                                          id_array   : t_id_array;
                                                          dest_array : t_dest_array;
                                                          i          : integer) is
-      variable v_num_bytes       : integer                                      := data_array'length * (data_array(data_array'low)'length / 8);
+      variable v_num_bytes       : integer                                  := data_array'length * (data_array(data_array'low)'length / 8);
       variable v_exp_data_array  : t_slv_array(data_array'range)(data_array(data_array'low)'range);
-      variable v_num_words       : integer                                      := user_array'length;
-      variable v_user_array      : t_user_array(user_array'length - 1 downto 0) := user_array;
-      variable v_byte_endianness : t_byte_endianness                            := v_axistream_bfm_config.byte_endianness;
+      variable v_num_words       : integer                                  := user_array'length;
+      variable v_user_array      : t_user_array(0 to user_array'length - 1) := user_array;
+      variable v_byte_endianness : t_byte_endianness                        := v_axistream_bfm_config.byte_endianness;
     begin
       -- VVC call
       -- tuser, tstrb etc = default

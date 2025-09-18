@@ -28,7 +28,6 @@ test_list = [
     [python_exe, "../script/run_spec_cov.py", "--strictness", "0", "-r", "../tb/maintenance_tb/tb_tests_req_file.csv", "-p", "../sim/pc_cond_tickoff.csv", "-s", "../sim/sc_cond_tickoff.csv"],
     [python_exe, "../script/run_spec_cov.py", "--config", "../tb/maintenance_tb/cfg_mix_strict_1.txt"],
     [python_exe, "../script/run_spec_cov.py", "--strictness", "0", "-p", "../sim/pc_no_req_file.csv", "-s", "../sim/sc_no_req_file.csv"]
-
 ]
 
 

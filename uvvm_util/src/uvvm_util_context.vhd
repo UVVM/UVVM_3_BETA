@@ -30,6 +30,7 @@ context uvvm_util_context is
   use uvvm_util.data_fifo_pkg.all;
   use uvvm_util.data_queue_pkg.all;
   use uvvm_util.data_stack_pkg.all;
+  use uvvm_util.vendor_rand_extension_pkg.all;
   use uvvm_util.rand_pkg.all;
   use uvvm_util.func_cov_pkg.all;
 end context;

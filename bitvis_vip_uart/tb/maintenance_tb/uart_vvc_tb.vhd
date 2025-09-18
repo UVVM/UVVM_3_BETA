@@ -112,10 +112,10 @@ begin
       wait for 0 ns; -- Wait another cycle to allow signals to propagate before checking them - Needed for Riviera Pro
       check_value(get_alert_counter(alert_level), v_num_expected_alerts, TB_NOTE, "Unwanted activity alert was expected", C_SCOPE, ID_NEVER);
 
-      -- Test ignored transitions ('U'->'X', 'U'->'Z', 'U'->'W', 'U'->'H', 'U'->'1', '1'->'H', 'H'->'1')
+      -- Test ignored transitions ('U'->'X', 'U'->'Z', 'U'->'W', 'U'->'H', 'U'->'1', '1'->'H', 'H'->'1', 'X'->'0', 'X'->'1')
       wait for C_CLK_PERIOD;
       if alert_level /= NO_ALERT then
-        increment_expected_alerts_and_stop_limit(alert_level, 5); -- Expected due to forcing to uninitialized value
+        increment_expected_alerts_and_stop_limit(alert_level, 7); -- Expected due to forcing to uninitialized value
       end if;
       dut_tx <= force 'U';
       wait for C_CLK_PERIOD;
@@ -138,6 +138,12 @@ begin
       dut_tx <= force '1';
       wait for C_CLK_PERIOD;
       dut_tx <= force 'H';
+      wait for C_CLK_PERIOD;
+      dut_tx <= force 'X';
+      wait for C_CLK_PERIOD;
+      dut_tx <= force '0';
+      wait for C_CLK_PERIOD;
+      dut_tx <= force 'X';
       wait for C_CLK_PERIOD;
       dut_tx <= release;
       wait for C_CLK_PERIOD;

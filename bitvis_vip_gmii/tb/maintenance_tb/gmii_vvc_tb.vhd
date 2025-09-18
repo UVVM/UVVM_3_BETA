@@ -279,6 +279,10 @@ begin
     await_completion(GMII_VVCT, C_VVC_IDX, RX, 10 us);
 
     GMII_VVC_SB.report_counters(ALL_INSTANCES);
+    v_vvc_config.bfm_config.bfm_sync := SYNC_ON_CLOCK_ONLY; -- Set to default before next test
+    v_vvc_config.bfm_config.bfm_sync := SYNC_ON_CLOCK_ONLY; -- Set to default before next test
+    shared_gmii_vvc_config.set(v_vvc_config, C_VVC_IDX, TX);
+    shared_gmii_vvc_config.set(v_vvc_config, C_VVC_IDX, RX);
 
     ------------------------------------------------------------------------------------------------------------------------------
     log(ID_LOG_HDR, "Testing Unwanted Activity Detection in VVC", C_SCOPE);

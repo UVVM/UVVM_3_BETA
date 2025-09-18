@@ -490,7 +490,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length     : natural                                                                               := data'length;
     variable v_num_words       : natural                                                                               := 1;
-    variable v_normalized_data : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
@@ -548,7 +548,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length     : natural                                                                               := data(0)'length;
     variable v_num_words       : natural                                                                               := data'length;
-    variable v_normalized_data : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
@@ -607,8 +607,8 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd       : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length         : natural                                                                               := data'length;
     variable v_num_words           : natural                                                                               := 1;
-    variable v_normalized_data     : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
-    variable v_normalized_data_exp : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data     : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data_exp : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
@@ -656,8 +656,8 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd       : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length         : natural                                                                               := data(0)'length;
     variable v_num_words           : natural                                                                               := data'length;
-    variable v_normalized_data     : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
-    variable v_normalized_data_exp : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data     : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data_exp : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
@@ -702,7 +702,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length     : natural                                                                               := data'length;
     variable v_num_words       : natural                                                                               := 1;
-    variable v_normalized_data : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
@@ -745,7 +745,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length     : natural                                                                               := data(0)'length;
     variable v_num_words       : natural                                                                               := data'length;
-    variable v_normalized_data : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
@@ -839,7 +839,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd       : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length         : natural                                                                               := data_exp'length;
     variable v_num_words           : natural                                                                               := 1;
-    variable v_normalized_data_exp : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data_exp : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
@@ -884,7 +884,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd       : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length         : natural                                                                               := data_exp(0)'length;
     variable v_num_words           : natural                                                                               := data_exp'length;
-    variable v_normalized_data_exp : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data_exp : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
@@ -931,7 +931,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length     : natural                                                                               := data'length;
     variable v_num_words       : natural                                                                               := 1;
-    variable v_normalized_data : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
@@ -987,7 +987,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length     : natural                                                                               := data(0)'length;
     variable v_num_words       : natural                                                                               := data'length;
-    variable v_normalized_data : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
@@ -1044,8 +1044,8 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd       : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length         : natural                                                                               := data'length;
     variable v_num_words           : natural                                                                               := 1;
-    variable v_normalized_data     : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
-    variable v_normalized_data_exp : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data     : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data_exp : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
@@ -1092,8 +1092,8 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd       : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length         : natural                                                                               := data(0)'length;
     variable v_num_words           : natural                                                                               := data'length;
-    variable v_normalized_data     : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
-    variable v_normalized_data_exp : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data     : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data_exp : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
@@ -1137,7 +1137,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length     : natural                                                                               := data'length;
     variable v_num_words       : natural                                                                               := 1;
-    variable v_normalized_data : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
@@ -1178,7 +1178,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length     : natural                                                                               := data(0)'length;
     variable v_num_words       : natural                                                                               := data'length;
-    variable v_normalized_data : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel    : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize
@@ -1269,7 +1269,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd       : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length         : natural                                                                               := data_exp'length;
     variable v_num_words           : natural                                                                               := 1;
-    variable v_normalized_data_exp : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data_exp : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize to t_slv_array
@@ -1312,7 +1312,7 @@ package body vvc_methods_pkg is
     variable v_local_vvc_cmd       : t_vvc_cmd_record                                                                      := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_word_length         : natural                                                                               := data_exp(0)'length;
     variable v_num_words           : natural                                                                               := data_exp'length;
-    variable v_normalized_data_exp : t_slv_array(C_VVC_CMD_MAX_WORDS - 1 downto 0)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
+    variable v_normalized_data_exp : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0) := (others => (others => '0'));
     variable v_msg_id_panel        : t_msg_id_panel                                                                        := shared_msg_id_panel.get(VOID);
   begin
     -- normalize

@@ -115,17 +115,6 @@ package protected_uvvm_status_pkg is new work.protected_generic_types_pkg
     c_generic_default => C_UVVM_STATUS_DEFAULT
   );
 
-----------------------------------------------------------------------
--- Protected type: t_log_destination
-----------------------------------------------------------------------
-use work.types_pkg.all;
-
-package protected_log_destination_pkg is new work.protected_generic_types_pkg
-  generic map(
-    t_generic_element => t_log_destination,
-    c_generic_default => CONSOLE_AND_LOG
-  );
-
 -----------------------------------------------------------------------
 -- Protected type: t_deprecate_list
 ---------------------------------------------------------------------
@@ -157,7 +146,6 @@ use work.protected_alert_counters_pkg.all;
 use work.protected_waveview_log_hdr_pkg.all;
 use work.protected_current_log_hdr_pkg.all;
 use work.protected_uvvm_status_pkg.all;
-use work.protected_log_destination_pkg.all;
 use work.protected_deprecate_list_pkg.all;
 
 package global_signals_and_shared_variables_pkg is
@@ -191,7 +179,6 @@ package global_signals_and_shared_variables_pkg is
   shared variable shared_response_semaphore         : t_semaphore;
   shared variable shared_covergroup_status          : t_covergroup_status;
   shared variable shared_sb_activity_register       : t_sb_activity;
-  shared variable shared_default_log_destination    : work.protected_log_destination_pkg.t_generic;
   shared variable shared_deprecated_subprogram_list : work.protected_deprecate_list_pkg.t_generic;
 
 end package global_signals_and_shared_variables_pkg;
