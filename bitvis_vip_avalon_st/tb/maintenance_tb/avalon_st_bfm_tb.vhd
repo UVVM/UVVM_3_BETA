@@ -121,15 +121,6 @@ begin
     end procedure;
 
     procedure avalon_st_receive(
-      data_array : out t_slv_array;
-      channel    : out natural) is
-      variable v_channel : std_logic_vector(GC_CHANNEL_WIDTH - 1 downto 0);
-    begin
-      avalon_st_receive(v_channel, data_array, "", clk, avalon_st_slave_if, C_SCOPE, shared_msg_id_panel.get(VOID), v_avl_st_bfm_config);
-      channel := to_integer(unsigned(v_channel));
-    end procedure;
-
-    procedure avalon_st_receive(
       data_array : out t_slv_array) is
     begin
       avalon_st_receive(data_array, "", clk, avalon_st_slave_if, C_SCOPE, shared_msg_id_panel.get(VOID), v_avl_st_bfm_config);
@@ -377,6 +368,7 @@ begin
     wait for 1000 ns;                   -- Allow some time for completion
     report_alert_counters(FINAL);       -- Report final counters and print conclusion (Success/Fail)
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
+
     -- Finish the simulation
     std.env.stop;
     wait;                               -- to stop completely

@@ -34,21 +34,6 @@ end entity axi_bfm_tb;
 
 architecture tb of axi_bfm_tb is
 
-  component axi_slave_model is
-    generic(
-      C_MEMORY_SIZE  : integer               := 4096; -- size in bytes
-      C_MEMORY_START : unsigned(31 downto 0) := x"00000000" -- address offset to start on
-    );
-    port(
-      aclk        : in  std_logic;
-      aresetn     : in  std_logic;
-      wr_port_in  : in  t_axi_wr_slave_in_if;
-      wr_port_out : out t_axi_wr_slave_out_if;
-      rd_port_in  : in  t_axi_rd_slave_in_if;
-      rd_port_out : out t_axi_rd_slave_out_if
-    );
-  end component axi_slave_model;
-
   constant C_SCOPE      : string := "AXI TB";
   constant C_CLK_PERIOD : time   := 10 ns;
 
@@ -74,7 +59,7 @@ begin
 
   clock_generator(clk, C_CLK_PERIOD);
 
-  i_axi_slave_model : axi_slave_model
+  i_axi_slave_model : entity bitvis_vip_axi.axi_slave_model
     generic map(
       C_MEMORY_SIZE  => 4096,           -- size in bytes
       C_MEMORY_START => x"00000000"     -- address offset to start on
@@ -147,7 +132,6 @@ begin
     variable v_rdata_value        : t_slv_array(0 to 255)(31 downto 0);
     variable v_rresp_value        : t_xresp_array(0 to 255);
     variable v_ruser_value        : t_slv_array(0 to 255)(7 downto 0);
-    variable v_single_rdata_value : std_logic_vector(31 downto 0);
     variable v_write_data         : t_slv_array(0 to 255)(31 downto 0) := (others => (others => '0'));
     variable v_write_data_narrow  : t_slv_array(0 to 1)(7 downto 0)    := (x"12", x"34");
     variable v_wstrb_narrow       : t_slv_array(0 to 1)(0 downto 0)    := ("1", "1");
@@ -434,6 +418,10 @@ begin
       check_value(v_ruser_wide(i), x"000", "Checking ruser value", C_SCOPE);
     end loop;
 
+    -----------------------------------------------------------------------------
+    -- Ending the simulation
+    -----------------------------------------------------------------------------
+    wait for 1000 ns;                   -- to allow some time for completion
     report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 

@@ -76,6 +76,10 @@ global_options = None
 simulator_name = hr.settings.get_simulator_name()
 if simulator_name == "MODELSIM":
     sim_options = "-t ps"
+elif simulator_name in ["GHDL"]:
+    com_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "-Wall", "--warn-no-shared", "--warn-no-hide", "--warn-no-delayed-checks"]
+    com_options += ["--warn-no-others", "--warn-no-static"]
+    hr.set_simulator(simulator=simulator_name, com_options=com_options)
 elif simulator_name == "NVC":
     global_options = ["--stderr=error", "--messages=compact", "-M64m", "-H2g"]
 
@@ -116,8 +120,9 @@ if simulator_name == "MODELSIM" or simulator_name == "RIVIERA-PRO":
     print('\nVerify .do scripts...')
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_and_sim_demo_tb.do; exit"], False)
     if ret_code == 0:
-        print("SIMULATION SUCCESS")
-        cleanup('Removing simulation output\n')
+        print("TCL script test completed")
+        if hr.check_run_results(exp_fail=0) is True:
+            cleanup('Removing simulation output\n')
     else:
         print(ret_txt)
         num_failing_tests += 1

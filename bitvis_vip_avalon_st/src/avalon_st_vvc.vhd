@@ -58,7 +58,7 @@ entity avalon_st_vvc is
   );
   port(
     clk              : in    std_logic;
-    avalon_st_vvc_if : inout t_avalon_st_if := init_avalon_st_if_signals(GC_VVC_IS_MASTER, GC_CHANNEL_WIDTH, GC_DATA_WIDTH, GC_DATA_ERROR_WIDTH, GC_EMPTY_WIDTH)
+    avalon_st_vvc_if : inout t_avalon_st_if := init_avalon_st_if_signals(GC_VVC_IS_MASTER, GC_CHANNEL_WIDTH, GC_DATA_WIDTH, GC_DATA_ERROR_WIDTH, GC_EMPTY_WIDTH, GC_AVALON_ST_BFM_CONFIG)
   );
 end entity avalon_st_vvc;
 
@@ -387,7 +387,7 @@ begin
             wait until terminate_current_cmd.is_active = '1' for v_cmd.delay;
           else
             -- Delay specified using integer
-            check_value(v_vvc_config.bfm_config.clock_period > -1 ns, TB_ERROR, "Check that clock_period is configured when using insert_delay().",
+            check_value(v_vvc_config.bfm_config.clock_period /= C_UNDEFINED_TIME, TB_ERROR, "Check that clock_period is configured when using insert_delay().",
                         C_SCOPE, ID_NEVER, v_msg_id_panel);
             wait until terminate_current_cmd.is_active = '1' for v_cmd.gen_integer_array(0) * v_vvc_config.bfm_config.clock_period;
           end if;

@@ -147,10 +147,10 @@ architecture behave of axi_vvc is
 
   procedure peek_command_and_prepare_executor(
     variable command             : inout t_vvc_cmd_record;
-    variable command_queue       : inout work.td_cmd_queue_pkg.t_generic_queue;
+    variable cmd_queue           : inout work.td_cmd_queue_pkg.t_generic_queue;
     constant msg_id_panel        : in t_msg_id_panel;
-    signal   queue_is_increasing : in boolean;
-    signal   executor_is_busy    : inout boolean;
+    signal   queue_increasing    : in boolean;
+    signal   executor_busy       : inout boolean;
     constant vvc_labels          : in t_vvc_labels;
     constant scope               : in string;
     constant executor_id         : in t_msg_id := ID_CMD_EXECUTOR;
@@ -159,27 +159,27 @@ architecture behave of axi_vvc is
     variable v_msg_id_panel : t_msg_id_panel;
     variable v_vvc_status   : t_vvc_status;
   begin
-    executor_is_busy              <= false;
+    executor_busy                 <= false;
     v_vvc_status                  := get_vvc_status(VOID);
     v_vvc_status.previous_cmd_idx := command.cmd_idx;
     v_vvc_status.current_cmd_idx  := 0;
     set_vvc_status(v_vvc_status);
 
     wait for 0 ns;                      -- to allow delta updates in other processes.
-    if command_queue.is_empty(VOID) then
+    if cmd_queue.is_empty(VOID) then
       log(executor_wait_id, "Executor: Waiting for command", to_string(scope), msg_id_panel);
-      wait until queue_is_increasing;
+      wait until queue_increasing;
     end if;
 
     -- Queue is now not empty
-    executor_is_busy <= true;
-    wait until executor_is_busy;
-    command          := command_queue.peek(VOID);
+    executor_busy <= true;
+    wait until executor_busy;
+    command       := cmd_queue.peek(VOID);
 
     v_msg_id_panel               := get_msg_id_panel(command, msg_id_panel);
     log(executor_id, to_string(command.proc_call) & " - Will be executed " & format_command_idx(command), to_string(scope), v_msg_id_panel); -- Get and ack the new command
     v_vvc_status                 := get_vvc_status(VOID);
-    v_vvc_status.pending_cmd_cnt := command_queue.get_count(VOID);
+    v_vvc_status.pending_cmd_cnt := cmd_queue.get_count(VOID);
     v_vvc_status.current_cmd_idx := command.cmd_idx;
     set_vvc_status(v_vvc_status);
   end procedure peek_command_and_prepare_executor;
@@ -320,7 +320,6 @@ begin
   cmd_executor : process
     constant C_EXECUTOR_ID                           : natural                                      := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
-    variable v_read_data                             : t_vvc_result; -- See vvc_cmd_pkg
     variable v_timestamp_start_of_current_bfm_access : time                                         := 0 ns;
     variable v_timestamp_start_of_last_bfm_access    : time                                         := 0 ns;
     variable v_timestamp_end_of_last_bfm_access      : time                                         := 0 ns;
@@ -439,7 +438,7 @@ begin
             wait until terminate_current_cmd.is_active = '1' for v_cmd.delay;
           else
             -- Delay specified using integer
-            check_value(v_vvc_config.bfm_config.clock_period > -1 ns, TB_ERROR, "Check that clock_period is configured when using insert_delay().",
+            check_value(v_vvc_config.bfm_config.clock_period /= C_UNDEFINED_TIME, TB_ERROR, "Check that clock_period is configured when using insert_delay().",
                         C_SCOPE, ID_NEVER, v_msg_id_panel);
             wait until terminate_current_cmd.is_active = '1' for v_cmd.gen_integer_array(0) * v_vvc_config.bfm_config.clock_period;
           end if;
@@ -493,7 +492,6 @@ begin
     variable v_normalized_arid    : std_logic_vector(GC_ID_WIDTH - 1 downto 0) := (others => '0');
     variable v_normalized_araddr  : unsigned(GC_ADDR_WIDTH - 1 downto 0)       := (others => '0');
     variable v_vvc_config         : t_vvc_config                               := get_vvc_config(VOID);
-    variable v_vvc_status         : t_vvc_status;
     constant C_CHANNEL_SCOPE      : string                                     := get_scope_for_log(C_VVC_NAME & "_AR", GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS : t_vvc_labels                               := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
@@ -651,7 +649,7 @@ begin
             end loop;
           else
             -- ID have length of zero. Using first response in the queue
-            v_cmd := read_data_channel_queue.get(VOID);
+            v_cmd := read_data_channel_queue.fetch(VOID);
           end if;
 
           -- Request SB check result
@@ -705,30 +703,30 @@ begin
             end loop;
           else
             -- ID have length of zero. Using first response in the queue
-            v_cmd := read_data_channel_queue.get(VOID);
+            v_cmd := read_data_channel_queue.fetch(VOID);
           end if;
 
           -- Checking response
           v_cmd_len := to_integer(v_cmd.len);
           if v_normalized_rid'length > 0 then
-            if not check_value(v_result.rid, v_normalized_rid, v_cmd.alert_level, "Checking RID. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, SKIP_LEADING_0, ID_POS_ACK, v_msg_id_panel) then
+            if not check_value(v_result.rid, v_normalized_rid, v_cmd.alert_level, "Checking RID." & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, SKIP_LEADING_0, ID_POS_ACK, v_msg_id_panel) then
               v_check_ok := false;
             end if;
           end if;
-          if not check_value(v_result.rdata(0 to v_cmd_len), v_cmd.data_array(0 to v_cmd_len), v_cmd.alert_level, "Checking RDATA. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, SKIP_LEADING_0, ID_POS_ACK, v_msg_id_panel) then
+          if not check_value(v_result.rdata(0 to v_cmd_len), v_cmd.data_array(0 to v_cmd_len), v_cmd.alert_level, "Checking RDATA." & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, SKIP_LEADING_0, ID_POS_ACK, v_msg_id_panel) then
             v_check_ok := false;
           end if;
-          if not check_value(v_result.rresp(0 to v_cmd_len) = v_cmd.resp_array(0 to v_cmd_len), v_cmd.alert_level, "Checking RRESP. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, ID_POS_ACK, v_msg_id_panel) then
+          if not check_value(v_result.rresp(0 to v_cmd_len) = v_cmd.resp_array(0 to v_cmd_len), v_cmd.alert_level, "Checking RRESP." & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, ID_POS_ACK, v_msg_id_panel) then
             v_check_ok := false;
           end if;
           if GC_USER_WIDTH > 0 then
-            if not check_value(v_result.ruser(0 to v_cmd_len), v_cmd.user_array(0 to v_cmd_len), v_cmd.alert_level, "Checking RUSER. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, SKIP_LEADING_0, ID_POS_ACK, v_msg_id_panel) then
+            if not check_value(v_result.ruser(0 to v_cmd_len), v_cmd.user_array(0 to v_cmd_len), v_cmd.alert_level, "Checking RUSER." & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, SKIP_LEADING_0, ID_POS_ACK, v_msg_id_panel) then
               v_check_ok := false;
             end if;
           end if;
 
           if v_check_ok then
-            log(v_vvc_config.bfm_config.id_for_bfm, "read data channel check OK. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, v_msg_id_panel);
+            log(v_vvc_config.bfm_config.id_for_bfm, "read data channel check OK." & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, v_msg_id_panel);
           end if;
 
           -- Update vvc transaction info
@@ -997,16 +995,16 @@ begin
         end loop;
       else
         -- ID have length of zero. Using first response in the queue
-        v_cmd := write_response_channel_queue.get(VOID);
+        v_cmd := write_response_channel_queue.fetch(VOID);
       end if;
 
       -- Checking response
       if v_normalized_bid'length > 0 then
-        check_value(v_bid_value, v_normalized_bid, v_vvc_config.bfm_config.match_strictness, v_vvc_config.bfm_config.general_severity, "Checking BID value. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, KEEP_LEADING_0, ID_POS_ACK, v_msg_id_panel);
+        check_value(v_bid_value, v_normalized_bid, v_vvc_config.bfm_config.match_strictness, v_vvc_config.bfm_config.general_severity, "Checking BID value." & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, KEEP_LEADING_0, ID_POS_ACK, v_msg_id_panel);
       end if;
       if v_normalized_buser'length > 0 then
         v_normalized_buser := normalize_and_check(v_cmd.user, v_normalized_buser, ALLOW_WIDER_NARROWER, "v_cmd.user", "v_normalized_buser", v_cmd.msg);
-        check_value(v_buser_value, v_normalized_buser, v_vvc_config.bfm_config.match_strictness, v_vvc_config.bfm_config.general_severity, "Checking BUSER value. " & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, KEEP_LEADING_0, ID_POS_ACK, v_msg_id_panel);
+        check_value(v_buser_value, v_normalized_buser, v_vvc_config.bfm_config.match_strictness, v_vvc_config.bfm_config.general_severity, "Checking BUSER value." & add_msg_delimiter(format_msg(v_cmd)), C_CHANNEL_SCOPE, HEX, KEEP_LEADING_0, ID_POS_ACK, v_msg_id_panel);
       end if;
       if v_bresp_value /= v_cmd.resp then
         alert(v_vvc_config.bfm_config.general_severity,"Unexpected BRESP value. Was " & to_string(v_bresp_value) & ". Expected " & to_string(v_cmd.resp) ,  C_CHANNEL_SCOPE);

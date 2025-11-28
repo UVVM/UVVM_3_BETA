@@ -96,12 +96,6 @@ architecture func of vvc_tb is
   signal clk  : std_logic := '0';
   signal arst : std_logic := '0';
 
-  signal uart_0_rx_data_ready : std_logic := '0';
-  signal uart_1_rx_data_ready : std_logic := '0';
-  signal uart_2_rx_data_ready : std_logic := '0';
-  signal uart_3_rx_data_ready : std_logic := '0';
-  signal uart_4_rx_data_ready : std_logic := '0';
-
   signal uart_0_cs    : std_logic                    := '0';
   signal uart_0_addr  : unsigned(2 downto 0)         := (others => '0');
   signal uart_0_wr    : std_logic                    := '0';
@@ -129,9 +123,6 @@ architecture func of vvc_tb is
   signal uart_6_rdata : std_logic_vector(7 downto 0);
 
   signal uart_2_ready   : std_logic := '1'; -- Always ready
-  signal uart_3_ready   : std_logic := '1'; -- Always ready
-  signal uart_4_ready   : std_logic := '1'; -- Always ready
-  signal uart_5_ready   : std_logic := '1'; -- Always ready
   signal uart_6_ready   : std_logic := '1'; -- Always ready
   signal terminate_loop : std_logic := '0'; -- Never in this testbench
 
@@ -150,14 +141,6 @@ architecture func of vvc_tb is
   signal barrier_j        : std_logic := 'X';
   signal barrier_k        : std_logic := 'X';
   signal barrier_l        : std_logic := 'X';
-
-  -- Procedure to make every single test start on a "round" time
-  procedure separate_tests_in_time(     -- Wait for next round time number - e.g. if now=2100ns, and round_time=1000ns, then next round time is 3000ns
-    round_time : time) is
-    variable v_overshoot : time := now rem round_time;
-  begin
-    wait for (round_time - v_overshoot);
-  end;
 
 begin
 
@@ -276,9 +259,8 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
-    log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE_MAIN);
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
+    log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation
     std.env.stop;
@@ -521,8 +503,10 @@ begin
 
     v_cmd_idx := get_last_received_cmd_idx(UART_VVCT, 3, TX);
     uart_transmit(UART_VVCT, 2, TX, x"33", "Sending data on VVC 2 should not change the last received cmd index on VVC 3", C_SCOPE_D2);
+    await_completion(UART_VVCT, 2, TX, 2 * C_FRAME_PERIOD, scope => C_SCOPE_D2);
     check_value(v_cmd_idx = get_last_received_cmd_idx(UART_VVCT, 3, TX), error, "The command index must not change", C_SCOPE_D2);
     uart_transmit(UART_VVCT, 3, TX, x"55", "Sending data on VVC 3 should change the last received cmd index on VVC 3", C_SCOPE_D2);
+    await_completion(UART_VVCT, 3, TX, 2 * C_FRAME_PERIOD, scope => C_SCOPE_D2);
     check_value(v_cmd_idx /= get_last_received_cmd_idx(UART_VVCT, 3, TX), error, "The command index must have been changed", C_SCOPE_D2);
 
     log(ID_SEQUENCER, "testing a not supported channel should result in a tb_error", C_SCOPE_D2);
@@ -540,7 +524,6 @@ begin
   --------------------------------------------------------------------------------------------------
   p_main_e1 : process
     constant C_SCOPE_E1   : string := C_TB_SCOPE_DEFAULT & " E1";
-    variable v_timestamp  : time;
     variable v_vvc_config : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
 
   begin
@@ -740,7 +723,6 @@ begin
     variable v_sbi_cmd_idx            : natural := 0;
     variable v_vvc_cmd_idx            : natural;
     variable v_vvc_time_of_completion : time    := 0 ns;
-    variable v_uvvm_status            : t_uvvm_status;
     variable v_vvc_config             : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
     variable v_uart_vvc_status        : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_status;
     variable v_sbi_vvc_status         : bitvis_vip_sbi.vvc_methods_support_pkg.t_vvc_status;
@@ -1085,7 +1067,6 @@ begin
 
   p_main_i2 : process
     constant C_SCOPE_I2   : string := C_TB_SCOPE_DEFAULT & " I2";
-    variable v_vvc_list   : t_vvc_list;
     variable v_vvc_config : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
 
   begin

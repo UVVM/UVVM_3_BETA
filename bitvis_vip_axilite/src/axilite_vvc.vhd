@@ -275,7 +275,6 @@ begin
   cmd_executor : process
     constant C_EXECUTOR_ID                           : natural                                      := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
-    variable v_read_data                             : t_vvc_result; -- See vvc_cmd_pkg
     variable v_timestamp_start_of_current_bfm_access : time                                         := 0 ns;
     variable v_timestamp_start_of_last_bfm_access    : time                                         := 0 ns;
     variable v_timestamp_end_of_last_bfm_access      : time                                         := 0 ns;
@@ -395,7 +394,7 @@ begin
             wait until terminate_current_cmd.is_active = '1' for v_cmd.delay;
           else
             -- Delay specified using integer
-            check_value(v_vvc_config.bfm_config.clock_period > -1 ns, TB_ERROR, "Check that clock_period is configured when using insert_delay().",
+            check_value(v_vvc_config.bfm_config.clock_period /= C_UNDEFINED_TIME, TB_ERROR, "Check that clock_period is configured when using insert_delay().",
                         C_SCOPE, ID_NEVER, v_msg_id_panel);
             wait until terminate_current_cmd.is_active = '1' for v_cmd.gen_integer_array(0) * v_vvc_config.bfm_config.clock_period;
           end if;
@@ -748,7 +747,6 @@ begin
     constant C_EXECUTOR_ID          : natural                                      := 5;
     variable v_cmd                  : t_vvc_cmd_record;
     variable v_msg_id_panel         : t_msg_id_panel;
-    variable v_normalised_data      : std_logic_vector(GC_DATA_WIDTH - 1 downto 0) := (others => '0');
     variable v_vvc_config           : t_vvc_config                                 := get_vvc_config(VOID);
     constant C_CHANNEL_SCOPE        : string                                       := get_scope_for_log(C_VVC_NAME & "_B", GC_INSTANCE_IDX);
     constant C_CHANNEL_VVC_LABELS   : t_vvc_labels                                 := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);

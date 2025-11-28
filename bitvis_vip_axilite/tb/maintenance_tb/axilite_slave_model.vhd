@@ -44,7 +44,6 @@ architecture behav of axilite_slave_model is
   signal rd_state   : t_read_state;
   signal wdata      : std_logic_vector(C_AXI_DATA_WIDTH - 1 downto 0);
   signal wstrb      : std_logic_vector(C_AXI_DATA_WIDTH / 8 - 1 downto 0);
-  signal rdata      : std_logic_vector(C_AXI_DATA_WIDTH - 1 downto 0);
   signal mem_model  : memory(0 to C_MEMORY_SIZE);
   signal wr_address : unsigned(31 downto 0);
   signal rd_address : unsigned(31 downto 0);
@@ -53,7 +52,6 @@ begin
 
   -- axi-lite slave state machine
   axi_write_states : process(aclk, aresetn)
-    variable i        : integer;
     variable mem_addr : unsigned(31 downto 0);
   begin
     if aresetn = '0' then               -- slave reset state
@@ -162,7 +160,6 @@ begin
   end process;
 
   axi_read_states : process(aclk, aresetn)
-    variable i        : integer;
     variable mem_addr : unsigned(31 downto 0);
   begin
     if aresetn = '0' then               -- slave reset state

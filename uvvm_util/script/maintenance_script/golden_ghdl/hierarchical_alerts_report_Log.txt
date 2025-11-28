@@ -2,10 +2,10 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq                         Verifying hierarchy linked list minor alerts report summary
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Verifying parent scope!'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Verifying parent scope!'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Verifying parent scope!'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Verifying parent scope!'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Verifying parent scope!'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Verifying parent scope!'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Verifying parent scope!'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Verifying parent scope!'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      *** FINAL SUMMARY OF ALL ALERTS  ***     Format: REGARDED/EXPECTED/IGNORED      

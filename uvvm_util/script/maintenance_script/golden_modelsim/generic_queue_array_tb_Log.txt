@@ -14,7 +14,7 @@ UVVM:                FAILURE      :  REGARD         1
 UVVM:                TB_FAILURE   :  REGARD         1
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:      
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ALL_MESSAGES). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ALL_MESSAGES).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  test_bench                     Start Simulation of generic queue package
@@ -25,23 +25,28 @@ UVVM: ID_LOG_HDR                         0.0 ns  test_bench                     
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Queue instantiated with depth 1000
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Checking queue scope is OK => received queue_scope
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for boolean true. 'Checking if queue is initially empty'
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for int 0. 'Checking if queue is initially empty'
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for int 1000. 'Checking size of queue'
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for int 0. 'Checking queue count alert level'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(bool, true) => OK. Value was true. 'Checking if queue is initially empty'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(int, 0) => OK. Value was 0. 'Checking if queue is initially empty'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(int, 1000) => OK. Value was 1000. 'Checking size of queue'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(int, 0) => OK. Value was 0. 'Checking queue count alert level'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  test_bench                     Test of insert
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for boolean true. 'Check if the queue is big enough for the planned test'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(bool, true) => OK. Value was true. 'Check if the queue is big enough for the
+UVVM:                                                                           planned test'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Filling up the queue with 9 entries = (others => '0'). 
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for int 10. 'Pre insert test: Checking if queue initially has 10 entries'
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for boolean true. 'Pre insert test: Check that Element doens't exists yet'
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for int -1. 'Pre insert test: Check that element = 0 is not found yet'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(int, 10) => OK. Value was 10. 'Pre insert test: Checking if queue initially has 10
+UVVM:                                                                           entries'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(bool, true) => OK. Value was true. 'Pre insert test: Check that Element doens't
+UVVM:                                                                           exists yet'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(int, -1) => OK. Value was -1. 'Pre insert test: Check that element = 0 is not found
+UVVM:                                                                           yet'
 UVVM: ID_SEQUENCER_SUB                   0.0 ns  test_bench                     Insert element = different byte =  at POSITION 2
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for int 11. 'Post insert test: Checking that queue has 11 entries'
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for boolean true. 'Check that inserted Element exists'
-UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value() => OK, for int 2. 'Check that the new element =  TRUE  is at POSITION 2'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(int, 11) => OK. Value was 11. 'Post insert test: Checking that queue has 11
+UVVM:                                                                           entries'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(bool, true) => OK. Value was true. 'Check that inserted Element exists'
+UVVM: ID_POS_ACK                         0.0 ns  test_bench                     check_value(int, 2) => OK. Value was 2. 'Check that the new element =  TRUE  is at POSITION 2'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      *** FINAL SUMMARY OF ALL ALERTS ***

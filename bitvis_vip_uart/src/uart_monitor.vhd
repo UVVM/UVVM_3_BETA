@@ -72,9 +72,6 @@ architecture behave of uart_monitor is
     variable v_data              : std_logic_vector(C_MAX_BITS_IN_DATA - 1 downto 0) := (others => '0');
     variable v_parity_error      : boolean;
     variable v_stop_bit_error    : boolean_vector(0 to 1);
-    variable v_legal_transaction : boolean;
-    variable v_time_stamp        : time;
-    variable v_timeout           : time;
     variable v_transaction_info  : t_transaction_group;
   begin
     -- Give constructor some time to set values

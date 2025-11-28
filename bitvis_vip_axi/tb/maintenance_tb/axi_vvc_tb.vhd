@@ -49,10 +49,6 @@ architecture sim of axi_vvc_tb is
   constant C_ID_WIDTH_2   : natural := 0;
   constant C_USER_WIDTH_2 : natural := 0;
 
-  signal clk       : std_logic := '0';
-  signal areset    : std_logic := '0';
-  signal clock_ena : boolean   := false;
-
 begin
 
   -----------------------------
@@ -818,6 +814,53 @@ begin
     v_vvc_config.bfm_config.general_severity := ERROR;
     shared_axi_vvc_config.set(v_vvc_config, 1);
 
+    ------------------------------------------------------------------------------------------------------------------------------
+    log(ID_LOG_HDR, "Testing bfm_sync = SYNC_WITH_SETUP_AND_HOLD, setup_time = 2 ns and hold_time = 3 ns");
+    ------------------------------------------------------------------------------------------------------------------------------
+    v_vvc_config                       := shared_axi_vvc_config.get(1);
+    v_vvc_config.bfm_config.bfm_sync   := SYNC_WITH_SETUP_AND_HOLD;
+    v_vvc_config.bfm_config.setup_time := 2 ns;
+    v_vvc_config.bfm_config.hold_time  := 3 ns;
+    shared_axi_vvc_config.set(v_vvc_config, 1);
+
+    axi_write(
+      VVCT             => AXI_VVCT,
+      vvc_instance_idx => 1,
+      awaddr           => x"00000000",
+      awlen            => x"03",
+      awsize           => 4,
+      wdata            => v_write_data,
+      msg              => "Testing AXI write"
+    );
+    await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+    axi_check(
+      VVCT             => AXI_VVCT,
+      vvc_instance_idx => 1,
+      araddr           => x"00000000",
+      arlen            => x"03",
+      arsize           => 4,
+      rdata_exp        => t_slv_array'(x"12345678", x"33333333", x"55555555", x"AAAAAAAA"),
+      msg              => "Testing AXI check"
+    );
+    await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+    axi_read(
+      VVCT             => AXI_VVCT,
+      vvc_instance_idx => 1,
+      araddr           => x"00000000",
+      arlen            => x"03",
+      arsize           => 4,
+      data_routing     => TO_BUFFER,
+      msg              => "Testing AXI read"
+    );
+    v_cmd_idx := get_last_received_cmd_idx(AXI_VVCT, 1); -- Retrieve the command index
+    await_completion(AXI_VVCT, 1, 1 us, "Waiting for commands to finish");
+    fetch_result(AXI_VVCT, 1, v_cmd_idx, v_result, "Fetching read result");
+    check_value(v_result.rid, x"00", "Checking RID", C_SCOPE);
+    for i in 0 to 3 loop
+      check_value(v_result.rdata(i), v_write_data(i), "Checking RDATA, index " & to_string(i), C_SCOPE);
+      check_value(v_result.ruser(i), x"00", "Checking RUSER, index " & to_string(i), C_SCOPE);
+    end loop;
+
     --------------------------------------------------------------------------------------------------------------------
     log(ID_LOG_HDR, "Testing Unwanted Activity Detection in VVC", C_SCOPE);
     --------------------------------------------------------------------------------------------------------------------
@@ -867,7 +910,10 @@ begin
       toggle_vvc_if(v_alert_level);
     end loop;
 
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    -----------------------------------------------------------------------------
+    -- Ending the simulation
+    -----------------------------------------------------------------------------
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

@@ -47,7 +47,7 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected NOTEs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected NOTEs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing TB_NOTE
 UVVM: 
 UVVM: ***  TB_NOTE #1  ***
@@ -73,7 +73,7 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing WARNING
 UVVM: 
 UVVM: ***  WARNING #1  ***
@@ -99,7 +99,7 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing TB_WARNING
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
@@ -125,7 +125,7 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing MANUAL_CHECK
 UVVM: 
 UVVM: ***  MANUAL_CHECK #1  ***
@@ -151,7 +151,7 @@ UVVM:      >> Simulation SUCCESS: No mismatch between counted and expected serio
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected MANUAL_CHECKs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected MANUAL_CHECKs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing ERROR
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -180,7 +180,7 @@ UVVM:      >> Simulation FAILED, with unexpected serious alert(s)
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected ERRORs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing TB_ERROR
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -209,7 +209,7 @@ UVVM:      >> Simulation FAILED, with unexpected serious alert(s)
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing FAILURE
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -238,7 +238,7 @@ UVVM:      >> Simulation FAILED, with unexpected serious alert(s)
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected FAILUREs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected FAILUREs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing TB_FAILURE
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -267,7 +267,7 @@ UVVM:      >> Simulation FAILED, with unexpected serious alert(s)
 UVVM:      ====================================================================================================================================================================
 UVVM:      
 UVVM:      
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_FAILUREs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_FAILUREs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing final summary, all OK
 UVVM:      
 UVVM:      ====================================================================================================================================================================

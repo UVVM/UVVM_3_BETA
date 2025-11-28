@@ -155,13 +155,13 @@ begin
         await_barrier(global_barrier, 1 us, "Synchronizing TX", error, c_scope);
         log(ID_LOG_HDR, "Testing error case: read() rxc timeout");
         increment_expected_alerts_and_stop_limit(ERROR, 1);
-        wait for 10 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+        wait for v_rgmii_bfm_config.max_wait_cycles * C_CLK_PERIOD;
         clock_ena <= true;
 
         await_barrier(global_barrier, 1 us, "Synchronizing TX", error, c_scope);
         log(ID_LOG_HDR, "Testing error case: read() rx_ctl timeout");
         increment_expected_alerts_and_stop_limit(ERROR, 1);
-        wait for 10 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+        wait for v_rgmii_bfm_config.max_wait_cycles * C_CLK_PERIOD;
 
         await_barrier(global_barrier, 1 us, "Synchronizing TX", error, c_scope);
         log(ID_LOG_HDR, "Testing error case: expect() wrong data");
@@ -200,13 +200,13 @@ begin
         await_barrier(global_barrier, 1 us, "Synchronizing TX", error, c_scope);
         log(ID_LOG_HDR, "Testing error case: read() rxc timeout");
         increment_expected_alerts_and_stop_limit(ERROR, 1);
-        wait for 10 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+        wait for v_rgmii_bfm_config.max_wait_cycles * C_CLK_PERIOD;
         clock_ena <= true;
 
         await_barrier(global_barrier, 1 us, "Synchronizing TX", error, c_scope);
         log(ID_LOG_HDR, "Testing error case: read() rx_ctl timeout");
         increment_expected_alerts_and_stop_limit(ERROR, 1);
-        wait for 10 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+        wait for v_rgmii_bfm_config.max_wait_cycles * C_CLK_PERIOD;
 
         await_barrier(global_barrier, 1 us, "Synchronizing TX", error, c_scope);
         log(ID_LOG_HDR, "Testing error case: expect() wrong data");
@@ -283,7 +283,7 @@ begin
 
         -- Testing error case: write() txc timeout
         await_barrier(global_barrier, 1 us, "Synchronizing RX", error, c_scope);
-        wait for 10 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+        wait for v_rgmii_bfm_config.max_wait_cycles * C_CLK_PERIOD;
 
         -- Testing error case: read() rxc timeout
         await_barrier(global_barrier, 1 us, "Synchronizing RX", error, c_scope);
@@ -321,7 +321,7 @@ begin
 
         -- Testing error case: write() txc timeout
         await_barrier(global_barrier, 1 us, "Synchronizing RX", error, c_scope);
-        wait for 10 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+        wait for v_rgmii_bfm_config.max_wait_cycles * C_CLK_PERIOD;
 
         -- Testing error case: read() rxc timeout
         await_barrier(global_barrier, 1 us, "Synchronizing RX", error, c_scope);

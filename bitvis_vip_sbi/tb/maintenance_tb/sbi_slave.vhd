@@ -61,7 +61,7 @@ begin
 
   sbi_rdata <= sbi_rdata_i after GC_FIXED_WAIT_CYCLES_READ * GC_CLK_PERIOD;
   -- Read registers
-  p_read_reg : process(sbi_cs, sbi_rd, sbi_addr)
+  p_read_reg : process(all)
   begin
     sbi_rdata_i <= (others => '0');
     if sbi_cs = '1' and sbi_rd = '1' then

@@ -299,6 +299,8 @@ begin
     ------------------------------------------------------------------------------------------------------------------------------
       log(ID_LOG_HDR, "Verifying normalise", C_SCOPE);
 
+      increment_expected_alerts(TB_NOTE, 1); -- Deprecate message from normalise
+
       log("\rCheck normalise for slv");
       -- slv: No errors expected
       v_slv8   := x"00";
@@ -658,6 +660,7 @@ begin
       increment_expected_alerts(TB_WARNING);
       alert(TB_WARNING, "This alert should be written to alertLog2.txt");
 
+      increment_expected_alerts(TB_NOTE, 2); -- Deprecate messages from set_log_file_name and set_alert_file_name
       set_log_file_name(GC_TESTCASE & "_testLog3.txt", ID_SEQUENCER);
       set_alert_file_name(GC_TESTCASE & "_alertLog3.txt", ID_SEQUENCER);
 
@@ -667,6 +670,7 @@ begin
     ------------------------------------------------------------------------------------------------------------------------------
     elsif GC_TESTCASE = "string_methods" then
     ------------------------------------------------------------------------------------------------------------------------------
+      slv8     <= x"17";
       v_slv8   := x"17";
       v_slv5_a := "10111";
       log("Valid hex, no radix");
@@ -683,31 +687,31 @@ begin
 
       log("Valid hex, Radix");
       v_slv8 := x"17";
-      check_value(to_string(v_slv8, HEX, AS_IS, INCL_RADIX), "x""17""", error, "to_string b""0x010111"", HEX, AS_IS, INCL_RADIX", C_SCOPE);
-      check_value(to_string(v_slv8, BIN, AS_IS, INCL_RADIX), "b""00010111""", error, "to_string b""00010111"", BIN, AS_IS, INCL_RADIX", C_SCOPE);
-      check_value(to_string(v_slv8, HEX_BIN_IF_INVALID, AS_IS, INCL_RADIX), "x""17""", error, "to_string b""0x010111"", HEX_BIN_IF_INVALID, AS_IS, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_slv8, HEX, KEEP_LEADING_0, INCL_RADIX), "x""17""", error, "to_string b""0x010111"", HEX, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_slv8, BIN, KEEP_LEADING_0, INCL_RADIX), "b""00010111""", error, "to_string b""00010111"", BIN, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_slv8, HEX_BIN_IF_INVALID, KEEP_LEADING_0, INCL_RADIX), "x""17""", error, "to_string b""0x010111"", HEX_BIN_IF_INVALID, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
 
       log("Invalid hex, Radix");
       v_slv8 := "0X010111";
-      check_value(to_string(v_slv8, HEX, AS_IS, INCL_RADIX), "x""X7""", error, "to_string b""0x010111"", HEX, AS_IS, INCL_RADIX", C_SCOPE);
-      check_value(to_string(v_slv8, BIN, AS_IS, INCL_RADIX), "b""0X010111""", error, "to_string b""0x010111"", BIN, AS_IS, INCL_RADIX", C_SCOPE);
-      check_value(to_string(v_slv8, HEX_BIN_IF_INVALID, AS_IS, INCL_RADIX), "x""X7"" (b""0X010111"")", error, "to_string b""0x010111"", HEX_BIN_IF_INVALID, AS_IS, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_slv8, HEX, KEEP_LEADING_0, INCL_RADIX), "x""X7""", error, "to_string b""0x010111"", HEX, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_slv8, BIN, KEEP_LEADING_0, INCL_RADIX), "b""0X010111""", error, "to_string b""0x010111"", BIN, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_slv8, HEX_BIN_IF_INVALID, KEEP_LEADING_0, INCL_RADIX), "x""X7"" (b""0X010111"")", error, "to_string b""0x010111"", HEX_BIN_IF_INVALID, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
 
       log("Signed, positive");
       v_sig8 := x"17";                    -- +23 decimal
       check_value(to_string(v_sig8, DEC), "23", error, "to_string x""17"", DEC", C_SCOPE);
       check_value(to_string(v_sig8, HEX), "17", error, "to_string x""17"", HEX", C_SCOPE);
       check_value(to_string(v_sig8, BIN), "00010111", error, "to_string x""17"", BIN", C_SCOPE);
-      check_value(to_string(v_sig8, HEX, AS_IS, INCL_RADIX), "x""17""", error, "to_string b""0x010111"", HEX, AS_IS, INCL_RADIX", C_SCOPE);
-      check_value(to_string(v_sig8, BIN, AS_IS, INCL_RADIX), "b""00010111""", error, "to_string b""00010111"", BIN, AS_IS, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_sig8, HEX, KEEP_LEADING_0, INCL_RADIX), "x""17""", error, "to_string b""0x010111"", HEX, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_sig8, BIN, KEEP_LEADING_0, INCL_RADIX), "b""00010111""", error, "to_string b""00010111"", BIN, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
 
       log("Signed, negative");
       v_sig8 := x"97";                    -- -105 decimal
       check_value(to_string(v_sig8, DEC), "-105", error, "to_string x""97"", DEC", C_SCOPE);
       check_value(to_string(v_sig8, HEX), "97", error, "to_string x""97"", HEX", C_SCOPE);
       check_value(to_string(v_sig8, BIN), "10010111", error, "to_string x""97"", BIN", C_SCOPE);
-      check_value(to_string(v_sig8, HEX, AS_IS, INCL_RADIX), "x""97""", error, "to_string b""0x10010111"", HEX, AS_IS, INCL_RADIX", C_SCOPE);
-      check_value(to_string(v_sig8, BIN, AS_IS, INCL_RADIX), "b""10010111""", error, "to_string b""10010111"", BIN, AS_IS, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_sig8, HEX, KEEP_LEADING_0, INCL_RADIX), "x""97""", error, "to_string b""0x10010111"", HEX, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
+      check_value(to_string(v_sig8, BIN, KEEP_LEADING_0, INCL_RADIX), "b""10010111""", error, "to_string b""10010111"", BIN, KEEP_LEADING_0, INCL_RADIX", C_SCOPE);
 
       v_sig32 := x"80030201";             -- -2147286527 decimal
       check_value(to_string(v_sig32, DEC), "-2147286527", error, "to_string x""80030201"", DEC", C_SCOPE);

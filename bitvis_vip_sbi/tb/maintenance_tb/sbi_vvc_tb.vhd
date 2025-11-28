@@ -84,7 +84,6 @@ begin
   ------------------------------------------------
   p_main : process
     -- BFM config
-    variable v_sbi_bfm_config : t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT;
     variable v_cmd_idx        : integer;
     variable v_data           : work.vvc_cmd_pkg.t_vvc_result;
     variable v_is_ok          : boolean := false;
@@ -587,8 +586,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

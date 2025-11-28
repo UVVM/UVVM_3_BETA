@@ -145,34 +145,6 @@ begin
     end;
 
     -- overload for this testbench
-    procedure avalon_mm_read(
-      addr_value  : in unsigned;
-      data_value  : out std_logic_vector;
-      alert_level : in t_alert_level := error
-    ) is
-      variable timeout : boolean := false;
-      variable cycle   : natural := 0;
-    begin
-      if addr_value = 0 then
-        -- check that SPI module is ready to deliver - wait if necessary
-        while not dataavailable loop
-          wait until rising_edge(clk);
-          cycle := cycle + 1;
-          if cycle = 100 then
-            timeout := true;
-            alert(alert_level, "avalon_mm_read) timeout waiting for SPI to have data");
-            exit;
-          end if;
-        end loop;
-        if not timeout then
-          avalon_mm_read(addr_value, data_value, "", clk, avalon_mm_if, C_SCOPE, shared_msg_id_panel.get(VOID), avalon_mm_bfm_config);
-        end if;
-      else
-        avalon_mm_read(addr_value, data_value, "", clk, avalon_mm_if, C_SCOPE, shared_msg_id_panel.get(VOID), avalon_mm_bfm_config);
-      end if;
-    end;
-
-    -- overload for this testbench
     procedure avalon_mm_check(
       addr_value  : in unsigned;
       data_exp    : in std_logic_vector;
@@ -200,10 +172,6 @@ begin
         avalon_mm_check(addr_value, data_exp, "", clk, avalon_mm_if, alert_level, C_SCOPE, shared_msg_id_panel.get(VOID), avalon_mm_bfm_config);
       end if;
     end;
-
-    variable i                    : integer;
-    variable fifo_data            : std_logic_vector(31 downto 0);
-    variable v_alert_num_mismatch : boolean := false;
 
   begin
     -- To avoid that log files from different test cases (run in separate

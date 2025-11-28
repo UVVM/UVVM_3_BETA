@@ -3,35 +3,37 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Randomization package - rand_gaussian
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing Gaussian distribution config
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_rand_dist(GAUSSIAN)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking distribution'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking distribution'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_rand_dist_mean(5.00)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 5.000000e+00. 'Checking mean'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 5.000000e+00) => OK. Value was 5.000000e+00. 'Checking mean'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_rand_dist_std_deviation(1.00)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+00. 'Checking std_deviation'
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 2. 
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+00) => OK. Value was 1.000000e+00. 'Checking std_deviation'
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 2.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_rand_dist_mean()
 UVVM: 
 UVVM: ***  TB_NOTE #1  ***
 UVVM:             0 ns   TB seq.
 UVVM:                    get_rand_dist_mean()=> mean has not been configured, using default
 UVVM: 
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 0.000000e+00. 'Checking mean config was cleared'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 0.000000e+00) => OK. Value was 0.000000e+00. 'Checking mean config was
+UVVM:                                                                           cleared'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_rand_dist_std_deviation()
 UVVM: 
 UVVM: ***  TB_NOTE #2  ***
 UVVM:             0 ns   TB seq.
 UVVM:                    get_rand_dist_std_deviation()=> std_deviation has not been configured, using default
 UVVM: 
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 0.000000e+00. 'Checking std_deviation config was cleared'
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_POS_ACK). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_RAND_GEN). 
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 0.000000e+00) => OK. Value was 0.000000e+00. 'Checking std_deviation config
+UVVM:                                                                           was cleared'
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_POS_ACK).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_RAND_GEN).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing Gaussian distribution (integer)
@@ -288,7 +290,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                     10400.0 ns  TB seq.                        Testing invalid parameters
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #1  ***
@@ -298,8 +300,8 @@ UVVM: ==========================================================================
 UVVM: 
 UVVM: 
 UVVM: ID_RAND_CONF                   10400.0 ns  TB seq.                        set_rand_dist_mean(1.00)
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 5. 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 5.
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
 UVVM:         10400 ns   TB seq.
@@ -333,8 +335,8 @@ UVVM:                    random_gaussian()=> Mean: 1.00 must be inside min/max r
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 10. 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 10.
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #6  ***
 UVVM:         10400 ns   TB seq.
@@ -394,8 +396,8 @@ UVVM:                    random_gaussian()=> Mean: 1.00 must be inside min/max r
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 4. 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 4.
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #16  ***
 UVVM:         10400 ns   TB seq.
@@ -424,8 +426,8 @@ UVVM:                    random_gaussian()=> Mean: 1.00 must be inside min/max r
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9. 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9.
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #20  ***
 UVVM:         10400 ns   TB seq.
@@ -485,7 +487,7 @@ UVVM:                    random_gaussian()=> Mean: 1.00 must be inside min/max r
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 2. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 2.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #6  ***
@@ -502,8 +504,8 @@ UVVM:                    rand(LEN:5, RANGE:[-2 ps:2 ps])=> Randomization distrib
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9. 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9.
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #29  ***
 UVVM:         10400 ns   TB seq.
@@ -559,8 +561,8 @@ UVVM:                    random_gaussian()=> Mean: 1.00 must be inside min/max r
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9. 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9.
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #38  ***
 UVVM:         10400 ns   TB seq.
@@ -616,8 +618,8 @@ UVVM:                    random_gaussian()=> Mean: 1.00 must be inside min/max r
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9. 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9.
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #47  ***
 UVVM:         10400 ns   TB seq.
@@ -673,7 +675,7 @@ UVVM:                    random_gaussian()=> Mean: 1.00 must be inside min/max r
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
-UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 6. 
+UVVM: ID_UTIL_SETUP                  10400.0 ns  TB seq.                        incremented expected TB_WARNINGs by 6.
 UVVM: 
 UVVM: ***  TB_WARNING #56  ***
 UVVM:         10400 ns   TB seq.

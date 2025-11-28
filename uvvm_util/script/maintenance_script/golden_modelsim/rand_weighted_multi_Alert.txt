@@ -25,19 +25,20 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5:3],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([-5:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be combined.
+UVVM:                    Ignoring exclude constraint.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #2  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5:3],30,COMBINED)) => Failed. Boolean was false. 'Cyclic mode and weighted randomization cannot be combined. Ignoring cyclic configuration.'
+UVVM:                    randm(([-5:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Cyclic mode and weighted randomization cannot be combined.
+UVVM:                    Ignoring cyclic configuration.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #3  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5:3],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([-5:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined. Ignoring
+UVVM:                    uniqueness configuration.'
 UVVM: 
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -74,8 +75,8 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #4  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5.00:-3.00],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([-5.00:-3.00],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be
+UVVM:                    combined. Ignoring exclude constraint.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #5  ***
@@ -85,8 +86,8 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #6  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5.00:-3.00],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([-5.00:-3.00],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined.
+UVVM:                    Ignoring uniqueness configuration.'
 UVVM: 
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -123,8 +124,8 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #7  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5 ps:3 ps],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([-5 ps:3 ps],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be
+UVVM:                    combined. Ignoring exclude constraint.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #8  ***
@@ -134,8 +135,8 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #9  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5 ps:3 ps],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([-5 ps:3 ps],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined.
+UVVM:                    Ignoring uniqueness configuration.'
 UVVM: 
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -172,19 +173,20 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #10  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be combined.
+UVVM:                    Ignoring exclude constraint.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #11  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Cyclic mode and weighted randomization cannot be combined. Ignoring cyclic configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Cyclic mode and weighted randomization cannot be combined. Ignoring
+UVVM:                    cyclic configuration.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #12  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined. Ignoring
+UVVM:                    uniqueness configuration.'
 UVVM: 
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -205,19 +207,20 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #13  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be combined.
+UVVM:                    Ignoring exclude constraint.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #14  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Cyclic mode and weighted randomization cannot be combined. Ignoring cyclic configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Cyclic mode and weighted randomization cannot be combined. Ignoring
+UVVM:                    cyclic configuration.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #15  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined. Ignoring
+UVVM:                    uniqueness configuration.'
 UVVM: 
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -246,17 +249,18 @@ UVVM:
 UVVM: 
 UVVM: ***  TB_WARNING #16  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be combined.
+UVVM:                    Ignoring exclude constraint.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #17  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Cyclic mode and weighted randomization cannot be combined. Ignoring cyclic configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Cyclic mode and weighted randomization cannot be combined. Ignoring
+UVVM:                    cyclic configuration.'
 UVVM: 
 UVVM: 
 UVVM: ***  TB_WARNING #18  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined. Ignoring
+UVVM:                    uniqueness configuration.'
 UVVM: 

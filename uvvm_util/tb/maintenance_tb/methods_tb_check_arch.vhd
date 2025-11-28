@@ -53,7 +53,8 @@ begin
     variable v_uns5_b               : unsigned(4 downto 0);
     variable v_uns6                 : unsigned(5 downto 0);
     variable v_uns32                : unsigned(31 downto 0);
-    variable v_sig8                 : signed(7 downto 0);
+    variable v_sig8_a               : signed(7 downto 0);
+    variable v_sig8_b               : signed(7 downto 0);
     variable v_sig32                : signed(31 downto 0);
     variable v_real                 : real;
     variable v_int_a                : integer;
@@ -120,31 +121,31 @@ begin
       check_value(std_logic_vector'("0000010010"), "000010010", error, "My msg BIN, OK", C_SCOPE, BIN);
       check_value(std_logic_vector'("0000010010"), "000010010", error, "My msg HEX, OK", C_SCOPE, HEX);
       check_value(std_logic_vector'("0000010010"), "000010-10", error, "My msg HEX, OK", C_SCOPE, HEX);
-      check_value(std_logic_vector'("0000010010"), "000010010", error, "My msg BIN, AS_IS, OK", C_SCOPE, BIN, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "000010010", error, "My msg HEX, AS_IS, OK", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "000010-10", error, "My msg HEX, AS_IS, OK", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "00--10-10", error, "My msg dontcare-in-extended-width HEX, AS_IS, OK", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "00--10-10", MATCH_STD, error, "My msg dontcare-in-extended-width HEX, AS_IS, OK", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "00--10-10", MATCH_EXACT, error, "My msg dontcare-in-extended-width HEX, AS_IS, Fail", C_SCOPE, HEX, AS_IS);
+      check_value(std_logic_vector'("0000010010"), "000010010", error, "My msg BIN, KEEP_LEADING_0, OK", C_SCOPE, BIN, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "000010010", error, "My msg HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "000010-10", error, "My msg HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "00--10-10", error, "My msg dontcare-in-extended-width HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "00--10-10", MATCH_STD, error, "My msg dontcare-in-extended-width HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "00--10-10", MATCH_EXACT, error, "My msg dontcare-in-extended-width HEX, KEEP_LEADING_0, Fail", C_SCOPE, HEX, KEEP_LEADING_0);
       -- MATCH_STD_INCL_Z
       increment_expected_alerts_and_stop_limit(error, 1);
-      check_value(std_logic_vector'("000Z0Z00Z0"), "000Z0Z00Z0", MATCH_STD_INCL_Z, error, "Check MATCH_STD_INCL_Z", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("01Z0"), "----", MATCH_STD_INCL_Z, error, "Check MATCH_STD_INCL_Z with don't care", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("01Z0"), "01--", MATCH_STD_INCL_Z, error, "Check MATCH_STD_INCL_Z with don't care", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("01Z0"), "01-1", MATCH_STD_INCL_Z, error, "Check MATCH_STD_INCL_Z with don't care, Fail", C_SCOPE, HEX, AS_IS);
+      check_value(std_logic_vector'("000Z0Z00Z0"), "000Z0Z00Z0", MATCH_STD_INCL_Z, error, "Check MATCH_STD_INCL_Z", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("01Z0"), "----", MATCH_STD_INCL_Z, error, "Check MATCH_STD_INCL_Z with don't care", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("01Z0"), "01--", MATCH_STD_INCL_Z, error, "Check MATCH_STD_INCL_Z with don't care", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("01Z0"), "01-1", MATCH_STD_INCL_Z, error, "Check MATCH_STD_INCL_Z with don't care, Fail", C_SCOPE, HEX, KEEP_LEADING_0);
       -- MATCH_STD_INCL_ZXUW
       increment_expected_alerts_and_stop_limit(error, 2);
-      check_value(std_logic_vector'("000Z0Z00Z0"), "000Z0Z00Z0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("000X0X00X0"), "000X0X00X0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("000U0U00U0"), "000U0U00U0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("000W0W00W0"), "000W0W00W0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0Z0X0U00W0"), "0Z0X0U00W0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
+      check_value(std_logic_vector'("000Z0Z00Z0"), "000Z0Z00Z0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("000X0X00X0"), "000X0X00X0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("000U0U00U0"), "000U0U00U0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("000W0W00W0"), "000W0W00W0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0Z0X0U00W0"), "0Z0X0U00W0", MATCH_STD_INCL_ZXUW, error, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
       check_value(std_logic_vector'("0000010010"), "0000010010", error, "My msg HEX_BIN_IF_INVALID, OK", C_SCOPE, HEX_BIN_IF_INVALID);
       check_value(std_logic_vector'("0000011111"), "0000010010", error, "My msg HEX_BIN_IF_INVALID, Fail", C_SCOPE, HEX_BIN_IF_INVALID);
       check_value(std_logic_vector'("00000U00U0"), "0000010010", error, "My msg HEX_BIN_IF_INVALID, Fail", C_SCOPE, HEX_BIN_IF_INVALID);
       -- wide vector
-      check_value(slv128, slv128, error, "Test wide vector, HEX, OK", C_SCOPE, HEX, AS_IS);
-      check_value(slv128, slv128, error, "Test wide vector, DEC, OK", C_SCOPE, DEC, AS_IS);
+      check_value(slv128, slv128, error, "Test wide vector, HEX, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(slv128, slv128, error, "Test wide vector, DEC, OK", C_SCOPE, DEC, KEEP_LEADING_0);
       -- Boolean
       -- As function
       increment_expected_alerts_and_stop_limit(error, 2);
@@ -167,15 +168,24 @@ begin
       v_uns5_b := "11100";
       v_uns6   := "101100";
       increment_expected_alerts_and_stop_limit(error, 2);
-      check_value(v_uns5_a, v_uns5_a, error, "My msg U, BIN, AS_IS, OK", C_SCOPE, BIN);
-      check_value(v_uns5_a, v_uns5_b, error, "My msg U, BIN, AS_IS, Fail", C_SCOPE, BIN);
-      v_bool := check_value(v_uns5_a, v_uns6, error, "My msg U, BIN, AS_IS, Fail", C_SCOPE, BIN);
+      check_value(v_uns5_a, v_uns5_a, error, "My msg U, BIN, KEEP_LEADING_0, OK", C_SCOPE, BIN);
+      check_value(v_uns5_a, v_uns5_b, error, "My msg U, BIN, KEEP_LEADING_0, Fail", C_SCOPE, BIN);
+      v_bool := check_value(v_uns5_a, v_uns6, error, "My msg U, BIN, KEEP_LEADING_0, Fail", C_SCOPE, BIN);
       check_value(not v_bool, error, "check_value with return value shall return false when Fail", C_SCOPE);
       -- Signed
-      v_sig8 := "10101100";
-      increment_expected_alerts_and_stop_limit(error, 1);
-      check_value(v_sig8, v_sig8, error, "My msg S, BIN, AS_IS, OK", C_SCOPE, BIN);
-      v_bool := check_value(v_sig8, "10101101", error, "My msg S, BIN, AS_IS, Fail", C_SCOPE, BIN);
+      v_sig8_a := "10101100";
+      v_sig8_b := "10101101";
+      v_sig32  := x"80000001"; -- -2^31 (-2147483647)
+      increment_expected_alerts_and_stop_limit(error, 6);
+      check_value(v_sig8_a, v_sig8_a, error, "My msg S, BIN, KEEP_LEADING_0, OK", C_SCOPE, BIN);
+      check_value(v_sig8_a, v_sig8_a, error, "My msg S, HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX);
+      check_value(v_sig8_a, v_sig8_a, error, "My msg S, DEC, KEEP_LEADING_0, OK", C_SCOPE, DEC);
+      check_value(v_sig8_a, v_sig8_b, error, "My msg S, BIN, KEEP_LEADING_0, Fail", C_SCOPE, BIN);
+      check_value(v_sig8_a, v_sig8_b, error, "My msg S, HEX, KEEP_LEADING_0, Fail", C_SCOPE, HEX);
+      check_value(v_sig8_a, v_sig8_b, error, "My msg S, DEC, KEEP_LEADING_0, Fail", C_SCOPE, DEC);
+      check_value(v_sig8_a, v_sig32, error, "My msg S, BIN, KEEP_LEADING_0, Fail", C_SCOPE, BIN);
+      check_value(v_sig8_a, v_sig32, error, "My msg S, HEX, KEEP_LEADING_0, Fail", C_SCOPE, HEX);
+      v_bool := check_value(v_sig8_a, v_sig32, error, "My msg S, DEC, KEEP_LEADING_0, Fail", C_SCOPE, DEC);
       check_value(not v_bool, error, "check_value with return value shall return false when Fail", C_SCOPE);
       -- Integer
       v_int_a := 5;
@@ -301,31 +311,31 @@ begin
       check_value(std_logic_vector'("0000010010"), "000010010", "My msg BIN, OK", C_SCOPE, BIN);
       check_value(std_logic_vector'("0000010010"), "000010010", "My msg HEX, OK", C_SCOPE, HEX);
       check_value(std_logic_vector'("0000010010"), "000010-10", "My msg HEX, OK", C_SCOPE, HEX);
-      check_value(std_logic_vector'("0000010010"), "000010010", "My msg BIN, AS_IS, OK", C_SCOPE, BIN, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "000010010", "My msg HEX, AS_IS, OK", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "000010-10", "My msg HEX, AS_IS, OK", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "00--10-10", "My msg dontcare-in-extended-width HEX, AS_IS, OK", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "00--10-10", MATCH_STD, "My msg dontcare-in-extended-width HEX, AS_IS, OK", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0000010010"), "00--10-10", MATCH_EXACT, "My msg dontcare-in-extended-width HEX, AS_IS, Fail", C_SCOPE, HEX, AS_IS);
+      check_value(std_logic_vector'("0000010010"), "000010010", "My msg BIN, KEEP_LEADING_0, OK", C_SCOPE, BIN, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "000010010", "My msg HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "000010-10", "My msg HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "00--10-10", "My msg dontcare-in-extended-width HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "00--10-10", MATCH_STD, "My msg dontcare-in-extended-width HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0000010010"), "00--10-10", MATCH_EXACT, "My msg dontcare-in-extended-width HEX, KEEP_LEADING_0, Fail", C_SCOPE, HEX, KEEP_LEADING_0);
       -- MATCH_STD_INCL_Z
       increment_expected_alerts_and_stop_limit(error, 1);
-      check_value(std_logic_vector'("000Z0Z00Z0"), "000Z0Z00Z0", MATCH_STD_INCL_Z, "Check MATCH_STD_INCL_Z", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("01Z0"), "----", MATCH_STD_INCL_Z, "Check MATCH_STD_INCL_Z with don't care", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("01Z0"), "01--", MATCH_STD_INCL_Z, "Check MATCH_STD_INCL_Z with don't care", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("01Z0"), "01-1", MATCH_STD_INCL_Z, "Check MATCH_STD_INCL_Z with don't care, Fail", C_SCOPE, HEX, AS_IS);
+      check_value(std_logic_vector'("000Z0Z00Z0"), "000Z0Z00Z0", MATCH_STD_INCL_Z, "Check MATCH_STD_INCL_Z", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("01Z0"), "----", MATCH_STD_INCL_Z, "Check MATCH_STD_INCL_Z with don't care", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("01Z0"), "01--", MATCH_STD_INCL_Z, "Check MATCH_STD_INCL_Z with don't care", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("01Z0"), "01-1", MATCH_STD_INCL_Z, "Check MATCH_STD_INCL_Z with don't care, Fail", C_SCOPE, HEX, KEEP_LEADING_0);
       -- MATCH_STD_INCL_ZXUW
       increment_expected_alerts_and_stop_limit(error, 2);
-      check_value(std_logic_vector'("000Z0Z00Z0"), "000Z0Z00Z0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("000X0X00X0"), "000X0X00X0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("000U0U00U0"), "000U0U00U0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("000W0W00W0"), "000W0W00W0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
-      check_value(std_logic_vector'("0Z0X0U00W0"), "0Z0X0U00W0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, AS_IS);
+      check_value(std_logic_vector'("000Z0Z00Z0"), "000Z0Z00Z0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("000X0X00X0"), "000X0X00X0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("000U0U00U0"), "000U0U00U0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("000W0W00W0"), "000W0W00W0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(std_logic_vector'("0Z0X0U00W0"), "0Z0X0U00W0", MATCH_STD_INCL_ZXUW, "Check MATCH_STD_INCL_ZXUW", C_SCOPE, HEX, KEEP_LEADING_0);
       check_value(std_logic_vector'("0000010010"), "0000010010", "My msg HEX_BIN_IF_INVALID, OK", C_SCOPE, HEX_BIN_IF_INVALID);
       check_value(std_logic_vector'("0000011111"), "0000010010", "My msg HEX_BIN_IF_INVALID, Fail", C_SCOPE, HEX_BIN_IF_INVALID);
       check_value(std_logic_vector'("00000U00U0"), "0000010010", "My msg HEX_BIN_IF_INVALID, Fail", C_SCOPE, HEX_BIN_IF_INVALID);
       -- wide vector
-      check_value(slv128, slv128, "Test wide vector, HEX, OK", C_SCOPE, HEX, AS_IS);
-      check_value(slv128, slv128, "Test wide vector, DEC, OK", C_SCOPE, DEC, AS_IS);
+      check_value(slv128, slv128, "Test wide vector, HEX, OK", C_SCOPE, HEX, KEEP_LEADING_0);
+      check_value(slv128, slv128, "Test wide vector, DEC, OK", C_SCOPE, DEC, KEEP_LEADING_0);
       -- Boolean
       -- As function
       increment_expected_alerts_and_stop_limit(error, 2);
@@ -348,15 +358,24 @@ begin
       v_uns5_b := "11100";
       v_uns6   := "101100";
       increment_expected_alerts_and_stop_limit(error, 2);
-      check_value(v_uns5_a, v_uns5_a, "My msg U, BIN, AS_IS, OK", C_SCOPE, BIN);
-      check_value(v_uns5_a, v_uns5_b, "My msg U, BIN, AS_IS, Fail", C_SCOPE, BIN);
-      v_bool := check_value(v_uns5_a, v_uns6, "My msg U, BIN, AS_IS, Fail", C_SCOPE, BIN);
+      check_value(v_uns5_a, v_uns5_a, "My msg U, BIN, KEEP_LEADING_0, OK", C_SCOPE, BIN);
+      check_value(v_uns5_a, v_uns5_b, "My msg U, BIN, KEEP_LEADING_0, Fail", C_SCOPE, BIN);
+      v_bool := check_value(v_uns5_a, v_uns6, "My msg U, BIN, KEEP_LEADING_0, Fail", C_SCOPE, BIN);
       check_value(not v_bool, "check_value with return value shall return false when Fail", C_SCOPE);
       -- Signed
-      v_sig8 := "10101100";
-      increment_expected_alerts_and_stop_limit(error, 1);
-      check_value(v_sig8, v_sig8, "My msg S, BIN, AS_IS, OK", C_SCOPE, BIN);
-      v_bool := check_value(v_sig8, "10101101", "My msg S, BIN, AS_IS, Fail", C_SCOPE, BIN);
+      v_sig8_a := "10101100";
+      v_sig8_b := "10101101";
+      v_sig32  := x"80000001"; -- -2^31 (-2147483647)
+      increment_expected_alerts_and_stop_limit(error, 6);
+      check_value(v_sig8_a, v_sig8_a, "My msg S, BIN, KEEP_LEADING_0, OK", C_SCOPE, BIN);
+      check_value(v_sig8_a, v_sig8_a, "My msg S, HEX, KEEP_LEADING_0, OK", C_SCOPE, HEX);
+      check_value(v_sig8_a, v_sig8_a, "My msg S, DEC, KEEP_LEADING_0, OK", C_SCOPE, DEC);
+      check_value(v_sig8_a, v_sig8_b, "My msg S, BIN, KEEP_LEADING_0, Fail", C_SCOPE, BIN);
+      check_value(v_sig8_a, v_sig8_b, "My msg S, HEX, KEEP_LEADING_0, Fail", C_SCOPE, HEX);
+      check_value(v_sig8_a, v_sig8_b, "My msg S, DEC, KEEP_LEADING_0, Fail", C_SCOPE, DEC);
+      check_value(v_sig8_a, v_sig32, "My msg S, BIN, KEEP_LEADING_0, Fail", C_SCOPE, BIN);
+      check_value(v_sig8_a, v_sig32, "My msg S, HEX, KEEP_LEADING_0, Fail", C_SCOPE, HEX);
+      v_bool := check_value(v_sig8_a, v_sig32, "My msg S, DEC, KEEP_LEADING_0, Fail", C_SCOPE, DEC);
       check_value(not v_bool, "check_value with return value shall return false when Fail", C_SCOPE);
       -- Integer
       v_int_a := 5;
@@ -563,6 +582,15 @@ begin
       v_bool := check_value_in_range(v_time, 4 ns, 5 ns, error, "Check time in range, Fail", C_SCOPE);
       check_value(not v_bool, error, "check_value with return value shall return false when Fail", C_SCOPE);
 
+      -- check_value_in_range : real
+      v_real := 3.0;
+      increment_expected_alerts_and_stop_limit(error, 1);
+      check_value_in_range(v_real, 1.5, 3.1, error, "Check real in range, OK", C_SCOPE);
+      v_bool := check_value_in_range(v_real, 3.0, 5.1, error, "Check real in range, OK", C_SCOPE);
+      check_value(v_bool, error, "check_value with return value shall return true when OK", C_SCOPE);
+      v_bool := check_value_in_range(v_real, 3.1, 4.9, error, "Check real in range, Fail", C_SCOPE);
+      check_value(not v_bool, error, "check_value with return value shall return false when Fail", C_SCOPE);
+
       report_check_counters(VOID);
 
     ------------------------------------------------------------------------------------------------------------------------------
@@ -600,6 +628,15 @@ begin
       check_value(v_bool, "check_value with return value shall return true when OK", C_SCOPE);
       v_bool := check_value_in_range(v_time, 4 ns, 5 ns, "Check time in range, Fail", C_SCOPE);
       check_value(not v_bool, "check_value with return value shall return false when Fail", C_SCOPE);
+
+      -- check_value_in_range : real
+      v_real := 3.0;
+      increment_expected_alerts_and_stop_limit(error, 1);
+      check_value_in_range(v_real, 1.5, 3.1, error, "Check real in range, OK", C_SCOPE);
+      v_bool := check_value_in_range(v_real, 3.0, 5.1, error, "Check real in range, OK", C_SCOPE);
+      check_value(v_bool, error, "check_value with return value shall return true when OK", C_SCOPE);
+      v_bool := check_value_in_range(v_real, 3.1, 4.9, error, "Check real in range, Fail", C_SCOPE);
+      check_value(not v_bool, error, "check_value with return value shall return false when Fail", C_SCOPE);
 
       report_check_counters(VOID);
     

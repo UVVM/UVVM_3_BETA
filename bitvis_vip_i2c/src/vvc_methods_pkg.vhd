@@ -405,7 +405,7 @@ package body vvc_methods_pkg is
     constant proc_call         : string                                           := proc_name & "(" & to_string(VVCT, vvc_instance_idx) & ")";
     -- Normalize to the 10 bit addr width
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                 := shared_vvc_cmd.get(vvc_instance_idx);
-    variable v_normalized_addr : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0) := normalize_and_check(addr, v_local_vvc_cmd.addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", proc_call & " called with too wide address. " & add_msg_delimiter(msg));
+    variable v_normalized_addr : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0) := normalize_and_check(addr, v_local_vvc_cmd.addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", proc_call & " called with too wide address." & add_msg_delimiter(msg));
     variable v_msg_id_panel    : t_msg_id_panel                                   := shared_msg_id_panel.get(VOID);
   begin
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
@@ -610,7 +610,7 @@ package body vvc_methods_pkg is
     constant proc_call         : string                                           := proc_name & "(" & to_string(VVCT, vvc_instance_idx) & ")";
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                 := shared_vvc_cmd.get(vvc_instance_idx);
     -- Normalize to the 10 bit addr width
-    variable v_normalized_addr : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0) := normalize_and_check(addr, v_local_vvc_cmd.addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", proc_call & " called with too wide address. " & add_msg_delimiter(msg));
+    variable v_normalized_addr : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0) := normalize_and_check(addr, v_local_vvc_cmd.addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", proc_call & " called with too wide address." & add_msg_delimiter(msg));
     variable v_msg_id_panel    : t_msg_id_panel                                   := shared_msg_id_panel.get(VOID);
   begin
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
@@ -671,7 +671,7 @@ package body vvc_methods_pkg is
     constant proc_call         : string                                           := proc_name & "(" & to_string(VVCT, vvc_instance_idx) & ")";
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                 := shared_vvc_cmd.get(vvc_instance_idx);
     -- Normalize to the 10 bit addr width
-    variable v_normalized_addr : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0) := normalize_and_check(addr, v_local_vvc_cmd.addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", proc_call & " called with too wide address. " & add_msg_delimiter(msg));
+    variable v_normalized_addr : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH - 1 downto 0) := normalize_and_check(addr, v_local_vvc_cmd.addr, ALLOW_WIDER_NARROWER, "addr", "shared_vvc_cmd.addr", proc_call & " called with too wide address." & add_msg_delimiter(msg));
     variable v_msg_id_panel    : t_msg_id_panel                                   := shared_msg_id_panel.get(VOID);
   begin
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record

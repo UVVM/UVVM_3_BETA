@@ -109,7 +109,7 @@ UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.(uvvm)                  -- Test the random time function with min greater than max values
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        time:12000000000000 fs
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.(uvvm)                  -- Test the random time function with too small time resolution
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
 UVVM:             0 ns   TB seq.
@@ -117,7 +117,7 @@ UVVM:                    random(10 ms,13 ms,1 ps) => time_resolution is too smal
 UVVM: 
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        time:12140664000000 fs
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.(uvvm)                  -- Test the random time function with too big time resolution
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #2  ***
 UVVM:             0 ns   TB seq.
@@ -144,7 +144,7 @@ UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.(uvvm)                  -- Test the random time procedure with min greater than max values
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        time:13000000000000000 fs
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.(uvvm)                  -- Test the random time procedure with too small time resolution
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #3  ***
 UVVM:             0 ns   TB seq.
@@ -152,14 +152,14 @@ UVVM:                    random(10 sec,13 sec,1 ps) => time_resolution is too sm
 UVVM: 
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        time:12053564000000000 fs
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.(uvvm)                  -- Test the random time procedure with too big time resolution
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #4  ***
 UVVM:             0 ns   TB seq.
 UVVM:                    random(10 sec,13 sec,36 hr) => time_resolution is too big for the given range. It has been reduced to 1 sec
 UVVM: 
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        time:13000000000000000 fs
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.(uvvm)                  check_value() => OK, for int 100. 'check shared_seed1.set() and shared_seed1.get()'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.(uvvm)                  check_value(int, 100) => OK. Value was 100. 'check shared_seed1.set() and shared_seed1.get()'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      *** FINAL SUMMARY OF ALL ALERTS ***

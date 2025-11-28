@@ -32,7 +32,18 @@ print("Verify Bitvis VIP Ethernet")
 cleanup("Removing any previous runs.")
 
 hr = HDLRegression()
+
+# Set simulator name and options
+lib_options = None
+sim_options = None
 simulator_name = hr.settings.get_simulator_name()
+if simulator_name == "MODELSIM":
+    sim_options = "-t ps"
+elif simulator_name == "GHDL":
+    # Altera library requires Synopsys std_logic_unsigned library
+    com_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "-Wall", "--warn-no-shared", "--warn-no-hide", "--warn-no-delayed-checks", "-fsynopsys"]
+    lib_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "--warn-no-shared", "--warn-no-hide", "-fsynopsys"]
+    hr.set_simulator(simulator=simulator_name, com_options=com_options)
 
 # Add util, fw and VIP Scoreboard
 hr.add_files("../../../uvvm_util/src/*.vhd", "uvvm_util")
@@ -57,23 +68,13 @@ hr.add_files("../../tb/maintenance_tb/*.vhd", "bitvis_vip_ethernet")
 if simulator_name == "NVC":
     hr.remove_file("../../tb/maintenance_tb/ethernet_gmii_mac_master_tb.vhd", "bitvis_vip_ethernet")
 # Add TB dependencies
-hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/XilinxCoreLib/*.vhd", "xilinxcorelib")
-hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/unisims/*.vhd", "unisim")
-hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/unisims/primitive/*.vhd", "unisim")
-hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/*.vhd", "mac_master")
-hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/*.vhd", "mac_master")
-hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/generic/*.vhd", "mac_master")
-hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/ipcore_dir/*.vhd", "mac_master")
-
-# Set simulator name and options
-sim_options = None
-com_options = None
-if simulator_name == "MODELSIM":
-    sim_options = "-t ps"
-elif simulator_name == "GHDL":
-    com_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "--warn-no-shared", "--warn-no-hide", "--warn-no-attribute"]
-    com_options += ["-fsynopsys"] # Xilinx library requires Synopsys std_logic_unsigned library
-    hr.set_simulator(simulator=simulator_name, com_options=com_options)
+hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/XilinxCoreLib/*.vhd", "xilinxcorelib", com_options=lib_options)
+hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/unisims/*.vhd", "unisim", com_options=lib_options)
+hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/unisims/primitive/*.vhd", "unisim", com_options=lib_options)
+hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/*.vhd", "mac_master", com_options=lib_options)
+hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/*.vhd", "mac_master", com_options=lib_options)
+hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/generic/*.vhd", "mac_master", com_options=lib_options)
+hr.add_files("../../tb/maintenance_tb/ethernet_mac-master/xilinx/ipcore_dir/*.vhd", "mac_master", com_options=lib_options)
 
 hr.start(sim_options=sim_options)
 
@@ -92,8 +93,9 @@ if simulator_name == "MODELSIM" or simulator_name == "RIVIERA-PRO":
     print('\nVerify .do scripts...')
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_all_and_simulate.do; exit"], False)
     if ret_code == 0:
-        print("SIMULATION SUCCESS")
-        cleanup('Removing simulation output\n')
+        print("TCL script test completed")
+        if hr.check_run_results(exp_fail=0) is True:
+            cleanup('Removing simulation output\n')
     else:
         print(ret_txt)
         num_failing_tests += 1

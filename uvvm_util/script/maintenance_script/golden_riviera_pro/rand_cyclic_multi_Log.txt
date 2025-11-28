@@ -3,8 +3,8 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Randomization package - rand_cyclic
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF).
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_cyclic_mode(CYCLIC)
 UVVM: 
 UVVM: 
@@ -12,25 +12,25 @@ UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(UNCONSTRAINED, CYCLIC)=> 2140145472
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for 2140145472.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(UNCONSTRAINED, CYCLIC)=> -645178924
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for -645178924.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(UNCONSTRAINED, CYCLIC)=> -764837137
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for -764837137.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(UNCONSTRAINED, CYCLIC)=> 1603044932
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for 1603044932.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(UNCONSTRAINED, CYCLIC)=> -2120795326
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for -2120795326.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(UNCONSTRAINED, CYCLIC)=> -2122433286
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for -2122433286.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(UNCONSTRAINED, CYCLIC)=> -1245328362
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for -1245328362.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing integer (range)
@@ -211,25 +211,25 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        excl_val(100)
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> 954915484
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for 954915484.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> -1084779968
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for -1084779968.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> 841423615
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for 841423615.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> -1248800908
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for -1248800908.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> 393518735
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for 393518735.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> -907741777
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for -907741777.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> 1751050720
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for 1751050720.
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
 UVVM: 
 UVVM: 
@@ -535,13 +535,13 @@ UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(LEN:5, CYCLIC)=> (1172378174, -395763659, -412739977, -2133664884, 566948199)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for (1172378174, -395763659, -412739977, -2133664884, 566948199).
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(LEN:5, CYCLIC)=> (-995790927, -2102877925, -836208119, -229809858, -1887547867)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for (-995790927, -2102877925, -836208119, -229809858, -1887547867).
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(LEN:5, CYCLIC)=> (437030798, -14493346, -1894744920, -1500476325, 172349609)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for (437030798, -14493346, -1894744920, -1500476325, 172349609).
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing integer_vector (range)
@@ -582,15 +582,15 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(LEN:5, EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> (-1065189197, 1036532182, 1422889311,
 UVVM:                                                                           -1058244239, -1672898412)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for (-1065189197, 1036532182, 1422889311, -1058244239, -1672898412).
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(LEN:5, EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> (-2057007166, 2053042122, 754505873,
 UVVM:                                                                           1491702875, 2028529513)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for (-2057007166, 2053042122, 754505873, 1491702875, 2028529513).
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(LEN:5, EXCL:(-1, 0, 1, 10, 100), CYCLIC)=> (-191645973, 1776561678, 458218277,
 UVVM:                                                                           1076661777, -668617782)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_rand_value => OK, for (-191645973, 1776561678, 458218277, 1076661777, -668617782).
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking value is different than previous one'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking value is different than previous one'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
 UVVM: 
 UVVM: 
@@ -665,7 +665,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing real (not supported)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 2. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 2.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_real([-2.00:2.00])
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
@@ -685,7 +685,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing time (not supported)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 2. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 2.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_time([1 ps:5 ps])
 UVVM: 
 UVVM: ***  TB_WARNING #3  ***
@@ -1237,7 +1237,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing unsigned constraints (not supported)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_unsigned([x"00":x"03"])
 UVVM: 
 UVVM: ***  TB_WARNING #5  ***
@@ -1813,7 +1813,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing signed constraints (not supported)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_signed([x"00":x"03"])
 UVVM: 
 UVVM: ***  TB_WARNING #6  ***
@@ -2359,7 +2359,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing std_logic_vector (unsigned) constraints (not supported)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_unsigned([x"00":x"03"])
 UVVM: 
 UVVM: ***  TB_WARNING #7  ***
@@ -2372,7 +2372,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing invalid parameters
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 2. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 2.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_config()
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_uniqueness(UNIQUE)
 UVVM: 

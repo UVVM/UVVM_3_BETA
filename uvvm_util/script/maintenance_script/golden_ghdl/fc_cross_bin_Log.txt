@@ -3,11 +3,11 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Functional Coverage package - fc_cross_bin
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing cross with single values
@@ -160,7 +160,7 @@ UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        
 UVVM:                                                                           "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_4] Adding cross: (428->427->425->421) x (431->434->434->439), min_hits:1,
 UVVM:                                                                             rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_5] add_cross(bin_transition((428, 427, 425, 421)), bin_transition((431, 434, 434, 439,
 UVVM:                                                                           434)), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_5] Adding cross: (428->427->425->421) x (431->434->434->439->434), min_hits:1,
@@ -169,8 +169,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #1  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    check_value() => Failed. int  Was 5. Expected 4
-UVVM:                    Number of transition values must be the same in all cross elements
+UVVM:                    check_value(int, 4) => Failed. Value was 5. Expected 4. 'Number of transition values must be the same in all cross elements'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -289,7 +288,7 @@ UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        
 UVVM:                                                                           ignore_bin_transition((2212, 2214, 2216, 2218)), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_8] Adding cross: IGN(2218->2217->2215->2211) x IGN(2212->2214->2216->2218),
 UVVM:                                                                             min_hits:1, rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_5] add_cross(ignore_bin_transition((2228, 2227, 2225, 2221)),
 UVVM:                                                                           ignore_bin_transition((2231, 2234, 2234, 2239, 2234)), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_5] Adding cross: IGN(2228->2227->2225->2221) x IGN(2231->2234->2234->2239->2234),
@@ -298,8 +297,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #2  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    check_value() => Failed. int  Was 5. Expected 4
-UVVM:                    Number of transition values must be the same in all cross elements
+UVVM:                    check_value(int, 4) => Failed. Value was 5. Expected 4. 'Number of transition values must be the same in all cross elements'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -363,7 +361,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing illegal cross with single values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_9] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_9] add_cross(illegal_bin(-3001), illegal_bin(3001), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_9] Adding cross: ILL(-3001) x ILL(3001), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_9] add_cross(illegal_bin(-3002), illegal_bin(3002), "")
@@ -373,7 +371,7 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_1
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_2
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_3
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 3.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_9] sample_coverage((-3001, 3001))
 UVVM: 
 UVVM: ***  WARNING #1  ***
@@ -404,11 +402,11 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing illegal cross with ranges of values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_10] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_10] add_cross(illegal_bin_range(3100,3107), illegal_bin_range(3115,3119), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_10] Adding cross: ILL(3100 to 3107) x ILL(3115 to 3119), min_hits:1, rand_weight:1, ""
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_1
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 8. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 8.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_10] sample_coverage((3100, 3115))
 UVVM: 
 UVVM: ***  WARNING #4  ***
@@ -468,7 +466,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing illegal cross with transitions of values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_11] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_11] add_cross(illegal_bin_transition((3201, 3203, 3201)), illegal_bin_transition((3212,
 UVVM:                                                                           3214, 3216)), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_11] Adding cross: ILL(3201->3203->3201) x ILL(3212->3214->3216), min_hits:1,
@@ -481,7 +479,7 @@ UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        
 UVVM:                                                                           illegal_bin_transition((3231, 3234, 3234, 3239)), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_11] Adding cross: ILL(3228->3227->3225->3221) x ILL(3231->3234->3234->3239),
 UVVM:                                                                             min_hits:1, rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_5] add_cross(illegal_bin_transition((3228, 3227, 3225, 3221)),
 UVVM:                                                                           illegal_bin_transition((3231, 3234, 3234, 3239, 3234)), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_5] Adding cross: ILL(3228->3227->3225->3221) x ILL(3231->3234->3234->3239->3234),
@@ -490,15 +488,14 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #3  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    check_value() => Failed. int  Was 5. Expected 4
-UVVM:                    Number of transition values must be the same in all cross elements
+UVVM:                    check_value(int, 4) => Failed. Value was 5. Expected 4. 'Number of transition values must be the same in all cross elements'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_1
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_2
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_3
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 9. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 9.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_11] sample_coverage((3201, 3212))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_11] sample_coverage((3203, 3214))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_11] sample_coverage((3201, 3216))
@@ -587,7 +584,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing cross with different bins
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_12] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_12] add_cross(bin(4000), bin((4010, 4015, 4019)), "cross_0")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_12] Adding cross: (4000) x (4010, 4015, 4019), min_hits:1, rand_weight:1, "cross_0"
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_12] add_cross(bin_range(4100, 4107), bin_transition((4111, 4112, 4115)), "cross_1")
@@ -646,7 +643,7 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4302, 4315))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4304, 4315))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4306, 4315))
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 3.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4402, 4415))
 UVVM: 
 UVVM: ***  WARNING #21  ***
@@ -665,7 +662,7 @@ UVVM: ***  WARNING #23  ***
 UVVM:             0 ns   TB seq.
 UVVM:                    [Covpt_12] sample_coverage((4402, 4417))=> Sampled illegal_bin_range(4415 to 4417)
 UVVM: 
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 1.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4505, 4516))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4506, 4516))
 UVVM: 
@@ -687,7 +684,7 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4702, 4716))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4703, 4716))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4704, 4716))
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 4. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 4.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((4803, 4817))
 UVVM: 
 UVVM: ***  WARNING #25  ***
@@ -714,7 +711,7 @@ UVVM: ***  WARNING #28  ***
 UVVM:             0 ns   TB seq.
 UVVM:                    [Covpt_12] sample_coverage((4903, 4917))=> Sampled illegal_bin_transition(4901->4902->4903)
 UVVM: 
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 4. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 4.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_12] sample_coverage((5000, 5010))
 UVVM: 
 UVVM: ***  WARNING #29  ***
@@ -759,7 +756,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing cross using concatenation of bins
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_13] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_13] add_cross(bin(6000),bin(6005),bin(6010), bin_range(6100, 6150, num_bins:2),
 UVVM:                                                                           "concatenated")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_13] Adding cross: (6000),(6005),(6010) x (6100 to 6124),(6125 to 6150), min_hits:1,
@@ -790,7 +787,7 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_13] sample_coverage((6010, 6124))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_13] sample_coverage((6010, 6125))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_13] sample_coverage((6010, 6150))
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 2. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 2.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_13] sample_coverage((6200, 6350))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_13] sample_coverage((6219, 6374))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_13] sample_coverage((6241, 6376))
@@ -819,8 +816,8 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for concatenated_1[2]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for concatenated_1[3]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for concatenated_1[4]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_num_bins => OK, for int 7. 'Checking number of valid bins'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_num_bins => OK, for int 3. 'Checking number of invalid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_num_bins(int, 7) => OK. Value was 7. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_num_bins(int, 3) => OK. Value was 3. 'Checking number of invalid bins'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
 UVVM:      
@@ -982,7 +979,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing minimum coverage
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_15] add_cross(bin(500), bin(600), min_hits:7, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_15] Adding cross: (500) x (600), min_hits:7, rand_weight:7, ""
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_cross_bin => OK, for bin_1

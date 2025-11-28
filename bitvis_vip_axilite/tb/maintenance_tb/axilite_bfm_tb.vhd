@@ -89,9 +89,6 @@ begin
   p_main : process
     constant C_SCOPE : string := C_TB_SCOPE_DEFAULT;
 
-    variable v_irq_mask         : std_logic_vector(7 downto 0);
-    variable v_irq_mask_inv     : std_logic_vector(7 downto 0);
-    variable i                  : integer;
     -- returned read data
     variable v_read_data_1      : std_logic_vector(C_DATA_WIDTH_1 - 1 downto 0);
     variable v_read_data_2      : std_logic_vector(C_DATA_WIDTH_2 - 1 downto 0);
@@ -117,18 +114,6 @@ begin
     ) is
     begin
       axilite_write(addr_value, data_value, byte_enable, "", clk, axilite_if, C_SCOPE, shared_msg_id_panel.get(VOID), axilite_bfm_config);
-    end;
-
-    -- overload for this testbench
-    procedure axilite_read(
-      signal axilite_if : inout t_axilite_if;
-      addr_value        : in unsigned;
-      data_value        : in std_logic_vector
-    ) is
-      -- Normalize to the DUT addr_value/data widths
-      variable v_normalized_data : std_logic_vector(axilite_if.read_data_channel.rdata'length - 1 downto 0) := normalize_and_check(data_value, axilite_if.read_data_channel.rdata, ALLOW_NARROWER, "data", "axilite_if.read_data_channel.rdata", "");
-    begin
-      axilite_read(addr_value, v_normalized_data, "", clk, axilite_if, C_SCOPE, shared_msg_id_panel.get(VOID), axilite_bfm_config);
     end;
 
     -- axilite read and return read data

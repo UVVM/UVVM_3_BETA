@@ -3,13 +3,13 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Functional Coverage package - fc_database_3
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_BINS_INFO). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_SAMPLE). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_BINS_INFO).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_SAMPLE).
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        fc_set_covpts_coverage_goal(50)
 UVVM: 
 UVVM: 
@@ -35,7 +35,7 @@ UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_A] set_overall_coverage_weight(5)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_A] set_bins_coverage_goal(50)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_A] set_hits_coverage_goal(200)
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 6. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 6.
 UVVM: 
 UVVM: ***  TB_NOTE #1  ***
 UVVM:             0 ns   TB seq.
@@ -129,7 +129,7 @@ UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Cross_B] set_overall_coverage_weight(8)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Cross_B] set_bins_coverage_goal(50)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Cross_B] set_hits_coverage_goal(75)
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 6. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 6.
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
 UVVM:             0 ns   TB seq.
@@ -161,7 +161,7 @@ UVVM:             0 ns   TB seq.
 UVVM:                    [Cross_B] sample_coverage((237, 1237))=> Sampled illegal_bin_transition(1231->1237->1237)
 UVVM: 
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Cross_B] write_coverage_db(db_cross_parallel_1.txt)
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 8. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 8.
 UVVM: 
 UVVM: ***  TB_WARNING #7  ***
 UVVM:             0 ns   TB seq.

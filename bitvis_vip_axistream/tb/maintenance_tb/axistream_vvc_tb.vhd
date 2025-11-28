@@ -123,7 +123,6 @@ begin
     variable v_data_array_2_byte    : t_slv_array(0 to C_MAX_BYTES - 1)(2 * C_BYTE - 1 downto 0);
     variable v_data_array_3_byte    : t_slv_array(0 to C_MAX_BYTES - 1)(3 * C_BYTE - 1 downto 0);
     variable v_data_array_4_byte    : t_slv_array(0 to C_MAX_BYTES - 1)(4 * C_BYTE - 1 downto 0);
-    variable v_data_array           : t_slv_array(0 to C_MAX_BYTES - 1)(C_MAX_BYTES_IN_WORD * C_BYTE - 1 downto 0);
     variable v_data_array_as_slv    : std_logic_vector(C_MAX_BYTES_IN_WORD * C_BYTE - 1 downto 0);
     variable v_cmd_idx              : natural;
     variable v_result_from_fetch    : bitvis_vip_axistream.vvc_cmd_pkg.t_vvc_result;
@@ -623,7 +622,7 @@ begin
       end loop;
       -- Make sure ready signal is toggled in various ways
       v_vvc_config                                  := shared_axistream_vvc_config.get(C_VVC2VVC_SLAVE);
-      v_vvc_config.bfm_config.ready_low_at_word_num := random(0, v_num_words - 1);
+      v_vvc_config.bfm_config.ready_low_at_word_idx := random(0, v_num_words - 1);
       v_vvc_config.bfm_config.ready_low_duration    := random(0, 5);
       v_vvc_config.bfm_config.ready_default_value   := random(VOId);
       shared_axistream_vvc_config.set(v_vvc_config, C_VVC2VVC_SLAVE);
@@ -831,13 +830,13 @@ begin
     for i in 0 to 3 loop
       v_vvc_config                                  := shared_axistream_vvc_config.get(C_FIFO2VVC_SLAVE);
       v_vvc_config.bfm_config.ready_default_value   := '0' when i < 2 else '1';
-      v_vvc_config.bfm_config.ready_low_at_word_num := 0 when (i mod 2 = 0) else 2;
+      v_vvc_config.bfm_config.ready_low_at_word_idx := 0 when (i mod 2 = 0) else 2;
       v_vvc_config.bfm_config.ready_low_duration    := 1;
       shared_axistream_vvc_config.set(v_vvc_config, C_FIFO2VVC_SLAVE);
 
       v_vvc_config                                  := shared_axistream_vvc_config.get(C_VVC2VVC_SLAVE);
       v_vvc_config.bfm_config.ready_default_value   := '0' when i < 2 else '1';
-      v_vvc_config.bfm_config.ready_low_at_word_num := 0 when (i mod 2 = 0) else 2;
+      v_vvc_config.bfm_config.ready_low_at_word_idx := 0 when (i mod 2 = 0) else 2;
       v_vvc_config.bfm_config.ready_low_duration    := 1;
       shared_axistream_vvc_config.set(v_vvc_config, C_VVC2VVC_SLAVE);
 
@@ -868,43 +867,43 @@ begin
     for i in 0 to 59 loop
       if i < 20 then
         v_vvc_config                                  := shared_axistream_vvc_config.get(C_FIFO2VVC_MASTER);
-        v_vvc_config.bfm_config.valid_low_at_word_num := random(0, 5);
+        v_vvc_config.bfm_config.valid_low_at_word_idx := random(0, 5);
         v_vvc_config.bfm_config.valid_low_duration    := random(0, 5);
         shared_axistream_vvc_config.set(v_vvc_config, C_FIFO2VVC_MASTER);
 
         v_vvc_config                                  := shared_axistream_vvc_config.get(C_VVC2VVC_MASTER);
-        v_vvc_config.bfm_config.valid_low_at_word_num := random(0, 5);
+        v_vvc_config.bfm_config.valid_low_at_word_idx := random(0, 5);
         v_vvc_config.bfm_config.valid_low_duration    := random(0, 5);
         shared_axistream_vvc_config.set(v_vvc_config, C_VVC2VVC_MASTER);
 
         v_vvc_config                                  := shared_axistream_vvc_config.get(C_FIFO2VVC_SLAVE);
-        v_vvc_config.bfm_config.ready_low_at_word_num := random(0, 5);
+        v_vvc_config.bfm_config.ready_low_at_word_idx := random(0, 5);
         v_vvc_config.bfm_config.ready_low_duration    := random(0, 5);
         shared_axistream_vvc_config.set(v_vvc_config, C_FIFO2VVC_SLAVE);
 
         v_vvc_config                                  := shared_axistream_vvc_config.get(C_VVC2VVC_SLAVE);
-        v_vvc_config.bfm_config.ready_low_at_word_num := random(0, 5);
+        v_vvc_config.bfm_config.ready_low_at_word_idx := random(0, 5);
         v_vvc_config.bfm_config.ready_low_duration    := random(0, 5);
         shared_axistream_vvc_config.set(v_vvc_config, C_VVC2VVC_SLAVE);
 
       else
         v_vvc_config                                  := shared_axistream_vvc_config.get(C_FIFO2VVC_MASTER);
-        v_vvc_config.bfm_config.valid_low_at_word_num := C_MULTIPLE_RANDOM;
+        v_vvc_config.bfm_config.valid_low_at_word_idx := C_MULTIPLE_RANDOM;
         v_vvc_config.bfm_config.valid_low_duration    := C_RANDOM;
         shared_axistream_vvc_config.set(v_vvc_config, C_FIFO2VVC_MASTER);
 
         v_vvc_config                                  := shared_axistream_vvc_config.get(C_VVC2VVC_MASTER);
-        v_vvc_config.bfm_config.valid_low_at_word_num := C_MULTIPLE_RANDOM;
+        v_vvc_config.bfm_config.valid_low_at_word_idx := C_MULTIPLE_RANDOM;
         v_vvc_config.bfm_config.valid_low_duration    := C_RANDOM;
         shared_axistream_vvc_config.set(v_vvc_config, C_VVC2VVC_MASTER);
 
         v_vvc_config                                  := shared_axistream_vvc_config.get(C_FIFO2VVC_SLAVE);
-        v_vvc_config.bfm_config.ready_low_at_word_num := C_MULTIPLE_RANDOM;
+        v_vvc_config.bfm_config.ready_low_at_word_idx := C_MULTIPLE_RANDOM;
         v_vvc_config.bfm_config.ready_low_duration    := C_RANDOM;
         shared_axistream_vvc_config.set(v_vvc_config, C_FIFO2VVC_SLAVE);
 
         v_vvc_config                                  := shared_axistream_vvc_config.get(C_VVC2VVC_SLAVE);
-        v_vvc_config.bfm_config.ready_low_at_word_num := C_MULTIPLE_RANDOM;
+        v_vvc_config.bfm_config.ready_low_at_word_idx := C_MULTIPLE_RANDOM;
         v_vvc_config.bfm_config.ready_low_duration    := C_RANDOM;
         shared_axistream_vvc_config.set(v_vvc_config, C_VVC2VVC_SLAVE);
 
@@ -1061,8 +1060,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

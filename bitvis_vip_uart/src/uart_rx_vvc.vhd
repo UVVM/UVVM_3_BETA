@@ -324,7 +324,7 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, C_CHANNEL, v_cmd, v_vvc_config, IN_PROGRESS, C_SCOPE);
 
           -- Normalise address and data
-          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "uart_expect() called with too wide data. " & add_msg_delimiter(v_cmd.msg));
+          v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "uart_expect() called with too wide data." & add_msg_delimiter(v_cmd.msg));
           -- Call the corresponding procedure in the BFM package.
           uart_expect(data_exp       => v_normalised_data(v_num_data_bits - 1 downto 0),
                       msg            => format_msg(v_cmd),

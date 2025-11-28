@@ -62,9 +62,7 @@ begin
   p_main : process
     -- Helper variables
     variable v_buffer_entry_1 : std_logic_vector(C_ENTRY_SIZE_1 - 1 downto 0);
-    variable v_buffer_entry_2 : std_logic_vector(C_ENTRY_SIZE_2 - 1 downto 0);
     variable v_buffer_entry_3 : std_logic_vector(C_ENTRY_SIZE_3 - 1 downto 0) := (others => '1');
-    variable v_buffer_entry_4 : std_logic_vector(C_ENTRY_SIZE_4 - 1 downto 0);
 
     variable v_buffer_idx_4 : natural;
     variable v_buffer_idx_5 : natural;
@@ -88,8 +86,9 @@ begin
     disable_log_msg(ID_POS_ACK);
     disable_log_msg(ID_SEQUENCER_SUB);
 
-    log(ID_LOG_HDR_LARGE, "Test of Data Queue", C_SCOPE);
-
+    --****************************************************************************************************************************
+    log(ID_LOG_HDR_LARGE, "Test of Data Queue package", C_SCOPE);
+    --****************************************************************************************************************************
     ------------------------------------------------------------
     log(ID_LOG_HDR, "Test of init then push_back until overflow", C_SCOPE);
     ------------------------------------------------------------
@@ -166,83 +165,8 @@ begin
     end loop;
     check_value(queue_under_test.get_count(C_BUFFER_INDEX_1), 0, TB_ERROR, "Verifying that queue is empty", C_SCOPE, ID_SEQUENCER);
 
-    log(ID_LOG_HDR_LARGE, "Test of Data FIFO package", C_SCOPE);
-
-    ------------------------------------------------------------
-    log(ID_LOG_HDR, "Test of FIFO put and get methods", C_SCOPE);
-    ------------------------------------------------------------
-    uvvm_fifo_init(C_BUFFER_INDEX_1, C_BUFFER_SIZE_1);
-    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
-      uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)));
-    end loop;
-    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
-      check_value(uvvm_fifo_get(C_BUFFER_INDEX_1, C_ENTRY_SIZE_1) = std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), TB_ERROR, "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
-    end loop;
-
-    ------------------------------------------------------------
-    log(ID_LOG_HDR, "Test of FIFO deallocate procedure", C_SCOPE);
-    ------------------------------------------------------------
-    uvvm_fifo_deallocate(VOID);
-    increment_expected_alerts(TB_ERROR, 1);
-    uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(1, C_ENTRY_SIZE_1)));
-    -- Re-initialize the fifo since it's used in another test
-    uvvm_fifo_init(C_BUFFER_INDEX_1, C_BUFFER_SIZE_1);
-
-    log(ID_LOG_HDR_LARGE, "Test of Data Stack package", C_SCOPE);
-    ------------------------------------------------------------
-    log(ID_LOG_HDR, "Test of stack push and pop methods", C_SCOPE);
-    ------------------------------------------------------------
-    uvvm_stack_init(C_BUFFER_INDEX_2, C_BUFFER_SIZE_2);
-    for i in 0 to (C_BUFFER_SIZE_2 / C_ENTRY_SIZE_2) - 1 loop
-      uvvm_stack_push(C_BUFFER_INDEX_2, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_2)));
-    end loop;
-    for i in (C_BUFFER_SIZE_2 / C_ENTRY_SIZE_2) - 1 downto 0 loop
-      check_value(uvvm_stack_pop(C_BUFFER_INDEX_2, C_ENTRY_SIZE_2) = std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_2)), TB_ERROR, "uvvm_stack_pop should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_2)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
-    end loop;
-
-    ---------------------------------------------------------------------------------------------
-    log(ID_LOG_HDR_LARGE, "Test of FIFO that has an odd size compared to data size", C_SCOPE);
-    ---------------------------------------------------------------------------------------------
-    wait for 10 ns;
-    v_buffer_idx_4 := uvvm_fifo_init(C_BUFFER_SIZE_4); -- c_buffer_size=33 c_entry_size=8
-    wait for 10 ns;
-    for i in 0 to 4 loop                -- Loop 5 times. Will wrap around.
-      uvvm_fifo_put(v_buffer_idx_4, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_4)));
-      wait for 10 ns;
-    end loop;
-
-    for i in 0 to 4 loop
-      check_value(uvvm_fifo_get(v_buffer_idx_4, C_ENTRY_SIZE_4),
-                  std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_4)),
-                  TB_ERROR,
-                  "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_4)), HEX) & ".",
-                  C_SCOPE);
-    end loop;
-    increment_expected_alerts(TB_ERROR, 2);
-
     --------------------------------------------------------------------------------------------------------
-    log(ID_LOG_HDR_LARGE, "Test of FIFO that has data inserted with different widths in and out", C_SCOPE);
-    --------------------------------------------------------------------------------------------------------
-    v_buffer_idx_5 := uvvm_fifo_init(C_BUFFER_SIZE_5); -- size 192
-    for i in 0 to 23 loop
-      -- input width: 8
-      uvvm_fifo_put(v_buffer_idx_5, std_logic_vector(to_unsigned(i, 8)));
-      v_buffer_idx_5_expected_data(8 * (i + 1) - 1 downto 8 * i) := std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_4));
-    end loop;
-
-    for i in 0 to 7 loop
-      -- Output width: 24
-      check_value(uvvm_fifo_get(v_buffer_idx_5, 24),
-                  v_buffer_idx_5_expected_data(24 * (i + 1) - 1 downto 24 * i),
-                  TB_ERROR,
-                  "uvvm_fifo_get should be " & to_string(v_buffer_idx_5_expected_data(24 * (i + 1) - 1 downto 24 * i), HEX) & ".",
-                  C_SCOPE);
-    end loop;
-
-    check_value(uvvm_fifo_get_count(v_buffer_idx_5), 0, TB_ERROR, "Verifying that queue is empty", C_SCOPE, ID_SEQUENCER);
-
-    --------------------------------------------------------------------------------------------------------
-    log(ID_LOG_HDR_LARGE, "Testing that queues don't overlap", C_SCOPE);
+    log(ID_LOG_HDR, "Testing that queues don't overlap", C_SCOPE);
     --------------------------------------------------------------------------------------------------------
     wait for 10 us;
     queue_under_test.deallocate_buffer(VOID);
@@ -263,7 +187,7 @@ begin
       slv_1 <= queue_under_test.pop_back(2, 1);
     end loop;
 
-    check_value(queue_under_test.peek_front(1, 16), x"F55F", TB_ERROR, "Verifying that queue has correct value", C_SCOPE, HEX, AS_IS, ID_SEQUENCER);
+    check_value(queue_under_test.peek_front(1, 16), x"F55F", TB_ERROR, "Verifying that queue has correct value", C_SCOPE, HEX, KEEP_LEADING_0, ID_SEQUENCER);
 
     for i in 0 to 18 loop
       queue_under_test.push_back(0, "0");
@@ -275,29 +199,10 @@ begin
       slv_1 <= queue_under_test.pop_front(2, 1);
     end loop;
 
-    check_value(queue_under_test.peek_front(1, 16), x"F55F", TB_ERROR, "Verifying that queue has correct value", C_SCOPE, HEX, AS_IS, ID_SEQUENCER);
+    check_value(queue_under_test.peek_front(1, 16), x"F55F", TB_ERROR, "Verifying that queue has correct value", C_SCOPE, HEX, KEEP_LEADING_0, ID_SEQUENCER);
 
     --------------------------------------------------------------------------------------------------------
-    log(ID_LOG_HDR_LARGE, "Testing fifo is full method", C_SCOPE);
-    --------------------------------------------------------------------------------------------------------
-    queue_under_test.flush(C_BUFFER_INDEX_1);
-    check_value(uvvm_fifo_get_count(C_BUFFER_INDEX_1), 0, TB_ERROR, "Verifying that queue is empty", C_SCOPE, ID_SEQUENCER);
-    check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), false, TB_ERROR, "uvvm_fifo_is_full should return false.", C_SCOPE, ID_SEQUENCER);
-    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
-      uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)));
-    end loop;
-    check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), true, TB_ERROR, "uvvm_fifo_is_full should return true.", C_SCOPE, ID_SEQUENCER);
-    check_value(uvvm_fifo_get(C_BUFFER_INDEX_1, C_ENTRY_SIZE_1) = std_logic_vector(to_unsigned(0, C_ENTRY_SIZE_1)), TB_ERROR, "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(0, C_ENTRY_SIZE_1)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
-    check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), false, TB_ERROR, "uvvm_fifo_is_full should return false.", C_SCOPE, ID_SEQUENCER);
-    uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1, C_ENTRY_SIZE_1)));
-    check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), true, TB_ERROR, "uvvm_fifo_is_full should return true.", C_SCOPE, ID_SEQUENCER);
-    for i in 1 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) loop
-      check_value(uvvm_fifo_get(C_BUFFER_INDEX_1, C_ENTRY_SIZE_1) = std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), TB_ERROR, "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
-      check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), false, TB_ERROR, "uvvm_fifo_is_full should return false.", C_SCOPE, ID_SEQUENCER);
-    end loop;
-
-    --------------------------------------------------------------------------------------------------------
-    log(ID_LOG_HDR_LARGE, "Testing various corner cases", C_SCOPE);
+    log(ID_LOG_HDR, "Testing various corner cases", C_SCOPE);
     --------------------------------------------------------------------------------------------------------
 
     -- Which other corner cases must be tested?
@@ -330,25 +235,25 @@ begin
     queue_under_test.init_queue(0, 1);
     queue_under_test.push_back(0, "0");
     check_value(queue_under_test.get_count(0), 1, TB_ERROR, "Verifying number of elements in queue", C_SCOPE, ID_NEVER);
-    check_value(queue_under_test.peek_front(0, 1), "0", TB_ERROR, "Verifying that queue has correct value", C_SCOPE, HEX, AS_IS, ID_SEQUENCER);
+    check_value(queue_under_test.peek_front(0, 1), "0", TB_ERROR, "Verifying that queue has correct value", C_SCOPE, HEX, KEEP_LEADING_0, ID_SEQUENCER);
     check_value(queue_under_test.get_count(0), 1, TB_ERROR, "Verifying number of elements in queue", C_SCOPE, ID_NEVER);
     v_slv_1 := queue_under_test.pop_front(0, 1);
     check_value(queue_under_test.get_count(0), 0, TB_ERROR, "Verifying number of elements in queue", C_SCOPE, ID_NEVER);
-    check_value(v_slv_1, "0", TB_ERROR, "Verifying that pop_front returns correct value", C_SCOPE, HEX, AS_IS, ID_NEVER);
+    check_value(v_slv_1, "0", TB_ERROR, "Verifying that pop_front returns correct value", C_SCOPE, HEX, KEEP_LEADING_0, ID_NEVER);
     wait for 10 us;
     queue_under_test.push_back(0, "1");
     check_value(queue_under_test.get_count(0), 1, TB_ERROR, "Verifying number of elements in queue", C_SCOPE, ID_NEVER);
-    check_value(queue_under_test.peek_back(0, 1), "1", TB_ERROR, "Peek_back: Verifying that queue has correct value", C_SCOPE, HEX, AS_IS, ID_SEQUENCER);
+    check_value(queue_under_test.peek_back(0, 1), "1", TB_ERROR, "Peek_back: Verifying that queue has correct value", C_SCOPE, HEX, KEEP_LEADING_0, ID_SEQUENCER);
     check_value(queue_under_test.get_count(0), 1, TB_ERROR, "Verifying number of elements in queue", C_SCOPE, ID_NEVER);
     v_slv_1 := queue_under_test.pop_back(0, 1);
-    check_value(v_slv_1, "1", TB_ERROR, "Verifying that pop_back returns correct value", C_SCOPE, HEX, AS_IS, ID_NEVER);
+    check_value(v_slv_1, "1", TB_ERROR, "Verifying that pop_back returns correct value", C_SCOPE, HEX, KEEP_LEADING_0, ID_NEVER);
     check_value(queue_under_test.get_count(0), 0, TB_ERROR, "Verifying number of elements in queue", C_SCOPE, ID_NEVER);
     wait for 10 us;
     -- Test two consecutive writes, then read value
     queue_under_test.push_back(0, "1");
     queue_under_test.push_back(0, "0");
     v_slv_1 := queue_under_test.pop_back(0, 1);
-    check_value(v_slv_1, "0", TB_ERROR, "Verifying that pop_back returns correct value", C_SCOPE, HEX, AS_IS, ID_NEVER);
+    check_value(v_slv_1, "0", TB_ERROR, "Verifying that pop_back returns correct value", C_SCOPE, HEX, KEEP_LEADING_0, ID_NEVER);
     check_value(queue_under_test.get_count(0), 1, TB_ERROR, "Verifying number of elements in queue", C_SCOPE, ID_NEVER); -- shall be once here since we wrote twice
 
     -- 4. Creating a single C_TOTAL_NUMBER_OF_BITS_IN_DATA_BUFFER large queue and perform operations.
@@ -364,6 +269,125 @@ begin
     for i in 0 to C_TOTAL_NUMBER_OF_BITS_IN_DATA_BUFFER - 1 loop
       v_slv_1 := queue_under_test.pop_front(0, 1);
       check_value(queue_under_test.get_count(0), C_TOTAL_NUMBER_OF_BITS_IN_DATA_BUFFER - (i + 1), TB_ERROR, "Verifying number of elements in queue", C_SCOPE, ID_NEVER);
+    end loop;
+
+    --****************************************************************************************************************************
+    log(ID_LOG_HDR_LARGE, "Test of Data FIFO package", C_SCOPE);
+    --****************************************************************************************************************************
+    ------------------------------------------------------------
+    log(ID_LOG_HDR, "Test of FIFO put and get methods", C_SCOPE);
+    ------------------------------------------------------------
+    uvvm_fifo_init(C_BUFFER_INDEX_1, C_BUFFER_SIZE_1);
+    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
+      uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)));
+    end loop;
+    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
+      check_value(uvvm_fifo_get(C_BUFFER_INDEX_1, C_ENTRY_SIZE_1) = std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), TB_ERROR, "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
+    end loop;
+
+    ------------------------------------------------------------
+    log(ID_LOG_HDR, "Test of FIFO deallocate procedure", C_SCOPE);
+    ------------------------------------------------------------
+    uvvm_fifo_deallocate(VOID);
+    increment_expected_alerts(TB_ERROR, 1);
+    uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(1, C_ENTRY_SIZE_1)));
+    -- Re-initialize the fifo since it's used in another test
+    uvvm_fifo_init(C_BUFFER_INDEX_1, C_BUFFER_SIZE_1);
+
+    ---------------------------------------------------------------------------------------------
+    log(ID_LOG_HDR, "Test of FIFO that has an odd size compared to data size", C_SCOPE);
+    ---------------------------------------------------------------------------------------------
+    wait for 10 ns;
+    v_buffer_idx_4 := uvvm_fifo_init(C_BUFFER_SIZE_4); -- c_buffer_size=33 c_entry_size=8
+    wait for 10 ns;
+    for i in 0 to 4 loop                -- Loop 5 times. Will wrap around.
+      uvvm_fifo_put(v_buffer_idx_4, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_4)));
+      wait for 10 ns;
+    end loop;
+
+    for i in 0 to 4 loop
+      check_value(uvvm_fifo_get(v_buffer_idx_4, C_ENTRY_SIZE_4),
+                  std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_4)),
+                  TB_ERROR,
+                  "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_4)), HEX) & ".",
+                  C_SCOPE);
+    end loop;
+    increment_expected_alerts(TB_ERROR, 2);
+
+    --------------------------------------------------------------------------------------------------------
+    log(ID_LOG_HDR, "Test of FIFO that has data inserted with different widths in and out", C_SCOPE);
+    --------------------------------------------------------------------------------------------------------
+    v_buffer_idx_5 := uvvm_fifo_init(C_BUFFER_SIZE_5); -- size 192
+    for i in 0 to 23 loop
+      -- input width: 8
+      uvvm_fifo_put(v_buffer_idx_5, std_logic_vector(to_unsigned(i, 8)));
+      v_buffer_idx_5_expected_data(8 * (i + 1) - 1 downto 8 * i) := std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_4));
+    end loop;
+
+    for i in 0 to 7 loop
+      -- Output width: 24
+      check_value(uvvm_fifo_get(v_buffer_idx_5, 24),
+                  v_buffer_idx_5_expected_data(24 * (i + 1) - 1 downto 24 * i),
+                  TB_ERROR,
+                  "uvvm_fifo_get should be " & to_string(v_buffer_idx_5_expected_data(24 * (i + 1) - 1 downto 24 * i), HEX) & ".",
+                  C_SCOPE);
+    end loop;
+
+    check_value(uvvm_fifo_get_count(v_buffer_idx_5), 0, TB_ERROR, "Verifying that queue is empty", C_SCOPE, ID_SEQUENCER);
+
+    --------------------------------------------------------------------------------------------------------
+    log(ID_LOG_HDR, "Testing fifo is full method", C_SCOPE);
+    --------------------------------------------------------------------------------------------------------
+    uvvm_fifo_flush(C_BUFFER_INDEX_1);
+    check_value(uvvm_fifo_get_count(C_BUFFER_INDEX_1), 0, TB_ERROR, "Verifying that queue is empty", C_SCOPE, ID_SEQUENCER);
+    check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), false, TB_ERROR, "uvvm_fifo_is_full should return false.", C_SCOPE, ID_SEQUENCER);
+    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
+      uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)));
+    end loop;
+    check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), true, TB_ERROR, "uvvm_fifo_is_full should return true.", C_SCOPE, ID_SEQUENCER);
+    check_value(uvvm_fifo_get(C_BUFFER_INDEX_1, C_ENTRY_SIZE_1) = std_logic_vector(to_unsigned(0, C_ENTRY_SIZE_1)), TB_ERROR, "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(0, C_ENTRY_SIZE_1)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
+    check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), false, TB_ERROR, "uvvm_fifo_is_full should return false.", C_SCOPE, ID_SEQUENCER);
+    uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1, C_ENTRY_SIZE_1)));
+    check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), true, TB_ERROR, "uvvm_fifo_is_full should return true.", C_SCOPE, ID_SEQUENCER);
+    for i in 1 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) loop
+      check_value(uvvm_fifo_get(C_BUFFER_INDEX_1, C_ENTRY_SIZE_1) = std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), TB_ERROR, "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
+      check_value(uvvm_fifo_is_full(C_BUFFER_INDEX_1), false, TB_ERROR, "uvvm_fifo_is_full should return false.", C_SCOPE, ID_SEQUENCER);
+    end loop;
+
+    --****************************************************************************************************************************
+    log(ID_LOG_HDR_LARGE, "Test of Data Stack package", C_SCOPE);
+    --****************************************************************************************************************************
+    ------------------------------------------------------------
+    log(ID_LOG_HDR, "Test of stack push and pop methods", C_SCOPE);
+    ------------------------------------------------------------
+    uvvm_stack_init(C_BUFFER_INDEX_2, C_BUFFER_SIZE_2);
+    for i in 0 to (C_BUFFER_SIZE_2 / C_ENTRY_SIZE_2) - 1 loop
+      uvvm_stack_push(C_BUFFER_INDEX_2, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_2)));
+    end loop;
+    for i in (C_BUFFER_SIZE_2 / C_ENTRY_SIZE_2) - 1 downto 0 loop
+      check_value(uvvm_stack_pop(C_BUFFER_INDEX_2, C_ENTRY_SIZE_2) = std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_2)), TB_ERROR, "uvvm_stack_pop should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_2)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
+    end loop;
+
+    --****************************************************************************************************************************
+    log(ID_LOG_HDR_LARGE, "Test of simultaneous use of Data FIFO and Stack packages", C_SCOPE);
+    --****************************************************************************************************************************
+    uvvm_fifo_deallocate(VOID);
+    uvvm_stack_deallocate(VOID);
+
+    uvvm_fifo_init(C_BUFFER_INDEX_1, C_BUFFER_SIZE_1);
+    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
+      uvvm_fifo_put(C_BUFFER_INDEX_1, std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)));
+    end loop;
+    uvvm_stack_init(C_BUFFER_INDEX_2, C_BUFFER_SIZE_1);
+    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
+      uvvm_stack_push(C_BUFFER_INDEX_2, std_logic_vector(to_unsigned(i + 1, C_ENTRY_SIZE_1)));
+    end loop;
+
+    for i in 0 to (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 loop
+      check_value(uvvm_fifo_get(C_BUFFER_INDEX_1, C_ENTRY_SIZE_1) = std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), TB_ERROR, "uvvm_fifo_get should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_1)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
+    end loop;
+    for i in (C_BUFFER_SIZE_1 / C_ENTRY_SIZE_1) - 1 downto 0 loop
+      check_value(uvvm_stack_pop(C_BUFFER_INDEX_2, C_ENTRY_SIZE_1) = std_logic_vector(to_unsigned(i + 1, C_ENTRY_SIZE_1)), TB_ERROR, "uvvm_stack_pop should be " & to_string(std_logic_vector(to_unsigned(i, C_ENTRY_SIZE_2)), HEX) & ".", C_SCOPE, ID_SEQUENCER);
     end loop;
 
     -----------------------------------------------------------------------------

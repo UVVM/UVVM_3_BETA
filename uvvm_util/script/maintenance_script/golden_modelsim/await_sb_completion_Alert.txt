@@ -60,7 +60,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_FAILURE #1  ***
 UVVM:       6000250 ns   TB seq.(uvvm)
-UVVM:                    await_sb_completion() => Failed. Boolean was false. 'timeout must be greater than 0'
+UVVM:                    await_sb_completion(bool, true) => Failed. Value was false. Expected true. 'timeout must be greater than 0'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -68,7 +68,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_FAILURE #2  ***
 UVVM:       6000250 ns   TB seq.(uvvm)
-UVVM:                    await_sb_completion() => Failed. Boolean was false. 'sb_poll_time must be greater than 0'
+UVVM:                    await_sb_completion(bool, true) => Failed. Value was false. Expected true. 'sb_poll_time must be greater than 0'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 

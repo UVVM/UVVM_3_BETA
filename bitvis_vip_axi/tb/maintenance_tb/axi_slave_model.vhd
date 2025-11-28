@@ -243,7 +243,6 @@ begin
 
   -- Handling read accesses
   axi_read_states : process(aclk, aresetn)
-    variable i          : integer;
     variable v_mem_addr : unsigned(rd_port_in.araddr'length - 1 downto 0);
     variable v_arlen    : unsigned(7 downto 0);
     variable v_arsize   : std_logic_vector(2 downto 0);

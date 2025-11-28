@@ -55,28 +55,6 @@ architecture func of uart_monitor_tb is
   shared variable tx_uart_monitor_sb : work.uart_transaction_sb_pkg.t_generic_sb;
   shared variable rx_uart_monitor_sb : work.uart_transaction_sb_pkg.t_generic_sb;
 
-  procedure check_transaction(
-    constant transaction      : in t_uart_transaction;
-    constant operation        : in t_uart_operation;
-    constant data             : in std_logic_vector;
-    constant parity_bit_error : in boolean;
-    constant stop_bit_error   : in boolean;
-    constant scope            : in string
-  ) is
-    variable check_ok : boolean_vector(0 to 3);
-  begin
-    check_ok(0) := check_value(transaction.operation = operation, ERROR, "Check operation");
-    check_ok(1) := check_value(transaction.data, data, ERROR, "Check data");
-    check_ok(2) := check_value(transaction.error_info.parity_bit_error, parity_bit_error, ERROR, "Check parity_bit_error");
-    check_ok(3) := check_value(transaction.error_info.stop_bit_error, stop_bit_error, ERROR, "Check stop_bit_error");
-
-    if and(check_ok) then
-      log(ID_SEQUENCER_SUB, "Monitor transaction read: OK", scope);
-    else
-      log(ID_SEQUENCER_SUB, "Monitor transaction read: ERROR", scope);
-    end if;
-  end procedure check_transaction;
-
 begin
 
   -----------------------------------------------------------------------------
@@ -91,16 +69,10 @@ begin
   ------------------------------------------------
   p_main : process
     -- Helper variables
-    variable v_received_data      : bitvis_vip_uart.vvc_cmd_pkg.t_vvc_result;
-    variable v_cmd_idx            : natural;
-    variable v_is_ok              : boolean;
-    variable v_timestamp          : time;
-    variable v_timeout            : time;
     variable v_data_tx            : std_logic_vector(7 downto 0);
     variable v_data_rx            : std_logic_vector(7 downto 0);
     variable v_uart_transaction   : t_uart_transaction;
     variable v_vvc_config         : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
-    variable v_alert_num_mismatch : boolean := false;
 
     function get_uart_transaction_info(
       constant operation        : in t_uart_operation;
@@ -188,10 +160,10 @@ begin
       v_data_tx          := std_logic_vector(to_unsigned(i, 4)) & std_logic_vector(to_unsigned(i, 4));
       v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX));
+      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
-      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX), ERROR);
+      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
     end loop;
 
@@ -201,8 +173,8 @@ begin
       v_data_rx          := std_logic_vector(to_unsigned(i, 4)) & std_logic_vector(to_unsigned(i, 4));
       v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx);
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
-      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
+      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
     end loop;
     wait for 200 ns;                    -- margin
@@ -221,12 +193,12 @@ begin
       v_data_rx          := std_logic_vector(to_unsigned(15 - i, 4)) & std_logic_vector(to_unsigned(i, 4));
       v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx);
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
-      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX));
+      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, ALL_CHANNELS, 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
-      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX), ERROR);
+      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
     end loop;
     wait for 200 ns;                    -- margin
@@ -256,12 +228,12 @@ begin
       v_data_tx          := std_logic_vector(to_unsigned(i, 4)) & std_logic_vector(to_unsigned(15 - i, 4));
       v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx, true, false);
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX));
+      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, ALL_CHANNELS, 13 * C_BIT_PERIOD);
       wait for 200 ns;                  -- margin
-      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX), ERROR);
+      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
     end loop;
     wait for 200 ns;                    -- margin
@@ -284,10 +256,10 @@ begin
         v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       end if;
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX));
+      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
       insert_delay(SBI_VVCT, 1, 200 ns);
-      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, to_string(i) & ": check " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX), ERROR);
+      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, to_string(i) & ": check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
     end loop;
 
     wait for 500 ns;                    -- margin
@@ -303,8 +275,8 @@ begin
         v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx);
       end if;
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
-      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
+      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
     end loop;
     wait for 1 us;                      -- margin
@@ -325,10 +297,10 @@ begin
         v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       end if;
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX));
+      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
       insert_delay(SBI_VVCT, 1, 200 ns);
-      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, to_string(i) & ": check " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX), ERROR);
+      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, to_string(i) & ": check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
     end loop;
 
     wait for 500 ns;                    -- margin
@@ -344,8 +316,8 @@ begin
         v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx);
       end if;
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
-      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
+      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
     end loop;
     wait for 200 ns;                    -- margin
@@ -361,10 +333,10 @@ begin
       v_data_tx          := random(8);
       v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX));
+      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
       insert_delay(SBI_VVCT, 1, 200 ns);
-      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, AS_IS, INCL_RADIX), ERROR);
+      sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
     end loop;
 
     wait for 500 ns;                    -- margin
@@ -375,8 +347,8 @@ begin
       v_data_rx          := random(8);
       v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx);
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
-      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, AS_IS, INCL_RADIX));
+      sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
       await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
     end loop;
     wait for 200 ns;                    -- margin
@@ -387,8 +359,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

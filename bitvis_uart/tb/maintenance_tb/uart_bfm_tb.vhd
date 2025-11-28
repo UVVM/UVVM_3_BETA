@@ -169,29 +169,6 @@ begin
       log(ID_SEQUENCER_SUB, msg, C_SCOPE);
     end;
 
-    -- To do: Combine with above procedure
-    procedure pulse(
-      signal   target       : inout std_logic_vector;
-      constant pulse_value  : in std_logic_vector;
-      signal   clock_signal : in std_logic;
-      constant num_periods  : in natural;
-      constant msg          : in string) is
-    begin
-      -- Add checks etc. later.
-      if num_periods > 0 then
-        wait until falling_edge(clock_signal);
-        target <= pulse_value;
-        for i in 1 to num_periods loop
-          wait until falling_edge(clock_signal);
-        end loop;
-      else
-        target <= pulse_value;
-        wait for 0 ns;                  -- Delta cycle only
-      end if;
-      target(target'range) <= (others => '0');
-      log(ID_SEQUENCER_SUB, "Pulsed to " & to_string(pulse_value, HEX, AS_IS, INCL_RADIX) & ". " & add_msg_delimiter(msg), C_SCOPE);
-    end;
-
     -- Overloads for PIF BFMs for SBI (Simple Bus Interface)
     procedure sbi_write(
       constant addr_value : in natural;
@@ -233,7 +210,7 @@ begin
       constant config            : in t_sbi_bfm_config := C_SBI_BFM_CONFIG_DEFAULT
     ) is
       constant proc_name       : string  := "sbi_await_value";
-      constant proc_call       : string  := "sbi_await_value(A:" & to_string(to_unsigned(addr_value, addr'length), HEX, AS_IS, INCL_RADIX) & ", " & to_string(data_exp, HEX, AS_IS, INCL_RADIX) & ")";
+      constant proc_call       : string  := "sbi_await_value(A:" & to_string(to_unsigned(addr_value, addr'length), HEX, KEEP_LEADING_0, INCL_RADIX) & ", " & to_string(data_exp, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
       -- Helper variables
       variable v_data_value    : std_logic_vector(rdata'length - 1 downto 0);
       variable v_check_ok      : boolean;
@@ -247,7 +224,7 @@ begin
 
       v_check_ok := check_value(v_data_value, data_exp, alert_level, msg, scope, HEX_BIN_IF_INVALID, SKIP_LEADING_0, ID_NEVER, msg_id_panel, proc_call);
       if v_check_ok then
-        log(ID_BFM, proc_call & "=> OK, read data = " & to_string(v_data_value, HEX, SKIP_LEADING_0, INCL_RADIX) & ". " & add_msg_delimiter(msg), scope, msg_id_panel);
+        log(ID_BFM, proc_call & "=> OK, read data = " & to_string(v_data_value, HEX, SKIP_LEADING_0, INCL_RADIX) & "." & add_msg_delimiter(msg), scope, msg_id_panel);
       end if;
     end;
 

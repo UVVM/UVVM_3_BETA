@@ -116,17 +116,6 @@ package vvc_cmd_pkg is
   );
 end package vvc_cmd_pkg;
 
-package body vvc_cmd_pkg is
-
-  function to_string(
-    value : t_operation
-  ) return string is
-  begin
-    return t_operation'image(value);
-  end;
-
-end package body vvc_cmd_pkg;
-
 --================================================================================================================================
 --  Generic package instantiations
 --================================================================================================================================

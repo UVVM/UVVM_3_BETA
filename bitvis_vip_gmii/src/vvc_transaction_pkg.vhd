@@ -44,9 +44,9 @@ package vvc_transaction_pkg is
   );
 
   -- Constants for the maximum sizes to use in this VVC. Can be modified in adaptations_pkg.
-  constant C_VVC_CMD_DATA_MAX_BYTES    : natural := C_GMII_VVC_CMD_DATA_MAX_BYTES;
-  constant C_VVC_CMD_STRING_MAX_LENGTH : natural := C_GMII_VVC_CMD_STRING_MAX_LENGTH;
-  constant C_VVC_MAX_INSTANCE_NUM      : natural := C_GMII_VVC_MAX_INSTANCE_NUM;
+  alias C_VVC_CMD_DATA_MAX_BYTES    is C_GMII_VVC_CMD_DATA_MAX_BYTES;
+  alias C_VVC_CMD_STRING_MAX_LENGTH is C_GMII_VVC_CMD_STRING_MAX_LENGTH;
+  alias C_VVC_MAX_INSTANCE_NUM      is C_GMII_VVC_MAX_INSTANCE_NUM;
 
   --==========================================================================================
   -- Transaction info types, constants and global signal

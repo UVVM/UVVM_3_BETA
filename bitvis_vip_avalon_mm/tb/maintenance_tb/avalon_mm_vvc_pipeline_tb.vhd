@@ -182,8 +182,6 @@ begin
     variable v_prev_data_int : natural;
     variable v_data          : std_logic_vector(1023 downto 0);
     variable v_is_ok         : boolean;
-    variable v_is_new        : boolean;
-    variable v_timestamp     : time;
     variable v_vvc_config    : bitvis_vip_avalon_mm.vvc_methods_support_pkg.t_vvc_config;
 
   begin
@@ -368,8 +366,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

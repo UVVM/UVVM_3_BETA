@@ -39,6 +39,3 @@ package ethernet_gmii_mac_master_pkg is
   end record;
 
 end package ethernet_gmii_mac_master_pkg;
-
-package body ethernet_gmii_mac_master_pkg is
-end package body ethernet_gmii_mac_master_pkg;

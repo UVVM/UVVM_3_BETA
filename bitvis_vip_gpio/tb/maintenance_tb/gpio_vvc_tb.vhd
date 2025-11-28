@@ -62,7 +62,7 @@ architecture func of gpio_vvc_tb is
     if pins'length /= data'length then
       alert(TB_ERROR, "pin length " & to_string(pins'length) & " and data length " & to_string(data'length) & " doesn't match.");
     end if;
-    log("Setting GPIO to " & to_string(data, BIN) & ". " & add_msg_delimiter(msg));
+    log("Setting GPIO to " & to_string(data, BIN) & "." & add_msg_delimiter(msg));
     pins <= data;
   end procedure;
 
@@ -182,14 +182,12 @@ begin
   ------------------------------------------------
   p_main : process
     -- Helper variables
-    variable v_received_data : bitvis_vip_gpio.vvc_cmd_pkg.t_vvc_result;
     variable v_vvc_config    : bitvis_vip_gpio.vvc_methods_support_pkg.t_vvc_config;
     variable v_set_data      : std_logic_vector(7 downto 0);
     variable v_expect_data   : std_logic_vector(7 downto 0);
     variable v_data_1024     : std_logic_vector(1023 downto 0);
     variable v_data_exp_1024 : std_logic_vector(1023 downto 0);
     variable v_cmd_idx       : natural;
-    variable v_is_ok         : boolean;
     variable v_alert_level   : t_alert_level;
     
     --------------------------------------------------------------------------------------------------
@@ -681,8 +679,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

@@ -248,7 +248,7 @@ begin
 
     increment_expected_alerts(WARNING, 1);
     avalon_mm_read(AVALON_MM_VVCT, 1, "0", "read() with expected timeout");
-    await_completion(AVALON_MM_VVCT, 1, 1000 ns, "Wait for read() to timeout");
+    await_completion(AVALON_MM_VVCT, 1, 20000 ns, "Wait for read() to timeout");
 
     v_vvc_config                   := get_vvc_config(1);
     v_vvc_config.use_read_pipeline := false;
@@ -257,7 +257,7 @@ begin
     log("Do a check where the BFM procedure *check() calls *read_request() - should timeout");
     increment_expected_alerts(WARNING, 1);
     avalon_mm_check(AVALON_MM_VVCT, 1, "0", "------------", "Check() with expected timeout", NO_ALERT);
-    await_completion(AVALON_MM_VVCT, 1, 1000 ns, "Wait for check() to timeout");
+    await_completion(AVALON_MM_VVCT, 1, 20000 ns, "Wait for check() to timeout");
 
     v_vvc_config                   := get_vvc_config(1);
     v_vvc_config.use_read_pipeline := true;
@@ -266,7 +266,7 @@ begin
     log("Do a check where the VVC calls *read_request() directly due to pipelining - should timeout");
     increment_expected_alerts(WARNING, 1);
     avalon_mm_check(AVALON_MM_VVCT, 1, "0", "------------", "Check() with expected timeout", NO_ALERT);
-    await_completion(AVALON_MM_VVCT, 1, 1000 ns, "Wait for check() to timeout");
+    await_completion(AVALON_MM_VVCT, 1, 20000 ns, "Wait for check() to timeout");
 
     v_vvc_config                                     := get_vvc_config(1);
     v_vvc_config.bfm_config.max_wait_cycles_severity := TB_FAILURE;
@@ -289,7 +289,7 @@ begin
 
     increment_expected_alerts(WARNING, 1);
     avalon_mm_write(AVALON_MM_VVCT, 1, "0", x"deadbeef", "Writing to Avalon VVC 2");
-    await_completion(AVALON_MM_VVCT, 1, 1000 ns, "Waiting for write timeout");
+    await_completion(AVALON_MM_VVCT, 1, 20000 ns, "Waiting for write timeout");
 
     v_vvc_config                                     := get_vvc_config(1);
     v_vvc_config.bfm_config.max_wait_cycles_severity := TB_FAILURE;
@@ -301,7 +301,7 @@ begin
 
     increment_expected_alerts(WARNING, 1);
     avalon_mm_write(AVALON_MM_VVCT, 2, "0", x"deadbeef", "Writing to Avalon VVC 2");
-    await_completion(AVALON_MM_VVCT, 2, 1000 ns, "Waiting for write timeout");
+    await_completion(AVALON_MM_VVCT, 2, 20000 ns, "Waiting for write timeout");
 
     v_vvc_config                                     := get_vvc_config(2);
     v_vvc_config.bfm_config.max_wait_cycles_severity := TB_FAILURE;
@@ -411,6 +411,7 @@ begin
     insert_delay(AVALON_MM_VVCT, 1, 50, "Giving the DUT some time to initialize");
     insert_delay(AVALON_MM_VVCT, 2, 50, "Giving the DUT some time to initialize");
 
+    log(ID_LOG_HDR, "Testing setup and hold times", C_SCOPE);
     ----------------------------------------------------------------------
     v_vvc_config                       := get_vvc_config(1);
     v_vvc_config.bfm_config.bfm_sync   := SYNC_WITH_SETUP_AND_HOLD;
@@ -481,8 +482,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

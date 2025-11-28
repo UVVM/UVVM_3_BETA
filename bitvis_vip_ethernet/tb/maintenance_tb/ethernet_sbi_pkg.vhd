@@ -29,6 +29,3 @@ package ethernet_sbi_pkg is
   constant C_ADDR_FIFO_MAX_COUNT : integer := 5;
 
 end package ethernet_sbi_pkg;
-
-package body ethernet_sbi_pkg is
-end package body ethernet_sbi_pkg;

@@ -223,20 +223,20 @@ begin
     clock_ena <= false;
     increment_expected_alerts_and_stop_limit(ERROR, 1);
     rgmii_write(RGMII_VVCT, C_VVC_IDX, TX, v_data_array(0 to 10), "");
-    wait for 10 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+    wait for shared_rgmii_vvc_config.get(C_VVC_IDX, TX).bfm_config.max_wait_cycles * C_CLK_PERIOD;
     wait for 0 ns;
 
     log(ID_LOG_HDR, "Testing error case: read() rxc timeout");
     increment_expected_alerts_and_stop_limit(ERROR, 1);
     rgmii_read(RGMII_VVCT, C_VVC_IDX, RX, "");
-    wait for 10 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+    wait for shared_rgmii_vvc_config.get(C_VVC_IDX, RX).bfm_config.max_wait_cycles * C_CLK_PERIOD;
     wait for 0 ns;
     clock_ena <= true;
 
     log(ID_LOG_HDR, "Testing error case: read() rx_ctl timeout");
     increment_expected_alerts_and_stop_limit(ERROR, 1);
     rgmii_read(RGMII_VVCT, C_VVC_IDX, RX, "");
-    wait for 12 * C_CLK_PERIOD;         -- 10 = default max_wait_cycles
+    wait for shared_rgmii_vvc_config.get(C_VVC_IDX, RX).bfm_config.max_wait_cycles * C_CLK_PERIOD;
     wait for 0 ns;
 
     log(ID_LOG_HDR, "Testing error case: expect() wrong data");
@@ -293,13 +293,12 @@ begin
       toggle_vvc_if(v_alert_level);
     end loop;
 
-
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- Allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
+
     -- Finish the simulation
     std.env.stop;
     wait;                               -- to stop completely

@@ -274,7 +274,7 @@ package body vvc_methods_pkg is
   ) is
     constant proc_name : string := "avalon_st_transmit";
     constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ", " & to_string(data_array'length) & " words, ch:" & to_string(channel_value, DEC, AS_IS) & ")";
+                                   & ", " & to_string(data_array'length) & " words, ch:" & to_string(channel_value, DEC, KEEP_LEADING_0) & ")";
     constant c_data_word_size  : natural                                                                := data_array(data_array'low)'length;
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                       := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_normalized_chan : std_logic_vector(C_VVC_CMD_CHAN_MAX_LENGTH - 1 downto 0)               := normalize_and_check(channel_value, v_local_vvc_cmd.channel_value, ALLOW_NARROWER, "channel", "shared_vvc_cmd.channel", proc_call & ". " & msg);
@@ -383,7 +383,7 @@ package body vvc_methods_pkg is
   ) is
     constant proc_name : string := "avalon_st_expect";
     constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ", " & to_string(data_exp'length) & " words, ch:" & to_string(channel_exp, DEC, AS_IS) & ")";
+                                   & ", " & to_string(data_exp'length) & " words, ch:" & to_string(channel_exp, DEC, KEEP_LEADING_0) & ")";
     constant c_data_word_size  : natural                                                              := data_exp(data_exp'low)'length;
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                                     := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_normalized_chan : std_logic_vector(C_VVC_CMD_CHAN_MAX_LENGTH - 1 downto 0)             := normalize_and_check(channel_exp, v_local_vvc_cmd.channel_value, ALLOW_NARROWER, "channel", "shared_vvc_cmd.channel", proc_call & ". " & msg);

@@ -63,9 +63,6 @@ architecture func of axilite_vvc_tb is
                                      read_address_channel(araddr(C_ADDR_WIDTH_2 - 1 downto 0)),
                                      read_data_channel(rdata(C_DATA_WIDTH_2 - 1 downto 0)));
 
-  signal read_data_interface_1 : std_logic_vector(C_DATA_WIDTH_1 - 1 downto 0);
-  signal read_data_interface_2 : std_logic_vector(C_DATA_WIDTH_2 - 1 downto 0);
-
 begin
   -----------------------------
   -- Instantiate Testharness
@@ -395,9 +392,14 @@ begin
     v_vvc_config                               := shared_axilite_vvc_config.get(1);
     v_vvc_config.inter_bfm_delay.delay_type    := NO_DELAY;
     v_vvc_config.inter_bfm_delay.delay_in_time := 0 ns;
-    v_vvc_config.bfm_config.bfm_sync           := SYNC_WITH_SETUP_AND_HOLD;
-    v_vvc_config.bfm_config.setup_time         := 2 ns;
-    v_vvc_config.bfm_config.hold_time          := 3 ns;
+    shared_axilite_vvc_config.set(v_vvc_config, 1);
+
+    log(ID_LOG_HDR, "Simulation of AXI-Lite with bfm_sync = SYNC_WITH_SETUP_AND_HOLD, setup_time = 2 ns and hold_time = 3 ns;", C_SCOPE);
+    ------------------------------------------------------------
+    v_vvc_config                       := shared_axilite_vvc_config.get(1);
+    v_vvc_config.bfm_config.bfm_sync   := SYNC_WITH_SETUP_AND_HOLD;
+    v_vvc_config.bfm_config.setup_time := 2 ns;
+    v_vvc_config.bfm_config.hold_time  := 3 ns;
     shared_axilite_vvc_config.set(v_vvc_config, 1);
 
     v_vvc_config                       := shared_axilite_vvc_config.get(2);
@@ -406,8 +408,6 @@ begin
     v_vvc_config.bfm_config.hold_time  := 3 ns;
     shared_axilite_vvc_config.set(v_vvc_config, 2);
 
-    log(ID_LOG_HDR, "Simulation of AXI-Lite with bfm_sync = SYNC_WITH_SETUP_AND_HOLD, setup_time = 2 ns and hold_time = 3 ns;", C_SCOPE);
-    ------------------------------------------------------------
     -- Write to VVC 1
     axilite_write(AXILITE_VVCT, 1, x"0000", x"5555", "Test of axilite write");
     axilite_write(AXILITE_VVCT, 1, x"1000", x"befbeef", "Write"); -- op0
@@ -541,8 +541,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 100 ns;                    -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

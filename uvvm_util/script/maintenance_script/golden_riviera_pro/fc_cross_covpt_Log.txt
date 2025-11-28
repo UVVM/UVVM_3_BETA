@@ -3,11 +3,11 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Functional Coverage package - fc_cross_covpt
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing cross of coverpoints with different bins
@@ -62,8 +62,8 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_1[24]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_1[25]
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_3] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 13. 
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected WARNINGs by 13.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_3] sample_coverage((100, 1004))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_3] sample_coverage((100, 1116))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_3] sample_coverage((100, 1117))
@@ -205,8 +205,8 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_1[23]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_1[24]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_invalid_cross_bin => OK, for bin_1[25]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_num_bins => OK, for int 4. 'Checking number of valid bins'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_num_bins => OK, for int 21. 'Checking number of invalid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_num_bins(int, 4) => OK. Value was 4. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_num_bins(int, 21) => OK. Value was 21. 'Checking number of invalid bins'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
 UVVM:      

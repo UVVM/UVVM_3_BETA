@@ -33,6 +33,22 @@ cleanup("Removing any previous runs.")
 
 hr = HDLRegression()
 
+# Set simulator name and options
+lib_options = None
+sim_options = None
+simulator_name = hr.settings.get_simulator_name()
+if simulator_name == "MODELSIM":
+    sim_options = "-t ns"
+elif simulator_name == "GHDL":
+    # Opencores library requires Synopsys std_logic_unsigned library
+    com_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "-Wall", "--warn-no-shared", "--warn-no-hide", "--warn-no-delayed-checks", "-fsynopsys"]
+    lib_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "--warn-no-shared", "--warn-no-hide", "-fsynopsys"]
+    hr.set_simulator(simulator=simulator_name, com_options=com_options)
+elif simulator_name == "RIVIERA-PRO":
+    com_options = ["-2008", "-nowarn", "COMP96_0564", "-nowarn", "COMP96_0048", "-nowarn", "DAGGEN_0001"]
+    com_options += ["-O0"] # Needs optimization level 0 to avoid optimizing away some testbench signals
+    hr.set_simulator(simulator=simulator_name, com_options=com_options)
+
 # Add util, fw and VIP Scoreboard
 hr.add_files("../../../uvvm_util/src/*.vhd", "uvvm_util")
 hr.add_files("../../../uvvm_vvc_framework/src/*.vhd", "uvvm_vvc_framework")
@@ -49,22 +65,8 @@ hr.add_files("../../../uvvm_vvc_framework/src_target_dependent/*.vhd", "bitvis_v
 # Add TB/TH
 hr.add_files("../../tb/maintenance_tb/*.vhd", "bitvis_vip_i2c")
 # Add TB dependencies
-hr.add_files("../../tb/maintenance_tb/fpga_i2c_slave_github/*.vhd", "bitvis_vip_i2c")
-hr.add_files("../../tb/maintenance_tb/i2c_opencores/trunk/rtl/vhdl/*.vhd", "bitvis_vip_i2c")
-
-# Set simulator name and options
-sim_options = None
-simulator_name = hr.settings.get_simulator_name()
-if simulator_name == "MODELSIM":
-    sim_options = "-t ns"
-elif simulator_name == "GHDL":
-    com_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "--warn-no-shared", "--warn-no-hide", "--warn-no-attribute"]
-    com_options += ["-fsynopsys"] # Opencores library requires Synopsys std_logic_unsigned library
-    hr.set_simulator(simulator=simulator_name, com_options=com_options)
-elif simulator_name == "RIVIERA-PRO":
-    com_options = ["-2008", "-nowarn", "COMP96_0564", "-nowarn", "COMP96_0048", "-nowarn", "DAGGEN_0001"]
-    com_options += ["-O0"] # Needs optimization level 0 to avoid optimizing away some testbench signals
-    hr.set_simulator(simulator=simulator_name, com_options=com_options)
+hr.add_files("../../tb/maintenance_tb/fpga_i2c_slave_github/*.vhd", "bitvis_vip_i2c", com_options=lib_options)
+hr.add_files("../../tb/maintenance_tb/i2c_opencores/trunk/rtl/vhdl/*.vhd", "bitvis_vip_i2c", com_options=lib_options)
 
 hr.start(sim_options=sim_options)
 
@@ -84,8 +86,9 @@ if simulator_name == "MODELSIM" or simulator_name == "RIVIERA-PRO":
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_src.do ../../uvvm_util ../../uvvm_util/sim; exit"], False)
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_bfm.do; exit"], False)
     if ret_code == 0:
-        print("SIMULATION SUCCESS")
-        cleanup('Removing simulation output\n')
+        print("TCL script test completed")
+        if hr.check_run_results(exp_fail=0) is True:
+            cleanup('Removing simulation output\n')
     else:
         print(ret_txt)
         num_failing_tests += 1

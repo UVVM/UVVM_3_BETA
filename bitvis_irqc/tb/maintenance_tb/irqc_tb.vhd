@@ -149,7 +149,6 @@ begin
     variable v_irq_mask     : std_logic_vector(7 downto 0);
     variable v_irq_mask_inv : std_logic_vector(7 downto 0);
 
-    variable v_alert_num_mismatch : boolean := false;
   begin
     -- To avoid that log files from different test cases (run in separate
     -- simulations) overwrite each other.

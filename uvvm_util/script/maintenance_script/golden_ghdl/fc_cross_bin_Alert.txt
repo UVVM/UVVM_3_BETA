@@ -2,8 +2,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #1  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    check_value() => Failed. int  Was 5. Expected 4
-UVVM:                    Number of transition values must be the same in all cross elements
+UVVM:                    check_value(int, 4) => Failed. Value was 5. Expected 4. 'Number of transition values must be the same in all cross elements'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -11,8 +10,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #2  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    check_value() => Failed. int  Was 5. Expected 4
-UVVM:                    Number of transition values must be the same in all cross elements
+UVVM:                    check_value(int, 4) => Failed. Value was 5. Expected 4. 'Number of transition values must be the same in all cross elements'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -75,8 +73,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #3  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    check_value() => Failed. int  Was 5. Expected 4
-UVVM:                    Number of transition values must be the same in all cross elements
+UVVM:                    check_value(int, 4) => Failed. Value was 5. Expected 4. 'Number of transition values must be the same in all cross elements'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 

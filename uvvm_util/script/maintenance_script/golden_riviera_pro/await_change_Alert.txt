@@ -2,7 +2,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #1  ***
 UVVM:             5 ns   TB seq.(uvvm)
-UVVM:                    await_change(boolean, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too soon, Fail'
+UVVM:                    await_change(bool, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too soon, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -10,7 +10,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #2  ***
 UVVM:            22 ns   TB seq.(uvvm)
-UVVM:                    await_change(boolean, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
+UVVM:                    await_change(bool, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -18,7 +18,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #3  ***
 UVVM:            27 ns   TB seq.(uvvm)
-UVVM:                    await_change(std_logic, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too soon, Fail'
+UVVM:                    await_change(sl, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too soon, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -26,7 +26,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #4  ***
 UVVM:            44 ns   TB seq.(uvvm)
-UVVM:                    await_change(std_logic, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
+UVVM:                    await_change(sl, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -50,7 +50,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #7  ***
 UVVM:            65 ns   TB seq.(uvvm)
-UVVM:                    await_change(unsigned, 3 ns, 5 ns) => Failed. Condition occurred too early, after 2 ns. 'Change too soon, Fail'
+UVVM:                    await_change(u, 3 ns, 5 ns) => Failed. Condition occurred too early, after 2 ns. 'Change too soon, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -58,7 +58,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #8  ***
 UVVM:            82 ns   TB seq.(uvvm)
-UVVM:                    await_change(unsigned, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
+UVVM:                    await_change(u, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -66,7 +66,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #9  ***
 UVVM:            84 ns   TB seq.(uvvm)
-UVVM:                    await_change(signed, 3 ns, 5 ns) => Failed. Condition occurred too early, after 2 ns. 'Change too soon, Fail'
+UVVM:                    await_change(s, 3 ns, 5 ns) => Failed. Condition occurred too early, after 2 ns. 'Change too soon, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -74,7 +74,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #10  ***
 UVVM:           101 ns   TB seq.(uvvm)
-UVVM:                    await_change(signed, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
+UVVM:                    await_change(s, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -82,7 +82,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #11  ***
 UVVM:           103 ns   TB seq.(uvvm)
-UVVM:                    await_change(integer, 3 ns, 5 ns) => Failed. Condition occurred too early, after 2 ns. 'Change too soon, Fail'
+UVVM:                    await_change(int, 3 ns, 5 ns) => Failed. Condition occurred too early, after 2 ns. 'Change too soon, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 
@@ -90,7 +90,7 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #12  ***
 UVVM:           120 ns   TB seq.(uvvm)
-UVVM:                    await_change(integer, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
+UVVM:                    await_change(int, 3 ns, 5 ns) => Failed. Timed out after 5 ns. 'Change too late, Fail'
 UVVM: =========================================================================================================================================================================
 UVVM: 
 UVVM: 

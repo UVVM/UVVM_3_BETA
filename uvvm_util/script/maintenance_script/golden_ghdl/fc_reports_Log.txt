@@ -3,13 +3,13 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Functional Coverage package - fc_reports
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_SAMPLE). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_RAND). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_SAMPLE).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_RAND).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing empty reports
@@ -81,7 +81,7 @@ UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        
 UVVM:                                                                           min_hits:2, "illegal_transition")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_1] Adding bins: ILL(2000->15->127->248->249->250->251->252->253->254), min_hits:2,
 UVVM:                                                                             rand_weight:2, "illegal_transition"
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected ERRORs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  ERROR #1  ***

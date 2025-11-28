@@ -169,8 +169,6 @@ begin
       variable v_association_list : string_association_list_pkg.t_association_list;
       variable v_status           : t_association_list_status;
       variable v_num_nodes        : natural := 0;
-      variable v_node_idx         : natural := 0;
-      variable v_rand             : t_rand;
       variable v_exclude_list     : t_natural_array(0 to 9);
       variable v_node_to_delete   : natural := 0;
 

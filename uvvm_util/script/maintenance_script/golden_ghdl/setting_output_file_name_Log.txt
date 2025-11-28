@@ -4,7 +4,7 @@ UVVM:      *** FINAL SUMMARY OF ALL ALERTS ***
 UVVM:      ====================================================================================================================================================================
 UVVM:                                REGARDED   EXPECTED  IGNORED      Comment?
 UVVM:                NOTE         :      0         0         0         ok
-UVVM:                TB_NOTE      :      0         0         0         ok
+UVVM:                TB_NOTE      :      2         2         0         ok
 UVVM:                WARNING      :      0         0         0         ok
 UVVM:                TB_WARNING   :      1         1         0         ok
 UVVM:                MANUAL_CHECK :      0         0         0         ok

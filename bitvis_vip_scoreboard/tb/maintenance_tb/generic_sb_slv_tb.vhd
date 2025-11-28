@@ -1703,27 +1703,26 @@ begin
     sb_under_test.set_scope("SB slv");
     sb_under_test.enable("Enable SB");
 
-    --    test_add_expected;
-    --    test_check_received;
-    --    test_check_received_out_of_order;
-    --    test_check_received_lossy;
-    --    test_initial_garbage;
-    --    test_overdue_time_limit;
-    --    test_find;
-    --    test_peek;
-    --    test_fetch;
+    test_add_expected;
+    test_check_received;
+    test_check_received_out_of_order;
+    test_check_received_lossy;
+    test_initial_garbage;
+    test_overdue_time_limit;
+    test_find;
+    test_peek;
+    test_fetch;
     test_insert_expected;
-    --    test_insert_expected_no_tag;
-    --    test_delete_expected;
-    --    test_exists;
-    --    test_multiple_instances;
-    --    test_instance_is_enabled;
+    test_insert_expected_no_tag;
+    test_delete_expected;
+    test_exists;
+    test_multiple_instances;
+    test_instance_is_enabled;
 
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_sb_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

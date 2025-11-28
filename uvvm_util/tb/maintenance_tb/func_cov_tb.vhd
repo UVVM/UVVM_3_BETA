@@ -176,21 +176,6 @@ begin
       variable coverpoint  : inout t_coverpoint;
       variable bin_idx     : inout natural;
       constant contains    : in t_cov_bin_type_array;
-      constant values      : in t_integer_array;
-      constant min_hits    : in natural := 1;
-      constant rand_weight : in integer := C_ADAPTIVE_WEIGHT;
-      constant name        : in string  := "";
-      constant hits        : in natural := 0) is
-      constant C_PROC_NAME : string := "check_cross_bin";
-    begin
-      check_bin(coverpoint, bin_idx, contains, values, min_hits, rand_weight, name, hits, false, C_PROC_NAME);
-    end procedure;
-
-    -- Overload for crossed bins
-    procedure check_cross_bin(
-      variable coverpoint  : inout t_coverpoint;
-      variable bin_idx     : inout natural;
-      constant contains    : in t_cov_bin_type_array;
       constant values_1    : in integer_vector;
       constant values_2    : in integer_vector;
       constant min_hits    : in natural := 1;

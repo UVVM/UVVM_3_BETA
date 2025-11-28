@@ -15,6 +15,10 @@ REQ_COMPOUND_TICKOFF,tested through sub-requirement(s),NOT_TESTED
 REQ_COMPOUND_NONCOMPLIANT,tested through sub-requirement(s),NON_COMPLIANT
 REQ_COMPOUND_NOT_TESTED,tested through sub-requirement(s),NOT_TESTED
 REQ_COMPOUND_ANDOR,tested through sub-requirement(s),COMPLIANT
+REQ_UNLISTED_PASS,TC_1,UNLISTED_REQ_PASS
+REQ_BASIC2,TC_1,UNLISTED_REQ_PASS
+REQ_BASI,TC_1,UNLISTED_REQ_PASS
+REQ_UNLISTED_FAIL,check *.req_non_compliance.csv,UNLISTED_REQ_FAIL
 
 
 Requirement,Sub-requirement,Covering testcases(minimum),Sub-req compliance

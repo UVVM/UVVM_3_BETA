@@ -122,7 +122,6 @@ begin
     variable v_num_bytes            : integer                := 0;
     variable v_num_words            : integer                := 0;
     variable v_data_array_as_slv    : std_logic_vector(C_MAX_BYTES_IN_WORD * C_BYTE - 1 downto 0);
-    variable v_data_array           : t_slv_array(0 to C_MAX_BYTES - 1)(C_MAX_BYTES_IN_WORD * C_BYTE - 1 downto 0);
     variable v_data_array_1_byte    : t_slv_array(0 to C_MAX_BYTES - 1)(1 * C_BYTE - 1 downto 0);
     variable v_data_array_2_byte    : t_slv_array(0 to C_MAX_BYTES - 1)(2 * C_BYTE - 1 downto 0);
     variable v_data_array_3_byte    : t_slv_array(0 to C_MAX_BYTES - 1)(3 * C_BYTE - 1 downto 0);
@@ -414,7 +413,7 @@ begin
       end loop;
 
       -- Configure the sink BFM for this packet.
-      v_axistream_bfm_config.ready_low_at_word_num := random(0, v_num_words - 1);
+      v_axistream_bfm_config.ready_low_at_word_idx := random(0, v_num_words - 1);
       v_axistream_bfm_config.ready_low_duration    := random(0, 4);
       if random(0, 1) = 1 then
         v_axistream_bfm_config.ready_default_value := not v_axistream_bfm_config.ready_default_value;
@@ -424,7 +423,7 @@ begin
       if bytes_in_word = 1 then
         -- Test the overload without exp_user_array, exp_strb_array etc
         axistream_expect(get_slv_array(v_num_bytes, bytes_in_word),
-                         "ready_low_at_word_num=" & to_string(v_axistream_bfm_config.ready_low_at_word_num) &
+                         "ready_low_at_word_idx=" & to_string(v_axistream_bfm_config.ready_low_at_word_idx) &
                          ", ready_low_duration=" & to_string(v_axistream_bfm_config.ready_low_duration) &
                          ", ready_default_value=" & to_string(v_axistream_bfm_config.ready_default_value) &
                          ", bytes_in_word=" & to_string(bytes_in_word), clk, axistream_if_s, error, C_SCOPE, shared_msg_id_panel.get(VOID), v_axistream_bfm_config);
@@ -432,7 +431,7 @@ begin
         -- Test the overload without exp_strb_array, exp_id_array, exp_dest_array
         -- More tstrb, tid, tdest tests in axistream_vvc_tb.
         axistream_expect(get_slv_array(v_num_bytes, bytes_in_word), v_user_array(0 to v_num_words - 1),
-                         "ready_low_at_word_num=" & to_string(v_axistream_bfm_config.ready_low_at_word_num) &
+                         "ready_low_at_word_idx=" & to_string(v_axistream_bfm_config.ready_low_at_word_idx) &
                          ", ready_low_duration=" & to_string(v_axistream_bfm_config.ready_low_duration) &
                          ", ready_default_value=" & to_string(v_axistream_bfm_config.ready_default_value) &
                          ", bytes_in_word=" & to_string(bytes_in_word), clk, axistream_if_s, error, C_SCOPE, shared_msg_id_panel.get(VOID), v_axistream_bfm_config);
@@ -471,10 +470,10 @@ begin
     if GC_USE_SETUP_AND_HOLD then
       increment_expected_alerts(TB_WARNING, 1); -- Because of time stamp truncate warning
     end if;
-    v_axistream_bfm_config.ready_low_at_word_num := 0;
+    v_axistream_bfm_config.ready_low_at_word_idx := 0;
     increment_expected_alerts_and_stop_limit(ERROR, 1);
     axistream_receive(v_data_array, v_num_bytes, v_user_array, v_strb_array, v_id_array, v_dest_array, "invalid receive", clk, axistream_if_s, C_SCOPE, shared_msg_id_panel.get(VOID), v_axistream_bfm_config);
-    v_axistream_bfm_config.ready_low_at_word_num := 1;
+    v_axistream_bfm_config.ready_low_at_word_idx := 1;
     increment_expected_alerts_and_stop_limit(ERROR, 1);
     axistream_receive(v_data_array, v_num_bytes, v_user_array, v_strb_array, v_id_array, v_dest_array, "invalid receive", clk, axistream_if_s, C_SCOPE, shared_msg_id_panel.get(VOID), v_axistream_bfm_config);
 

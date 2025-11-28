@@ -1719,6 +1719,53 @@ begin
       await_change_to_value(sl, '1', 1 ns, 3 ns, error, "Change to acceptable value within timeframe", C_SCOPE, ID_POS_ACK, shared_msg_id_panel.get(VOID));
       wait for 10 ns;
 
+      log(ID_SEQUENCER, "Testing await_change_to_value with slv", C_SCOPE);
+
+      -- testing await_change_to_value with to late change
+      increment_expected_alerts(error, 1);
+      slv8 <= "00000000";
+      slv8 <= transport "00000001" after 4 ns;
+      await_change_to_value(slv8, "00000001", 0 ns, 3 ns, error, "Change too late, Fail", C_SCOPE);
+      wait for 10 ns;
+      -- testing await_change_to_value with change but not to value specified
+      increment_expected_alerts(warning, 1);
+      slv8 <= transport "00000010" after 1 ns;
+      await_change_to_value(slv8, "00000001", 0 ns, 3 ns, warning, "Change but not to value specified, Fail", C_SCOPE);
+      wait for 10 ns;
+      -- testing await_change_to_value with change to value specified within limit
+      slv8 <= transport "00000011" after 2 ns;
+      await_change_to_value(slv8, "00000011", 0 ns, 3 ns, error, "Change to value specified within limit, OK", C_SCOPE);
+      wait for 10 ns;
+      -- testing await_change_to_value with change to correct value before min_time
+      increment_expected_alerts(error, 1);
+      slv8 <= transport "00000100" after 1 ns;
+      await_change_to_value(slv8, "00000100", 2 ns, 3 ns, error, "Change to value before min_time, Fail", C_SCOPE);
+      wait for 10 ns;
+      -- testing await_change_to_value with change to correct value after max_time
+      increment_expected_alerts(error, 1);
+      slv8 <= transport "00000101" after 8 ns;
+      await_change_to_value(slv8, "00000101", 5 ns, 7 ns, error, "Time Check Failed", C_SCOPE);
+      wait for 10 ns;
+      -- testing await_change_to_value with change (first to wrong value, then to correct value) within time window
+      slv8 <= transport "00000111" after 2 ns;
+      slv8 <= transport "00001000" after 5 ns;
+      log(ID_SEQUENCER, "calling: await_change_to_value(slv8, '00001000', 3 ns, 6 ns, error, 'Change only (not correct) triggered', C_SCOPE);");
+      await_change_to_value(slv8, "00001000", 3 ns, 6 ns, error, "Change only (not correct) triggered", C_SCOPE);
+      wait for 10 ns;
+      -- Testing different overloads w/ and w/o error and t_match_strictness
+      slv8 <= transport "00001001" after 2 ns;
+      await_change_to_value(slv8, "00001001", MATCH_EXACT, 1 ns, 3 ns, error, "Change to acceptable value within timeframe", C_SCOPE, ID_POS_ACK, shared_msg_id_panel.get(VOID));
+      slv8 <= transport "00001011" after 2 ns;
+      await_change_to_value(slv8, "00001011", MATCH_EXACT, 1 ns, 3 ns, error, "Change to acceptable value within timeframe", C_SCOPE, ID_POS_ACK);
+      slv8 <= transport "00001100" after 2 ns;
+      await_change_to_value(slv8, "00001100", MATCH_EXACT, 1 ns, 3 ns, "Change to acceptable value within timeframe", C_SCOPE, ID_POS_ACK, shared_msg_id_panel.get(VOID));
+      slv8 <= transport "00001101" after 2 ns;
+      await_change_to_value(slv8, "00001101", 1 ns, 3 ns, error, "Change to acceptable value within timeframe", C_SCOPE, ID_POS_ACK);
+      slv8 <= transport "1W1U0X0Z" after 4 ns;
+      await_change_to_value(slv8, "1W1U0X0Z", MATCH_STD_INCL_ZXUW, 3 ns, 5 ns, "Change within time window 3, STD match including ZXUW, OK", C_SCOPE);
+      wait for 10 ns;
+
+
       log(ID_SEQUENCER, "Testing await_change_to_value with unsigned", C_SCOPE);
 
       -- testing await_change_to_value with to late change

@@ -3,15 +3,16 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Functional Coverage package - fc_coverage
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG). 
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 0.000000e+00. 'Checking coverpoints overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 0.000000e+00. 'Checking bins overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 0.000000e+00. 'Checking hits overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking overall coverage NOT completed'
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG).
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 0.000000e+00) => OK. Value was 0.000000e+00. 'Checking coverpoints overall
+UVVM:                                                                           coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 0.000000e+00) => OK. Value was 0.000000e+00. 'Checking bins overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 0.000000e+00) => OK. Value was 0.000000e+00. 'Checking hits overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking overall coverage NOT completed'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing coverage status with default goals (100)
@@ -471,7 +472,7 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_1] sample_coverage(15)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking coverage_completed(BINS_AND_HITS)'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking coverage_completed(BINS_AND_HITS)'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Continue sampling bins and check coverage remains 100%
@@ -528,7 +529,7 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_1] sample_coverage(10)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking coverage_completed(BINS_AND_HITS)'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking coverage_completed(BINS_AND_HITS)'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE SUMMARY REPORT (NON VERBOSE): TB seq. ***                                                                                                         
@@ -564,7 +565,7 @@ UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_2] Adding bins: (1),(2),(3),(4),(5),(6),(7),(8),(9),(10), min_hits:10, rand_weight:10,
 UVVM:                                                                             ""
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_2] set_hits_coverage_goal(50)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 50. 'Checking hits coverage goal'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 50) => OK. Value was 50. 'Checking hits coverage goal'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 0.00%
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 0.00%
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_2] sample_coverage(1)
@@ -873,7 +874,7 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_2] sample_coverage(10)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking coverage_completed(BINS_AND_HITS)'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking coverage_completed(BINS_AND_HITS)'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE SUMMARY REPORT (NON VERBOSE): TB seq. ***                                                                                                         
@@ -907,7 +908,7 @@ UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_3] Adding bins: (1),(2),(3),(4),(5),(6),(7),(8),(9),(10), min_hits:10, rand_weight:10,
 UVVM:                                                                             ""
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_3] set_hits_coverage_goal(200)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 200. 'Checking hits coverage goal'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 200) => OK. Value was 200. 'Checking hits coverage goal'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 0.00%
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 0.00%
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_3] sample_coverage(1)
@@ -1510,7 +1511,7 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_3] sample_coverage(10)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking coverage_completed(BINS_AND_HITS)'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking coverage_completed(BINS_AND_HITS)'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE SUMMARY REPORT (NON VERBOSE): TB seq. ***                                                                                                         
@@ -1544,7 +1545,7 @@ UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_4] Adding bins: (1),(2),(3),(4),(5),(6),(7),(8),(9),(10), min_hits:10, rand_weight:10,
 UVVM:                                                                             ""
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_4] set_bins_coverage_goal(70)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 70. 'Checking bins coverage goal'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 70) => OK. Value was 70. 'Checking bins coverage goal'
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 0.00%
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 0.00%
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(1)
@@ -1853,7 +1854,7 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(10)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking coverage_completed(BINS_AND_HITS)'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking coverage_completed(BINS_AND_HITS)'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE SUMMARY REPORT (NON VERBOSE): TB seq. ***                                                                                                         
@@ -1886,8 +1887,8 @@ UVVM: --------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_4] clear_coverage()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_4] set_bins_coverage_goal(50)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_4] set_hits_coverage_goal(50)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 50. 'Checking bins coverage goal'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 50. 'Checking hits coverage goal'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 50) => OK. Value was 50. 'Checking bins coverage goal'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 50) => OK. Value was 50. 'Checking hits coverage goal'
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(1)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(1)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(1)
@@ -1915,8 +1916,8 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(5)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 0.00%
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 50.00%
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 0.000000e+00. 'check_bins_coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 2.500000e+01. 'check_hits_coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 0.000000e+00) => OK. Value was 0.000000e+00. 'check_bins_coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 2.500000e+01) => OK. Value was 2.500000e+01. 'check_hits_coverage'
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(1)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(1)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(1)
@@ -1944,8 +1945,8 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(5)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 50.00%
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 5.000000e+01. 'check_bins_coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 5.000000e+01. 'check_hits_coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 5.000000e+01) => OK. Value was 5.000000e+01. 'check_bins_coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 5.000000e+01) => OK. Value was 5.000000e+01. 'check_hits_coverage'
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(6)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(6)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(6)
@@ -1973,8 +1974,8 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(10)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 5.000000e+01. 'check_bins_coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 7.500000e+01. 'check_hits_coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 5.000000e+01) => OK. Value was 5.000000e+01. 'check_bins_coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 7.500000e+01) => OK. Value was 7.500000e+01. 'check_hits_coverage'
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(6)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(6)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(6)
@@ -2002,8 +2003,8 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_4] sample_coverage(10)
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bins_coverage(% of goal) => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_hits_coverage(% of goal) => OK, for 100.00% - Coverage completed
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+02. 'check_bins_coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+02. 'check_hits_coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+02) => OK. Value was 1.000000e+02. 'check_bins_coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+02) => OK. Value was 1.000000e+02. 'check_hits_coverage'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE SUMMARY REPORT (NON VERBOSE): TB seq. ***                                                                                                         
@@ -2042,11 +2043,12 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_8] add_bins(bin(0), min_hits:10, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_8] Adding bins: (0), min_hits:10, rand_weight:10, ""
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        fc_set_covpts_coverage_goal(75)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 75. 'Checking coverpoints coverage goal'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 5.000000e+01. 'Checking coverpoints overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 9.000000e+01. 'Checking bins overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 9.000000e+01. 'Checking hits overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking overall coverage NOT completed'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 75) => OK. Value was 75. 'Checking coverpoints coverage goal'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 5.000000e+01) => OK. Value was 5.000000e+01. 'Checking coverpoints overall
+UVVM:                                                                           coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 9.000000e+01) => OK. Value was 9.000000e+01. 'Checking bins overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 9.000000e+01) => OK. Value was 9.000000e+01. 'Checking hits overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking overall coverage NOT completed'
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_5] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_5] sample_coverage(1)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_5] sample_coverage(0)
@@ -2077,10 +2079,11 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_6] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_6] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_6] sample_coverage(0)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 7.500000e+01. 'Checking coverpoints overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 9.600000e+01. 'Checking bins overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 9.600000e+01. 'Checking hits overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking overall coverage completed'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 7.500000e+01) => OK. Value was 7.500000e+01. 'Checking coverpoints overall
+UVVM:                                                                           coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 9.600000e+01) => OK. Value was 9.600000e+01. 'Checking bins overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 9.600000e+01) => OK. Value was 9.600000e+01. 'Checking hits overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking overall coverage completed'
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_7] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_7] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_7] sample_coverage(0)
@@ -2101,10 +2104,11 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_8] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_8] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_8] sample_coverage(0)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+02. 'Checking coverpoints overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+02. 'Checking bins overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+02. 'Checking hits overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking overall coverage completed'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+02) => OK. Value was 1.000000e+02. 'Checking coverpoints overall
+UVVM:                                                                           coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+02) => OK. Value was 1.000000e+02. 'Checking bins overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+02) => OK. Value was 1.000000e+02. 'Checking hits overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking overall coverage completed'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** OVERALL COVERAGE REPORT (VERBOSE): TB seq. ***                                                                                                             
@@ -2138,14 +2142,15 @@ UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_6] set_overall_coverage_weight(3)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_7] set_overall_coverage_weight(3)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_8] set_overall_coverage_weight(3)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 3. 'Checking overall coverage weight'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 3. 'Checking overall coverage weight'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 3. 'Checking overall coverage weight'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 3. 'Checking overall coverage weight'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 2.500000e+01. 'Checking coverpoints overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 7.500000e+01. 'Checking bins overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 7.500000e+01. 'Checking hits overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking overall coverage NOT completed'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 3) => OK. Value was 3. 'Checking overall coverage weight'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 3) => OK. Value was 3. 'Checking overall coverage weight'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 3) => OK. Value was 3. 'Checking overall coverage weight'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 3) => OK. Value was 3. 'Checking overall coverage weight'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 2.500000e+01) => OK. Value was 2.500000e+01. 'Checking coverpoints overall
+UVVM:                                                                           coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 7.500000e+01) => OK. Value was 7.500000e+01. 'Checking bins overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 7.500000e+01) => OK. Value was 7.500000e+01. 'Checking hits overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking overall coverage NOT completed'
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_5] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_5] sample_coverage(1)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_5] sample_coverage(0)
@@ -2176,10 +2181,11 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_6] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_6] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_6] sample_coverage(0)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 6.250000e+01. 'Checking coverpoints overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 9.000000e+01. 'Checking bins overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 9.000000e+01. 'Checking hits overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking overall coverage NOT completed'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 6.250000e+01) => OK. Value was 6.250000e+01. 'Checking coverpoints overall
+UVVM:                                                                           coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 9.000000e+01) => OK. Value was 9.000000e+01. 'Checking bins overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 9.000000e+01) => OK. Value was 9.000000e+01. 'Checking hits overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking overall coverage NOT completed'
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_7] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_7] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_7] sample_coverage(0)
@@ -2200,10 +2206,11 @@ UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_8] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_8] sample_coverage(0)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_8] sample_coverage(0)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+02. 'Checking coverpoints overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+02. 'Checking bins overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for real 1.000000e+02. 'Checking hits overall coverage'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking overall coverage completed'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+02) => OK. Value was 1.000000e+02. 'Checking coverpoints overall
+UVVM:                                                                           coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+02) => OK. Value was 1.000000e+02. 'Checking bins overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(real, 1.000000e+02) => OK. Value was 1.000000e+02. 'Checking hits overall coverage'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking overall coverage completed'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** OVERALL COVERAGE REPORT (VERBOSE): TB seq. ***                                                                                                             

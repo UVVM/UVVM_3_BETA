@@ -818,7 +818,7 @@ def add_vvc_executor(file_handle, vvc_name, vvc_channel, vvc_channel_idx, featur
     if number_of_executors > 1:
         file_handle.write("        --     if vvc_config.use_read_pipeline then\n")
         file_handle.write("        --       -- Stall until response command executor is no longer full\n")
-        file_handle.write("        --       check_value(vvc_config.bfm_config.clock_period > -1 ns, TB_ERROR, \"Check that clock_period is configured when using" +
+        file_handle.write("        --       check_value(vvc_config.bfm_config.clock_period /= C_UNDEFINED_TIME, TB_ERROR, \"Check that clock_period is configured when using" +
                           " insert_delay().\",\n")
         file_handle.write("        --                   C_SCOPE, ID_NEVER, v_msg_id_panel);\n")
         file_handle.write("        --       while command_response_queue.get_count(VOID) > vvc_config.num_pipeline_stages loop\n")
@@ -921,7 +921,7 @@ def add_vvc_executor(file_handle, vvc_name, vvc_channel, vvc_channel_idx, featur
     file_handle.write("          else\n")
     file_handle.write("            -- Delay specified using integer\n")
     file_handle.write("            --<USER_INPUT> Uncomment if BFM has clock_period config\n")
-    file_handle.write("            -- check_value(v_vvc_config.bfm_config.clock_period > -1 ns, TB_ERROR, \"Check that clock_period is configured when using insert_delay().\",\n")
+    file_handle.write("            -- check_value(v_vvc_config.bfm_config.clock_period /= C_UNDEFINED_TIME, TB_ERROR, \"Check that clock_period is configured when using insert_delay().\",\n")
     file_handle.write("            --             C_SCOPE, ID_NEVER, v_msg_id_panel);\n")
     file_handle.write("            -- wait until terminate_current_cmd.is_active = '1' for v_cmd.gen_integer_array(0) * v_vvc_config.bfm_config.clock_period;\n")
     file_handle.write("          end if;\n")
@@ -1743,7 +1743,7 @@ def add_methods_pkg_body(file_handle, vvc_name, features):
     file_handle.write("  -- ) is\n")
     file_handle.write("  --   constant C_PROC_NAME : string := \"" + vvc_name.lower() + "_write\";\n")
     file_handle.write("  --   constant C_PROC_CALL : string := C_PROC_NAME & \"(\" & to_string(VVCT, vvc_instance_idx)  -- First part common for all\n")
-    file_handle.write("  --            & \", \" & to_string(addr, HEX, AS_IS, INCL_RADIX) & \", \" & to_string(data, HEX, AS_IS, INCL_RADIX) & \")\";\n")
+    file_handle.write("  --            & \", \" & to_string(addr, HEX, KEEP_LEADING_0, INCL_RADIX) & \", \" & to_string(data, HEX, KEEP_LEADING_0, INCL_RADIX) & \")\";\n")
     file_handle.write("  --   variable v_normalised_addr    : unsigned(C_VVC_CMD_ADDR_MAX_LENGTH-1 downto 0) := \n"
                       "  --            normalize_and_check(addr, shared_vvc_cmd.addr, ALLOW_WIDER_NARROWER, \"addr\", \"shared_vvc_cmd.addr\", C_PROC_CALL" +
                       " & \" called with too wide addr. \" & msg);\n")
@@ -1923,7 +1923,7 @@ def add_bfm_pkg_header(file_handle, vvc_name):
     file_handle.write("    id_for_bfm               : t_msg_id; -- To replace default log msg IDs. <USER_INPUT> Adapt name to msg IDs used in this BFM\n")
     file_handle.write("    -- id_for_bfm_wait          : t_msg_id; -- To replace default log msg IDs. <USER_INPUT> Adapt name to msg IDs used in this BFM\n")
     file_handle.write("    -- id_for_bfm_poll          : t_msg_id; -- To replace default log msg IDs. <USER_INPUT> Adapt name to msg IDs used in this BFM\n")
-    file_handle.write("    -- max_wait_cycles          : integer;\n")
+    file_handle.write("    -- max_wait_cycles          : natural;\n")
     file_handle.write("    -- max_wait_cycles_severity : t_alert_level;\n")
     file_handle.write("    -- clock_period             : time;\n")
     file_handle.write("  end record t_" + vvc_name.lower() + "_bfm_config;\n")
@@ -1935,9 +1935,9 @@ def add_bfm_pkg_header(file_handle, vvc_name):
     file_handle.write("    id_for_bfm               => ID_BFM      --<USER_INPUT> Adapt name and ID to msg IDs used in this BFM\n")
     file_handle.write("    -- id_for_bfm_wait          => ID_BFM_WAIT, --<USER_INPUT> Adapt name and ID to msg IDs used in this BFM\n")
     file_handle.write("    -- id_for_bfm_poll          => ID_BFM_POLL, --<USER_INPUT> Adapt name and ID to msg IDs used in this BFM\n")
-    file_handle.write("    -- max_wait_cycles          => 10,\n")
+    file_handle.write("    -- max_wait_cycles          => 1000,\n")
     file_handle.write("    -- max_wait_cycles_severity => failure,\n")
-    file_handle.write("    -- clock_period             => -1 ns\n")
+    file_handle.write("    -- clock_period             => C_UNDEFINED_TIME\n")
     file_handle.write("  );\n")
     print_linefeed(file_handle)
     file_handle.write("  " + division_line + "\n")

@@ -122,7 +122,9 @@ begin
       master_valid_o   => avalon_st_slave_if_int.valid,
       master_sop_o     => avalon_st_slave_if_int.start_of_packet,
       master_eop_o     => avalon_st_slave_if_int.end_of_packet,
-      master_ready_i   => avalon_st_slave_if_int.ready
+      master_ready_i   => avalon_st_slave_if_int.ready,
+      -- FIFO empty
+      empty_o          => open
     );
 end architecture struct_bfm;
 
@@ -163,7 +165,9 @@ begin
       master_valid_o   => avalon_st_slave_if.valid,
       master_sop_o     => avalon_st_slave_if.start_of_packet,
       master_eop_o     => avalon_st_slave_if.end_of_packet,
-      master_ready_i   => avalon_st_slave_if.ready
+      master_ready_i   => avalon_st_slave_if.ready,
+      -- FIFO empty
+      empty_o          => open
     );
 
   --------------------------------------------------------------------------------

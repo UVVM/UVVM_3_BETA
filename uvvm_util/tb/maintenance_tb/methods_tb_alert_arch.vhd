@@ -25,34 +25,6 @@ begin
     variable v_local_hierarchy_tree : t_hierarchy_linked_list;
     variable v_dummy_hierarchy_node : t_hierarchy_node(name(1 to C_HIERARCHY_NODE_NAME_LENGTH));
 
-    impure function found_unexpected_simulation_warnings_or_worse
-    return natural is
-      variable v_uvvm_status : t_uvvm_status := shared_uvvm_status.get(VOID);
-    begin
-      return v_uvvm_status.found_unexpected_simulation_warnings_or_worse;
-    end function;
-
-    impure function found_unexpected_simulation_errors_or_worse
-    return natural is
-      variable v_uvvm_status : t_uvvm_status := shared_uvvm_status.get(VOID);
-    begin
-      return v_uvvm_status.found_unexpected_simulation_errors_or_worse;
-    end function;
-
-    impure function mismatch_on_expected_simulation_warnings_or_worse
-    return natural is
-      variable v_uvvm_status : t_uvvm_status := shared_uvvm_status.get(VOID);
-    begin
-      return v_uvvm_status.mismatch_on_expected_simulation_warnings_or_worse;
-    end function;
-
-    impure function mismatch_on_expected_simulation_errors_or_worse
-    return natural is
-      variable v_uvvm_status : t_uvvm_status := shared_uvvm_status.get(VOID);
-    begin
-      return v_uvvm_status.mismatch_on_expected_simulation_errors_or_worse;
-    end function;
-
   begin
     -- To avoid that log files from different test cases (run in separate
     -- simulations) overwrite each other.

@@ -301,16 +301,11 @@ begin
       constant dummy : t_void
     ) is
       variable v_num_entries   : natural := 30; -- Originally add v_num_entries to the queue.
-      variable v_exp_entry_num : natural;
 
       -- Regarding element to be inserted
-      variable v_element_integer : natural := 1000;
       variable v_position_min    : natural;
       variable v_position_max    : natural;
       variable v_value           : integer;
-      variable v_entry_num_min   : integer;
-      variable v_entry_num_max   : integer;
-      variable v_entry_num       : natural := 0;
     begin
       log(ID_LOG_HDR, "Test of delete position_random", C_SCOPE);
       queue_under_test.reset(VOID);     -- Make Entry_num predictable
@@ -348,16 +343,11 @@ begin
       constant dummy : t_void
     ) is
       variable v_num_entries   : natural := 30; -- Originally add v_num_entries to the queue.
-      variable v_exp_entry_num : natural;
 
       -- Regarding element to be inserted
-      variable v_element_integer : natural := 1000;
       variable v_position_min    : natural;
       variable v_position_max    : natural;
       variable v_value           : integer;
-      variable v_entry_num_min   : integer;
-      variable v_entry_num_max   : integer;
-      variable v_entry_num       : natural := 0;
     begin
       log(ID_LOG_HDR, "Test of delete position", C_SCOPE);
       queue_under_test.reset(VOID);     -- Make Entry_num predictable
@@ -428,16 +418,9 @@ begin
       constant dummy : t_void
     ) is
       variable v_num_entries   : natural := 30; -- Originally add v_num_entries to the queue.
-      variable v_exp_entry_num : natural;
 
       -- Regarding element to be inserted
-      variable v_element_integer : natural := 1000;
-      variable v_position_min    : natural;
-      variable v_position_max    : natural;
       variable v_value           : integer;
-      variable v_entry_num_min   : integer;
-      variable v_entry_num_max   : integer;
-      variable v_entry_num       : natural := 0;
     begin
       log(ID_LOG_HDR, "Test of delete by element", C_SCOPE);
       queue_under_test.reset(VOID);     -- Make Entry_num predictable
@@ -475,16 +458,11 @@ begin
       constant dummy : t_void
     ) is
       variable v_num_entries   : natural := 30; -- Originally add v_num_entries to the queue.
-      variable v_exp_entry_num : natural;
 
       -- Regarding element to be inserted
-      variable v_element_integer : natural := 1000;
-      variable v_position_min    : natural;
-      variable v_position_max    : natural;
       variable v_value           : integer;
       variable v_entry_num_min   : integer;
       variable v_entry_num_max   : integer;
-      variable v_entry_num       : natural := 0;
     begin
       log(ID_LOG_HDR, "Test of delete entry_num", C_SCOPE);
       queue_under_test.reset(VOID);     -- Make Entry_num predictable
@@ -541,16 +519,11 @@ begin
       constant dummy : t_void
     ) is
       variable v_num_entries   : natural := 30; -- Originally add v_num_entries to the queue.
-      variable v_exp_entry_num : natural;
 
       -- Regarding element to be inserted
-      variable v_element_integer : natural := 1000;
-      variable v_position_min    : natural;
-      variable v_position_max    : natural;
       variable v_value           : integer;
       variable v_entry_num_min   : integer;
       variable v_entry_num_max   : integer;
-      variable v_entry_num       : natural := 0;
     begin
       log(ID_LOG_HDR, "Test of delete entry_num", C_SCOPE);
       queue_under_test.reset(VOID);     -- Make Entry_num predictable
@@ -607,10 +580,8 @@ begin
       constant dummy : t_void
     ) is
       variable v_num_entries   : natural := 10; -- Originally add v_num_entries to the queue.
-      variable v_exp_entry_num : natural;
 
       -- Regarding element to be inserted
-      variable v_element_integer : natural := 1000;
       variable v_position        : natural := 2;
       variable v_value           : integer;
       variable v_entry_num       : natural := 0;
@@ -792,19 +763,18 @@ begin
     --    This test will run until stopped manually. Verify that RAM usage of simulator
     --    is consistent over time when running this test.
     --------------------------------------------------------------------------------------
-    procedure test_memory_leakage(
-      constant dummy : t_void
-    ) is
-      variable v_fetch_value : integer;
-    begin
-      log(ID_LOG_HDR, "Running memory leakage stimuli. Verify consistent RAM usage and stop the simulation.", C_SCOPE);
+    --procedure test_memory_leakage(
+    --  constant dummy : t_void
+    --) is
+    --  variable v_fetch_value : integer;
+    --begin
+    --  log(ID_LOG_HDR, "Running memory leakage stimuli. Verify consistent RAM usage and stop the simulation.", C_SCOPE);
 
-      while true loop
-        queue_under_test.add(1);
-        v_fetch_value := queue_under_test.fetch(VOID);
-      end loop;
-
-    end procedure;
+    --  while true loop
+    --    queue_under_test.add(1);
+    --    v_fetch_value := queue_under_test.fetch(VOID);
+    --  end loop;
+    --end procedure;
 
     --------------------------------------------------------------------------------------
     -- Test of queue max count manipulation
@@ -867,7 +837,6 @@ begin
     procedure test_of_queue_fill_level_and_alerts(
       constant dummy : t_void
     ) is
-      variable v_fetch_value : integer;
     begin
       log(ID_LOG_HDR, "Test of queue fill level and alerts", C_SCOPE);
 

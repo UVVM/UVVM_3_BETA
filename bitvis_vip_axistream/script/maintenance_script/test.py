@@ -54,30 +54,23 @@ hr.add_files("../../tb/maintenance_tb/*.vhd", "bitvis_vip_axistream")
 # Setup TB test generics
 configs = create_config(data_widths=[32], user_widths=[8], id_widths=[7], dest_widths=[4], include_tuser=[False], use_setup_and_hold=[True, False])
 for config in configs:
-    hr.add_generics(entity="axistream_bfm_tb",
-                    generics=["GC_DATA_WIDTH", config[0], "GC_USER_WIDTH", config[1], "GC_ID_WIDTH", config[2], "GC_DEST_WIDTH", config[3], "GC_INCLUDE_TUSER", config[4], "GC_USE_SETUP_AND_HOLD", config[5]])
+    hr.add_generics(entity="axistream_bfm_tb", generics=["GC_DATA_WIDTH", config[0], "GC_USER_WIDTH", config[1], "GC_ID_WIDTH", config[2], "GC_DEST_WIDTH", config[3], "GC_INCLUDE_TUSER", config[4], "GC_USE_SETUP_AND_HOLD", config[5]])
 
 configs = create_config(data_widths=[8, 16, 24, 64, 128], user_widths=[8, 16], id_widths=[8], dest_widths=[4], include_tuser=[True], use_setup_and_hold=[True])
 for config in configs:
-    hr.add_generics(entity="axistream_vvc_tb",
-                    generics=["GC_DATA_WIDTH", config[0], "GC_USER_WIDTH", config[1], "GC_ID_WIDTH", config[2], "GC_DEST_WIDTH", config[3], "GC_INCLUDE_TUSER", config[4], "GC_USE_SETUP_AND_HOLD", config[5]])
+    hr.add_generics(entity="axistream_vvc_tb", generics=["GC_DATA_WIDTH", config[0], "GC_USER_WIDTH", config[1], "GC_ID_WIDTH", config[2], "GC_DEST_WIDTH", config[3], "GC_INCLUDE_TUSER", config[4], "GC_USE_SETUP_AND_HOLD", config[5]])
 
 configs = create_config(data_widths=[32], user_widths=[1, 5], id_widths=[3, 7], dest_widths=[1], include_tuser=[True], use_setup_and_hold=[False])
 for config in configs:
-    hr.add_generics(entity="axistream_vvc_tb",
-                    generics=["GC_DATA_WIDTH", config[0], "GC_USER_WIDTH", config[1], "GC_ID_WIDTH", config[2], "GC_DEST_WIDTH", config[3], "GC_INCLUDE_TUSER", config[4], "GC_USE_SETUP_AND_HOLD", config[5]])
+    hr.add_generics(entity="axistream_vvc_tb", generics=["GC_DATA_WIDTH", config[0], "GC_USER_WIDTH", config[1], "GC_ID_WIDTH", config[2], "GC_DEST_WIDTH", config[3], "GC_INCLUDE_TUSER", config[4], "GC_USE_SETUP_AND_HOLD", config[5]])
 
-hr.add_generics(entity="axistream_vvc_tb",
-                generics=["GC_DATA_WIDTH", 32, "GC_USER_WIDTH", 1, "GC_ID_WIDTH", 1, "GC_DEST_WIDTH", 1, "GC_INCLUDE_TUSER", False, "GC_USE_SETUP_AND_HOLD", True])
+hr.add_generics(entity="axistream_vvc_tb", generics=["GC_DATA_WIDTH", 32, "GC_USER_WIDTH", 1, "GC_ID_WIDTH", 1, "GC_DEST_WIDTH", 1, "GC_INCLUDE_TUSER", False, "GC_USE_SETUP_AND_HOLD", True])
 
-hr.add_generics(entity="axistream_vvc_multiple_tb",
-                generics=["GC_DATA_WIDTH", 32, "GC_USER_WIDTH", 1, "GC_ID_WIDTH", 1, "GC_DEST_WIDTH", 1, "GC_INCLUDE_TUSER", True, "GC_USE_SETUP_AND_HOLD", True])
+hr.add_generics(entity="axistream_vvc_multiple_tb", generics=["GC_DATA_WIDTH", 32, "GC_USER_WIDTH", 1, "GC_ID_WIDTH", 1, "GC_DEST_WIDTH", 1, "GC_INCLUDE_TUSER", True, "GC_USE_SETUP_AND_HOLD", True])
 
-hr.add_generics(entity="axistream_vvc_multiple_tb",
-                generics=["GC_DATA_WIDTH", 32, "GC_USER_WIDTH", 8, "GC_ID_WIDTH", 7, "GC_DEST_WIDTH", 4, "GC_INCLUDE_TUSER", True, "GC_USE_SETUP_AND_HOLD", False])
+hr.add_generics(entity="axistream_vvc_multiple_tb", generics=["GC_DATA_WIDTH", 32, "GC_USER_WIDTH", 8, "GC_ID_WIDTH", 7, "GC_DEST_WIDTH", 4, "GC_INCLUDE_TUSER", True, "GC_USE_SETUP_AND_HOLD", False])
 
-hr.add_generics(entity="axistream_vvc_width_tb",
-                generics=["GC_DATA_WIDTH", 32, "GC_USER_WIDTH", 1, "GC_ID_WIDTH", 1, "GC_DEST_WIDTH", 1, "GC_INCLUDE_TUSER", True, "GC_USE_SETUP_AND_HOLD", True])
+hr.add_generics(entity="axistream_vvc_width_tb", generics=["GC_DATA_WIDTH", 32, "GC_USER_WIDTH", 1, "GC_ID_WIDTH", 1, "GC_DEST_WIDTH", 1, "GC_INCLUDE_TUSER", True, "GC_USE_SETUP_AND_HOLD", True])
 
 # Set simulator name and options
 sim_options    = None
@@ -85,6 +78,9 @@ global_options = None
 simulator_name = hr.settings.get_simulator_name()
 if simulator_name == "MODELSIM":
     sim_options = "-t ps"
+elif simulator_name in ["GHDL"]:
+    com_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "-Wall", "--warn-no-shared", "--warn-no-hide", "--warn-no-delayed-checks"]
+    hr.set_simulator(simulator=simulator_name, com_options=com_options)
 elif simulator_name == "NVC":
     global_options = ["--stderr=error", "--messages=compact", "-M64m", "-H2g"]
 elif simulator_name == "RIVIERA-PRO":
@@ -110,8 +106,9 @@ if simulator_name == "MODELSIM" or simulator_name == "RIVIERA-PRO":
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_src.do ../../uvvm_util ../../uvvm_util/sim; exit"], False)
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_bfm.do; exit"], False)
     if ret_code == 0:
-        print("SIMULATION SUCCESS")
-        cleanup('Removing simulation output\n')
+        print("TCL script test completed")
+        if hr.check_run_results(exp_fail=0) is True:
+            cleanup('Removing simulation output\n')
     else:
         print(ret_txt)
         num_failing_tests += 1

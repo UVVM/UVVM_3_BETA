@@ -431,10 +431,13 @@ package body td_vvc_framework_common_methods_pkg is
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
     constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
+    constant C_PROC_NAME : string := "await_completion";
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(vvc_target, vvc_instance_idx, vvc_channel) -- First part common for all
+                                   & ", " & to_string(timeout, ns) & ")";
     variable v_vvc_list : t_vvc_list;
   begin
-    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel, scope, msg_id_panel);
-    await_completion(ALL_OF, v_vvc_list, timeout, CLEAR_LIST, msg, scope, msg_id_panel);
+    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel, scope, msg_id_panel, ID_NEVER);
+    await_completion(ALL_OF, v_vvc_list, -1, timeout, CLEAR_LIST, msg, scope, msg_id_panel, C_PROC_CALL);
   end procedure await_completion;
 
   -------------------------------------------
@@ -449,10 +452,8 @@ package body td_vvc_framework_common_methods_pkg is
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
     constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
-    variable v_vvc_list : t_vvc_list;
   begin
-    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, NA, scope, msg_id_panel);
-    await_completion(ALL_OF, v_vvc_list, timeout, CLEAR_LIST, msg, scope, msg_id_panel);
+    await_completion(vvc_target, vvc_instance_idx, NA, timeout, msg, scope, msg_id_panel);
   end procedure await_completion;
 
   -------------------------------------------
@@ -471,10 +472,13 @@ package body td_vvc_framework_common_methods_pkg is
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
     constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
+    constant C_PROC_NAME : string := "await_completion";
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(vvc_target, vvc_instance_idx, vvc_channel) -- First part common for all
+                                   & ", " & to_string(wanted_idx) & ", " & to_string(timeout, ns) & ")";
     variable v_vvc_list : t_vvc_list;
   begin
-    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel, scope, msg_id_panel);
-    await_completion(ALL_OF, v_vvc_list, wanted_idx, timeout, CLEAR_LIST, msg, scope, msg_id_panel);
+    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, vvc_channel, scope, msg_id_panel, ID_NEVER);
+    await_completion(ALL_OF, v_vvc_list, wanted_idx, timeout, CLEAR_LIST, msg, scope, msg_id_panel, C_PROC_CALL);
   end procedure await_completion;
 
   -------------------------------------------
@@ -490,10 +494,8 @@ package body td_vvc_framework_common_methods_pkg is
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
     constant msg_id_panel        : in t_msg_id_panel := shared_msg_id_panel.get(VOID)
   ) is
-    variable v_vvc_list : t_vvc_list;
   begin
-    v_vvc_list.add(vvc_target.vvc_name, vvc_instance_idx, NA, scope, msg_id_panel);
-    await_completion(ALL_OF, v_vvc_list, wanted_idx, timeout, CLEAR_LIST, msg, scope, msg_id_panel);
+    await_completion(vvc_target, vvc_instance_idx, NA, wanted_idx, timeout, msg, scope, msg_id_panel);
   end procedure await_completion;
 
   -------------------------------------------
@@ -705,7 +707,7 @@ package body td_vvc_framework_common_methods_pkg is
     if v_fetch_is_accepted then
       log(ID_UVVM_CMD_RESULT, proc_call & ": Legal=>" & to_string(v_fetch_is_accepted) & ", Result=>" & to_string(result) & format_command_idx(shared_cmd_idx.get(VOID)), scope, v_msg_id_panel); -- Get and ack the new command
     else
-      alert(alert_level, "fetch_result(" & to_string(wanted_idx) & "): " & add_msg_delimiter(msg) & "." & " Failed. Trying to fetch result from not yet executed command or from command with no result stored.  " & format_command_idx(shared_cmd_idx.get(VOID)), scope);
+      alert(alert_level, "fetch_result(" & to_string(wanted_idx) & "):" & add_msg_delimiter(msg) & "." & " Failed. Trying to fetch result from not yet executed command or from command with no result stored.  " & format_command_idx(shared_cmd_idx.get(VOID)), scope);
     end if;
   end procedure;
 

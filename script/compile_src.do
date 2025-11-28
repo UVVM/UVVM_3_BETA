@@ -89,7 +89,7 @@ if {[file exists $target_path/$lib_name]} {
   file delete -force $target_path/$lib_name
 }
 if {![file exists $target_path]} {
-  file mkdir $target_path/$lib_name
+  file mkdir $target_path
 }
 
 quietly vlib $target_path/$lib_name
@@ -136,8 +136,8 @@ echo "\nCompiling $lib_name source\n"
 quietly set idx 0
 foreach item $file_data {
   if {$idx > 2} {
-    echo "eval vcom  $compdirectives  $source_path/script/$item"
-    eval vcom  $compdirectives  $source_path/script/$item
+    echo "eval vcom $compdirectives $source_path/script/$item"
+    eval vcom $compdirectives [list "$source_path/script/$item"]
   }
   incr idx 1
 }

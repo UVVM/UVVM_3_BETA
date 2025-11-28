@@ -411,7 +411,7 @@ begin
                                    scope         => C_SCOPE,
                                    msg_id_panel  => v_msg_id_panel,
                                    config        => v_vvc_config.bfm_config,
-                                   ext_proc_call => "avalon_mm_check(A:" & to_string(v_normalised_addr, HEX, AS_IS, INCL_RADIX) & ", " & to_string(v_normalised_data, HEX, AS_IS, INCL_RADIX) & ")"
+                                   ext_proc_call => "avalon_mm_check(A:" & to_string(v_normalised_addr, HEX, KEEP_LEADING_0, INCL_RADIX) & ", " & to_string(v_normalised_data, HEX, KEEP_LEADING_0, INCL_RADIX) & ")"
                                   );
             v_vvc_status := get_vvc_status(VOID);
             work.td_vvc_entity_support_pkg.put_command_on_queue(v_cmd, command_response_queue, v_vvc_status, response_queue_is_increasing);
@@ -484,7 +484,7 @@ begin
             wait until terminate_current_cmd.is_active = '1' for v_cmd.delay;
           else
             -- Delay specified using integer
-            check_value(v_vvc_config.bfm_config.clock_period > -1 ns, TB_ERROR, "Check that clock_period is configured when using insert_delay().",
+            check_value(v_vvc_config.bfm_config.clock_period /= C_UNDEFINED_TIME, TB_ERROR, "Check that clock_period is configured when using insert_delay().",
                         C_SCOPE, ID_NEVER, v_msg_id_panel);
             wait until terminate_current_cmd.is_active = '1' for v_cmd.gen_integer_array(0) * v_vvc_config.bfm_config.clock_period;
           end if;

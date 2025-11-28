@@ -107,10 +107,8 @@ begin
   p_main : process
     constant C_NUM_VVCS               : natural                          := 8;
     variable v_axistream_bfm_config   : t_axistream_bfm_config           := C_AXISTREAM_BFM_CONFIG_DEFAULT;
-    variable v_start_time, v_end_time : time;
-    variable v_elapsed_time           : time;
+    variable v_start_time             : time;
     variable v_elapsed_clk_cycles     : natural;
-    variable v_idx                    : integer                          := 0;
     variable v_num_bytes              : integer                          := 0;
     variable v_num_words              : integer                          := 0;
     variable v_data_array             : t_slv_array(0 to C_MAX_BYTES - 1)(7 downto 0);
@@ -118,9 +116,6 @@ begin
     variable v_strb_array             : t_strb_array(v_data_array'range) := (others => (others => '0'));
     variable v_id_array               : t_id_array(v_data_array'range)   := (others => (others => '0'));
     variable v_dest_array             : t_dest_array(v_data_array'range) := (others => (others => '0'));
-    variable v_cmd_idx                : natural;
-    variable v_fetch_is_accepted      : boolean;
-    variable v_result_from_fetch      : bitvis_vip_axistream.vvc_cmd_pkg.t_vvc_result;
     variable v_vvc_config             : bitvis_vip_axistream.vvc_methods_support_pkg.t_vvc_config;
     variable v_vvc_list               : t_vvc_list;
 
@@ -392,8 +387,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

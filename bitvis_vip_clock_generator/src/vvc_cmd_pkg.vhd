@@ -50,9 +50,9 @@ package vvc_cmd_pkg is
   );
 
   -- Constants for the maximum sizes to use in this VVC. Can be modified in adaptations_pkg.
-  constant C_VVC_CMD_DATA_MAX_LENGTH   : natural := C_CLOCK_GEN_VVC_CMD_DATA_MAX_LENGTH;
-  constant C_VVC_CMD_STRING_MAX_LENGTH : natural := C_CLOCK_GEN_VVC_CMD_STRING_MAX_LENGTH;
-  constant C_VVC_MAX_INSTANCE_NUM      : natural := C_CLOCK_GEN_VVC_MAX_INSTANCE_NUM;
+  constant C_VVC_CMD_DATA_MAX_LENGTH   : natural := 8; -- Unused
+  alias    C_VVC_CMD_STRING_MAX_LENGTH is C_CLOCK_GEN_VVC_CMD_STRING_MAX_LENGTH;
+  alias    C_VVC_MAX_INSTANCE_NUM      is C_CLOCK_GEN_VVC_MAX_INSTANCE_NUM;
 
   --==========================================================================================
   -- t_vvc_cmd_record
@@ -128,10 +128,6 @@ package vvc_cmd_pkg is
   );
 
 end package vvc_cmd_pkg;
-
-package body vvc_cmd_pkg is
-
-end package body vvc_cmd_pkg;
 
 --================================================================================================================================
 --  Generic package instantiations

@@ -212,7 +212,7 @@ package td_vvc_entity_support_pkg is
     variable vvc_response                       : inout work.protected_vvc_response_pkg.t_generic_array
   );
 
-  -- DEPRECATE: will be removed in v3
+  -- DEPRECATED: will be removed in v3
   procedure interpreter_fetch_result(
     variable result_queue          : inout work.td_result_queue_pkg.t_generic_queue;
     constant command               : in t_vvc_cmd_record;
@@ -634,7 +634,7 @@ package body td_vvc_entity_support_pkg is
       -- Pop the element. Compare cmd idx. If it does not match, push to local result queue.
       -- If an index matches, set vvc_response.result. (Don't push element back to result queue)
       while result_queue.get_count(VOID) > 0 loop
-        v_current_element := result_queue.get(VOID);
+        v_current_element := result_queue.fetch(VOID);
         if v_current_element.cmd_idx = wanted_idx then
           v_vvc_response.fetch_is_accepted := true;
           v_vvc_response.result            := v_current_element.result;
@@ -650,7 +650,7 @@ package body td_vvc_entity_support_pkg is
       -- This is to clear the local result queue and restore the result
       -- queue to its original state (except that the matched element is not put back).
       while v_local_result_queue.get_count(VOID) > 0 loop
-        result_queue.put(v_local_result_queue.get(VOID));
+        result_queue.put(v_local_result_queue.fetch(VOID));
       end loop;
 
       if not v_vvc_response.fetch_is_accepted then
@@ -661,7 +661,6 @@ package body td_vvc_entity_support_pkg is
     vvc_response.set(v_vvc_response, vvc_labels.instance_idx, vvc_labels.channel);
   end procedure;
 
-  -- DEPRECATE: will be removed in v3
   procedure interpreter_fetch_result(
     variable result_queue          : inout work.td_result_queue_pkg.t_generic_queue;
     constant command               : in t_vvc_cmd_record;
@@ -675,6 +674,9 @@ package body td_vvc_entity_support_pkg is
     variable v_local_result_queue : work.td_result_queue_pkg.t_generic_queue;
     variable v_vvc_response       : t_vvc_response := vvc_response.get(vvc_labels.instance_idx, vvc_labels.channel);
   begin
+    deprecate(get_procedure_name_from_instance_name(vvc_labels'instance_name),
+      "last_cmd_idx_executed parameter is no longer in use. Please call this procedure with entry_num_in_vvc_activity_register and without the last_cmd_idx_executed parameter.");
+
     v_local_result_queue.set_scope(to_string(scope));
 
     v_vvc_response.fetch_is_accepted := false; -- default
@@ -688,7 +690,7 @@ package body td_vvc_entity_support_pkg is
       -- Pop the element. Compare cmd idx. If it does not match, push to local result queue.
       -- If an index matches, set vvc_response.result. (Don't push element back to result queue)
       while result_queue.get_count(VOID) > 0 loop
-        v_current_element := result_queue.get(VOID);
+        v_current_element := result_queue.fetch(VOID);
         if v_current_element.cmd_idx = command.gen_integer_array(0) then
           v_vvc_response.fetch_is_accepted := true;
           v_vvc_response.result            := v_current_element.result;
@@ -704,7 +706,7 @@ package body td_vvc_entity_support_pkg is
       -- This is to clear the local result queue and restore the result
       -- queue to its original state (except that the matched element is not put back).
       while v_local_result_queue.get_count(VOID) > 0 loop
-        result_queue.put(v_local_result_queue.get(VOID));
+        result_queue.put(v_local_result_queue.fetch(VOID));
       end loop;
 
       if not v_vvc_response.fetch_is_accepted then
@@ -751,7 +753,7 @@ package body td_vvc_entity_support_pkg is
     -- Queue is now not empty
     executor_is_busy <= true;
     wait until executor_is_busy;
-    command          := command_queue.get(VOID);
+    command          := command_queue.fetch(VOID);
 
     v_msg_id_panel               := get_msg_id_panel(command, shared_vvc_msg_id_panel.get(vvc_labels.instance_idx, vvc_labels.channel)); -- v3
     log(executor_id, to_string(command.proc_call) & " - Will be executed " & format_command_idx(command), to_string(scope), v_msg_id_panel); -- Get and ack the new command -- v3
@@ -858,7 +860,7 @@ package body td_vvc_entity_support_pkg is
     output_vvc_cmd.command_type         := get_command_type_from_operation(v_broadcast_cmd.operation);
 
     if global_show_msg_for_uvvm_cmd then
-      log(ID_UVVM_SEND_CMD, to_string(v_broadcast_cmd.proc_call) & ": " & add_msg_delimiter(to_string(v_broadcast_cmd.msg)) & format_command_idx(shared_cmd_idx.get(VOID)), scope);
+      log(ID_UVVM_SEND_CMD, to_string(v_broadcast_cmd.proc_call) & ":" & add_msg_delimiter(to_string(v_broadcast_cmd.msg)) & format_command_idx(shared_cmd_idx.get(VOID)), scope);
     else
       log(ID_UVVM_SEND_CMD, to_string(v_broadcast_cmd.proc_call) & format_command_idx(shared_cmd_idx.get(VOID)), scope);
     end if;

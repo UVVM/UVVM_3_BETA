@@ -225,7 +225,19 @@ begin
       wren_i     => spi_master_wr_ena,
       wr_ack_o   => spi_master_wr_ack,
       do_valid_o => spi_master_dout_valid,
-      do_o       => spi_master_dout
+      do_o       => spi_master_dout,
+      -- debug ports: can be removed or left unconnected
+      sck_ena_o     => open,
+      sck_ena_ce_o  => open,
+      do_transfer_o => open,
+      wren_o        => open,
+      rx_bit_reg_o  => open,
+      state_dbg_o   => open,
+      core_clk_o    => open,
+      core_n_clk_o  => open,
+      core_ce_o     => open,
+      core_n_ce_o   => open,
+      sh_reg_dbg_o  => open
     );
 
   -- SPI slave with a 10 MHz SPI SCK
@@ -248,7 +260,13 @@ begin
       wren_i     => spi_slave_wr_ena,
       wr_ack_o   => spi_slave_wr_ack,
       do_valid_o => spi_slave_dout_valid,
-      do_o       => spi_slave_dout
+      do_o       => spi_slave_dout,
+      -- debug ports: can be removed or left unconnected
+      do_transfer_o => open,
+      wren_o        => open,
+      rx_bit_next_o => open,
+      state_dbg_o   => open,
+      sh_reg_dbg_o  => open
     );
 
   sbi_vvc_rdata_input <= spi_master_sbi_rdata or spi_slave_sbi_rdata;
@@ -331,7 +349,6 @@ begin
   p_main : process
     variable tx_word                    : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
     variable rx_word                    : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
-    variable tx_word_2                  : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
     variable master_word_array          : t_slv_array(0 to GC_DATA_ARRAY_WIDTH - 1)(GC_DATA_WIDTH - 1 downto 0);
     variable slave_word_array           : t_slv_array(0 to GC_DATA_ARRAY_WIDTH - 1)(GC_DATA_WIDTH - 1 downto 0);
     variable slave_tx_data_word         : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
@@ -561,18 +578,6 @@ begin
       spi_master_check_only(SPI_VVCT, vvc_instance_idx, data, "Slave to Master check " & msg, alert_level, action_when_transfer_is_done);
     end procedure;
 
-    procedure spi_master_check_only(
-      constant data                         : in t_slv_array(0 to GC_DATA_ARRAY_WIDTH-1)(GC_DATA_WIDTH-1 downto 0);
-      constant vvc_instance_idx             : natural                           := C_VVC_IDX_MASTER_1;
-      constant alert_level                  : in t_alert_level                  := TB_ERROR;
-      constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-      constant action_between_words         : in t_action_between_words         := HOLD_LINE_BETWEEN_WORDS;
-      constant msg                          : in string                         := ""
-    ) is
-    begin
-      spi_master_check_only(SPI_VVCT, vvc_instance_idx, data, "Slave to Master check " & msg, alert_level, action_when_transfer_is_done, action_between_words);
-    end procedure;
-
     procedure spi_master_receive_only(
       constant num_words                    : in positive;
       constant vvc_instance_idx             : natural                           := C_VVC_IDX_MASTER_1;
@@ -583,27 +588,6 @@ begin
     ) is
     begin
       spi_master_receive_only(SPI_VVCT, vvc_instance_idx, "Slave to Master receive " & msg, num_words, action_when_transfer_is_done, action_between_words);
-    end procedure;
-
-    procedure spi_master_transmit_and_receive(
-      constant data                         : in std_logic_vector(GC_DATA_WIDTH-1 downto 0);
-      constant vvc_instance_idx             : natural                           := C_VVC_IDX_MASTER_1;
-      constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-      constant msg                          : in string                         := ""
-    ) is
-    begin
-      spi_master_transmit_and_receive(SPI_VVCT, vvc_instance_idx, data, "Master to Slave transmit and receive " & msg, action_when_transfer_is_done);
-    end procedure;
-
-    procedure spi_master_transmit_and_receive(
-      constant data                         : in t_slv_array;
-      constant vvc_instance_idx             : natural                           := C_VVC_IDX_MASTER_1;
-      constant action_when_transfer_is_done : in t_action_when_transfer_is_done := RELEASE_LINE_AFTER_TRANSFER;
-      constant action_between_words         : in t_action_between_words         := HOLD_LINE_BETWEEN_WORDS;
-      constant msg                          : in string                         := ""
-    ) is
-    begin
-      spi_master_transmit_and_receive(SPI_VVCT, vvc_instance_idx, data, "Master to Slave transmit and receive " & msg, action_when_transfer_is_done, action_between_words);
     end procedure;
 
     procedure spi_master_transmit_and_check(
@@ -629,26 +613,6 @@ begin
     ) is
     begin
       spi_master_transmit_and_check(SPI_VVCT, vvc_instance_idx, data, data_exp, "Master to Slave transmit and check " & msg, alert_level, action_when_transfer_is_done, action_between_words);
-    end procedure;
-
-    procedure spi_slave_transmit_and_receive(
-      constant data                   : in std_logic_vector(GC_DATA_WIDTH-1 downto 0);
-      constant vvc_instance_idx       : natural                     := C_VVC_IDX_SLAVE_1;
-      constant when_to_start_transfer : in t_when_to_start_transfer := START_TRANSFER_ON_NEXT_SS;
-      constant msg                    : in string                   := ""
-    ) is
-    begin
-      spi_slave_transmit_and_receive(SPI_VVCT, vvc_instance_idx, data, "Slave to Master transmit and receive " & msg, when_to_start_transfer);
-    end procedure;
-
-    procedure spi_slave_transmit_and_receive(
-      constant data                   : in t_slv_array;
-      constant vvc_instance_idx       : natural                     := C_VVC_IDX_SLAVE_1;
-      constant when_to_start_transfer : in t_when_to_start_transfer := START_TRANSFER_ON_NEXT_SS;
-      constant msg                    : in string                   := ""
-    ) is
-    begin
-      spi_slave_transmit_and_receive(SPI_VVCT, vvc_instance_idx, data, "Slave to Master transmit and receive " & msg, when_to_start_transfer);
     end procedure;
 
     procedure spi_slave_transmit_and_check(
@@ -1059,6 +1023,8 @@ begin
         spi_master_transmit_and_check(master_word_array, slave_word_array, C_VVC_IDX_MASTER_1, RELEASE_LINE_AFTER_TRANSFER, RELEASE_LINE_BETWEEN_WORDS);
         spi_slave_transmit_and_check(slave_word_array, master_word_array, C_VVC_IDX_SLAVE_1, START_TRANSFER_IMMEDIATE);
       end loop;
+      await_master_tx_completion(50 ms);
+      await_slave_rx_completion(50 ms);
 
       v_vvc_config                             := shared_spi_vvc_config.get(C_VVC_IDX_MASTER_1);
       v_vvc_config.bfm_config.inter_word_delay := 0 ns;
@@ -1484,8 +1450,7 @@ begin
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

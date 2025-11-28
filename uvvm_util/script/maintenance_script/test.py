@@ -66,19 +66,12 @@ hr.add_files("../../../bitvis_vip_scoreboard/src/*.vhd", "bitvis_vip_scoreboard"
 hr.add_files("../../tb/maintenance_tb/*.vhd", "uvvm_util_tb")
 
 # Define testcase names with generics for GC_TESTCASE
-hr.add_generics(entity="generic_queue_array_tb",
-                generics=["GC_TESTCASE", "generic_queue_array_tb"])
-hr.add_generics(entity="generic_queue_record_tb",
-                generics=["GC_TESTCASE", "generic_queue_record_tb"])
-hr.add_generics(entity="generic_queue_tb",
-                generics=["GC_TESTCASE", "generic_queue_tb"])
-hr.add_generics(entity="simplified_data_queue_tb",
-                generics=["GC_TESTCASE", "simplified_data_queue_tb"])
-hr.add_generics(entity="association_list_tb",
-                generics=["GC_TESTCASE", "association_list_tb"])
-hr.add_generics(entity='func_cov_tb',
-                architecture='func',
-                generics=['GC_FILE_PATH', (path_called_from + os.sep, 'PATH')])
+hr.add_generics(entity="generic_queue_array_tb", generics=["GC_TESTCASE", "generic_queue_array_tb"])
+hr.add_generics(entity="generic_queue_record_tb", generics=["GC_TESTCASE", "generic_queue_record_tb"])
+hr.add_generics(entity="generic_queue_tb", generics=["GC_TESTCASE", "generic_queue_tb"])
+hr.add_generics(entity="simplified_data_queue_tb", generics=["GC_TESTCASE", "simplified_data_queue_tb"])
+hr.add_generics(entity="association_list_tb", generics=["GC_TESTCASE", "association_list_tb"])
+hr.add_generics(entity='func_cov_tb', generics=['GC_FILE_PATH', (path_called_from + os.sep, 'PATH')])
 
 # Set simulator name and options
 sim_options    = None
@@ -86,6 +79,9 @@ global_options = None
 simulator_name = hr.settings.get_simulator_name()
 if simulator_name == "MODELSIM":
     sim_options = "-t ps"
+elif simulator_name in ["GHDL"]:
+    com_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "-Wall", "--warn-no-shared", "--warn-no-hide", "--warn-no-delayed-checks"]
+    hr.set_simulator(simulator=simulator_name, com_options=com_options)
 elif simulator_name == "NVC":
     global_options = ["--stderr=error", "--messages=compact", "-M64m", "-H2g"]
 
@@ -130,8 +126,9 @@ if simulator_name == "MODELSIM" or simulator_name == "RIVIERA-PRO":
     print('\nVerify .do scripts...')
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_and_sim_cr_fc_demo_tb.do; exit"], False)
     if ret_code == 0:
-        print("SIMULATION SUCCESS")
-        cleanup('Removing simulation output\n')
+        print("TCL script test completed")
+        if hr.check_run_results(exp_fail=0) is True:
+            cleanup('Removing simulation output\n')
     else:
         print(ret_txt)
         num_failing_tests += 1

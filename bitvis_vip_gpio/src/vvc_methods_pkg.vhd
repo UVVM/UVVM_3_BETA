@@ -228,7 +228,7 @@ package vvc_methods_pkg is
     signal   VVCT                : inout t_vvc_target_record;
     constant vvc_instance_idx    : in integer;
     constant data_exp            : in std_logic_vector;
-    constant timeout             : in time           := -1 ns;
+    constant timeout             : in time           := C_UNDEFINED_TIME;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
@@ -241,7 +241,7 @@ package vvc_methods_pkg is
     constant data_exp            : in std_logic_vector;
     constant stable_req          : in time;
     constant stable_req_from     : in t_from_point_in_time;
-    constant timeout             : in time           := -1 ns;
+    constant timeout             : in time           := C_UNDEFINED_TIME;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
@@ -297,7 +297,7 @@ package body vvc_methods_pkg is
     constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
                                    & ", " & ", " & to_string(data, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                           := shared_vvc_cmd.get(vvc_instance_idx);
-    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data'length - 1 downto 0) := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data'length - 1 downto 0) := normalize_and_check(data, v_local_vvc_cmd.data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", proc_call & " called with too wide data." & add_msg_delimiter(msg));
     variable v_msg_id_panel    : t_msg_id_panel                                             := shared_msg_id_panel.get(VOID);
   begin
 
@@ -389,7 +389,7 @@ package body vvc_methods_pkg is
     constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
                                    & ", " & to_string(data_exp, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                               := shared_vvc_cmd.get(vvc_instance_idx);
-    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data_exp'length - 1 downto 0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data_exp'length - 1 downto 0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data." & add_msg_delimiter(msg));
     variable v_msg_id_panel    : t_msg_id_panel                                                 := shared_msg_id_panel.get(VOID);
   begin
 
@@ -440,7 +440,7 @@ package body vvc_methods_pkg is
     constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
                                    & ", " & to_string(data_exp, HEX, KEEP_LEADING_0, INCL_RADIX) & ", " & to_string(stable_req) & ")";
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                               := shared_vvc_cmd.get(vvc_instance_idx);
-    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data_exp'length - 1 downto 0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data_exp'length - 1 downto 0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data." & add_msg_delimiter(msg));
     variable v_msg_id_panel    : t_msg_id_panel                                                 := shared_msg_id_panel.get(VOID);
   begin
 
@@ -467,7 +467,7 @@ package body vvc_methods_pkg is
     signal   VVCT                : inout t_vvc_target_record;
     constant vvc_instance_idx    : in integer;
     constant data_exp            : in std_logic_vector;
-    constant timeout             : in time           := -1 ns;
+    constant timeout             : in time           := C_UNDEFINED_TIME;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
@@ -477,7 +477,7 @@ package body vvc_methods_pkg is
     constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
                                    & ", " & to_string(data_exp, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                               := shared_vvc_cmd.get(vvc_instance_idx);
-    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data_exp'length - 1 downto 0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data_exp'length - 1 downto 0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data." & add_msg_delimiter(msg));
     variable v_msg_id_panel    : t_msg_id_panel                                                 := shared_msg_id_panel.get(VOID);
   begin
 
@@ -506,7 +506,7 @@ package body vvc_methods_pkg is
     constant data_exp            : in std_logic_vector;
     constant stable_req          : in time;
     constant stable_req_from     : in t_from_point_in_time;
-    constant timeout             : in time           := -1 ns;
+    constant timeout             : in time           := C_UNDEFINED_TIME;
     constant msg                 : in string         := "";
     constant alert_level         : in t_alert_level  := error;
     constant scope               : in string         := C_VVC_CMD_SCOPE_DEFAULT;
@@ -516,7 +516,7 @@ package body vvc_methods_pkg is
     constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
                                    & ", " & to_string(data_exp, HEX, KEEP_LEADING_0, INCL_RADIX) & ", " & to_string(stable_req) & ")";
     variable v_local_vvc_cmd   : t_vvc_cmd_record                                               := shared_vvc_cmd.get(vvc_instance_idx);
-    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data_exp'length - 1 downto 0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data. " & add_msg_delimiter(msg));
+    variable v_normalised_data : std_logic_vector(v_local_vvc_cmd.data_exp'length - 1 downto 0) := normalize_and_check(data_exp, v_local_vvc_cmd.data_exp, ALLOW_WIDER_NARROWER, "data_exp", "shared_vvc_cmd.data_exp", proc_call & " called with too wide data." & add_msg_delimiter(msg));
     variable v_msg_id_panel    : t_msg_id_panel                                                 := shared_msg_id_panel.get(VOID);
   begin
 

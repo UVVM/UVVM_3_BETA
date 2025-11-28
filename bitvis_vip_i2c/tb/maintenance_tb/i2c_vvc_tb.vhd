@@ -113,6 +113,7 @@ architecture behav of i2c_vvc_tb is
     clock_margin_severity    => TB_ERROR,
     setup_time               => C_CLK_PERIOD / 4,
     hold_time                => C_CLK_PERIOD / 4,
+    bfm_sync                 => SYNC_ON_CLOCK_ONLY,
     match_strictness         => MATCH_EXACT,
     id_for_bfm               => ID_BFM
   );
@@ -1325,8 +1326,7 @@ begin                                   -- architecture behav
     -----------------------------------------------------------------------------
     -- Ending the simulation
     -----------------------------------------------------------------------------
-    wait for 1000 ns;                   -- to allow some time for completion
-    report_alert_counters(FINAL);       -- Report final counters and print conclusion for simulation (Success/Fail)
+    await_uvvm_completion(1000 ns, print_alert_counters => REPORT_ALERT_COUNTERS_FINAL, scope => C_SCOPE);
     log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
     -- Finish the simulation

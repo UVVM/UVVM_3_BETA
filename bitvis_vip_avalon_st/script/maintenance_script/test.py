@@ -55,25 +55,19 @@ hr.add_files("../../tb/maintenance_tb/*.vhd", "bitvis_vip_avalon_st")
 
 # Setup BFM TB test generics
 for config in create_config(channel_widths=[7], data_widths=[8], error_widths=[1]):
-    hr.add_generics(entity="avalon_st_bfm_tb",
-                    generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
+    hr.add_generics(entity="avalon_st_bfm_tb", generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
 for config in create_config(channel_widths=[8], data_widths=[16], error_widths=[1]):
-    hr.add_generics(entity="avalon_st_bfm_tb",
-                    generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
+    hr.add_generics(entity="avalon_st_bfm_tb", generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
 for config in create_config(channel_widths=[8], data_widths=[32], error_widths=[1]):
-    hr.add_generics(entity="avalon_st_bfm_tb",
-                    generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
+    hr.add_generics(entity="avalon_st_bfm_tb", generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
 
 # Setup VVC TB test generics
 for config in create_config(channel_widths=[7], data_widths=[8], error_widths=[1]):
-    hr.add_generics(entity="avalon_st_vvc_tb",
-                    generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
+    hr.add_generics(entity="avalon_st_vvc_tb", generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
 for config in create_config(channel_widths=[8], data_widths=[16], error_widths=[1]):
-    hr.add_generics(entity="avalon_st_vvc_tb",
-                    generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
+    hr.add_generics(entity="avalon_st_vvc_tb", generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
 for config in create_config(channel_widths=[8], data_widths=[32], error_widths=[1]):
-    hr.add_generics(entity="avalon_st_vvc_tb",
-                    generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
+    hr.add_generics(entity="avalon_st_vvc_tb", generics=["GC_CHANNEL_WIDTH", config[0], "GC_DATA_WIDTH", config[1], "GC_ERROR_WIDTH", config[2]])
 
 # Set simulator name and options
 sim_options    = None
@@ -81,6 +75,9 @@ global_options = None
 simulator_name = hr.settings.get_simulator_name()
 if simulator_name == "MODELSIM":
     sim_options = "-t ns"
+elif simulator_name in ["GHDL"]:
+    com_options = ["--ieee=standard", "--std=08", "-frelaxed-rules", "-Wall", "--warn-no-shared", "--warn-no-hide", "--warn-no-delayed-checks"]
+    hr.set_simulator(simulator=simulator_name, com_options=com_options)
 elif simulator_name == "NVC":
     global_options = ["--stderr=error", "--messages=compact", "-M64m", "-H512m"]
 
@@ -102,8 +99,9 @@ if simulator_name == "MODELSIM" or simulator_name == "RIVIERA-PRO":
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_src.do ../../uvvm_util ../../uvvm_util/sim; exit"], False)
     (ret_txt, ret_code) = hr.run_command(["vsim", "-c", "-do", "do ../script/compile_bfm.do; exit"], False)
     if ret_code == 0:
-        print("SIMULATION SUCCESS")
-        cleanup('Removing simulation output\n')
+        print("TCL script test completed")
+        if hr.check_run_results(exp_fail=0) is True:
+            cleanup('Removing simulation output\n')
     else:
         print(ret_txt)
         num_failing_tests += 1

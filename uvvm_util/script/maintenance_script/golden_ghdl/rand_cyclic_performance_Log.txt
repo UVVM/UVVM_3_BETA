@@ -3,8 +3,8 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Randomization package - rand_cyclic_performance
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing random cyclic large ranges
@@ -53,11 +53,11 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing random cyclic list and queue performance
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_RAND_GEN). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_RAND_GEN).
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing cyclic list with 100 values
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing cyclic list with 1000 values
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing cyclic list with 11000 values
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing cyclic queue with 11000 values
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
@@ -66,7 +66,7 @@ UVVM:                    rand(RANGE:[1:2147483647], CYCLIC)=> Simulation might s
 UVVM:                    To disable this alert set C_RAND_CYCLIC_QUEUE_MAX_ALERT_DISABLE to true in adaptations_pkg.
 UVVM: 
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Testing cyclic list with 100000 values
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN).
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_rand_cyclic()=> Deallocating cyclic list/queue
 UVVM:      
 UVVM:      ====================================================================================================================================================================

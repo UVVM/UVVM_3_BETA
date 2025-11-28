@@ -10,9 +10,9 @@
 -- Note : Any functionality not explicitly described in the documentation is subject to change at any time
 ----------------------------------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------
--- Description : See library quick reference (under 'doc') and README-file(s)
----------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+-- Description   : See library quick reference (under 'doc') and README-file(s)
+------------------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -72,14 +72,6 @@ architecture behave of clock_generator_vvc is
   -- Instantiation of the element dedicated executor
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
   shared variable result_queue  : work.td_result_queue_pkg.t_generic_queue;
-
-  -- TODO! Check if this function is used
-  impure function get_clock_name
-  return string is
-    variable v_vvc_config : t_vvc_config := shared_vvc_config.get(GC_INSTANCE_IDX);
-  begin
-    return v_vvc_config.clock_name(1 to pos_of_leftmost(NUL, v_vvc_config.clock_name, v_vvc_config.clock_name'length));
-  end function;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -237,6 +229,7 @@ begin
   -- - Fetch and execute the commands
   --========================================================================================================================
   cmd_executor : process
+    constant C_EXECUTOR_ID  : natural := 0;
     variable v_cmd          : t_vvc_cmd_record;
     variable v_msg_id_panel : t_msg_id_panel;
     variable v_vvc_config   : t_vvc_config;
@@ -250,13 +243,15 @@ begin
 
       v_msg_id_panel := get_msg_id_panel(VOID); -- v3
 
-      -- update vvc activity -> Note that clock generator VVC activity is not included in the resetting of the VVC activity register!
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, INACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, last_cmd_idx_executed, command_queue.is_empty(VOID), C_SCOPE);
 
       -- 1. Set defaults, fetch command and log
       -------------------------------------------------------------------------
       work.td_vvc_entity_support_pkg.fetch_command_and_prepare_executor(v_cmd, command_queue, shared_vvc_status, queue_is_increasing, executor_is_busy, C_VVC_LABELS, C_SCOPE);
 
-      -- update vvc activity -> Note that clock generator VVC activity is not included in the resetting of the VVC activity register!
+      -- update vvc activity
+      update_vvc_activity_register(global_trigger_vvc_activity_register, shared_vvc_status, GC_INSTANCE_IDX, NA, ACTIVE, entry_num_in_vvc_activity_register, C_EXECUTOR_ID, last_cmd_idx_executed, command_queue.is_empty(VOID), C_SCOPE);
 
       v_vvc_config := get_vvc_config(VOID);
 
@@ -293,13 +288,19 @@ begin
 
         when SET_CLOCK_PERIOD =>
           v_vvc_config.clock_period := v_cmd.clock_period;
-          log(ID_CLOCK_GEN, "Clock '" & v_vvc_config.clock_name & "' period set to " & to_string(v_vvc_config.clock_period), C_SCOPE);
           shared_vvc_config.set(v_vvc_config, GC_INSTANCE_IDX);
+          if clock_ena then
+            wait until clk = '1';
+          end if;
+          log(ID_CLOCK_GEN, "Clock '" & v_vvc_config.clock_name & "' period set to " & to_string(v_vvc_config.clock_period), C_SCOPE);
 
         when SET_CLOCK_HIGH_TIME =>
           v_vvc_config.clock_high_time := v_cmd.clock_high_time;
-          log(ID_CLOCK_GEN, "Clock '" & v_vvc_config.clock_name & "' high time set to " & to_string(v_vvc_config.clock_high_time), C_SCOPE);
           shared_vvc_config.set(v_vvc_config, GC_INSTANCE_IDX);
+          if clock_ena then
+            wait until clk = '1';
+          end if;
+          log(ID_CLOCK_GEN, "Clock '" & v_vvc_config.clock_name & "' high time set to " & to_string(v_vvc_config.clock_high_time), C_SCOPE);
 
         -- UVVM common operations
         --===================================
@@ -343,6 +344,7 @@ begin
   clock_generator : process
     variable v_clock_period    : time;
     variable v_clock_high_time : time;
+    variable v_clock_low_time  : time;
     variable v_vvc_config      : t_vvc_config;
   begin
     wait for 0 ns;                      -- wait for clock_ena to be set
@@ -358,15 +360,17 @@ begin
       v_vvc_config      := get_vvc_config(VOID);
       v_clock_period    := v_vvc_config.clock_period;
       v_clock_high_time := v_vvc_config.clock_high_time;
+      v_clock_low_time  := v_clock_period - v_clock_high_time;
 
       if v_clock_high_time >= v_clock_period then
         tb_error(v_vvc_config.clock_name & ": clock period must be larger than clock high time; clock period: " & to_string(v_clock_period) & ", clock high time: " & to_string(v_clock_high_time), C_SCOPE);
+        v_clock_low_time := 0 ns; -- Avoid failure from waiting a negative time
       end if;
 
       clk <= '1';
       wait for v_clock_high_time;
       clk <= '0';
-      wait for (v_clock_period - v_clock_high_time);
+      wait for v_clock_low_time;
     end loop;
   end process;
   --========================================================================================================================

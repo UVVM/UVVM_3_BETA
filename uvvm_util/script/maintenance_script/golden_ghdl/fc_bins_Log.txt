@@ -39,7 +39,7 @@ UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_2] add_bins(bin((210, 211, 212, 213, 214, 215, 216, 217, 218, 219)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_2] Adding bins: (210, 211, 212, 213, 214, 215, 216, 217, 218, 219), min_hits:1,
 UVVM:                                                                             rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
 UVVM:           100 ns   TB seq.
@@ -102,7 +102,7 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_3] Adding bins: (341),(342),(343), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_3] add_bins(bin_range(355, 355), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_3] Adding bins: (355), min_hits:1, rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #1  ***
@@ -252,7 +252,7 @@ UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_5] add_bins(bin_transition((420, 421, 422, 423, 424, 425, 426, 427, 428, 429)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_5] Adding bins: (420->421->422->423->424->425->426->427->428->429), min_hits:1,
 UVVM:                                                                             rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #2  ***
 UVVM:           100 ns   TB seq.
@@ -468,7 +468,7 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_7] Adding bins: IGN(2100 to 2109), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_7] add_bins(ignore_bin_range(2115,2115), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_7] Adding bins: IGN(2115), min_hits:1, rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #2  ***
@@ -510,7 +510,7 @@ UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_8] add_bins(ignore_bin_transition((2210, 2210, 2210, 2218, 2215, 2215, 2210)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_8] Adding bins: IGN(2210->2210->2210->2218->2215->2215->2210), min_hits:1,
 UVVM:                                                                             rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #3  ***
 UVVM:           100 ns   TB seq.
@@ -653,7 +653,7 @@ UVVM:
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing illegal bins with single values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_9] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_9] add_bins(illegal_bin(-3001), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_9] Adding bins: ILL(-3001), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_9] add_bins(illegal_bin(-3000), "")
@@ -666,7 +666,7 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 4. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 4.
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_9] sample_coverage(-3001)
 UVVM: 
 UVVM: ***  WARNING #1  ***
@@ -705,12 +705,12 @@ UVVM:
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing illegal bins with ranges of values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_10] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_10] add_bins(illegal_bin_range(3100,3109), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_10] Adding bins: ILL(3100 to 3109), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_10] add_bins(illegal_bin_range(3115,3115), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_10] Adding bins: ILL(3115), min_hits:1, rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #3  ***
@@ -723,7 +723,7 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_10] Adding bins: , min_hits:1, rand_weight:1, ""
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_1
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 11. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 11.
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_10] sample_coverage(3100)
 UVVM: 
 UVVM: ***  WARNING #5  ***
@@ -802,7 +802,7 @@ UVVM:
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing illegal bins with transitions of values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_11] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_11] add_bins(illegal_bin_transition((3201, 3203, 3201)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_11] Adding bins: ILL(3201->3203->3201), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_11] add_bins(illegal_bin_transition((3201, 3203, 3201, 3209)), "")
@@ -810,7 +810,7 @@ UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_11] add_bins(illegal_bin_transition((3210, 3210, 3210, 3218, 3215, 3215, 3210)), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_11] Adding bins: ILL(3210->3210->3210->3218->3215->3215->3210), min_hits:1,
 UVVM:                                                                             rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: 
 UVVM: ***  TB_WARNING #4  ***
 UVVM:           100 ns   TB seq.
@@ -825,7 +825,7 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_2
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_3
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for bin_4
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 26. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 26.
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_11] sample_coverage(3201)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_11] sample_coverage(3203)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_11] sample_coverage(3201)
@@ -1087,7 +1087,7 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM:                                                                           num_bins:2),bin_transition((4300, 4302, 4304, 4305)), "concatenated")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_12] Adding bins: (4000),(4100, 4110, 4120),(4200 to 4204),(4205 to
 UVVM:                                                                             4209),(4300->4302->4304->4305), min_hits:1, rand_weight:1, "concatenated"
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_12] add_bins(bin_range(4400,
 UVVM:                                                                           4450),ignore_bin(4401),ignore_bin_range(4410,4420),ignore_bin_transition((4400, 4425, 4450)),
 UVVM:                                                                           "concatenated")
@@ -1147,8 +1147,8 @@ UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[2]
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[3]
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_invalid_bin => OK, for concatenated[4]
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_num_bins => OK, for int 6. 'Checking number of valid bins'
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_num_bins => OK, for int 3. 'Checking number of invalid bins'
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_num_bins(int, 6) => OK. Value was 6. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_num_bins(int, 3) => OK. Value was 3. 'Checking number of invalid bins'
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bins_coverage => OK, for 100.00% - Coverage completed
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_hits_coverage => OK, for 100.00% - Coverage completed
 UVVM:      
@@ -1267,7 +1267,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing minimum coverage
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 9.
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_14] add_bins(bin(500), min_hits:7, "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_14] Adding bins: (500), min_hits:7, rand_weight:7, ""
 UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_bin => OK, for bin_1
@@ -1797,8 +1797,8 @@ UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2250)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2251)
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_16] set_bin_overlap_alert_level(TB_WARNING)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking bin overlap alert level'
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 4. 
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking bin overlap alert level'
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_WARNINGs by 4.
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_16] sample_coverage(2000)
 UVVM: 
 UVVM: ***  TB_WARNING #15  ***
@@ -1864,8 +1864,8 @@ UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_18] add_bins(illegal_bin_range(3105,3115), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_18] Adding bins: ILL(3105 to 3115), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_18] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 4. 
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 4.
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_18] sample_coverage(3100)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_18] sample_coverage(3104)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_18] sample_coverage(3105)
@@ -1906,8 +1906,8 @@ UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_19] add_bins(illegal_bin_range(3205,3215), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  TB seq.                          [Covpt_19] Adding bins: ILL(3205 to 3215), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  TB seq.                        [Covpt_19] set_illegal_bin_alert_level(WARNING)
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking illegal bin alert level'
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 4. 
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking illegal bin alert level'
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected WARNINGs by 4.
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_19] sample_coverage(3200)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_19] sample_coverage(3204)
 UVVM: ID_FUNC_COV_SAMPLE               100.0 ns  TB seq.                        [Covpt_19] sample_coverage(3205)
@@ -1957,8 +1957,9 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing coverpoint name and scope
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value() => OK, for string 'MY_COVERPOINT_2_abcd'. 'Checking name'
-UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value() => OK, for string 'MY_SCOPE_2'. 'Checking scope'
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value(string, 'MY_COVERPOINT_2_abcd') => OK. Value was 'MY_COVERPOINT_2_abcd'. 'Checking
+UVVM:                                                                           name'
+UVVM: ID_POS_ACK                       100.0 ns  TB seq.                        check_value(string, 'MY_SCOPE_2') => OK. Value was 'MY_SCOPE_2'. 'Checking scope'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing coverpoint num bins allocation error
@@ -1968,7 +1969,7 @@ UVVM: ID_FUNC_COV_CONFIG               100.0 ns  MY_SCOPE_2                     
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  MY_SCOPE_2                     [MY_COVERPOINT_2_abcd] add_bins(bin_range(1, 10, num_bins:10), "")
 UVVM: ID_FUNC_COV_BINS_INFO            100.0 ns  MY_SCOPE_2                       [MY_COVERPOINT_2_abcd] Adding bins: (1),(2),(3),(4),(5),(6),(7),(8),(9),(10), min_hits:1,
 UVVM:                                                                             rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_FUNC_COV_CONFIG               100.0 ns  MY_SCOPE_2                     [MY_COVERPOINT_2_abcd] set_num_allocated_bins(5)
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -1983,10 +1984,10 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing C_FC_MAX_NUM_NEW_BINS limit
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_LOG_MSG_CTRL                  100.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_BINS_INFO). 
+UVVM: ID_LOG_MSG_CTRL                  100.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_BINS_INFO).
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_21] add_bins(bin_range(1, 1000, num_bins:1000), "")
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_21] add_bins(bin_range(1, 1000, num_bins:1001), "")
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 6. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_ERRORs by 6.
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_21] add_bins(bin_range(1, 1001, num_bins:1000), "")
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -2053,7 +2054,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                       100.0 ns  TB seq.                        Testing C_FC_MAX_PROC_CALL_LENGTH limit
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_LOG_MSG_CTRL                  100.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_BINS_INFO). 
+UVVM: ID_LOG_MSG_CTRL                  100.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_BINS_INFO).
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_21] add_bins(bin(-2147483648), "")
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_21] add_bins(ignore_bin(-2147483648), "")
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_21] add_bins(illegal_bin(-2147483648), "")
@@ -2095,7 +2096,7 @@ UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_38] add_bins(bin(0), "")
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_39] add_bins(bin(0), "")
 UVVM: ID_FUNC_COV_BINS                 100.0 ns  TB seq.                        [Covpt_40] add_bins(bin(0), "")
-UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_FAILUREs by 1. 
+UVVM: ID_UTIL_SETUP                    100.0 ns  TB seq.                        incremented expected TB_FAILUREs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_FAILURE #1  ***

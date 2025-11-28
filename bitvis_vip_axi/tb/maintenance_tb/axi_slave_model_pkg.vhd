@@ -94,6 +94,3 @@ package axi_slave_model_pkg is
   end record;
 
 end package axi_slave_model_pkg;
-
-package body axi_slave_model_pkg is
-end package body axi_slave_model_pkg;

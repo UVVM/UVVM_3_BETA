@@ -67,6 +67,3 @@ package axilite_slave_model_pkg is
   end record;
 
 end package axilite_slave_model_pkg;
-
-package body axilite_slave_model_pkg is
-end package body axilite_slave_model_pkg;

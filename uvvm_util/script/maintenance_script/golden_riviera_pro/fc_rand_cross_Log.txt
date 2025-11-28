@@ -3,12 +3,12 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Functional Coverage package - fc_rand_cross
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_SAMPLE). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_SAMPLE).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization doesn't select ignore or illegal bins
@@ -146,7 +146,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization among bins with multiple values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 5. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 5.
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
 UVVM:             0 ns   TB seq.
@@ -208,7 +208,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization among bins with a range of values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 5. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 5.
 UVVM: 
 UVVM: ***  TB_WARNING #6  ***
 UVVM:             0 ns   TB seq.
@@ -275,7 +275,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization among bins with a transition of values
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 5. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 5.
 UVVM: 
 UVVM: ***  TB_WARNING #11  ***
 UVVM:             0 ns   TB seq.
@@ -392,7 +392,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization among different types of bins
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 4. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 4.
 UVVM: 
 UVVM: ***  TB_WARNING #16  ***
 UVVM:             0 ns   TB seq.
@@ -497,145 +497,145 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing all bins are selected for randomization when coverage is complete
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_RAND). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_RAND).
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Calling rand() 1000 times
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[1] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[1] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[2] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[3] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[4] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[5] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[6] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[7] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[8] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[9] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[10] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[11] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[12] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[13] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[14] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[15] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[16] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[17] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[18] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[19] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[20] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[21] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[22] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[23] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[24] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[25] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[26] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[27] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[28] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[29] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[30] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[31] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[32] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[33] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[34] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[35] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[36] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[37] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[38] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[39] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[40] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[41] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[42] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[43] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[44] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[45] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[46] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[47] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[48] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[49] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_1[50] was selected
+UVVM:                                                                           for randomization'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_2 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[2] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_3 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[3] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_4 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[4] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_5 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[5] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_6 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[6] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_7 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[7] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_8 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[8] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_9 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[9] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_10 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[10] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_11 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[11] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_12 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[12] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_13 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[13] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_14 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[14] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_15 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[15] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_16 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[16] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_17 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[17] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_18 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[18] was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_19 was selected for
 UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[19] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[20] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[21] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[22] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[23] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[24] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[25] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[26] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[27] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[28] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[29] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[30] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[31] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[32] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[33] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[34] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[35] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[36] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[37] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[38] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[39] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[40] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[41] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[42] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[43] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[44] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[45] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[46] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[47] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[48] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[49] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_1[50] was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_2 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_3 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_4 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_5 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_6 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_7 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_8 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_9 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_10 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_11 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_12 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_13 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_14 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_15 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_16 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_17 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_18 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_19 was selected for
-UVVM:                                                                           randomization'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater => OK, for boolean true. 'Checking bin_20 was selected for
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin_hits_is_greater(bool, true) => OK. Value was true. 'Checking bin_20 was selected for
 UVVM:                                                                           randomization'
 UVVM: 
 UVVM: 
@@ -738,7 +738,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization weight - Adaptive
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_RAND). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_FUNC_COV_RAND).
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_2] add_cross(bin(1), bin(100), min_hits:100, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_2] Adding cross: (1) x (100), min_hits:100, rand_weight:100, ""
@@ -749,20 +749,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_2] add_cross(bin(4), bin(100), min_hits:100, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_2] Adding cross: (4) x (100), min_hits:100, rand_weight:100, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 382. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 397. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 398. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 2 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 382. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 397. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 398. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 400. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 391. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 395. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 397. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 391. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 395. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 397. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 400. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 386. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 396. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 399. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 1 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 386. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 396. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 399. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 360, 440) => OK. Value was 400. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_2] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_3] add_cross(bin(5), bin(200), min_hits:100, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_3] Adding cross: (5) x (200), min_hits:100, rand_weight:100, ""
@@ -773,20 +785,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_3] add_cross(bin(8), bin(200), min_hits:400, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_3] Adding cross: (8) x (200), min_hits:400, rand_weight:400, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 982. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 998. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 999. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 1 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 982. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 998. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 999. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 1000. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 996. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 998. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 999. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 1 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 996. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 998. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 999. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 1000. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 991. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 998. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 999. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 991. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 998. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 999. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 900, 1100) => OK. Value was 1000. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_3] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_4] add_cross(bin(9), bin(300), min_hits:500, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_4] Adding cross: (9) x (300), min_hits:500, rand_weight:500, ""
@@ -795,17 +819,26 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_4] add_cross(bin(11), bin(300), min_hits:50, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_4] Adding cross: (11) x (300), min_hits:50, rand_weight:50, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 600 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 597. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 598. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 600. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 597. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 598. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 600. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 600 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 593. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 599. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 600. 'Bin 1 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 593. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 599. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 600. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 600 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 593. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 598. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 600. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 593. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 598. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 540, 660) => OK. Value was 600. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization weight - Adaptive (using hits goal)
@@ -821,20 +854,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_5] add_cross(bin(4), bin(100), min_hits:100, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_5] Adding cross: (4) x (100), min_hits:100, rand_weight:100, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 800 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 785. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 795. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 799. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 800. 'Bin 1 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 785. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 795. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 799. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 800. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 800 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 797. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 798. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 799. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 800. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 797. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 798. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 799. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 800. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 800 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 793. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 798. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 799. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 800. 'Bin 2 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 793. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 798. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 799. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 720, 880) => OK. Value was 800. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_5] delete_coverpoint()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_6] set_hits_coverage_goal(50)
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_6] add_cross(bin(5), bin(200), min_hits:100, "")
@@ -846,20 +891,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_6] add_cross(bin(8), bin(200), min_hits:400, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_6] Adding cross: (8) x (200), min_hits:400, rand_weight:400, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 500 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 483. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 497. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 498. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 500. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 483. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 497. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 498. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 500. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 500 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 455. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 493. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 499. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 500. 'Bin 2 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 455. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 493. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 499. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 500. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 500 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 494. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 498. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 499. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 500. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 494. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 498. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 499. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 450, 550) => OK. Value was 500. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization weight - Explicit
@@ -874,20 +931,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_7] add_cross(bin(15), bin(400), min_hits:100, rand_weight:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_7] Adding cross: (15) x (400), min_hits:100, rand_weight:1, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 364. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 381. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 398. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 1 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 364. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 381. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 398. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 400. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 374. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 381. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 384. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 374. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 381. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 384. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 400. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 353. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 374. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 398. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 353. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 374. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 398. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 400. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_7] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_8] add_cross(bin(16), bin(500), min_hits:100, rand_weight:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_8] Adding cross: (16) x (500), min_hits:100, rand_weight:1, ""
@@ -898,20 +967,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_8] add_cross(bin(19), bin(500), min_hits:100, rand_weight:4, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_8] Adding cross: (19) x (500), min_hits:100, rand_weight:4, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 254. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 321. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 330. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 190, 310) => OK. Value was 254. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 240, 360) => OK. Value was 321. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 290, 410) => OK. Value was 330. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 400. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 257. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 338. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 349. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 190, 310) => OK. Value was 257. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 240, 360) => OK. Value was 338. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 290, 410) => OK. Value was 349. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 400. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 400 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 251. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 305. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 344. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 400. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 190, 310) => OK. Value was 251. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 240, 360) => OK. Value was 305. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 290, 410) => OK. Value was 344. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 340, 460) => OK. Value was 400. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_8] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_9] add_cross(bin(20), bin(600), min_hits:100, rand_weight:100, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_9] Adding cross: (20) x (600), min_hits:100, rand_weight:100, ""
@@ -920,17 +1001,26 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_9] add_cross(bin(22), bin(600), min_hits:100, rand_weight:50, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_9] Adding cross: (22) x (600), min_hits:100, rand_weight:50, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 300 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 178. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 288. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 300. 'Bin 2 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 155, 245) => OK. Value was 178. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 255, 345) => OK. Value was 288. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 255, 345) => OK. Value was 300. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 300 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 191. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 295. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 300. 'Bin 2 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 155, 245) => OK. Value was 191. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 255, 345) => OK. Value was 295. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 255, 345) => OK. Value was 300. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 300 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 198. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 290. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 300. 'Bin 2 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 155, 245) => OK. Value was 198. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 255, 345) => OK. Value was 290. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 255, 345) => OK. Value was 300. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_9] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_10] add_cross(bin(23), bin(700), min_hits:100, rand_weight:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_10] Adding cross: (23) x (700), min_hits:100, rand_weight:1, ""
@@ -941,20 +1031,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_10] add_cross(bin(26), bin(700), min_hits:400, rand_weight:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_10] Adding cross: (26) x (700), min_hits:400, rand_weight:1, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 358. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 745. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 884. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 250, 550) => OK. Value was 358. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 550, 850) => OK. Value was 745. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 750, 1050) => OK. Value was 884. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 402. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 665. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 941. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 250, 550) => OK. Value was 402. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 550, 850) => OK. Value was 665. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 750, 1050) => OK. Value was 941. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 382. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 701. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 880. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 250, 550) => OK. Value was 382. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 550, 850) => OK. Value was 701. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 750, 1050) => OK. Value was 880. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_10] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_11] add_cross(bin(27), bin(800), min_hits:100, rand_weight:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_11] Adding cross: (27) x (800), min_hits:100, rand_weight:1, ""
@@ -965,20 +1067,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_11] add_cross(bin(30), bin(800), min_hits:400, rand_weight:4, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_11] Adding cross: (30) x (800), min_hits:400, rand_weight:4, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 989. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 990. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 997. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 1 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 989. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 990. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 997. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 867. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 968. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 995. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 867. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 968. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 995. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 931. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 947. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 996. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 931. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 947. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 996. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_11] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_12] add_cross(bin(27), bin(900), min_hits:100, rand_weight:4, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_12] Adding cross: (27) x (900), min_hits:100, rand_weight:4, ""
@@ -989,20 +1103,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_12] add_cross(bin(30), bin(900), min_hits:400, rand_weight:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_12] Adding cross: (30) x (900), min_hits:400, rand_weight:1, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 255. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 486. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 777. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 100, 400) => OK. Value was 255. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 350, 650) => OK. Value was 486. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 600, 900) => OK. Value was 777. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 220. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 498. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 770. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 100, 400) => OK. Value was 220. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 350, 650) => OK. Value was 498. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 600, 900) => OK. Value was 770. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 1000 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 252. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 490. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 738. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 1000. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 100, 400) => OK. Value was 252. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 350, 650) => OK. Value was 490. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 600, 900) => OK. Value was 738. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 850, 1150) => OK. Value was 1000. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing randomization weight - Explicit (using hits goal)
@@ -1018,20 +1144,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_13] add_cross(bin(19), bin(500), min_hits:100, rand_weight:4, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_13] Adding cross: (19) x (500), min_hits:100, rand_weight:4, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 800 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 439. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 602. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 708. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 800. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 380, 620) => OK. Value was 439. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 480, 720) => OK. Value was 602. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 580, 820) => OK. Value was 708. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 680, 920) => OK. Value was 800. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 800 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 529. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 599. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 695. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 800. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 380, 620) => OK. Value was 529. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 480, 720) => OK. Value was 599. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 580, 820) => OK. Value was 695. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 680, 920) => OK. Value was 800. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 800 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 492. 'Bin 3 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 597. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 699. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 800. 'Bin 0 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 380, 620) => OK. Value was 492. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 480, 720) => OK. Value was 597. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 580, 820) => OK. Value was 699. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 680, 920) => OK. Value was 800. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_13] delete_coverpoint()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_14] set_hits_coverage_goal(50)
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_14] add_cross(bin(23), bin(700), min_hits:100, rand_weight:1, "")
@@ -1043,20 +1181,32 @@ UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_14] add_cross(bin(26), bin(700), min_hits:400, rand_weight:1, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_14] Adding cross: (26) x (700), min_hits:400, rand_weight:1, ""
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 500 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 185. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 333. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 457. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 500. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 125, 275) => OK. Value was 185. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 275, 425) => OK. Value was 333. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 375, 525) => OK. Value was 457. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 425, 575) => OK. Value was 500. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 500 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 219. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 343. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 412. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 500. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 125, 275) => OK. Value was 219. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 275, 425) => OK. Value was 343. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 375, 525) => OK. Value was 412. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 425, 575) => OK. Value was 500. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Generating 500 random values
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 199. 'Bin 0 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 377. 'Bin 1 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 415. 'Bin 2 covered in expected iteration'
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution => OK, for integer 500. 'Bin 3 covered in expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 125, 275) => OK. Value was 199. 'Bin 0 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 275, 425) => OK. Value was 377. 'Bin 1 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 375, 525) => OK. Value was 415. 'Bin 2 covered in
+UVVM:                                                                           expected iteration'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        randomize_and_check_distribution(int, 425, 575) => OK. Value was 500. 'Bin 3 covered in
+UVVM:                                                                           expected iteration'
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE SUMMARY REPORT (VERBOSE): TB seq. ***                                                                                                             

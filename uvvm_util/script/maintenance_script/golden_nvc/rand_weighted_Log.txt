@@ -3,8 +3,8 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Randomization package - rand_weighted
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF).
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Reducing log messages from rand_pkg
 UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_LOG_MSG_CTRL). 
 UVVM: 
@@ -34,7 +34,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted integer (ranges w/default mode) - Generate 1000 random values for each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([-5:-3],30,COMBINED),(0,20),([9:10],50,COMBINED))=> 9
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:      -5     -4     -3      0      9     10
@@ -42,7 +42,7 @@ UVVM:                                                                           
 UVVM:                                                                           count:      98    101    108    202    249    242
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([-5:-3],30,INDIVIDUAL),(0,20),([9:10],50,INDIVIDUAL))=> 0
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:      -5     -4     -3      0      9     10
@@ -86,7 +86,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted real (ranges w/default mode) - Generate 1000 random values for each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([-5.00:-3.00],30,COMBINED),(0.00,20),([9.30:10.10],50,COMBINED))=>
 UVVM:                                                                           -4.7640528148922
 UVVM:                                                                           ===============================================================================================
@@ -95,8 +95,8 @@ UVVM:                                                                           
 UVVM:                                                                           count:     303    208    489
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #1  ***
@@ -145,7 +145,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted time (ranges w/default mode) - Generate 1000 random values for each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([-5 fs:-3 fs],30,COMBINED),(0 fs,20),([9 fs:10 fs],50,COMBINED))=> 9 fs
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:   -5:-3      0   9:10
@@ -159,8 +159,8 @@ UVVM:                                                                           
 UVVM:                                                                           count:     303    196    501
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #2  ***
@@ -215,7 +215,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted unsigned (ranges w/default mode) - Generate 1000 random values for each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([0:2],30,COMBINED),(5,20),([9:10],50,COMBINED))=> 9
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:       0      1      2      5      9     10
@@ -223,7 +223,7 @@ UVVM:                                                                           
 UVVM:                                                                           count:     114     96    105    189    243    253
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([0:2],30,INDIVIDUAL),(5,20),([9:10],50,INDIVIDUAL))=> 9
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:       0      1      2      5      9     10
@@ -267,7 +267,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted signed (ranges w/default mode) - Generate 1000 random values for each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([-5:-3],30,COMBINED),(0,20),([6:7],50,COMBINED))=> -3
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:      -5     -4     -3      0      6      7
@@ -275,7 +275,7 @@ UVVM:                                                                           
 UVVM:                                                                           count:      99     97    102    217    223    262
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([-5:-3],30,INDIVIDUAL),(0,20),([6:7],50,INDIVIDUAL))=> 6
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:      -5     -4     -3      0      6      7
@@ -320,7 +320,7 @@ UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        
 UVVM:                                                                           each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([0:2],30,COMBINED),(5,20),([9:10],50,COMBINED))=> 0
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:       0      1      2      5      9     10
@@ -328,7 +328,7 @@ UVVM:                                                                           
 UVVM:                                                                           count:     100     98    111    195    220    276
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        rand_range_weight(([0:2],30,INDIVIDUAL),(5,20),([9:10],50,INDIVIDUAL))=> 0
 UVVM:                                                                           ===============================================================================================
 UVVM:                                                                           value:       0      1      2      5      9     10
@@ -350,7 +350,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing invalid parameters
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #3  ***

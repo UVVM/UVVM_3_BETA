@@ -1663,7 +1663,6 @@ package body rand_tb_pkg is
     variable v_percentage : natural := 0;
     variable v_count      : natural := 0;
     variable v_count_vec  : integer_vector(0 to weight_dist'length - 1);
-    variable v_int        : integer;
 
     impure function width_of_int_string(constant value : integer) return integer is
       constant C_VALUE_STR : string := integer'image(value);

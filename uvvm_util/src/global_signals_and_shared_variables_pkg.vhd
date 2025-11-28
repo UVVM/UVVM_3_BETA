@@ -123,7 +123,7 @@ use work.types_pkg.all;
 package protected_deprecate_list_pkg is new work.protected_generic_types_pkg
   generic map(
     t_generic_element => t_deprecate_list,
-    c_generic_default => C_DEPRECATE_LIST_DEFAULT
+    c_generic_default => (others => (others => ' '))
   );
 
 
@@ -158,10 +158,11 @@ package global_signals_and_shared_variables_pkg is
   shared variable shared_uvvm_status  : work.protected_uvvm_status_pkg.t_generic;
   shared variable shared_msg_id_panel : work.protected_msg_id_panel_pkg.t_generic;
 
-  -- Randomization seeds
+  -- BFM shared variables
   shared variable shared_rand_seeds_register : t_seeds;
 
   -- UVVM internal shared variables
+  shared variable shared_deprecated_subprogram_list : work.protected_deprecate_list_pkg.t_generic;
   shared variable shared_initialised_util           : work.protected_boolean_pkg.t_generic;
   shared variable shared_log_file_name_is_set       : work.protected_boolean_pkg.t_generic;
   shared variable shared_alert_file_name_is_set     : work.protected_boolean_pkg.t_generic;
@@ -179,6 +180,7 @@ package global_signals_and_shared_variables_pkg is
   shared variable shared_response_semaphore         : t_semaphore;
   shared variable shared_covergroup_status          : t_covergroup_status;
   shared variable shared_sb_activity_register       : t_sb_activity;
-  shared variable shared_deprecated_subprogram_list : work.protected_deprecate_list_pkg.t_generic;
+  shared variable shared_check_counters             : t_check_counters;
+  shared variable shared_alert_attention_counters   : t_protected_alert_attention_counters;
 
 end package global_signals_and_shared_variables_pkg;

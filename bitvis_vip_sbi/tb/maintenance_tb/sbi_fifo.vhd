@@ -71,7 +71,7 @@ begin
   end process;
 
   -- Read registers for SBI IF 1
-  p_read_reg_sbi_1 : process(sbi_if_1.cs, sbi_if_1.rena, sbi_if_1.addr)
+  p_read_reg_sbi_1 : process(sbi_if_1.cs, sbi_if_1.rena, sbi_if_1.addr, fifo_ready)
   begin
     sbi_if_1.rdata(GC_DATA_WIDTH_1 - 1 downto 0) <= (others => '0');
     if sbi_if_1.cs = '1' and sbi_if_1.rena = '1' then
@@ -114,7 +114,7 @@ begin
   end process;
 
   -- Read registers for SBI IF 2
-  p_read_reg_sbi_2 : process(sbi_if_2.cs, sbi_if_2.rena, sbi_if_2.addr)
+  p_read_reg_sbi_2 : process(sbi_if_2.cs, sbi_if_2.rena, sbi_if_2.addr, fifo_ready)
   begin
     sbi_if_2.rdata(GC_DATA_WIDTH_2 - 1 downto 0) <= (others => '0');
     if sbi_if_2.cs = '1' and sbi_if_2.rena = '1' then

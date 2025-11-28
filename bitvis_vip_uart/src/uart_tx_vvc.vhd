@@ -219,7 +219,6 @@ begin
   cmd_executor : process
     constant C_EXECUTOR_ID                            : natural                                     := 0;
     variable v_cmd                                    : t_vvc_cmd_record;
-    variable v_read_data                              : t_vvc_result; -- See vvc_cmd_pkg
     variable v_timestamp_start_of_current_bfm_access  : time                                        := 0 ns;
     variable v_timestamp_start_of_last_bfm_access     : time                                        := 0 ns;
     variable v_timestamp_end_of_last_bfm_access       : time                                        := 0 ns;
@@ -316,7 +315,7 @@ begin
             set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_uart_vvc_transaction_info, GC_INSTANCE_IDX, C_CHANNEL, v_cmd, v_vvc_config_copy, IN_PROGRESS, C_SCOPE);
 
             -- Normalise address and data
-            v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "uart_transmit() called with too wide data. " & add_msg_delimiter(v_cmd.msg));
+            v_normalised_data := normalize_and_check(v_cmd.data, v_normalised_data, ALLOW_WIDER_NARROWER, "data", "shared_vvc_cmd.data", "uart_transmit() called with too wide data." & add_msg_delimiter(v_cmd.msg));
 
             -- Call the corresponding procedure in the BFM package.
             uart_transmit(data_value   => v_normalised_data(v_num_data_bits - 1 downto 0),

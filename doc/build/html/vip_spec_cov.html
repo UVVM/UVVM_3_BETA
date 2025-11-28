@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,19 +7,16 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bitvis VIP Specification Coverage &mdash; UVVM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8abdc7a9" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -50,14 +49,12 @@
 <li class="toctree-l1"><a class="reference internal" href="uvvm_intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uvvm_getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utility_library.html">Utility Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_structures.html">Data Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rand_pkg_overview.html">Enhanced Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="func_cov_pkg_overview.html">Functional Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vvc_framework.html">VVC Framework</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fifo_collection.html">UVVM FIFO Collection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="generic_queue.html">UVVM Generic Queue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="association_list.html">UVVM Association List</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
@@ -77,15 +74,16 @@
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#definitions">Definitions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#testcase">Testcase</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#specification-coverage">Specification coverage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#partial-coverage">Partial coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#specification-coverage">Specification Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#partial-coverage">Partial Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compound-requirement">Compound requirement</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#simplest-possible-usage-with-a-single-testcase">Simplest possible usage, with a single testcase</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#simple-usage">Simple usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#shortcut-with-no-requirement-list">Shortcut with no requirement list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shortcut-with-no-requirement-list">Shortcut with no Requirement List</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simple-usage-with-multiple-testcases">Simple usage, with multiple testcases</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#multiple-testcases-with-strict-requirement-vs-testcase-relation">Multiple testcases, with strict requirement vs testcase relation</a></li>
 </ul>
@@ -94,18 +92,24 @@
 <li class="toctree-l3"><a class="reference internal" href="#only-one-of-multiple-testcases-for-a-given-requirement-must-pass">Only one of multiple testcases for a given requirement must pass</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#all-or-some-of-multiple-testcases-for-a-given-requirement-must-pass">All (or some) of multiple testcases for a given requirement must pass</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#requirement-mapping">Requirement mapping</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#mapping-of-project-requirements-to-ip-or-legacy-requirements">Mapping of project requirements to IP or legacy requirements</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mapping-of-project-requirements-to-multiple-sub-requirements">Mapping of project requirements to multiple sub-requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mapping-of-project-requirements-to-ip-or-legacy-requirements">Mapping of project requirements to IP or legacy requirements</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#requirement-and-map-files">Requirement and map files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirement-and-map-files">Requirement and Map files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#requirement-list-file">Requirement List file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#requirement-map-file-optional">Requirement Map file (optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#partial-coverage-list-file-optional">Partial Coverage List file (optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#script-config-file-optional">Script config file (optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#partial-coverage-file-generated">Partial Coverage file (generated)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#comments">Comments</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#vhdl-package">VHDL Package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#vhdl-methods">VHDL Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-record">Configuration record</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#methods">Methods</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#initialize-req-cov">initialize_req_cov()</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tick-off-req-cov">tick_off_req_cov()</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#finalize-req-cov">finalize_req_cov()</a></li>
@@ -114,9 +118,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#enable-cond-tick-off-req-cov">enable_cond_tick_off_req_cov()</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#specification-coverage-configuration-record-shared-spec-cov-config">Specification Coverage configuration record: shared_spec_cov_config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#additional-documentation">Additional documentation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#compilation">Compilation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compilation">Compilation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#simulator-compatibility-and-setup">Simulator compatibility and setup</a></li>
 </ul>
 </li>
@@ -130,31 +132,18 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#output-files">Output files</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#requirement-vs-testcase-listing">Requirement vs. testcase listing</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#req-vs-tcs-csv">.req_vs_tcs.csv</a></li>
-<li class="toctree-l5"><a class="reference internal" href="#req-vs-single-tc-csv">.req_vs_single_tc.csv</a></li>
-<li class="toctree-l5"><a class="reference internal" href="#single-req-vs-single-tc-csv">.single_req_vs_single_tc.csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#requirement-compliance-listing">Requirement compliance listing</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#req-compliance-minimal-csv">.req_compliance_minimal.csv</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#req-compliance-extended-csv">.req_compliance_extended.csv</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#req-non-compliance-csv">.req_non_compliance.csv</a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="#testcase-vs-requirement-listing">Testcase vs. requirement listing</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#tc-vs-reqs-csv">.tc_vs_reqs.csv</a></li>
-<li class="toctree-l5"><a class="reference internal" href="#single-tc-vs-single-req-csv">.single_tc_vs_single_req.csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#testcase-listing-and-warning-files">Testcase listing and warning files</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#testcase-list-csv">.testcase_list.csv</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#warnings-csv">.warnings.csv</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="#reference-tables-compliance-result-labels">Reference tables: Compliance/result labels</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#quick-reference">Quick reference</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#vhdl-procedure-calls">VHDL procedure calls</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#script-usage-run-spec-cov-py">Script Usage - run_spec_cov.py</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#formats-of-input-and-intermediate-files">Formats of Input and Intermediate Files</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#requirement-list-file">Requirement list file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#requirement-map-file-optional">Requirement map file (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#partial-coverage-list-file-optional">Partial coverage list file (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#script-config-file-optional">Script config file (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#partial-coverage-file-generated">Partial coverage file (generated)</a></li>
 </ul>
 </li>
 </ul>
@@ -164,7 +153,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="vip_spi.html">Bitvis VIP SPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone (BETA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
@@ -196,6 +185,33 @@
   <section id="bitvis-vip-specification-coverage">
 <span id="vip-spec-cov"></span><h1>Bitvis VIP Specification Coverage<a class="headerlink" href="#bitvis-vip-specification-coverage" title="Link to this heading"></a></h1>
 <p>The Specification Coverage feature (aka Requirements Coverage) is an efficient method for verifying the requirement specification.</p>
+<p><strong>Quick Access</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#requirement-and-map-files">Requirement and Map files</a></p>
+<ul>
+<li><p><a class="reference internal" href="#requirement-list-file">Requirement List file</a></p></li>
+<li><p><a class="reference internal" href="#requirement-map-file-optional">Requirement Map file (optional)</a></p></li>
+<li><p><a class="reference internal" href="#partial-coverage-list-file-optional">Partial Coverage list file (optional)</a></p></li>
+<li><p><a class="reference internal" href="#script-config-file-optional">Script config file (optional)</a></p></li>
+<li><p><a class="reference internal" href="#partial-coverage-file-generated">Partial Coverage file (generated)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#methods">Methods</a></p>
+<ul>
+<li><p><a class="reference internal" href="#initialize-req-cov">initialize_req_cov()</a></p></li>
+<li><p><a class="reference internal" href="#tick-off-req-cov">tick_off_req_cov()</a></p></li>
+<li><p><a class="reference internal" href="#finalize-req-cov">finalize_req_cov()</a></p></li>
+<li><p><a class="reference internal" href="#cond-tick-off-req-cov">cond_tick_off_req_cov()</a></p></li>
+<li><p><a class="reference internal" href="#disable-cond-tick-off-req-cov">disable_cond_tick_off_req_cov()</a></p></li>
+<li><p><a class="reference internal" href="#enable-cond-tick-off-req-cov">enable_cond_tick_off_req_cov()</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#post-processing-script">Post-processing script</a></p>
+<ul>
+<li><p><a class="reference internal" href="#output-files">Output files</a></p></li>
+</ul>
+</li>
+</ul>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
 <p>An important step of design verification is to check that all requirements have been met. Requirements can be defined very differently
@@ -220,10 +236,10 @@ requirements.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>UART_REQ_1</p></td>
-<td><p>The device UART interface shall accept a baud rate of 9600kbps.</p></td>
+<td><p>The device UART interface shall accept a baud rate of 9600 bps.</p></td>
 </tr>
 <tr class="row-odd"><td><p>UART_REQ_2</p></td>
-<td><p>The device UART interface shall accept a baud rate of 19k2 bps.</p></td>
+<td><p>The device UART interface shall accept a baud rate of 19200 bps.</p></td>
 </tr>
 <tr class="row-even"><td><p>UART_REQ_3</p></td>
 <td><p>The device UART interface shall accept an odd parity.</p></td>
@@ -234,11 +250,8 @@ requirements.</p>
 </tbody>
 </table>
 <p>There are lots of acceptable approaches with respect to how much functionality is verified in each testcase and how these are
-organised. This VIP will allow various approaches from dead simple to advanced. In order to explain the concepts, we start with the
-simplest case and add step-by-step on that until we have built a full advanced specification coverage system.</p>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
+organized. This VIP will allow various approaches from dead simple to advanced. In order to explain the concepts, we start with the
+simplest case and add step-by-step on that until we have built a full advanced Specification Coverage system.</p>
 <section id="definitions">
 <h3>Definitions<a class="headerlink" href="#definitions" title="Link to this heading"></a></h3>
 <section id="testcase">
@@ -253,29 +266,30 @@ defined as individual testcases.</p></li>
 </ul>
 </section>
 <section id="specification-coverage">
-<h4>Specification coverage<a class="headerlink" href="#specification-coverage" title="Link to this heading"></a></h4>
-<ul class="simple">
-<li><p>A summary of how all the requirements in a complete Requirement Specification have been covered by the test suite (the complete
-verification environment)</p></li>
-</ul>
+<h4>Specification Coverage<a class="headerlink" href="#specification-coverage" title="Link to this heading"></a></h4>
+<p>A summary of how all the requirements in a complete Requirement Specification have been covered by the test suite (the complete
+verification environment)</p>
 </section>
 <section id="partial-coverage">
-<h4>Partial coverage<a class="headerlink" href="#partial-coverage" title="Link to this heading"></a></h4>
+<h4>Partial Coverage<a class="headerlink" href="#partial-coverage" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><p>In this VIP a summary of how some (or all) requirements for a DUT have been covered by one specific testcase. There may be one or
-more testcases and partial coverage summaries for a DUT depending on complexity and approach.</p></li>
-<li><p>The accumulation (or merger) of all partial coverage summaries will yield the Specification coverage. I.e. Testcase partial
-specification coverage -&gt; ‘Partial Coverage’, and Test suite overall specification coverage -&gt; ‘Specification coverage’</p></li>
+more testcases and Partial Coverage summaries for a DUT depending on complexity and approach.</p></li>
+<li><p>The accumulation (or merger) of all Partial Coverage summaries will yield the Specification Coverage. I.e. Testcase partial
+Specification Coverage -&gt; ‘Partial Coverage’, and Test suite overall Specification Coverage -&gt; ‘Specification Coverage’</p></li>
 </ul>
 <figure class="align-center" id="id2">
-<a class="reference internal image-reference" href="_images/workflow.png"><img alt="Workflow" src="_images/workflow.png" style="width: 500pt;" /></a>
+<a class="reference internal image-reference" href="_images/workflow.png"><img alt="Workflow" src="_images/workflow.png" style="width: 500pt;" />
+</a>
 <figcaption>
 <p><span class="caption-text">Specification Coverage workflow</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
+</section>
+<section id="compound-requirement">
+<h4>Compound requirement<a class="headerlink" href="#compound-requirement" title="Link to this heading"></a></h4>
+<p>A requirement consisting of one or more sub-requirements. The compound requirement is not tested directly, but rather through its
+sub-requirements. The compound requirement is compliant if and only if all of its sub-requirement are compliant.</p>
 </section>
 </section>
 <section id="simplest-possible-usage-with-a-single-testcase">
@@ -287,51 +301,51 @@ significantly simplifies such an approach.</p>
 <p>When feasible, the simplest structured approach would be to test all requirements in one single self-checking testcase. If so - all you
 want to do is the following - as illustrated in the diagram below:</p>
 <ol class="arabic simple">
-<li><p>List all DUT requirements in a requirement list CSV file. (RL). This could mean anything from just writing down the requirements
+<li><p>List all DUT requirements in a Requirement List CSV file. (RL). This could mean anything from just writing down the requirements
 directly, to a fully automated requirement extraction from an existing Requirement Specification.
-NOTE: For specification coverage this list is mandatory, but a simplified mode of pure test reporting without the need for a prior
-listing of the requirements is available (see more info in <a class="reference internal" href="#shortcut-with-no-requirement-list">Shortcut with no requirement list</a> ).</p></li>
-<li><p>Implement your testcase <code class="samp docutils literal notranslate"><span class="pre">(T)</span></code> with all tests required to verify the DUT.  (see <a class="reference internal" href="#vhdl-methods">VHDL Methods</a>)
+<strong>NOTE</strong>: For Specification Coverage this list is mandatory, but a simplified mode of pure test reporting without the need for a prior
+listing of the requirements is available (see more info in <a class="reference internal" href="#shortcut-with-no-requirement-list">Shortcut with no Requirement List</a> ).</p></li>
+<li><p>Implement your testcase <code class="samp docutils literal notranslate"><span class="pre">(T)</span></code> with all tests required to verify the DUT.  (see <a class="reference internal" href="#methods">Methods</a>)
 The test sequencer should initiate coverage using initialize_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T1)</span></code>, then for each verified requirement call
-tick_off_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T2)</span></code> and then finalise coverage reporting using finalize_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T3)</span></code>.</p></li>
-<li><p>When the testcase is executed (run), initialize_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T1)</span></code> (see <a class="reference internal" href="#vhdl-methods">VHDL Methods</a>) will read the given requirement list
-file (RL), the new partial coverage file <code class="samp docutils literal notranslate"><span class="pre">(PC)</span></code> is created, and the testcase name is stored. The header of the partial
-coverage file - with NOTE, testcase-name and delimiter is written. The header is not shown in any of the examples, but is shown in
-the file formats in the section <a class="reference internal" href="#formats-of-input-and-intermediate-files">Formats of Input and Intermediate Files</a>
-Then for each tick_off_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T2)</span></code> a separate line is written into the partial coverage file with a) the given
+tick_off_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T2)</span></code> and then finalize coverage reporting using finalize_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T3)</span></code>.</p></li>
+<li><p>When the testcase is executed (run), initialize_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T1)</span></code> (see <a class="reference internal" href="#methods">Methods</a>) will read the given Requirement List
+file (RL), the new Partial Coverage file <code class="samp docutils literal notranslate"><span class="pre">(PC)</span></code> is created, and the testcase name is stored. The header of the Partial
+Coverage file - with NOTE, testcase-name and delimiter is written. The header is not shown in any of the examples, but is shown in
+the file formats in the section <a class="reference internal" href="#requirement-and-map-files">Requirement and Map files</a>
+Then for each tick_off_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T2)</span></code> a separate line is written into the Partial Coverage file with a) the given
 requirement label, b) the name of the testcase, and c) the result of the test. The result of the test will be PASS - unless marked
 as FAIL in the procedure call or unexpected serious alerts (&gt;= ERROR / TB_ERROR) have occurred, in which case it will be marked as
 FAIL.
 Finally when finalize_req_cov() <code class="samp docutils literal notranslate"><span class="pre">(T3)</span></code> is executed, a closing check of the alert counters is made. If ok, then
-‘SUMMARY, &lt;Testcase name&gt;, PASS’ is written at the end of the Partial coverage file. Otherwise FAIL rather than PASS
+‘SUMMARY, &lt;Testcase name&gt;, PASS’ is written at the end of the Partial Coverage file. Otherwise FAIL rather than PASS
 (provided testcase does not stop on the alert). If a testcase fails before reaching finalize_req_cov(), then no SUMMARY line will
 be written. This is interpreted as FAIL. Note that a given requirement may be tested and reported several times, so that for
-instance UART_REQ_3 may be listed multiple times in the Partial coverage file <code class="samp docutils literal notranslate"><span class="pre">(PC)</span></code>.</p></li>
-<li><p>After the testcase has been executed, the overall Specification coverage <code class="samp docutils literal notranslate"><span class="pre">(SC)</span></code> can be found by executing the Python script
-run_spec_cov.py (see <a class="reference internal" href="#post-processing-script">Post-processing script</a>). This script traverses the requirement list (RL) and Partial coverage file
-<code class="samp docutils literal notranslate"><span class="pre">(PC)</span></code> and from that generates the specification coverage <code class="samp docutils literal notranslate"><span class="pre">(SC)</span></code>.
-Each requirement is listed in the specification coverage file. If a requirement has one or more FAIL in a Partial coverage file,
+instance UART_REQ_3 may be listed multiple times in the Partial Coverage file <code class="samp docutils literal notranslate"><span class="pre">(PC)</span></code>.</p></li>
+<li><p>After the testcase has been executed, the overall Specification Coverage <code class="samp docutils literal notranslate"><span class="pre">(SC)</span></code> can be found by executing the Python script
+run_spec_cov.py (see <a class="reference internal" href="#post-processing-script">Post-processing script</a>). This script traverses the Requirement List (RL) and Partial Coverage file
+<code class="samp docutils literal notranslate"><span class="pre">(PC)</span></code> and from that generates the Specification Coverage <code class="samp docutils literal notranslate"><span class="pre">(SC)</span></code>.
+Each requirement is listed in the Specification Coverage file. If a requirement has one or more FAIL in a Partial Coverage file,
 the result is NON_COMPLIANT for that requirement.
-For a simple scenario with a single testcase, the partial coverage <code class="samp docutils literal notranslate"><span class="pre">(PC)</span></code>  file and the specification coverage file
-<code class="samp docutils literal notranslate"><span class="pre">(SC)</span></code> yield the same information, but the specification coverage potentially with fewer lines.</p></li>
+For a simple scenario with a single testcase, the Partial Coverage <code class="samp docutils literal notranslate"><span class="pre">(PC)</span></code>  file and the Specification Coverage file
+<code class="samp docutils literal notranslate"><span class="pre">(SC)</span></code> yield the same information, but the Specification Coverage potentially with fewer lines.</p></li>
 </ol>
 <figure class="align-center" id="fig-overview">
-<a class="reference internal image-reference" href="_images/concept.png"><img alt="Simplest possible specification coverage (note that partial coverage files only show the actual requirement coverage lines)" src="_images/concept.png" style="width: 1300pt;" /></a>
+<a class="reference internal image-reference" href="_images/concept.png"><img alt="Simplest possible Specification Coverage (note that Partial Coverage files only show the actual requirement coverage lines)" src="_images/concept.png" style="width: 1300pt;" />
+</a>
 </figure>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 </section>
 </section>
 <section id="simple-usage">
 <h2>Simple usage<a class="headerlink" href="#simple-usage" title="Link to this heading"></a></h2>
 <section id="shortcut-with-no-requirement-list">
-<h3>Shortcut with no requirement list<a class="headerlink" href="#shortcut-with-no-requirement-list" title="Link to this heading"></a></h3>
-<p>A shortcut is supported to allow all tested requirements to be reported to the Partial coverage file - without the need for a prior
-listing of the requirements. This shortcut does of course not yield any specification coverage, as no specification is given, but could
+<h3>Shortcut with no Requirement List<a class="headerlink" href="#shortcut-with-no-requirement-list" title="Link to this heading"></a></h3>
+<p>A shortcut is supported to allow all tested requirements to be reported to the Partial Coverage file - without the need for a prior
+listing of the requirements. This shortcut does of course not yield any Specification Coverage, as no specification is given, but could
 be useful for scenarios or early testing where only a list of executed tests is wanted. This shortcut mode is automatically applied
-when no requirement list is provided as an input to the initialize_req_cov() VHDL command in the test sequencer. If so, the partial
-coverage files will be generated, but no specification coverage file (the Python script) shall be run.</p>
+when no requirement list is provided as an input to the initialize_req_cov() VHDL command in the test sequencer. If the run_spec_cov.py
+script is run without a requirement file, or with requirements missing from the requirement file, any requirements that are ticked off
+during simulation but are not listed in the requirement file will be marked as UNLISTED_REQ_PASS/FAIL in the output files from the
+run_spec_cov.py script, i.e. they will not be given a COMPLIANT/NON_COMPLIANT status.</p>
 </section>
 <section id="simple-usage-with-multiple-testcases">
 <h3>Simple usage, with multiple testcases<a class="headerlink" href="#simple-usage-with-multiple-testcases" title="Link to this heading"></a></h3>
@@ -339,73 +353,81 @@ coverage files will be generated, but no specification coverage file (the Python
 tests are split on multiple testcases, but with no requirement as to which testcase tests what, then you can apply almost the same
 simple approach as the simplest case above.</p>
 <p>For this scenario, there will be two or more testcases, and so you will have to run all relevant testcases. There will of course still
-be only a single Requirement list. For every single testcase the same set of commands will be applied - with initialize_req_cov(), one
+be only a single Requirement List. For every single testcase the same set of commands will be applied - with initialize_req_cov(), one
 or more tick_off_req_cov(), and finalize_req_cov(). The only thing to remember here is that initialize_req_cov() has to specify
-separate Partial coverage files for each testcase. Hence, after simulation you should end up with as many Partial coverage files as
+separate Partial Coverage files for each testcase. Hence, after simulation you should end up with as many Partial Coverage files as
 testcases</p>
-<p>Note: it is possible inside a test sequencer to execute initialize_req_cov() multiple times, but only when the previous
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is possible inside a test sequencer to execute initialize_req_cov() multiple times, but only when the previous
 initialize_req_cov() has been terminated with finalize_req_cov().  If multiple initialize… &amp; finalize… these should operate on
-different partial coverage files to avoid overwriting the previous section.</p>
+different Partial Coverage files to avoid overwriting the previous section.</p>
+</div>
 <p>The Python script run_spec_cov.py will be run in the same way as before, but needs to be given a list of all the relevant Partial
-coverage files. Then the Specification coverage is generated exactly as before.</p>
+Coverage files. Then the Specification Coverage is generated exactly as before.</p>
 </section>
 <section id="multiple-testcases-with-strict-requirement-vs-testcase-relation">
 <h3>Multiple testcases, with strict requirement vs testcase relation<a class="headerlink" href="#multiple-testcases-with-strict-requirement-vs-testcase-relation" title="Link to this heading"></a></h3>
 <p>For most applications where high quality and confidence is required it is mandatory to specify up front in which testcase a given
-requirement will be tested. In these cases, the requirement list must be extended to include the testcase in which a requirement will
+requirement will be tested. In these cases, the Requirement List must be extended to include the testcase in which a requirement will
 be tested, - as shown below. The example now shows more testcases than just tc_basic.</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="_images/requirement_list.png"><img alt="Requirement list" src="_images/requirement_list.png" style="width: 500pt;" /></a>
+<a class="reference internal image-reference" href="_images/requirement_list.png"><img alt="Requirement List" src="_images/requirement_list.png" style="width: 500pt;" />
+</a>
 </figure>
-<p>Specifying a testcase name in the requirement list will however not force a requirement vs testcase check by itself. In order to check
-that a requirement is tested in the specified testcase the switch ‘-strictness 1’ must be used when calling run_spec_cov.py (see
-<a class="reference internal" href="#strictness-levels">Strictness levels</a>). If strictness is set to 1 then for example the requirement ‘UART_REQ_3, Odd parity, tc_basic will be:</p>
-<div class="line-block">
-<div class="line">a) Marked as COMPLIANT in the specification coverage file if UART_REQ_3 is checked positive in testcase tc_basic. UART_REQ_3 may
-additionally also be checked elsewhere.</div>
-</div>
-<div class="line-block">
-<div class="line">b) Will be marked as NOT_TESTED in the specification coverage file if UART_REQ_3 is not checked in testcase tc_basic
-(but for instance only in tc_19k2).</div>
-</div>
-<p>Default strictness is -strictness 0, i.e. neither of the above strict checking.  See the section about <a class="reference internal" href="#strictness-levels">Strictness levels</a> for
-various strictness settings.</p>
-<p>Testcase names and Requirement labels are not case sensitive for any comparison. For any output report the names and labels from the
-requirement list will be used if available. If not provided via the requirement list, then testcase name is taken from the
-initialize_req_cov() and the requirement label from the tick_off_req_cov().</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
+<p>Specifying a testcase name in the Requirement List will however not force a requirement vs testcase check by itself. In order to check
+that a requirement is tested in the specified testcase the switch ‘-strictness 1’ must be used when calling run_spec_cov.py (see
+<a class="reference internal" href="#strictness-levels">Strictness levels</a>). If strictness is set to 1 then for example the requirement ‘UART_REQ_3, Odd parity, tc_basic will be:</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line">a) Marked as COMPLIANT in the Specification Coverage file if UART_REQ_3 is checked positive in testcase tc_basic. UART_REQ_3 may
+additionally also be checked elsewhere.</div>
+</div>
+<div class="line-block">
+<div class="line">b) Will be marked as NOT_TESTED in the Specification Coverage file if UART_REQ_3 is not checked in testcase tc_basic
+(but for instance only in tc_19k2).</div>
+</div>
+</div></blockquote>
+<p>Default strictness is -strictness 0, i.e. neither of the above strict checking.  See the section about <a class="reference internal" href="#strictness-levels">Strictness levels</a> for
+various strictness settings.</p>
+<p>Testcase names and Requirement labels are not case sensitive for any comparison. For any output report the names and labels from the
+Requirement List will be used if available. If not provided via the Requirement List, then testcase name is taken from the
+initialize_req_cov() and the requirement label from the tick_off_req_cov().</p>
 </section>
 </section>
 <section id="advanced-usage">
 <h2>Advanced usage<a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h2>
 <section id="only-one-of-multiple-testcases-for-a-given-requirement-must-pass">
 <h3>Only one of multiple testcases for a given requirement must pass<a class="headerlink" href="#only-one-of-multiple-testcases-for-a-given-requirement-must-pass" title="Link to this heading"></a></h3>
-<p>In the previous example all tests in all testcases had to pass for the overall specification coverage to pass. There may however be
+<p>In the previous example all tests in all testcases had to pass for the overall Specification Coverage to pass. There may however be
 situations where a given requirement is tested in multiple testcases and it is sufficient that only any one of these pass - given of
 course that none of the others have failed, but just haven’t been executed. A fail in any executed testcase will always result in a
 summary fail. This approach could for instance be used to qualify for a lab test release. A requirement for this approach to work is to
-remove all old partial coverage files before running your test suite generating new partial coverage files. The run_spec_cov.py option
+remove all old Partial Coverage files before running your test suite generating new Partial Coverage files. The run_spec_cov.py option
 -clean may be used for this.</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="_images/requirement_list_or_listed.png"><img alt="Requirement list" src="_images/requirement_list_or_listed.png" style="width: 700pt;" /></a>
+<a class="reference internal image-reference" href="_images/requirement_list_or_listed.png"><img alt="Requirement List" src="_images/requirement_list_or_listed.png" style="width: 700pt;" />
+</a>
 </figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <p>The example above shows that UART_REQ_3 is covered by both testcases tc_basic and tc_19k2, and that UART_REQ_4 may in fact be tested by
 any of the three testcases.</p>
 <p>This example also shows that testcase tc_reset is not required to be executed in order for all requirements to be tested. This <em>could</em>
 be a sign that tc_reset should be removed (optimized away), but given that tc_reset is required for some special reason, then it could
 for instance be left out of from a reduced test suite to qualify for lab test only.</p>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 </section>
 <section id="all-or-some-of-multiple-testcases-for-a-given-requirement-must-pass">
 <h3>All (or some) of multiple testcases for a given requirement must pass<a class="headerlink" href="#all-or-some-of-multiple-testcases-for-a-given-requirement-must-pass" title="Link to this heading"></a></h3>
-<p>This is basically the opposite of the above and is easy to achieve by just adding lines in the requirement list for all wanted
+<p>This is basically the opposite of the above and is easy to achieve by just adding lines in the Requirement List for all wanted
 combinations of requirements and testcases. The example below states that UART_REQ_3 must pass in both tc_basic and tc_19k2.</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="_images/requirement_list_and_listed.png"><img alt="Requirement list" src="_images/requirement_list_and_listed.png" style="width: 300pt;" /></a>
+<a class="reference internal image-reference" href="_images/requirement_list_and_listed.png"><img alt="Requirement List" src="_images/requirement_list_and_listed.png" style="width: 300pt;" />
+</a>
 </figure>
 <div class="line-block">
 <div class="line"><br /></div>
@@ -414,109 +436,380 @@ combinations of requirements and testcases. The example below states that UART_R
 <section id="requirement-mapping">
 <h3>Requirement mapping<a class="headerlink" href="#requirement-mapping" title="Link to this heading"></a></h3>
 <p>Requirement mapping just maps one or more requirements to another requirement. This is intended for two different use cases: Mapping of
-project requirements to IP or legacy requirements or mapping of requirements to multiple sub-requirements.</p>
-<section id="mapping-of-project-requirements-to-ip-or-legacy-requirements">
-<h4>Mapping of project requirements to IP or legacy requirements<a class="headerlink" href="#mapping-of-project-requirements-to-ip-or-legacy-requirements" title="Link to this heading"></a></h4>
-<p>Assuming you already have a UART IP, that has been properly verified, and the provided UART testbench already has full UVVM
-specification coverage support, with a requirement list file and testcases generating Partial coverage files. Assuming you then have a
-project with its own UART requirements, that hopefully more or less matches that of the IP, but the requirement labels and combinations
-may be different. Then you don’ want to modify the provided UART testbench in order just to get the “right” requirement labels. A much
-better approach is to map the project requirements to the UART IP requirements.</p>
-<figure class="align-center">
-<a class="reference internal image-reference" href="_images/requirement_list_ip.png"><img alt="Requirement list" src="_images/requirement_list_ip.png" style="width: 500pt;" /></a>
-</figure>
-<p>Now assume the already shown UART requirement list is that of the IP, and that we have similar project UART requirements, we may have a
-scenario as shown above. Here we can see that UART_REQ_B of the project matches that of UART_REQ_3 of the UART IP, and that UART_REQ_A
-of the project is actually not covered by any single UART IP requirement, but in fact must include both UART_REQ_1 and UART_REQ_2. The
-map would for this case be as shown below.</p>
-<figure class="align-center">
-<a class="reference internal image-reference" href="_images/requirement_mapping_ip.png"><img alt="Requirement list" src="_images/requirement_mapping_ip.png" style="width: 350pt;" /></a>
-</figure>
-<p>Making the requirement map file is of course a manual job, which could be simple or complex depending on how much the two requirement
-lists differ in structure.</p>
-<p>The requirement map file is only used as an input to the run_spec_cov.py Python script, as is also the Partial coverage file from the
-UART IP verification using the IP (or legacy) testbench. The Python script will check that -    For project requirement UART_REQ_A,
-both UART_REQ_1 and UART_REQ_2 have passed -    For project requirement UART_REQ_B, UART_REQ_3 has passed -     Etc…</p>
-<p>The report from run_spec_cov.py will show compliancy for the project requirement (e.g.UART_REQ_A), but also for the
-“sub-requirement(s)” (e.g. UART_REQ_1 and UART_REQ_2).</p>
-</section>
+requirements to multiple sub-requirements, or mapping of project requirements to IP or legacy requirements.</p>
 <section id="mapping-of-project-requirements-to-multiple-sub-requirements">
 <h4>Mapping of project requirements to multiple sub-requirements<a class="headerlink" href="#mapping-of-project-requirements-to-multiple-sub-requirements" title="Link to this heading"></a></h4>
 <p>Often the original requirements are too complex (or compound), so that it is difficult to tick off a requirement as checked until a
 whole lot of different things are tested. An example of that could be a UART requirement like the one shown below - with a single
 UART_REQ_GENERAL requirement.</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="_images/super_req.png"><img alt="Requirement list" src="_images/super_req.png" style="width: 350pt;" /></a>
+<a class="reference internal image-reference" href="_images/super_req.png"><img alt="Requirement List" src="_images/super_req.png" style="width: 350pt;" />
+</a>
 </figure>
-<p>If you want to split this into more specific requirements you have several options, with some potential options listed and illustrated
-below. a)       Rename the requirements b)      Extend the names c)     Extend the names using a record like notation</p>
-<figure class="align-center">
-<a class="reference internal image-reference" href="_images/requirement_split.png"><img alt="Requirement list" src="_images/requirement_split.png" style="width: 800pt;" /></a>
-</figure>
-<p>All of these and more are of course possible, but the problem is that they don’t show the relation to the original requirement.</p>
-<p>Showing this relationship is quite simple in UVVM, by using exactly the same mechanism as for the IP or legacy scenario in the previous
-example. Thus all you have to do is to make your own requirement list and then map the original requirement to a set of requirements in
-your new list.</p>
-<figure class="align-center">
-<a class="reference internal image-reference" href="_images/mapping_long_name.png"><img alt="Mapping" src="_images/mapping_long_name.png" style="width: 800pt;" /></a>
-</figure>
-<ul class="simple">
-<li><p>Or even simpler just name the subrequirements A,B,C,….</p></li>
-</ul>
-<figure class="align-center">
-<a class="reference internal image-reference" href="_images/mapping_short_name.png"><img alt="Mapping" src="_images/mapping_short_name.png" style="width: 800pt;" /></a>
-</figure>
-<p>As for the IP scenario this approach allows the report to show both the original requirement and its new sub-requirements.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
+<p>If you want to split this into more specific requirements you have several options, with some potential options listed and illustrated
+below. a) Rename the requirements b) Extend the names c) Extend the names using a record like notation</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/requirement_split.png"><img alt="Requirement List" src="_images/requirement_split.png" style="width: 800pt;" />
+</a>
+</figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>All of these and more are of course possible, but the problem is that they don’t show the relation to the original requirement.</p>
+<p>Showing this relationship is quite simple in UVVM, by creating a Map file which maps the original requirement to a set of
+sub-requirements.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/mapping_long_name.png"><img alt="Mapping" src="_images/mapping_long_name.png" style="width: 800pt;" />
+</a>
+</figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>Or even simpler just name the sub-requirements A,B,C,….</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/mapping_short_name.png"><img alt="Mapping" src="_images/mapping_short_name.png" style="width: 800pt;" />
+</a>
+</figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>This tells the Specification Coverage tool that the original (compound) requirement will be tested through these sub-requirements, and
+that the compound requirement shall be compliant if and only if all the sub-requirements are compliant.</p>
+</section>
+<section id="mapping-of-project-requirements-to-ip-or-legacy-requirements">
+<h4>Mapping of project requirements to IP or legacy requirements<a class="headerlink" href="#mapping-of-project-requirements-to-ip-or-legacy-requirements" title="Link to this heading"></a></h4>
+<p>An alternative use case for requirement mapping is for IP or legacy requirements. Assuming you already have a UART IP, that has been
+properly verified, and the provided UART testbench already has full UVVM Specification Coverage support, with a Requirement List file
+and testcases generating Partial Coverage files. Assuming you then have a project with its own UART requirements, that hopefully more
+or less matches that of the IP, but the requirement labels and combinations may be different. Then you don’t want to modify the provided
+UART testbench in order just to get the “right” requirement labels. A much better approach is to map the project requirements to the
+UART IP requirements.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/requirement_list_ip.png"><img alt="Requirement List" src="_images/requirement_list_ip.png" style="width: 500pt;" />
+</a>
+</figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>Now assume the already shown UART Requirement List is that of the IP, and that we have similar project UART requirements, we may have a
+scenario as shown above. Here we can see that UART_REQ_B of the project matches that of UART_REQ_3 of the UART IP, and that UART_REQ_A
+of the project is actually not covered by any single UART IP requirement, but in fact must include both UART_REQ_1 and UART_REQ_2. The
+mapping would for this case be as shown below.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/requirement_mapping_ip.png"><img alt="Requirement List" src="_images/requirement_mapping_ip.png" style="width: 350pt;" />
+</a>
+</figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>Making the Requirement Map file is of course a manual job, which could be simple or complex depending on how much the two requirement
+lists differ in structure.</p>
+<p>In this case, the legacy IP Requirement List will only be used as input for the legacy IP UART testbench, from which the PC files will
+be generated, while the project Requirement List will be used as input to the run_spec_cov.py Python script. The Requirement Map file
+is only used as an input to the run_spec_cov.py Python script, as is also the Partial Coverage file from the UART IP verification
+using the IP (or legacy) testbench. The Python script will check that - For project requirement UART_REQ_A, both UART_REQ_1 and
+UART_REQ_2 have passed - For project requirement UART_REQ_B, UART_REQ_3 has passed - Etc…</p>
+<p>The report from run_spec_cov.py will show compliance for the project requirement (e.g.UART_REQ_A), but also for the
+“sub-requirement(s)” (e.g. UART_REQ_1 and UART_REQ_2).</p>
 </section>
 </section>
 </section>
 <section id="requirement-and-map-files">
-<h2>Requirement and map files<a class="headerlink" href="#requirement-and-map-files" title="Link to this heading"></a></h2>
-<p>The requirement list file contains a list of requirements to be verified. As described in the section about <a class="reference internal" href="#mapping-of-project-requirements-to-multiple-sub-requirements">Mapping of project
+<h2>Requirement and Map files<a class="headerlink" href="#requirement-and-map-files" title="Link to this heading"></a></h2>
+<p>The Requirement List file contains a list of requirements to be verified. As described in the section about <a class="reference internal" href="#mapping-of-project-requirements-to-multiple-sub-requirements">Mapping of project
 requirements to multiple sub-requirements</a>, some requirements from the specification may not be practical or possible to test
-directly, and might therefore need to be divided into testable sub-requirements. This relationship between super- and sub-requirements
-is defined in the requirement map file.</p>
-<p>See the section <a class="reference internal" href="#formats-of-input-and-intermediate-files">Formats of input and intermediate files</a> for more information about the syntax of the requirement- and map files.</p>
+directly, and might therefore need to be divided into testable sub-requirements. This relationship between compound- and
+sub-requirements is defined in the Requirement Map file.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>In previous versions of UVVM (pre V2 2024.09.19), only requirements that could be ticked off directly (i.e. noncompound requirements
+and sub-requirements) would be listed in the Requirement List file. In the new format, described in this section, the Requirement
+List file lists main requirements (i.e. compound and noncompound requirements), while sub-requirements are defined through the
+Requirement Map file. The old input format is still supported, but this support may be removed in the future.</p>
+</div>
+<section id="requirement-list-file">
+<h3>Requirement List file<a class="headerlink" href="#requirement-list-file" title="Link to this heading"></a></h3>
+<p>The Requirement List file is a CSV type file used as input both in the VHDL testcase and to the run_spec_cov.py script. The file
+contains a list of the project requirements to be tested. The user may optionally also include specifications for which testcase
+each requirement must be tested in. When multiple testcases are listed on the same line, the requirement only needs to be ticked off
+in one of those testcases in order to be compliant. For testcases listed on a separate line, the requirement must be ticked off in
+that testcase in order to be compliant. See <a class="reference internal" href="#advanced-usage">Advanced usage</a> for more information about testcase listing.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>File</strong></p></td>
+<td><p>Requirement List file</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Required?</strong></p></td>
+<td><p>Required</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>File type</strong></p></td>
+<td><p>CSV</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Input to</strong></p></td>
+<td><div class="line-block">
+<div class="line">run_spec_cov.py (<em>-r &lt;req-list&gt;.csv</em>)</div>
+<div class="line">VHDL testcase (<em>initialize_req_cov(&lt;tc_name&gt;, &lt;req_list&gt;, &lt;pc_name&gt;)</em>)</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Syntax:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Req. label&gt;, &lt;Description&gt;[,&lt;Testcase-name&gt;, &lt;Testcase-name&gt;, ...]
+&lt;Req. label&gt;, &lt;Description&gt;[,&lt;Testcase-name&gt;, &lt;Testcase-name&gt;, ...]
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>UART_REQ_BR,    Baud-rate 9600 and 19k2, sub_requirement
+UART_REQ_ODD,   Odd parity,              tc_basic
+UART_REQ_RESET, Active low reset,        tc_reset, tc_basic
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If tickoff is done on a requirement that was not listed in the requirement list, a TB_WARNING will be issued during simulation.
-However, the requirement will still be included in the partial coverage file. The final compliance of the requirement will depend
+<p>If tick-off is done on a requirement that was not listed in the Requirement List, a TB_WARNING will be issued during simulation.
+However, the requirement will still be included in the Partial Coverage file. The final compliance of the requirement will depend
 on the strictness level specified when running the run_spec_cov.py post-processing script.</p>
 </div>
-<div class="line-block">
-<div class="line"><br /></div>
+</section>
+<section id="requirement-map-file-optional">
+<h3>Requirement Map file (optional)<a class="headerlink" href="#requirement-map-file-optional" title="Link to this heading"></a></h3>
+<p>The Requirement Map file is an optional CSV type file used as input to the run_spec_cov.py script. This file maps compound requirements
+to sub-requirements. A compound requirement is compliant if and only if all of its sub-requirements are compliant. Descriptions and
+testcases for the sub-requirements can also be listed in the Requirement Map file. The sub-requirement definition lines must be placed
+below the requirement/sub-requirement mapping lines.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>File</strong></p></td>
+<td><p>Requirement Map file</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Required?</strong></p></td>
+<td><p>Optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>File type</strong></p></td>
+<td><p>CSV</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Input to</strong></p></td>
+<td><p>run_spec_cov.py (<em>-m &lt;map_file&gt;.txt</em>)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Syntax:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Req. label&gt;, &lt;Sub-req. label&gt; [,&lt;Sub-req. label&gt;, &lt;Sub-req. label&gt;, ...]
+&lt;Req. label&gt;, &lt;Sub-req. label&gt; [,&lt;Sub-req. label&gt;, &lt;Sub-req. label&gt;, ...]
+
+&lt;Sub-req. label&gt;, &lt;Description&gt; [,&lt;Testcase-name&gt;, &lt;Testcase-name&gt;, ...]
+&lt;Sub-req. label&gt;, &lt;Description&gt; [,&lt;Testcase-name&gt;, &lt;Testcase-name&gt;, ...]
+</pre></div>
 </div>
+<p>Example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>UART_REQ_BR, UART_REQ_BR_A, UART_REQ_BR_B
+
+UART_REQ_BR_A, Baud-rate 9600, tc_br_9600
+UART_REQ_BR_B, Baud-rate 19k2, tc_br_19k2
+</pre></div>
+</div>
+</section>
+<section id="partial-coverage-list-file-optional">
+<h3>Partial Coverage List file (optional)<a class="headerlink" href="#partial-coverage-list-file-optional" title="Link to this heading"></a></h3>
+<p>The Partial Coverage list file is an optional .txt type file used as input to the run_spec_cov.py script. This file provides a list of
+all the Partial Coverage files to processed by the Specification Coverage post-processing script.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>File</strong></p></td>
+<td><p>Partial Coverage List file</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Required?</strong></p></td>
+<td><p>Optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>File type</strong></p></td>
+<td><p>.txt</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Input to</strong></p></td>
+<td><p>run_spec_cov.py (<em>-p &lt;pc_list&gt;.txt</em>)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Syntax:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;path-to-partial-coverage-file&gt;
+&lt;path-to-partial-coverage-file&gt;
+...
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>../sim/pc_1.csv
+../sim/pc_2.csv
+</pre></div>
+</div>
+</section>
+<section id="script-config-file-optional">
+<h3>Script config file (optional)<a class="headerlink" href="#script-config-file-optional" title="Link to this heading"></a></h3>
+<p>The script config file is an optional .txt type file used as input to the run_spec_cov.py script. This file can be used to list all the
+arguments to run_spec_cov.py. All arguments shall be added on a new line. The config file will override all other arguments.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>File</strong></p></td>
+<td><p>Configuration file</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Required?</strong></p></td>
+<td><p>Optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>File type</strong></p></td>
+<td><p>.txt</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Input to</strong></p></td>
+<td><p>run_spec_cov.py (<em>–config &lt;config&gt;.txt</em>)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">--requirement_list ../script/requirements.csv</span>
+<span class="c1">--partial_cov ../script/partial_cov_list.txt</span>
+<span class="c1">--spec_cov spec_cov.csv</span>
+<span class="c1">--strictness 0</span>
+</pre></div>
+</div>
+</section>
+<section id="partial-coverage-file-generated">
+<h3>Partial Coverage file (generated)<a class="headerlink" href="#partial-coverage-file-generated" title="Link to this heading"></a></h3>
+<p>The Partial Coverage file is a CSV type file generated by the VHDL package when a testcase is run, and used as input to the
+run_spec_cov.py script. This file lists the output from the testcase.</p>
+<p>Syntax:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>NOTE: &lt;note&gt;
+TESTCASE_NAME: &lt;name&gt;
+DELIMITER: &lt;delimiter-character&gt;
+
+&lt;Requirement&gt;, &lt;Testcase&gt;, &lt;PASS/FAIL&gt;
+...
+SUMMARY,&lt;Testcase&gt;,&lt;PASS/FAIL&gt;
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">NOTE</span><span class="o">:</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">coverage</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="k">when</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="na">&#39;SUMMARY</span><span class="p">,</span><span class="w"> </span><span class="n">TC_1</span><span class="p">,</span><span class="w"> </span><span class="n">PASS</span><span class="p">&#39;</span>
+<span class="n">TESTCASE_NAME</span><span class="o">:</span><span class="w"> </span><span class="n">TC_1</span>
+<span class="n">DELIMITER</span><span class="o">:</span><span class="w"> </span><span class="p">,</span>
+
+<span class="n">REQ_1A</span><span class="p">,</span><span class="n">TC_1</span><span class="p">,</span><span class="n">PASS</span>
+<span class="n">REQ_1B</span><span class="p">,</span><span class="n">TC_1</span><span class="p">,</span><span class="n">PASS</span>
+<span class="n">REQ_1C</span><span class="p">,</span><span class="n">TC_1</span><span class="p">,</span><span class="n">PASS</span>
+<span class="n">SUMMARY</span><span class="p">,</span><span class="n">TC_1</span><span class="p">,</span><span class="n">PASS</span>
+</pre></div>
+</div>
+</section>
 <section id="comments">
 <h3>Comments<a class="headerlink" href="#comments" title="Link to this heading"></a></h3>
-<p>Any line in the requirement- or map files beginning with ‘#’ will be treated as a comment, meaning it will be ignored by the VHDL and
+<p>Any line in the Requirement- or Map files beginning with ‘#’ will be treated as a comment, meaning it will be ignored by the VHDL and
 python scripts. Note that in-line comments are not supported.</p>
-<p>Example of valid and invalid usage in requirement list file:</p>
+<p>Example of valid and invalid usage in Requirement List file:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># This line will be treated as a comment
 REQ_1, Description 1, TC_1
 REQ_2, Description 2, TC_2 # This will NOT be interpreted as a comment!
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 </section>
 </section>
 <section id="vhdl-package">
 <h2>VHDL Package<a class="headerlink" href="#vhdl-package" title="Link to this heading"></a></h2>
-<p>A vital part of the specification coverage concept is the VHDL testbench methods. These methods are described in the following section.
-The methods are located inside the spec_cov_pkg.vhd file in the src/ directory of this VIP.</p>
-<section id="vhdl-methods">
-<h3>VHDL Methods<a class="headerlink" href="#vhdl-methods" title="Link to this heading"></a></h3>
+<p>A vital part of the Specification Coverage concept is the VHDL testbench methods. These are located inside the spec_cov_pkg.vhd
+file in the src/ directory of this VIP.</p>
+<section id="configuration-record">
+<h3>Configuration record<a class="headerlink" href="#configuration-record" title="Link to this heading"></a></h3>
+<p><strong>t_spec_cov_config</strong></p>
+<p>This record is located in the spec_cov_pkg.vhd. The configuration record is applied as a shared_variable <code class="docutils literal notranslate"><span class="pre">shared_spec_cov_config</span></code>
+to allow different configuration for different DUTs. Any test sequencer may then set the complete record as required - or even just
+parts of it like <code class="docutils literal notranslate"><span class="pre">shared_spec_cov_config.csv_delimiter</span> <span class="pre">:=</span> <span class="pre">';';</span></code>. The default values of this record can be modified via the
+adaptations_pkg.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Record elements</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>missing_req_label_severity</p></td>
+<td><p>t_alert_level</p></td>
+<td><p>TB_WARNING</p></td>
+<td><p>Alert level used when the tick_off_req_cov() procedure
+does not find the specified requirement label in the
+Requirement List, given that a Requirement List is given
+in the initialize_req_cov() command.</p></td>
+</tr>
+<tr class="row-odd"><td><p>compound_req_tickoff_severity</p></td>
+<td><p>t_alert_level</p></td>
+<td><p>TB_WARNING</p></td>
+<td><p>Alert level used when the tick_off_req_cov() procedure
+is called on a compound requirement (i.e. a requirement
+meant to be tested through sub-requirements).</p></td>
+</tr>
+<tr class="row-even"><td><p>csv_delimiter</p></td>
+<td><p>character</p></td>
+<td><p>‘,’</p></td>
+<td><p>Character used as delimiter in the CSV files. This will
+also be written into all Partial Coverage files.
+run_spec_cov.py will find the delimiter there.
+NOTE: The ‘&amp;’ and ‘ ‘ (space) symbols can not be used as
+delimiter.</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_requirements</p></td>
+<td><p>natural</p></td>
+<td><p>1000</p></td>
+<td><p>Maximum number of requirements in the req_map file used
+in initialize_req_cov(). Increase this number if the
+number of requirements exceeds 1000.</p></td>
+</tr>
+<tr class="row-even"><td><p>max_testcases_per_req</p></td>
+<td><p>natural</p></td>
+<td><p>20</p></td>
+<td><p>Maximum number of testcases allowed per requirement.
+This is applicable when one requirement is verified by
+one or more testcases.</p></td>
+</tr>
+<tr class="row-odd"><td><p>csv_max_line_length</p></td>
+<td><p>positive</p></td>
+<td><p>256</p></td>
+<td><p>Maximum length of each line in any CSV file. (i.e. max
+number of characters for all values and separators in
+total)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The Specification Coverage implementation uses three new message IDs, as described in the table below. All message Ids are located in
+uvvm_util adaptations package. The Specification Coverage implementation uses the shared message id panel for all logging.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Message Id</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ID_FILE_OPEN_CLOSE</p></td>
+<td><p>Id used for any file open and close operation</p></td>
+</tr>
+<tr class="row-odd"><td><p>ID_FILE_PARSER</p></td>
+<td><p>Id used for CSV parser messages.</p></td>
+</tr>
+<tr class="row-even"><td><p>ID_SPEC_COV</p></td>
+<td><p>Id used for all messages that are not directly related to CSV parsing.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods">
+<h3>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>All parameters in brackets are optional.</p></li>
+</ul>
 <section id="initialize-req-cov">
 <h4>initialize_req_cov()<a class="headerlink" href="#initialize-req-cov" title="Link to this heading"></a></h4>
-<p>This procedure starts the requirement coverage process in a testcase.</p>
-<p>The requirement list file is optional, but without it the specification coverage is of course not possible and run_spec_cov.py shall
-not be executed.</p>
-<p>The partial_coverage_file is created - and the header is written with NOTE, Testcase-name and Delimiter on the first three lines. If
-file already exists, it will be overwritten.</p>
+<p>This procedure starts the requirement coverage process in a testcase. The Requirement List file is optional, but without it the
+Specification Coverage is of course not possible and run_spec_cov.py shall not be executed. The partial_coverage_file is created -
+and the header is written with NOTE, Testcase-name and Delimiter on the first three lines. If file already exists, it will be
+overwritten.</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">initialize_req_cov</span><span class="p">(</span><span class="n">testcase</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">req_list_file</span><span class="p">],</span><span class="w"> </span><span class="n">partial_cov_file</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -540,13 +833,19 @@ file already exists, it will be overwritten.</p>
 <td><p>req_list_file</p></td>
 <td><p>in</p></td>
 <td><p>string</p></td>
-<td><p>Optional: Requirement list file name.</p></td>
+<td><p>Requirement List file name.</p></td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
 <td><p>partial_cov_file</p></td>
 <td><p>in</p></td>
 <td><p>string</p></td>
-<td><p>Partial coverage output file name.</p></td>
+<td><p>Partial Coverage output file name.</p></td>
+</tr>
+<tr class="row-odd"><td><p>constant</p></td>
+<td><p>map_list_file</p></td>
+<td><p>in</p></td>
+<td><p>string</p></td>
+<td><p>Optional. Requirement Map file.</p></td>
 </tr>
 </tbody>
 </table>
@@ -561,28 +860,24 @@ file already exists, it will be overwritten.</p>
 <p>This procedure evaluates and logs the specified requirement. The procedure checks the global alert mismatch status, and if an alert
 mismatch is present on ERROR, FAILURE, TB_ERROR or TB_FAILURE the requirement will be marked as FAIL. If there are no such alert
 mismatches, the requirement will be marked as PASS, unless the requirement_status is explicitly set to FAIL. The result is written to
-both the transcript (and log) and the partial coverage file (specified in the initialize_req_cov() command). The tick_off_req_cov()
-will look up the specified requirement and testcase in the requirement list specified in initialize_req_cov(), and use the description
+both the transcript (and log) and the Partial Coverage file (specified in the initialize_req_cov() command). The tick_off_req_cov()
+will look up the specified requirement and testcase in the Requirement List specified in initialize_req_cov(), and use the description
 from this entry as a minimum log message. The procedure will also issue a TB_WARNING if the specified requirement was not found in the
-requirement list.</p>
-<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="p">..</span><span class="w"> </span><span class="n">note</span><span class="o">::</span>
+Requirement List.</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">tick_off_req_cov</span><span class="p">(</span><span class="n">requirement</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">requirement_status</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">tickoff_extent</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">]]]])</span>
 </pre></div>
 </div>
-<blockquote>
-<div><p>If tickoff is performed on a requirement that was not listed in the requirement list, a TB_WARNING will be issued. However, the
-requirement will still be included in the partial coverage file. The final compliance of the requirement will depend on the
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If tick-off is performed on a requirement that was not listed in the Requirement List, a TB_WARNING will be issued. However, the
+requirement will still be included in the Partial Coverage file. The final compliance of the requirement will depend on the
 strictness level specified when running the run_spec_cov.py script.</p>
-</div></blockquote>
-<div class="line-block">
-<div class="line"><br /></div>
 </div>
-<blockquote>
-<div><p>tick_off_req_cov(requirement, [requirement_status], [msg], [tickoff_extent], [scope])</p>
-</div></blockquote>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Object</p></th>
 <th class="head"><p>Name</p></th>
+<th class="head"><p>Dir.</p></th>
 <th class="head"><p>Type</p></th>
 <th class="head"><p>Description</p></th>
 </tr>
@@ -590,30 +885,38 @@ strictness level specified when running the run_spec_cov.py script.</p>
 <tbody>
 <tr class="row-even"><td><p>constant</p></td>
 <td><p>requirement</p></td>
+<td><p>in</p></td>
 <td><p>string</p></td>
 <td><p>String with the requirement label. Must as default
-match a requirement label in the given requirement list.</p></td>
+match a requirement label in the given Requirement List.</p></td>
 </tr>
 <tr class="row-odd"><td><p>constant</p></td>
 <td><p>requirement_status</p></td>
-<td><p>t_test_status</p></td>
-<td><p>Optional: Enter FAIL to explicitly fail the requirement.</p></td>
+<td><p>in</p></td>
+<td><p><a class="reference internal" href="types_pkg.html#t-test-status"><span class="std std-ref">t_test_status</span></a></p></td>
+<td><p>Enter FAIL to explicitly fail the requirement. Default
+value is NA.</p></td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
 <td><p>msg</p></td>
+<td><p>in</p></td>
 <td><p>string</p></td>
-<td><p>Optional message. Only possible after preceding
-requirement_status (use NA unless FAIL).</p></td>
+<td><p>A custom message to be appended in the log/alert.
+Defaut value is “”.</p></td>
 </tr>
 <tr class="row-odd"><td><p>constant</p></td>
 <td><p>tickoff_extent</p></td>
-<td><p>t_extent_tickoff</p></td>
-<td><p>Optional: Partial coverage output file name.</p></td>
+<td><p>in</p></td>
+<td><p><a class="reference internal" href="types_pkg.html#t-extent-tickoff"><span class="std std-ref">t_extent_tickoff</span></a></p></td>
+<td><p>Whether to log every tickoff for this requirement or
+only once. Default value is LIST_SINGLE_TICKOFF.</p></td>
 </tr>
 <tr class="row-even"><td><p>constant</p></td>
 <td><p>scope</p></td>
+<td><p>in</p></td>
 <td><p>string</p></td>
-<td><p>Optional: Partial coverage output file name.</p></td>
+<td><p>Describes the scope from which the log/alert originates.
+Default value is C_SCOPE defined in adaptations_pkg.</p></td>
 </tr>
 </tbody>
 </table>
@@ -627,20 +930,38 @@ requirement_status (use NA unless FAIL).</p></td>
 <span class="c1">-- In order to include msg and scope requirement_status and tickoff_extent must be included</span>
 <span class="n">tick_off_req_cov</span><span class="p">(</span><span class="s">&quot;UART_REQ_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NA</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;my_msg&quot;</span><span class="p">);</span>
 <span class="c1">-- or</span>
-<span class="n">tick_off_req_cov</span><span class="s">&quot;“UART_REQ_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NA</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;my_msg&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">LIST_EVERY_TICKOFF</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;my_scope&quot;</span><span class="p">);</span>
+<span class="n">tick_off_req_cov</span><span class="p">(</span><span class="s">&quot;UART_REQ_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NA</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;my_msg&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">LIST_EVERY_TICKOFF</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;my_scope&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
 <section id="finalize-req-cov">
 <h4>finalize_req_cov()<a class="headerlink" href="#finalize-req-cov" title="Link to this heading"></a></h4>
 <p>This procedure ends the requirement coverage process in a test.
-If alert status is OK - it appends the following line to the partial coverage file: ‘SUMMARY, &lt;Testcase name&gt;, PASS’
-If alert status is not OK - it appends the following line to the partial coverage file: ‘SUMMARY, &lt;Testcase name&gt;, FAIL’
+If alert status is OK - it appends the following line to the Partial Coverage file: ‘SUMMARY, &lt;Testcase name&gt;, PASS’
+If alert status is not OK - it appends the following line to the Partial Coverage file: ‘SUMMARY, &lt;Testcase name&gt;, FAIL’
 This line is used later by the run_spec_cov.py script.
-•       If the simulation never reached this command, e.g. if failed, then no summary line is written - indicating FAIL:</p>
+If the simulation never reached this command, e.g. if failed, then no summary line is written - indicating FAIL:</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">finalize_req_cov</span><span class="p">(</span><span class="n">VOID</span><span class="p">)</span>
 </pre></div>
 </div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Object</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Dir.</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>constant</p></td>
+<td><p>VOID</p></td>
+<td><p>in</p></td>
+<td><p><a class="reference internal" href="types_pkg.html#t-void"><span class="std std-ref">t_void</span></a></p></td>
+<td><p>A dummy parameter for easier reading syntax</p></td>
+</tr>
+</tbody>
+</table>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Example:</span>
 <span class="n">finalize_req_cov</span><span class="p">(</span><span class="n">VOID</span><span class="p">);</span>
 </pre></div>
@@ -650,60 +971,13 @@ This line is used later by the run_spec_cov.py script.
 <h4>cond_tick_off_req_cov()<a class="headerlink" href="#cond-tick-off-req-cov" title="Link to this heading"></a></h4>
 <p>This procedure will tick off the specified requirement in the same way as tick_off_req_cov(), except that any requirement disabled for
 conditional tick off (through the disable_cond_tick_off_req_cov() procedure) will be ignored (no tick off will be performed).</p>
-<p>Note 1: All requirements are by default enabled for conditional tick off, i.e. will act as being called using the tick_off_req_cov()
-procedure.</p>
-<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">cond_tick_off_req_cov</span><span class="p">(</span><span class="n">requirement</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">requirement_status</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="n">msg</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="n">tickoff_extent</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">])</span>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">cond_tick_off_req_cov</span><span class="p">(</span><span class="n">requirement</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">requirement_status</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">tickoff_extent</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">scope</span><span class="p">]]]])</span>
 </pre></div>
 </div>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Object</p></th>
-<th class="head"><p>Name</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>constant</p></td>
-<td><p>requirement</p></td>
-<td><p>string</p></td>
-<td><p>String with the requirement label. Must as default
-match a requirement label in the given requirement list.</p></td>
-</tr>
-<tr class="row-odd"><td><p>constant</p></td>
-<td><p>requirement_status</p></td>
-<td><p>t_test_status</p></td>
-<td><p>Optional: Enter FAIL to explicitly fail the requirement.</p></td>
-</tr>
-<tr class="row-even"><td><p>constant</p></td>
-<td><p>msg</p></td>
-<td><p>string</p></td>
-<td><p>Optional message. Only possible after preceding
-requirement_status (use NA unless FAIL).</p></td>
-</tr>
-<tr class="row-odd"><td><p>constant</p></td>
-<td><p>tickoff_extent</p></td>
-<td><p>t_extent_tickoff</p></td>
-<td><p>Partial coverage output file name.</p></td>
-</tr>
-<tr class="row-even"><td><p>constant</p></td>
-<td><p>scope</p></td>
-<td><p>string</p></td>
-<td><p>Partial coverage output file name.</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="disable-cond-tick-off-req-cov">
-<h4>disable_cond_tick_off_req_cov()<a class="headerlink" href="#disable-cond-tick-off-req-cov" title="Link to this heading"></a></h4>
-<p>This procedure prevents the given requirement from being ticked off in the partial coverage file when ticked off using the
-cond_tick_off_req_cov() procedure.</p>
-<p>Note 1: The regular tick_off_req_cov() procedure is not affected by this disabling.
-Note 2: A TB_WARNING is raised if the requirement:
-•       Is not listed in the requirement file.
-•       Has already been disabled from conditional tick off.:</p>
-<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">disable_cond_tick_off_req_cov</span><span class="p">(</span><span class="n">requirement</span><span class="p">)</span>
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All requirements are by default enabled for conditional tick off, i.e. will act as being called using the tick_off_req_cov()
+procedure.</p>
 </div>
 <table class="docutils align-default">
 <thead>
@@ -719,7 +993,76 @@ Note 2: A TB_WARNING is raised if the requirement:
 <td><p>requirement</p></td>
 <td><p>in</p></td>
 <td><p>string</p></td>
-<td><p>Requirement to be disabled from conditional tickoff</p></td>
+<td><p>String with the requirement label. Must as default
+match a requirement label in the given Requirement List.</p></td>
+</tr>
+<tr class="row-odd"><td><p>constant</p></td>
+<td><p>requirement_status</p></td>
+<td><p>in</p></td>
+<td><p><a class="reference internal" href="types_pkg.html#t-test-status"><span class="std std-ref">t_test_status</span></a></p></td>
+<td><p>Enter FAIL to explicitly fail the requirement. Default
+value is NA.</p></td>
+</tr>
+<tr class="row-even"><td><p>constant</p></td>
+<td><p>msg</p></td>
+<td><p>in</p></td>
+<td><p>string</p></td>
+<td><p>A custom message to be appended in the log/alert.
+Defaut value is “”.</p></td>
+</tr>
+<tr class="row-odd"><td><p>constant</p></td>
+<td><p>tickoff_extent</p></td>
+<td><p>in</p></td>
+<td><p><a class="reference internal" href="types_pkg.html#t-extent-tickoff"><span class="std std-ref">t_extent_tickoff</span></a></p></td>
+<td><p>Whether to log every tickoff for this requirement or
+only once. Default value is LIST_SINGLE_TICKOFF.</p></td>
+</tr>
+<tr class="row-even"><td><p>constant</p></td>
+<td><p>scope</p></td>
+<td><p>in</p></td>
+<td><p>string</p></td>
+<td><p>Describes the scope from which the log/alert originates.
+Default value is C_SCOPE defined in adaptations_pkg.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Examples:</span>
+<span class="n">cond_tick_off_req_cov</span><span class="p">(</span><span class="s">&quot;UART_REQ_4&quot;</span><span class="p">);</span>
+<span class="n">cond_tick_off_req_cov</span><span class="p">(</span><span class="s">&quot;UART_REQ_4&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">PASS</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Monitor&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">LIST_SINGLE_TICKOFF</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="disable-cond-tick-off-req-cov">
+<h4>disable_cond_tick_off_req_cov()<a class="headerlink" href="#disable-cond-tick-off-req-cov" title="Link to this heading"></a></h4>
+<p>This procedure prevents the given requirement from being ticked off in the Partial Coverage file when ticked off using the
+cond_tick_off_req_cov() procedure.</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">disable_cond_tick_off_req_cov</span><span class="p">(</span><span class="n">requirement</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The regular tick_off_req_cov() procedure is not affected by this disabling.</p></li>
+<li><p>A TB_WARNING is raised if the requirement:
+* Is not listed in the Requirement List file.
+* Has already been disabled from conditional tick off.</p></li>
+</ul>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Object</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Dir.</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>constant</p></td>
+<td><p>requirement</p></td>
+<td><p>in</p></td>
+<td><p>string</p></td>
+<td><p>Requirement to be disabled from conditional tick-off</p></td>
 </tr>
 </tbody>
 </table>
@@ -730,14 +1073,19 @@ Note 2: A TB_WARNING is raised if the requirement:
 </section>
 <section id="enable-cond-tick-off-req-cov">
 <h4>enable_cond_tick_off_req_cov()<a class="headerlink" href="#enable-cond-tick-off-req-cov" title="Link to this heading"></a></h4>
-<p>This procedure permit the requirement to be ticked off in the partial coverage file when ticked off using cond_tick_off_req_cov()
+<p>This procedure permit the requirement to be ticked off in the Partial Coverage file when ticked off using cond_tick_off_req_cov()
 procedure.</p>
-<p>Note 1: All requirements are by default enabled for conditional requirement tick off.
-Note 2: A TB_WARNING is raised if the requirement:
-•       Is not listed in the requirement file.
-•       Has not previously been disabled from conditional tick off.:</p>
 <div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">enable_cond_tick_off_req_cov</span><span class="p">(</span><span class="n">requirement</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>All requirements are by default enabled for conditional requirement tick off.</p></li>
+<li><p>A TB_WARNING is raised if the requirement:
+* Is not listed in the Requirement List file.
+* Has not previously been disabled from conditional tick off.</p></li>
+</ul>
 </div>
 <table class="docutils align-default">
 <thead>
@@ -753,7 +1101,7 @@ Note 2: A TB_WARNING is raised if the requirement:
 <td><p>requirement</p></td>
 <td><p>in</p></td>
 <td><p>string</p></td>
-<td><p>Requirement to be permitted for conditional tickoff</p></td>
+<td><p>Requirement to be permitted for conditional tick-off</p></td>
 </tr>
 </tbody>
 </table>
@@ -761,100 +1109,18 @@ Note 2: A TB_WARNING is raised if the requirement:
 <span class="n">enable_cond_tick_off_req_cov</span><span class="p">(</span><span class="s">&quot;UART_REQ_1&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 </section>
 </section>
-<section id="specification-coverage-configuration-record-shared-spec-cov-config">
-<h3>Specification Coverage configuration record: shared_spec_cov_config<a class="headerlink" href="#specification-coverage-configuration-record-shared-spec-cov-config" title="Link to this heading"></a></h3>
-<p>This record is located in the local adaptation package ‘bitvis_vip_spec_cov/src/local_adaptations_pkg.vhd’ The configuration record is
-applied as a shared_variable ‘shared_spec_cov_config’ to allow different configuration for different DUTs. Any test sequencer may then
-set the complete record as required - or even just parts of it like shared_spec_cov_config.csv_delimiter := ‘;’;</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Record elements</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>missing_req_label_severity</p></td>
-<td><p>t_alert_level</p></td>
-<td><p>TB_WARNING</p></td>
-<td><p>Alert level used when the tick_off_req_cov() procedure
-does not find the specified requirement label in the
-requirement list, given that a requirement list is given
-in the initialize_req_cov() command.</p></td>
-</tr>
-<tr class="row-odd"><td><p>csv_delimiter</p></td>
-<td><p>character</p></td>
-<td><p>‘,’</p></td>
-<td><p>Character used as delimiter in the CSV files. This will
-also be written into all partial coverage files.
-run_spec_cov.py will find the delimiter there.
-NOTE: The ‘&amp;’ and ‘ ‘ (space) symbols can not be used as
-delimiter.</p></td>
-</tr>
-<tr class="row-even"><td><p>max_requirements</p></td>
-<td><p>natural</p></td>
-<td><p>1000</p></td>
-<td><p>Maximum number of requirements in the req_map file used
-in initialize_req_cov(). Increase this number if the
-number of requirements exceeds 1000.</p></td>
-</tr>
-<tr class="row-odd"><td><p>max_testcases_per_req</p></td>
-<td><p>natural</p></td>
-<td><p>20</p></td>
-<td><p>Maximum number of testcases allowed per requirement.
-This is applicable when one requirement is verified by
-one or more testcases.</p></td>
-</tr>
-<tr class="row-even"><td><p>csv_max_line_length</p></td>
-<td><p>positive</p></td>
-<td><p>256</p></td>
-<td><p>Maximum length of each line in any CSV file. (i.e. max
-number of characters for all values and separators in
-total)</p></td>
-</tr>
-</tbody>
-</table>
-<p>The specification coverage implementation uses three new message IDs, as described in the table below. All message Ids are located in
-uvvm_util adaptations package. The specification coverage implementation uses the shared message id panel for all logging.</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Message Id</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>ID_FILE_OPEN_CLOSE</p></td>
-<td><p>Id used for any file open and close operation</p></td>
-</tr>
-<tr class="row-odd"><td><p>ID_FILE_PARSER</p></td>
-<td><p>Id used for CSV parser messages.</p></td>
-</tr>
-<tr class="row-even"><td><p>ID_SPEC_COV</p></td>
-<td><p>Id used for all messages that are not directly related to CSV parsing.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-</section>
-<section id="additional-documentation">
-<h3>Additional documentation<a class="headerlink" href="#additional-documentation" title="Link to this heading"></a></h3>
-<p>Additional documentation about UVVM and its features can be found under “/uvvm_vvc_framework/doc”</p>
 <section id="compilation">
-<h4>Compilation<a class="headerlink" href="#compilation" title="Link to this heading"></a></h4>
-<p>This VHDL package may only be compiled with VHDL 2008. It is dependent on the following libraries
-•       UVVM Utility Library (UVVM-Util), version 2.19.5 and up
-•       UVVM VVC Framework, version 2.12.7 and up</p>
-<p>Before compiling the Specification Coverage component, make sure that uvvm_vvc_framework and uvvm_util have been compiled.
-See UVVM Essential Mechanisms located in uvvm_vvc_framework/doc for information about compile scripts.</p>
-<table class="docutils align-default">
+<h3>Compilation<a class="headerlink" href="#compilation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>This package may only be compiled with VHDL-2008 or newer. It is dependent on the <a class="reference internal" href="utility_library.html#utility-library"><span class="std std-ref">Utility Library</span></a>, which is only
+compatible with VHDL-2008 or newer.</p></li>
+<li><p>After UVVM-Util has been compiled, this package can be compiled into any desired library.</p></li>
+<li><p>See <a class="reference internal" href="vvc_framework.html#vvc-framework-compile-scripts"><span class="std std-ref">Essential Mechanisms - Compile Scripts</span></a> for information about compile scripts.</p></li>
+</ul>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">Compile order for the Specification Coverage VIP</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Compile to library</p></th>
 <th class="head"><p>File</p></th>
@@ -863,27 +1129,22 @@ See UVVM Essential Mechanisms located in uvvm_vvc_framework/doc for information 
 </thead>
 <tbody>
 <tr class="row-even"><td><p>bitvis_vip_spec_cov</p></td>
-<td><p>local_adaptations_pkg.vhd</p></td>
-<td><p>Local file for user adaptations</p></td>
+<td><p>csv_file_reader_pkg.vhd</p></td>
+<td><p>Package for reading and parsing of CSV input
+files</p></td>
 </tr>
 <tr class="row-odd"><td><p>bitvis_vip_spec_cov</p></td>
-<td><p>csv_file_reader_pkg.vhd</p></td>
-<td><p>Package for reading and parsing of CSV input files</p></td>
-</tr>
-<tr class="row-even"><td><p>bitvis_vip_spec_cov</p></td>
 <td><p>spec_cov_pkg.vhd</p></td>
 <td><p>Specification Coverage component implementation</p></td>
 </tr>
 </tbody>
 </table>
-</section>
 <section id="simulator-compatibility-and-setup">
 <h4>Simulator compatibility and setup<a class="headerlink" href="#simulator-compatibility-and-setup" title="Link to this heading"></a></h4>
-<p>See UVVM/README.md for a list of supported simulators.
-For required simulator setup see UVVM-Util Quick reference.</p>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="uvvm_intro.html#uvvm-prerequisites"><span class="std std-ref">Prerequisites</span></a> for a list of supported simulators.</p></li>
+<li><p>For required simulator setup see <a class="reference internal" href="utility_library.html#util-simulator-compatibility"><span class="std std-ref">UVVM-Util Simulator compatibility and setup</span></a>.</p></li>
+</ul>
 </section>
 </section>
 </section>
@@ -891,10 +1152,13 @@ For required simulator setup see UVVM-Util Quick reference.</p>
 <h2>Post-processing script<a class="headerlink" href="#post-processing-script" title="Link to this heading"></a></h2>
 <p>The final step of the Specification Coverage usage is to run a post-processing script to evaluate all the simulation results. This
 script is called run_spec_cov.py. The script requires Python 3.x. The script can be called with the arguments listed in the table below
-from the command line. The CSV delimiter is fetched by the Python script from the partial coverage file headers.</p>
-<p><em>Note 1: All files may be referenced with absolute paths or relative to working directory.</em></p>
-<span id="script-arguments-table"></span><table class="docutils align-default" id="id3">
-<caption><span class="caption-text">run_spec_cov.py script arguments</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+from the command line. The CSV delimiter is fetched by the Python script from the Partial Coverage file headers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All files may be referenced with absolute paths or relative to working directory.</p>
+</div>
+<span id="script-arguments-table"></span><table class="docutils align-default" id="id4">
+<caption><span class="caption-text">run_spec_cov.py script arguments</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 15.4%" />
 <col style="width: 30.8%" />
@@ -909,20 +1173,20 @@ from the command line. The CSV delimiter is fetched by the Python script from th
 <tbody>
 <tr class="row-even"><td><p>–requirement_list (-r)</p></td>
 <td><p>–requirement_list path/requirements.csv</p></td>
-<td><p>Points to the requirement list. Mandatory. (This script is not used when running spec. cov. without a requirement list)</p></td>
+<td><p>Points to the Requirement List (Mandatory for compliance checking)</p></td>
 </tr>
 <tr class="row-odd"><td><p>–partial_cov (-p)</p></td>
 <td><p>–partial_cov my_testcase_cov.csv</p>
 <p>–partial_cov my_coverage_files.txt</p>
 </td>
-<td><p>Points to the partial coverage file generated by the VHDL simulation as input to the post processing.</p>
-<p>May also point to a file list including references to multiple partial coverage files. The format of such a file would be just</p>
+<td><p>Points to the Partial Coverage file generated by the VHDL simulation as input to the post processing.</p>
+<p>May also point to a file list including references to multiple Partial Coverage files. The format of such a file would be just</p>
 <p>each file on a separate line - potentially prefixed by a relative or absolute path.</p>
 </td>
 </tr>
 <tr class="row-even"><td><p>–requirement_map_list (-m)</p></td>
 <td><p>–requirement_map_list path/subrequirements.csv</p></td>
-<td><p>Optional: Points to the requirement map file, (see <a class="reference internal" href="#requirement-mapping">Requirement mapping</a>). If this argument is omitted, the</p>
+<td><p>Optional: Points to the Requirement Map file, (see <a class="reference internal" href="#requirement-mapping">Requirement mapping</a>). If this argument is omitted, the</p>
 <p>script assumes that no sub-requirements exist.</p>
 </td>
 </tr>
@@ -939,7 +1203,7 @@ from the command line. The CSV delimiter is fetched by the Python script from th
 </tr>
 <tr class="row-even"><td><p>–clean</p></td>
 <td><p>–clean path/do/directory</p></td>
-<td><p>Will clean any/all partial coverage files in the given directory. Directory path is optional. Default is current directory.</p>
+<td><p>Will clean any/all Partial Coverage files in the given directory. Directory path is optional. Default is current directory.</p>
 <p>Cannot be run in combination with other arguments. No short form defined here - to avoid unwanted clean.</p>
 </td>
 </tr>
@@ -966,9 +1230,6 @@ testcases, with strict requirement vs testcase relation</a>)).</p>
 </tr>
 </tbody>
 </table>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 <section id="strictness-levels">
 <h3>Strictness levels<a class="headerlink" href="#strictness-levels" title="Link to this heading"></a></h3>
 <p>Strictness does not apply to VHDL testcases - only to the post processing Python script.
@@ -978,11 +1239,12 @@ Default strictness is strictness 0.</p>
 <h4>Strictness 0<a class="headerlink" href="#strictness-0" title="Link to this heading"></a></h4>
 <p>This is the least strictness possible. Focus is only on the requirements, - with no concern at all as to in which testcase the various
 requirements have been tested. Any requirement is compliant if executed as PASSed in any passing testcase, and not failing anywhere.
-This is independent of whether one or more testcases are specified for a given requirement in the Requirement list.</p>
+This is independent of whether one or more testcases are specified for a given requirement in the Requirement List. Testcases may still
+be specified in the Requirement List, but these will ignored by the post-processing script.</p>
 </section>
 <section id="strictness-1">
 <h4>Strictness 1<a class="headerlink" href="#strictness-1" title="Link to this heading"></a></h4>
-<p>For this strictness level a requirement is only compliant if executed in the testcase(s) specified in the Requirement list. The list
+<p>For this strictness level a requirement is only compliant if executed in the testcase(s) specified in the Requirement List. The list
 shown here is used as example for the cases below:</p>
 <ul class="simple">
 <li><p>If no testcase is specified for a given requirement, this requirement may be checked anywhere. Compliant if PASSed.</p></li>
@@ -995,8 +1257,8 @@ both testcases (tc_basic and tc_19k2)</p></li>
 <li><p>A requirement may be checked in <strong>any</strong> testcase in addition to any specified testcase(s).</p></li>
 <li><p><strong>If a requirement status from any testcase is FAIL, that requirement is NON COMPLIANT, - even if PASS in other testcases.</strong></p></li>
 </ul>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>UART_REQ_1, Baudrate 9k6, tc_basic
-UART_REQ_2, Baudrate 19k2, tc_19k2
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>UART_REQ_1, Baud-rate 9600, tc_basic
+UART_REQ_2, Baud-rate 19200, tc_19k2
 UART_REQ_3, Odd parity, tc_basic
 UART_REQ_3, Odd parity, tc_19k2
 UART_REQ_4, Active low reset, tc_reset, tc_basic, tc_19k2
@@ -1005,127 +1267,164 @@ UART_REQ_4, Active low reset, tc_reset, tc_basic, tc_19k2
 </section>
 <section id="strictness-2">
 <h4>Strictness 2<a class="headerlink" href="#strictness-2" title="Link to this heading"></a></h4>
-<p>With this strictness a requirement will be NON_COMPLIANT if it is tested (ticked off) in a testcase that in the Requirement list was
+<p>With this strictness a requirement will be NON_COMPLIANT if it is tested (ticked off) in a testcase that in the Requirement List was
 not specified as testcase for that requirement. In that case it will be NON_COMPLIANT even if it has passed in one or more testcases
 specified for that requirement. E.g. if UART_REQ_1 is tested in testcase tc_basic, but also in tc_reset.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Strictness 2 requires that all requirements must be specified with at least one testcase.</p>
 </div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 </section>
 </section>
 <section id="output-files">
 <h3>Output files<a class="headerlink" href="#output-files" title="Link to this heading"></a></h3>
-<p>The output of the post-processing script is five files with requirements and testcases listed as
-COMPLIANT/NON_COMPLIANT/NOT_TESTED/TESTED_OK and PASS/FAIL/NOT_EXECUTED, respectively. This section lists the formats of the output
+<p>The output of the post-processing script is a set of files with the name given by the --spec_cov (-s) argument, followed by the name
+of that particular file.
+The following five files are produced:
+* &lt;spec_cov_file&gt;.req_compliance_minimal.csv - Lists requirements and their compliance with minimum of qualifying testcases
+* &lt;spec_cov_file&gt;.req_compliance_extended.csv - Lists requirements and their compliance, with all qualifying testcases
+* &lt;spec_cov_file&gt;.req_non_compliance.csv
+COMPLIANT/NON_COMPLIANT/NOT_TESTED and PASS/FAIL/NOT_EXECUTED, respectively. This section lists the formats of the output
 files.</p>
-<section id="requirement-vs-testcase-listing">
-<h4>Requirement vs. testcase listing<a class="headerlink" href="#requirement-vs-testcase-listing" title="Link to this heading"></a></h4>
-<section id="req-vs-tcs-csv">
-<h5>.req_vs_tcs.csv<a class="headerlink" href="#req-vs-tcs-csv" title="Link to this heading"></a></h5>
-<p>The &lt;spec_cov_file&gt;.req_vs_tcs.csv file will list each requriement once, with all associated testcases listed on the same line.
-Associated testcases include testcases specified for that requirement and/or testcases in which the requirement was ticked off.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The output file examples shown in this section have been column aligned for readability. This alignment is not present in the
+generated files.</p>
+</div>
+<section id="requirement-compliance-listing">
+<h4>Requirement compliance listing<a class="headerlink" href="#requirement-compliance-listing" title="Link to this heading"></a></h4>
+<section id="req-compliance-minimal-csv">
+<h5>.req_compliance_minimal.csv<a class="headerlink" href="#req-compliance-minimal-csv" title="Link to this heading"></a></h5>
+<p>The &lt;spec_cov_file&gt;.req_compliance_minimal.csv file will list each requirement once, with the minimum number of testcases qualifying
+that requirement for compliance. This means that if a requirement was tested in more testcases than required any superflous testcases
+will be excluded.</p>
+<p>For example, in strictness 1 or 2, if a requirement was specified for testing in TC_1 as well as either TC_2 or TC_3, but the
+requirement was actually ticked off in all three testcases, the .req_compliance_minimal.csv file would list TC_1 and only one of TC_2
+or TC_3, as the other is superflous.</p>
+<p>This means that in strictness 0, only one testcase will be listed, since any tickoff in a passing testcase is enough to make the
+requirement compliant in strictness 0.</p>
+<p>If a requirement is not compliant, no testcases will be listed, and the column for testcases will instead have the text
+“check *.req_non_compliance.csv”, to indicate that the user should check the .req_non_compliance.csv file for explanation of why
+the requirement is not compliant.</p>
+<p>The main compliance list of the .req_compliance_minimal.csv file will list only top level reuqirements (i.e. not sub-requirements).
+Compliance and testcase listing for sub-requirements will be listed in a separate section below the main compliance list.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Requirements not listed in the Requirement List or Map file will not be listed in the .req_compliance_minimal file</p>
+</div>
 <p>Example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Requirement,Testcase(s),Compliance
-REQ_1,TC_1,COMPLIANT
-REQ_2,TC_1 &amp; TC_2,NOT_TESTED
-REQ_3,TC_1 &amp; TC_3,COMPLIANT
-REQ_5A,TC_1,COMPLIANT
-REQ_5B,TC_1,COMPLIANT
-REQ_6,TC_1,COMPLIANT
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Requirement, Qualifying testcases(minimum),   Compliance
+REQ_1,       TC_BASIC,                        COMPLIANT
+REQ_2,       TC_BASIC &amp; TC_2A,                COMPLIANT
+REQ_3,       check *.req_non_compliance.csv,  NOT_TESTED
+REQ_4,       tested through sub-requirements, COMPLIANT
 
 
-
-Requirement,Sub-Requirement(s),Compliance
-REQ_5,REQ_5B &amp; REQ_5B,COMPLIANT
-
-Not listed requirement(s)
-REQ_6
+Requirement, Sub-requirement, Qualifying testcases(minimum), Sub-req compliance
+REQ_4,       REQ_4A,          TC_BASIC &amp; TC_4A,              COMPLIANT
+REQ_4,       REQ_4B,          TC_BASIC &amp; TC_4B,              COMPLIANT
 </pre></div>
 </div>
 </section>
-<section id="req-vs-single-tc-csv">
-<h5>.req_vs_single_tc.csv<a class="headerlink" href="#req-vs-single-tc-csv" title="Link to this heading"></a></h5>
-<p>The &lt;spec_cov_file&gt;.req_vs_single_tc.csv file will list the status of each requirement/testcase pair on a separate line, so that a
-requirement with multiple associated testcases will have a separate listing for each of those testcases.</p>
-<p>In strictness 1, if a requirement is COMPLIANT, requirement/testcase listings for testcases NOT specified for that requirement will not
-be listed. If a requirement was not tested in any of its specified testcase(s), but was tested in another, passing testcase, the
-requirement will be listed as TESTED_OK in the non-specified testcase, and as NOT_TESTED in the specified testcase(s).</p>
+<section id="req-compliance-extended-csv">
+<h5>.req_compliance_extended.csv<a class="headerlink" href="#req-compliance-extended-csv" title="Link to this heading"></a></h5>
+<p>The &lt;spec_cov_file&gt;.req_compliance_extended.csv file is similar in format to the .req_compliance_minimal.csv file, except that it will
+list <em>all</em> qualifying testcases for a requirement. For strictness 1 and 2, this means that the file will list all testcases which
+the requirement was both <em>specified</em> for testing in and was <em>actually</em> tested in.</p>
+<p>For example, in strictness 1 or 2, if a requirement was specified for testing in TC_1 as well as either TC_2 or TC_3, but the
+requirement was actually ticked off in all three testcases, the .req_compliance_extended.csv file would list all three testcases.</p>
+<p>For AND-listed testcases, .req_compliance_extended.csv file will list each testcase on a separate line, while OR-listed testcases are
+listed on the same line, mirroring the testcase listing format given in the Requirement file.</p>
+<p>In strictness 0, all testcases where a requirement is ticked off will be listed in the .req_compliance_extended.csv, since they are all
+considered qualifying testcases. In this case, all testcases will be listed on a single line, since any AND/OR-listing of
+testcases in the Requirement file will be ignored in strictness 0.</p>
+<p>The main compliance list of the .req_compliance_minimal.csv file will list only top level reuqirements (i.e. not sub-requirements).
+Compliance and testcase listing for sub-requirements will be listed in a separate section below the main compliance list.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Requirements not listed in the Requirement List or Map file will not be listed in the .req_compliance_extended file</p>
+</div>
 <p>Example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Requirement,Testcase,Compliance
-REQ_1,TC_1,COMPLIANT
-REQ_2,TC_1,TESTED_OK
-REQ_2,TC_2,NOT_TESTED
-REQ_3,TC_3,COMPLIANT
-REQ_5A,TC_1,COMPLIANT
-REQ_5B,TC_1,COMPLIANT
-REQ_6,TC_1,COMPLIANT
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Requirement, Qualifying testcases(minimum),   Compliance
+REQ_1,       TC_BASIC,                        COMPLIANT
+REQ_2,       TC_BASIC,                        COMPLIANT
+REQ_2,       TC_2A &amp; TC_2B,                   COMPLIANT
+REQ_3,       check *.req_non_compliance.csv,  NOT_TESTED
+REQ_4,       tested through sub-requirements, COMPLIANT
 
 
-
-Requirement,Sub-Requirement(s),Compliance
-REQ_5,REQ_5B &amp; REQ_5B,COMPLIANT
-
-Not listed requirement(s)
-REQ_6
+Requirement, Sub-requirement, Qualifying testcases(minimum), Sub-req compliance
+REQ_4,       REQ_4A,          TC_BASIC &amp; TC_4A,              COMPLIANT
+REQ_4,       REQ_4B,          TC_BASIC &amp; TC_4B,              COMPLIANT
 </pre></div>
 </div>
 </section>
-<section id="single-req-vs-single-tc-csv">
-<h5>.single_req_vs_single_tc.csv<a class="headerlink" href="#single-req-vs-single-tc-csv" title="Link to this heading"></a></h5>
-<p>The &lt;spec_cov_file&gt;.single_req_vs_single_tc.csv file will list each requirement once, with a single testcase in which the requirement
-has been tested (if any).</p>
+<section id="req-non-compliance-csv">
+<h5>.req_non_compliance.csv<a class="headerlink" href="#req-non-compliance-csv" title="Link to this heading"></a></h5>
+<p>The &lt;spec_cov_file&gt;.req_non_compliance.csv file will list all requirements from the Requirement List that are either NON-COMPLIANT or
+NOT_TESTED, along with the reason for their lack of compliance.</p>
+<p>For example, if a requirement has been ticked off in some, but not all, of the specified testcases in strictness 1 or 2, the
+requirement status will be NOT_TESTED, and the testcases in which the requirement is missing a tickoff will be listed.</p>
+<p>If a compound requirement is lacking compliance due to one or more sub-requirements not being compliant, the main non-compliance list
+will specify which sub-requirements are keeping the compound requirement from being compliant. Non-compliance for sub-requirements will
+then be listed in a separete section below the main non-compliance list. This is illustrated in the example below, where REQ_6A is a
+sub-requirement of REQ_6.</p>
 <p>Example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Requirement,Testcase,Compliance
-REQ_1,TC_1,COMPLIANT
-REQ_2,TC_1,NOT_TESTED
-REQ_3,TC_1,COMPLIANT
-REQ_5A,TC_1,COMPLIANT
-REQ_5B,TC_1,COMPLIANT
-REQ_6,TC_1,COMPLIANT
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Requirement, Compliance status, Reason
+REQ_3,       NOT_TESTED,        No requirement tickoffs
+REQ_4,       NOT_TESTED,        Missing tickoff in TC_4B
+REQ_5,       NON_COMPLIANT,     TC_5 failed
+REQ_6,       NOT_TESTED,        Sub-req REQ_6A not tested
 
 
-
-Requirement,Sub-Requirement(s),Compliance
-REQ_5,REQ_5B &amp; REQ_5B,COMPLIANT
-
-Not listed requirement(s)
-REQ_6
+Requirement, Sub-Requirement(s), Compliance
+REQ_6A,      NOT_TESTED,         Missing tickoff in TC_6A
 </pre></div>
 </div>
 </section>
 </section>
-<section id="testcase-vs-requirement-listing">
-<h4>Testcase vs. requirement listing<a class="headerlink" href="#testcase-vs-requirement-listing" title="Link to this heading"></a></h4>
-<section id="tc-vs-reqs-csv">
-<h5>.tc_vs_reqs.csv<a class="headerlink" href="#tc-vs-reqs-csv" title="Link to this heading"></a></h5>
-<p>The &lt;spec_cov_file&gt;.tc_vs_reqs.csv file will list each testcase with all the requirements that were ticked off in that testcase.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Testcase,Requirement(s),Result
-TC_1,REQ_1 &amp; REQ_2 &amp; REQ_3 &amp; REQ_5A &amp; REQ_5B &amp; REQ_6,PASS
-TC_3,REQ_3,PASS
-TC_2,REQ_2,NOT_EXECUTED
+<section id="testcase-listing-and-warning-files">
+<h4>Testcase listing and warning files<a class="headerlink" href="#testcase-listing-and-warning-files" title="Link to this heading"></a></h4>
+<section id="testcase-list-csv">
+<h5>.testcase_list.csv<a class="headerlink" href="#testcase-list-csv" title="Link to this heading"></a></h5>
+<p>The &lt;spec_cov_file&gt;.testcase_list.csv file will list each testcase with its status (PASS/FAIL/NOT_EXECUTED), a list of all the
+requirements that were ticked off in that testcase (“Actual tickoffs”), and a list of all the requirements that were specified for
+testing in that testcase, but were not ticked off (“Missing tickoffs”).</p>
+<p>In the example below, REQ_1 and REQ_2 were ticked off in TC_BASIC. REQ_3 was specified in the Requirement List to be tested in
+TC_BASIC, but was not actually ticked off.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Testcase, Testcase status, Actual tickoffs, Missing tickoffs
+TC_BASIC, PASS,            REQ_1 &amp; REQ_2,   REQ_3
+TC_1,     PASS,            REQ_1
+TC_4A,    PASS,            REQ_4A,
+TC_4B,    PASS,            ,                REQ_4B
+TC_5,     FAIL,            REQ_5
 </pre></div>
 </div>
 </section>
-<section id="single-tc-vs-single-req-csv">
-<h5>.single_tc_vs_single_req.csv<a class="headerlink" href="#single-tc-vs-single-req-csv" title="Link to this heading"></a></h5>
-<p>The &lt;spec_cov_file&gt;.single_tc_vs_single_req.csv file will list each testcase with one of the requirements that was ticked off in that
-testcase (if any).</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Testcase,Requirement,Result
-TC_1,REQ_1,PASS
-TC_3,REQ_3,PASS
-TC_2,,NOT_EXECUTED
+<section id="warnings-csv">
+<h5>.warnings.csv<a class="headerlink" href="#warnings-csv" title="Link to this heading"></a></h5>
+<p>The &lt;spec_cov_file&gt;.warnings.csv file contains messages about issues detected by the post-processing script that the user should be
+made aware of.</p>
+<dl class="simple">
+<dt>Types of issues reported in the .warnings.csv file:</dt><dd><ul class="simple">
+<li><p>Tickoff of requirements not found in the Requirement List</p></li>
+<li><p>Requirement tickoff in testcases not specified for that requirement (strictness 1 and 2)</p></li>
+<li><p>Tickoff of compund requirements (since these are specified for testing through sub-requirements, not direct tickoff)</p></li>
+<li><p>No testcase specifications for requirement when using strictness 2</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>REQ_1A ticked off in non-specified testcase (TC_4)
+REQ_10 not found in input requirement list (ticked off in TC_1)
+REQ_4 specified for testing through sub-requirements. Ticked off directly in TC_1.
 </pre></div>
 </div>
 </section>
 </section>
 <section id="reference-tables-compliance-result-labels">
 <h4>Reference tables: Compliance/result labels<a class="headerlink" href="#reference-tables-compliance-result-labels" title="Link to this heading"></a></h4>
-<p>The following tables summarize the meanings of the various requirement compliance and testcase result labels in the specificiation
-coverage output files.</p>
+<p>The following tables summarize the meanings of the various requirement compliance and testcase result labels in the Specification
+Coverage output files.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Requirement
@@ -1149,9 +1448,9 @@ testcase(s).</p></td>
 </tr>
 <tr class="row-odd"><td><p>NON-COMPLIANT</p></td>
 <td colspan="2"><p>Ticked off in failing testcase and/or explicitly failed
-at tickoff.</p></td>
+at tick-off.</p></td>
 <td><p>Ticked off in failing testcase and/or
-explicitly failed at tickoff and/or ticked
+explicitly failed at tick-off and/or ticked
 off in non-specified testcase.</p></td>
 </tr>
 <tr class="row-even"><td><p>NOT_TESTED</p></td>
@@ -1161,14 +1460,11 @@ testcase.</p></td>
 testcase.</p></td>
 <td><p>Not ticked off in any testcase.</p></td>
 </tr>
-<tr class="row-odd"><td><p>TESTED_OK</p></td>
-<td><p>–</p></td>
-<td><p>Ticked off in the indicated, passing
-testcase, but that testcase was
-not specified for the requirement.
-<strong>NOTE:</strong> Only used in
-.req_vs_single_tc.csv output file.</p></td>
-<td><p>–</p></td>
+<tr class="row-odd"><td><p>UNLISTED_REQ_PASS</p></td>
+<td colspan="3"><p>Ticked off in passing testcase, but not listed in requirement list.</p></td>
+</tr>
+<tr class="row-even"><td><p>UNLISTED_REQ_FAIL</p></td>
+<td colspan="3"><p>Ticked off in failing testcase, but not listed in requirement list.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1190,225 +1486,6 @@ not specified for the requirement.
 </tr>
 </tbody>
 </table>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-</section>
-</section>
-</section>
-<section id="quick-reference">
-<h2>Quick reference<a class="headerlink" href="#quick-reference" title="Link to this heading"></a></h2>
-<section id="vhdl-procedure-calls">
-<h3>VHDL procedure calls<a class="headerlink" href="#vhdl-procedure-calls" title="Link to this heading"></a></h3>
-<p>The following table shows the specification coverage procedures used in the VHDL testcase.</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 25.0%" />
-<col style="width: 25.0%" />
-<col style="width: 50.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><strong>Procedure</strong></p></th>
-<th class="head"><p><strong>Parameters</strong></p></th>
-<th class="head"><p><strong>Examples</strong></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>initialize_req_cov()</strong></p></td>
-<td><p>testcase (string), req_list_file (string), partial_cov_file (string)
-testcase (string), partial_cov_file (string)</p>
-<p>(Note: No spec coverage)</p>
-</td>
-<td><p>initialize_req_cov(“tc_base_func”, “uart_req_list.csv”, “base_func_cov.csv”);</p>
-<p>initialize_req_cov(“tc_base_func”, “base_func_cov.csv”);</p>
-</td>
-</tr>
-<tr class="row-odd"><td><p><strong>tick_off_req_cov()</strong></p></td>
-<td><p>requirement (string) [,FAIL (t_test_status) [, msg [, LIST_SINGLE_TICKOFF (t_extent_tickoff) [, scope]]]]</p></td>
-<td><p>tick_off_req_cov(“UART_REQ_4”);</p>
-<p>tick_off_req_cov(“UART_REQ_4”, PASS, “Monitor”, LIST_SINGLE_TICKOFF);</p>
-</td>
-</tr>
-<tr class="row-even"><td><p><strong>finalize_req_cov()</strong></p></td>
-<td><p>VOID</p></td>
-<td><p>finalize_req_cov(VOID);</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>cond_tick_off_req_cov()</strong></p></td>
-<td><p>requirement (string) [,FAIL (t_test_status) [, msg [, LIST_SINGLE_TICKOFF (t_extent_tickoff) [, scope]]]]</p></td>
-<td><p>cond_tick_off_req_cov(“UART_REQ_4”);
-cond_tick_off_req_cov(“UART_REQ_4”, PASS, “Monitor”, LIST_SINGLE_TICKOFF);</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>disable_cond_tick_off_req_cov()</strong></p></td>
-<td><p>requirement (string)</p></td>
-<td><p>disable_cond_tick_off_req_cov(“UART_REQ_4”);</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>enable_cond_tick_off_req_cov()</strong></p></td>
-<td><p>requirement (string)</p></td>
-<td><p>enable_cond_tick_off_req_cov(“UART_REQ_4”);</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="script-usage-run-spec-cov-py">
-<h3>Script Usage - run_spec_cov.py<a class="headerlink" href="#script-usage-run-spec-cov-py" title="Link to this heading"></a></h3>
-<p>Call the run_spec_cov.py from a terminal, using e.g.:      python run_spec_cov.py &lt;see <a class="reference internal" href="#script-arguments-table">script_arguments_table</a> for script arguments&gt;</p>
-</section>
-<section id="formats-of-input-and-intermediate-files">
-<h3>Formats of Input and Intermediate Files<a class="headerlink" href="#formats-of-input-and-intermediate-files" title="Link to this heading"></a></h3>
-<section id="requirement-list-file">
-<h4>Requirement list file<a class="headerlink" href="#requirement-list-file" title="Link to this heading"></a></h4>
-<p>The requirement list file is a CSV type file used as input both in the VHDL testcase and to the run_spec_cov.py script.</p>
-<table class="docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><strong>File</strong></p></td>
-<td><p>Requirement list file</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Required?</strong></p></td>
-<td><p>Required</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>File type</strong></p></td>
-<td><p>CSV</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Input to</strong></p></td>
-<td><div class="line-block">
-<div class="line">run_spec_cov.py (-r &lt;req-list&gt;.csv)</div>
-<div class="line">VHDL testcase (initialize_req_cov(&lt;tc_name&gt;, <strong>&lt;req_list&gt;</strong>, &lt;pc_name&gt;))</div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Syntax:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Req. label&gt;, &lt;Descripton&gt;[,&lt;Testcase-name&gt;, &lt;Testcase-name&gt;, ...]
-&lt;Req. label&gt;, &lt;Descripton&gt;[,&lt;Testcase-name&gt;, &lt;Testcase-name&gt;, ...]
-</pre></div>
-</div>
-<p>Example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>UART_REQ_BR_A,  Baudrate 9k6,     tc_basic
-UART_REQ_BR_B,  Baudrate 19k2,    tc_19k2
-UART_REQ_ODD,   Odd parity,       tc_basic
-UART_REQ_RESET, Active low reset, tc_reset, tc_basic
-</pre></div>
-</div>
-</section>
-<section id="requirement-map-file-optional">
-<h4>Requirement map file (optional)<a class="headerlink" href="#requirement-map-file-optional" title="Link to this heading"></a></h4>
-<p>The requirement map file is an optional CSV type file used as input to the run_spec_cov.py script. This file maps super-requirements to
-testable sub-requirements. A super-requirements is compliant if and only if all of it’s sub-requirements are compliant.</p>
-<table class="docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><strong>File</strong></p></td>
-<td><p>Requirement map file</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Required?</strong></p></td>
-<td><p>Optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>File type</strong></p></td>
-<td><p>CSV</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Input to</strong></p></td>
-<td><p>run_spec_cov.py (-m &lt;map_file&gt;.txt)</p></td>
-</tr>
-</tbody>
-</table>
-<p>Syntax:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Req. label&gt;, &lt;Sub-req. label&gt; [,&lt;Sub-req. label&gt;, &lt;Sub-req. label&gt;, ...]
-&lt;Req. label&gt;, &lt;Sub-req. label&gt; [,&lt;Sub-req. label&gt;, &lt;Sub-req. label&gt;, ...]
-</pre></div>
-</div>
-<p>Example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>UART_REQ_GENERAL, UART_REQ_BR_A, UART_REQ_BR_B, UART_REQ_ODD, UART_REQ_RESET
-</pre></div>
-</div>
-</section>
-<section id="partial-coverage-list-file-optional">
-<h4>Partial coverage list file (optional)<a class="headerlink" href="#partial-coverage-list-file-optional" title="Link to this heading"></a></h4>
-<p>The partial coverage list file is an optional .txt type file used as input to the run_spec_cov.py script. This file provides a list of
-all the partial coverage files to processed by the specification coverate post-processing script.</p>
-<table class="docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><strong>File</strong></p></td>
-<td><p>Partial coverage list file</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Required?</strong></p></td>
-<td><p>Optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>File type</strong></p></td>
-<td><p>.txt</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Input to</strong></p></td>
-<td><p>run_spec_cov.py (-p &lt;pc_list&gt;.txt)</p></td>
-</tr>
-</tbody>
-</table>
-<p>Syntax:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;path-to-partial-coverage-file&gt;
-&lt;path-to-partial-coverage-file&gt;
-...
-</pre></div>
-</div>
-<p>Example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>../sim/pc_1.csv
-../sim/pc_2.csv
-</pre></div>
-</div>
-</section>
-<section id="script-config-file-optional">
-<h4>Script config file (optional)<a class="headerlink" href="#script-config-file-optional" title="Link to this heading"></a></h4>
-<p>The script config file is an optional .txt type file used as input to the run_spec_cov.py script. This file can be used to list all the
-arguments to run_spec_cov.py. All arguments shall be added on a new line. The config file will override all other arguments.</p>
-<table class="docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><strong>File</strong></p></td>
-<td><p>Configuration file</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Required?</strong></p></td>
-<td><p>Optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>File type</strong></p></td>
-<td><p>.txt</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Input to</strong></p></td>
-<td><p>run_spec_cov.py (–config &lt;config&gt;.txt)</p></td>
-</tr>
-</tbody>
-</table>
-<p>Example:</p>
-<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">--requirement_list ../script/requirements.csv</span>
-<span class="c1">--partial_cov ../script/partial_cov_list.txt</span>
-<span class="c1">--spec_cov spec_cov.csv</span>
-<span class="c1">--strictness 0</span>
-</pre></div>
-</div>
-</section>
-<section id="partial-coverage-file-generated">
-<h4>Partial coverage file (generated)<a class="headerlink" href="#partial-coverage-file-generated" title="Link to this heading"></a></h4>
-<p>The partial coverage file is a CSV type file generated by the VHDL package when a testcase is run, and used as input to the
-run_spec_cov.py script. This file lists the output from the testcase.</p>
-<p>Syntax:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>NOTE: &lt;note&gt;
-TESTCASE_NAME: &lt;name&gt;
-DELIMITER: &lt;delimiter-character&gt;
-
-&lt;Requirement&gt;, &lt;Testcase&gt;, &lt;PASS/FAIL&gt;
-...
-SUMMARY,&lt;Testcase&gt;,&lt;PASS/FAIL&gt;
-</pre></div>
-</div>
-<p>Example:</p>
-<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">NOTE</span><span class="o">:</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">coverage</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="k">when</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="na">&#39;SUMMARY</span><span class="p">,</span><span class="w"> </span><span class="n">TC_1</span><span class="p">,</span><span class="w"> </span><span class="n">PASS</span><span class="p">&#39;</span>
-<span class="n">TESTCASE_NAME</span><span class="o">:</span><span class="w"> </span><span class="n">TC_1</span>
-<span class="n">DELIMITER</span><span class="o">:</span><span class="w"> </span><span class="p">,</span>
-
-<span class="n">REQ_1A</span><span class="p">,</span><span class="n">TC_1</span><span class="p">,</span><span class="n">PASS</span>
-<span class="n">REQ_1B</span><span class="p">,</span><span class="n">TC_1</span><span class="p">,</span><span class="n">PASS</span>
-<span class="n">REQ_1C</span><span class="p">,</span><span class="n">TC_1</span><span class="p">,</span><span class="n">PASS</span>
-<span class="n">SUMMARY</span><span class="p">,</span><span class="n">TC_1</span><span class="p">,</span><span class="n">PASS</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 </section>
 </section>
 </section>

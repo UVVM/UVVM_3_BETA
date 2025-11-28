@@ -14,8 +14,8 @@ UVVM:                FAILURE      :  REGARD         1
 UVVM:                TB_FAILURE   :  REGARD         1
 UVVM:      --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM:      
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ALL_MESSAGES). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_POS_ACK). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ALL_MESSAGES).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_POS_ACK).
 UVVM: 
 UVVM: 
 UVVM: =========================================================================================================================================================================

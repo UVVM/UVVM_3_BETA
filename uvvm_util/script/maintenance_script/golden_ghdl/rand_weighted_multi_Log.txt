@@ -3,8 +3,8 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Randomization package - rand_weighted
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_GEN).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_RAND_CONF).
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Reducing log messages from rand_pkg
 UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        disable_log_msg(ID_LOG_MSG_CTRL). 
 UVVM: 
@@ -44,7 +44,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted integer (ranges w/default mode) - Generate 1000 random values for each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([-5:-3],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight(0,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([9:10],50)
@@ -56,7 +56,7 @@ UVVM:                                                                           
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([-5:-3],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight(0,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([9:10],50)
@@ -101,8 +101,8 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted integer (invalid parameters)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3. 
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3.
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #1  ***
@@ -136,8 +136,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #1  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5:3],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([-5:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be combined.
+UVVM:                    Ignoring exclude constraint.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([-5:3],30,COMBINED))=> 2
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
@@ -146,7 +146,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #2  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5:3],30,COMBINED)) => Failed. Boolean was false. 'Cyclic mode and weighted randomization cannot be combined. Ignoring cyclic configuration.'
+UVVM:                    randm(([-5:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Cyclic mode and weighted randomization cannot be combined.
+UVVM:                    Ignoring cyclic configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([-5:3],30,COMBINED))=> 3
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_cyclic_mode(NON_CYCLIC)
@@ -156,8 +157,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #3  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5:3],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([-5:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined. Ignoring
+UVVM:                    uniqueness configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([-5:3],30,COMBINED))=> -5
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_uniqueness(NON_UNIQUE)
@@ -166,7 +167,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted integer vector (not supported)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([-5:-3],30)
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -225,7 +226,7 @@ UVVM:                                                                           
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight_real([-5.00:-3.00],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight_real(0.00,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight_real([9.30:10.10],50)
@@ -257,8 +258,8 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted real (invalid parameters)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3. 
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3.
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #5  ***
@@ -292,8 +293,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #4  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5.00:-3.00],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([-5.00:-3.00],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be
+UVVM:                    combined. Ignoring exclude constraint.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([-5.00:-3.00],30,COMBINED))=> -4.579496909578708
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
@@ -312,8 +313,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #6  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5.00:-3.00],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([-5.00:-3.00],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined.
+UVVM:                    Ignoring uniqueness configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([-5.00:-3.00],30,COMBINED))=> -3.305518571668022
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_uniqueness(NON_UNIQUE)
@@ -322,7 +323,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted real vector (not supported)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight_real([1.00:3.00],30)
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -381,7 +382,7 @@ UVVM:                                                                           
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight_time([-5 fs:-3 fs],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight_time(0 fs,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight_time([9 fs:10 fs],50)
@@ -436,8 +437,8 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted time (invalid parameters)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3. 
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3.
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #9  ***
@@ -471,8 +472,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #7  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5 fs:3 fs],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([-5 fs:3 fs],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be
+UVVM:                    combined. Ignoring exclude constraint.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([-5 fs:3 fs],30,COMBINED))=> -4 fs
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
@@ -491,8 +492,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #9  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([-5 fs:3 fs],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([-5 fs:3 fs],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined.
+UVVM:                    Ignoring uniqueness configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([-5 fs:3 fs],30,COMBINED))=> -2 fs
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_uniqueness(NON_UNIQUE)
@@ -501,7 +502,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted time vector (not supported)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight_time([1 fs:3 fs],30)
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -549,7 +550,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted unsigned (ranges w/default mode) - Generate 1000 random values for each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([0:2],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight(5,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([9:10],50)
@@ -561,7 +562,7 @@ UVVM:                                                                           
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([0:2],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight(5,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([9:10],50)
@@ -606,8 +607,8 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted unsigned (invalid parameters)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3. 
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3.
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([0:65536],30)
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -643,8 +644,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #10  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be combined.
+UVVM:                    Ignoring exclude constraint.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"0"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
@@ -653,7 +654,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #11  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Cyclic mode and weighted randomization cannot be combined. Ignoring cyclic configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Cyclic mode and weighted randomization cannot be combined. Ignoring
+UVVM:                    cyclic configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"2"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_cyclic_mode(NON_CYCLIC)
@@ -663,8 +665,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #12  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined. Ignoring
+UVVM:                    uniqueness configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"3"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_uniqueness(NON_UNIQUE)
@@ -706,7 +708,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted signed (ranges w/default mode) - Generate 1000 random values for each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([-5:-3],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight(0,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([6:7],50)
@@ -718,7 +720,7 @@ UVVM:                                                                           
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([-5:-3],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight(0,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([6:7],50)
@@ -763,8 +765,8 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted signed (invalid parameters)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 2. 
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 2.
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([0:65536],30)
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -790,8 +792,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #13  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be combined.
+UVVM:                    Ignoring exclude constraint.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"3"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
@@ -800,7 +802,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #14  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Cyclic mode and weighted randomization cannot be combined. Ignoring cyclic configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Cyclic mode and weighted randomization cannot be combined. Ignoring
+UVVM:                    cyclic configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"3"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_cyclic_mode(NON_CYCLIC)
@@ -810,8 +813,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #15  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined. Ignoring
+UVVM:                    uniqueness configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"1"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_uniqueness(NON_UNIQUE)
@@ -854,7 +857,7 @@ UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        
 UVVM:                                                                           each test
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(COMBINED_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([0:2],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight(5,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([9:10],50)
@@ -866,7 +869,7 @@ UVVM:                                                                           
 UVVM:                                                                           ===============================================================================================
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_range_weight_default_mode(INDIVIDUAL_WEIGHT)
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for boolean true. 'Checking range_weight_default_mode'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(bool, true) => OK. Value was true. 'Checking range_weight_default_mode'
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([0:2],30)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_val_weight(5,20)
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([9:10],50)
@@ -912,8 +915,8 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing weighted std_logic_vector (invalid parameters)
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3. 
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 3.
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 3.
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        add_range_weight([0:65536],30)
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -949,8 +952,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #16  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Exclude constraint and weighted randomization cannot be combined. Ignoring exclude
-UVVM:                    constraint.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Exclude constraint and weighted randomization cannot be combined.
+UVVM:                    Ignoring exclude constraint.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"0"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        clear_constraints()
@@ -959,7 +962,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #17  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Cyclic mode and weighted randomization cannot be combined. Ignoring cyclic configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Cyclic mode and weighted randomization cannot be combined. Ignoring
+UVVM:                    cyclic configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"3"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_cyclic_mode(NON_CYCLIC)
@@ -969,8 +973,8 @@ UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        
 UVVM: 
 UVVM: ***  TB_WARNING #18  ***
 UVVM:             0 ns   TB seq.
-UVVM:                    randm(([0:3],30,COMBINED)) => Failed. Boolean was false. 'Uniqueness and weighted randomization cannot be combined. Ignoring uniqueness
-UVVM:                    configuration.'
+UVVM:                    randm(([0:3],30,COMBINED))(bool, true) => Failed. Value was false. Expected true. 'Uniqueness and weighted randomization cannot be combined. Ignoring
+UVVM:                    uniqueness configuration.'
 UVVM: 
 UVVM: ID_RAND_GEN                        0.0 ns  TB seq.                        randm(([0:3],30,COMBINED))=> x"1"
 UVVM: ID_RAND_CONF                       0.0 ns  TB seq.                        set_uniqueness(NON_UNIQUE)

@@ -3,16 +3,16 @@ UVVM:
 UVVM: =========================================================================================================================================================================
 UVVM: ID_LOG_HDR_LARGE                   0.0 ns  TB seq.                        Start Simulation of Functional Coverage package - fc_database
 UVVM: =========================================================================================================================================================================
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE). 
-UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG). 
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_BINS_INFO).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_RAND).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_SAMPLE).
+UVVM: ID_LOG_MSG_CTRL                    0.0 ns  TB seq.                        enable_log_msg(ID_FUNC_COV_CONFIG).
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing load database from a non-existing file
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [] load_coverage_db(dummy.txt)
 UVVM: 
 UVVM: =========================================================================================================================================================================
@@ -23,7 +23,7 @@ UVVM: ==========================================================================
 UVVM: 
 UVVM: 
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_1] clear_coverage()
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 1.
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [] load_coverage_db(dummy.txt)
 UVVM: 
 UVVM: ***  TB_NOTE #1  ***
@@ -73,7 +73,7 @@ UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  MY_SCOPE                       
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  MY_SCOPE                       [MY_COVERPOINT] set_bins_coverage_goal(50)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  MY_SCOPE                       [MY_COVERPOINT] set_hits_coverage_goal(200)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        fc_set_covpts_coverage_goal(80)
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 6. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_NOTEs by 6.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(20)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(20)
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  MY_SCOPE                       [MY_COVERPOINT] sample_coverage(30)
@@ -236,7 +236,7 @@ UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  NEW_SCOPE                      
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  NEW_SCOPE                      [MY_CROSS] set_bins_coverage_goal(50)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  NEW_SCOPE                      [MY_CROSS] set_hits_coverage_goal(75)
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        fc_set_covpts_coverage_goal(90)
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 6. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 6.
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  NEW_SCOPE                      [MY_CROSS] sample_coverage((20, 1020))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  NEW_SCOPE                      [MY_CROSS] sample_coverage((20, 1020))
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  NEW_SCOPE                      [MY_CROSS] sample_coverage((30, 1030))
@@ -510,7 +510,7 @@ UVVM:
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing adding bins after sampling
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_5] add_bins(bin(10), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_5] Adding bins: (10), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_5] sample_coverage(10)
@@ -527,8 +527,8 @@ UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_5] clear_coverage()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_5] add_bins(bin(10), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_5] Adding bins: (10), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 3. 'Checking number of valid bins'
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 3) => OK. Value was 3. 'Checking number of valid bins'
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_6] add_cross(bin(10), bin(1010), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_6] Adding cross: (10) x (1010), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_6] sample_coverage((10, 1010))
@@ -546,14 +546,14 @@ UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_6] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_7] add_cross(bin(10), bin(1010), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_7] Adding cross: (10) x (1010), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 1. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 1) => OK. Value was 1. 'Checking number of valid bins'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_5] delete_coverpoint()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_7] delete_coverpoint()
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing adding bins after load_coverage_db()
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE HOLES REPORT: MY_SCOPE ***                                                                                                                        
@@ -582,13 +582,13 @@ UVVM:                    add_bins(bin(10), "")=> It is recommended to always add
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  MY_SCOPE                       [MY_COVERPOINT] add_bins(bin(10), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  MY_SCOPE                         [MY_COVERPOINT] Adding bins: (10), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 7. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 7) => OK. Value was 7. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Check bins can be safely added after clearing the coverage
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  MY_SCOPE                       [MY_COVERPOINT] clear_coverage()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  MY_SCOPE                       [MY_COVERPOINT] add_bins(bin(10), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  MY_SCOPE                         [MY_COVERPOINT] Adding bins: (10), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 8. 'Checking number of valid bins'
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 8) => OK. Value was 8. 'Checking number of valid bins'
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE HOLES REPORT: NEW_SCOPE ***                                                                                                                       
@@ -618,19 +618,19 @@ UVVM:                    add_cross(bin(10), bin(1010), "")=> It is recommended t
 UVVM: 
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  NEW_SCOPE                      [MY_CROSS] add_cross(bin(10), bin(1010), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  NEW_SCOPE                        [MY_CROSS] Adding cross: (10) x (1010), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 7. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 7) => OK. Value was 7. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Check bins can be safely added after deleting the coverpoint
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  NEW_SCOPE                      [MY_CROSS] delete_coverpoint()
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_10] add_cross(bin(10), bin(1010), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_10] Adding cross: (10) x (1010), min_hits:1, rand_weight:1, ""
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 1. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 1) => OK. Value was 1. 'Checking number of valid bins'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  MY_SCOPE                       [MY_COVERPOINT] delete_coverpoint()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_10] delete_coverpoint()
 UVVM: 
 UVVM: 
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing sampling before load_coverage_db()
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_11] add_bins(bin(10), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_11] Adding bins: (10), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_SAMPLE                 0.0 ns  TB seq.                        [Covpt_11] sample_coverage(10)
@@ -662,7 +662,7 @@ UVVM:      =====================================================================
 UVVM:      
 UVVM:      
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM:      
 UVVM:      ====================================================================================================================================================================
 UVVM:      0 ns *** COVERAGE HOLES REPORT: MY_SCOPE ***                                                                                                                        
@@ -773,7 +773,7 @@ UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_16] add_cross(bin(1), bin(2), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_16] Adding cross: (1) x (2), min_hits:1, rand_weight:1, ""
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: 
 UVVM: =========================================================================================================================================================================
 UVVM: ***  TB_ERROR #2  ***
@@ -1111,7 +1111,7 @@ UVVM:
 UVVM:      
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 2. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 2) => OK. Value was 2. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Load to coverpoint with same bins
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_22] add_bins(bin(1),bin(2), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_22] Adding bins: (1),(2), min_hits:1, rand_weight:1, ""
@@ -1130,7 +1130,7 @@ UVVM:
 UVVM:      
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 2. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 2) => OK. Value was 2. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Load to coverpoint with same bins, but different name
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_23] add_bins(bin(1),bin(2), "new_bins")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_23] Adding bins: (1),(2), min_hits:1, rand_weight:1, "new_bins"
@@ -1149,7 +1149,7 @@ UVVM:
 UVVM:      
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 2. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 2) => OK. Value was 2. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Load to coverpoint with one of the same bins
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_24] add_bins(bin(1), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_24] Adding bins: (1), min_hits:1, rand_weight:1, ""
@@ -1168,9 +1168,9 @@ UVVM:
 UVVM:      
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 2. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 2) => OK. Value was 2. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Load to coverpoint with same bins plus an extra bin
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 1.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_25] add_bins(bin(1),bin(2),bin(3), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_25] Adding bins: (1),(2),(3), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_25] load_coverage_db(db_accumulated.txt)
@@ -1195,9 +1195,9 @@ UVVM:
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[3]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 3. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 3) => OK. Value was 3. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Load to coverpoint with same bins, but different min_hits
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 2. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_WARNINGs by 2.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_26] add_bins(bin(1),bin(2), min_hits:10, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_26] Adding bins: (1),(2), min_hits:10, rand_weight:10, ""
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_26] load_coverage_db(db_accumulated.txt)
@@ -1229,7 +1229,7 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 4. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 4) => OK. Value was 4. 'Checking number of valid bins'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_20] delete_coverpoint()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_20] delete_coverpoint()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_20] delete_coverpoint()
@@ -1242,7 +1242,7 @@ UVVM:
 UVVM: ID_LOG_HDR                         0.0 ns  TB seq.                        Testing accumulating coverage in random order - ERROR_ON_NEW_BINS
 UVVM: -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Load to coverpoint with same bins plus an extra bin
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 1.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_27] add_bins(bin(1),bin(2),bin(3), "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_27] Adding bins: (1),(2),(3), min_hits:1, rand_weight:1, ""
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_27] load_coverage_db(db_accumulated.txt)
@@ -1270,9 +1270,9 @@ UVVM:
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[3]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 3. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 3) => OK. Value was 3. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Load to coverpoint with same bins, but different min_hits
-UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 2. 
+UVVM: ID_UTIL_SETUP                      0.0 ns  TB seq.                        incremented expected TB_ERRORs by 2.
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_28] add_bins(bin(1),bin(2), min_hits:10, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_28] Adding bins: (1),(2), min_hits:10, rand_weight:10, ""
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_28] load_coverage_db(db_accumulated.txt)
@@ -1310,7 +1310,7 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 4. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 4) => OK. Value was 4. 'Checking number of valid bins'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_20] delete_coverpoint()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_20] delete_coverpoint()
 UVVM: 
@@ -1337,7 +1337,7 @@ UVVM:
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[3]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 3. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 3) => OK. Value was 3. 'Checking number of valid bins'
 UVVM: ID_SEQUENCER                       0.0 ns  TB seq.                        Load to coverpoint with same bins, but different min_hits
 UVVM: ID_FUNC_COV_BINS                   0.0 ns  TB seq.                        [Covpt_30] add_bins(bin(1),bin(2), min_hits:10, "")
 UVVM: ID_FUNC_COV_BINS_INFO              0.0 ns  TB seq.                          [Covpt_30] Adding bins: (1),(2), min_hits:10, rand_weight:10, ""
@@ -1360,7 +1360,7 @@ UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[1]
 UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_bin => OK, for bin_1[2]
-UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value() => OK, for int 4. 'Checking number of valid bins'
+UVVM: ID_POS_ACK                         0.0 ns  TB seq.                        check_value(int, 4) => OK. Value was 4. 'Checking number of valid bins'
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_20] delete_coverpoint()
 UVVM: ID_FUNC_COV_CONFIG                 0.0 ns  TB seq.                        [Covpt_20] delete_coverpoint()
 UVVM:      
