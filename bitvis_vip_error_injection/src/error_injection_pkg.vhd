@@ -76,8 +76,8 @@ use work.error_injection_pkg.all;
 
 package protected_ei_config_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_error_injection_config_array(0 to C_MAX_EI_INSTANCE_NUM),
-    c_generic_default => (others => C_EI_CONFIG_DEFAULT)
+    t_generic_element  => t_error_injection_config_array(0 to C_MAX_EI_INSTANCE_NUM),
+    GC_GENERIC_DEFAULT => (others => C_EI_CONFIG_DEFAULT)
   );
 
 --================================================================================================================================

@@ -41,7 +41,8 @@ package vvc_transaction_pkg is
     TERMINATE_CURRENT_COMMAND,
     -- VVC local
     MASTER_TRANSMIT_AND_RECEIVE, MASTER_TRANSMIT_AND_CHECK, MASTER_TRANSMIT_ONLY, MASTER_RECEIVE_ONLY, MASTER_CHECK_ONLY,
-    SLAVE_TRANSMIT_AND_RECEIVE, SLAVE_TRANSMIT_AND_CHECK, SLAVE_TRANSMIT_ONLY, SLAVE_RECEIVE_ONLY, SLAVE_CHECK_ONLY);
+    SLAVE_TRANSMIT_AND_RECEIVE, SLAVE_TRANSMIT_AND_CHECK, SLAVE_TRANSMIT_ONLY, SLAVE_RECEIVE_ONLY, SLAVE_CHECK_ONLY
+  );
 
   -- Constants for the maximum sizes to use in this VVC. Can be modified in adaptations_pkg.
   alias C_VVC_CMD_DATA_MAX_LENGTH   is C_SPI_VVC_CMD_DATA_MAX_LENGTH;
@@ -101,7 +102,7 @@ package vvc_transaction_pkg is
 
   -- Global transaction info trigger signal
   type t_spi_transaction_trigger_array is array (natural range <>) of std_logic;
-  signal global_spi_vvc_transaction_trigger : t_spi_transaction_trigger_array(0 to C_VVC_MAX_INSTANCE_NUM - 1) := (others => '0');
+  signal global_spi_vvc_transaction_trigger : t_spi_transaction_trigger_array(0 to C_VVC_MAX_INSTANCE_NUM - 1) := (others => 'Z');
 
 end package vvc_transaction_pkg;
 
@@ -116,9 +117,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_transaction_group_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_transaction_group,
-    c_generic_default  => C_TRANSACTION_GROUP_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_transaction_group,
+    GC_GENERIC_DEFAULT  => C_TRANSACTION_GROUP_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 --================================================================================================================================

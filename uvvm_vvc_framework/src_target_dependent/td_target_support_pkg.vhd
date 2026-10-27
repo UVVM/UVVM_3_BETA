@@ -140,7 +140,7 @@ package td_target_support_pkg is
     signal   vvc_target                   : in t_vvc_target_record;
     constant vvc_instance_idx             : in integer;
     constant vvc_channel                  : in t_channel;
-    variable vvc_idx_in_activity_register : inout t_integer_array(0 to C_MAX_TB_VVC_NUM);
+    variable vvc_idx_in_activity_register : inout integer_vector(0 to C_MAX_TB_VVC_NUM);
     variable num_vvc_instances            : inout natural range 0 to C_MAX_TB_VVC_NUM
   );
 
@@ -186,7 +186,7 @@ package body td_target_support_pkg is
       check_value(v_cnt < 2, TB_FAILURE, "Arbitration mechanism failed. Check VVC " & to_string(v_result.vvc_name) & " implementation and semaphore handling. Crashing instances with numbers " & v_instance_string(1 to v_width), "Multiple scopes", ID_NEVER);
       return v_result;
     end if;
-  end resolved;
+  end function resolved;
 
   function to_string(
     value        : t_vvc_target_record;
@@ -219,7 +219,7 @@ package body td_target_support_pkg is
         return to_string(value.vvc_name) & "," & to_string(v_instance) & "," & to_upper(to_string(v_channel));
       end if;
     end if;
-  end;
+  end function;
 
   function set_vvc_target_defaults(
     constant vvc_name : in string;
@@ -283,7 +283,7 @@ package body td_target_support_pkg is
   ) return string is
   begin
     return format_command_idx(command.cmd_idx);
-  end;
+  end function;
 
   procedure send_command_to_vvc(
     signal   vvc_target   : inout t_vvc_target_record;
@@ -301,7 +301,7 @@ package body td_target_support_pkg is
     variable v_start_time                   : time;
     variable v_local_vvc_cmd                : t_vvc_cmd_record;
     variable v_was_multicast                : boolean                                := false;
-    variable v_vvc_idx_in_activity_register : t_integer_array(0 to C_MAX_TB_VVC_NUM) := (others => -1);
+    variable v_vvc_idx_in_activity_register : integer_vector(0 to C_MAX_TB_VVC_NUM)  := (others => -1);
     variable v_num_vvc_instances            : natural range 0 to C_MAX_TB_VVC_NUM    := 0;
   begin
 
@@ -420,7 +420,7 @@ package body td_target_support_pkg is
     signal   vvc_target                   : in t_vvc_target_record;
     constant vvc_instance_idx             : in integer;
     constant vvc_channel                  : in t_channel;
-    variable vvc_idx_in_activity_register : inout t_integer_array(0 to C_MAX_TB_VVC_NUM);
+    variable vvc_idx_in_activity_register : inout integer_vector(0 to C_MAX_TB_VVC_NUM);
     variable num_vvc_instances            : inout natural range 0 to C_MAX_TB_VVC_NUM
   ) is
   begin

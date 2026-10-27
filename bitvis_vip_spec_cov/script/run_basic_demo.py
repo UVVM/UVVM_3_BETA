@@ -15,11 +15,26 @@ import os
 import subprocess
 import sys
 
+def find_python3_executable():
+    python_executables = ["python3", "python"]
+
+    for executable in python_executables:
+        try:
+            output = (subprocess.check_output([executable, "--version"], stderr=subprocess.STDOUT).decode().strip())
+            if "Python 3" in output:
+                return executable
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            continue
+    return None
+
 num_errors = 0
 
 try:
     from hdlregression import HDLRegression
+except ImportError:
+    HDLRegression = None
 
+if HDLRegression is not None:
     hr = HDLRegression()
 
     # Add Util, VVC Framework and Scoreboard VIP
@@ -37,7 +52,7 @@ try:
     # Add Spec Cov VIP
     hr.add_files("../src/*.vhd", "bitvis_vip_spec_cov")
     # Add Demo files
-    hr.add_files("../demo/basic_usage/*.vhd", "bitvis_vip_spec_cov")
+    hr.add_files("../tb/basic_demo/*.vhd", "bitvis_vip_spec_cov")
 
     sim_options = None
     simulator_name = hr.settings.get_simulator_name()
@@ -50,14 +65,16 @@ try:
 
     num_errors += hr.start(sim_options=sim_options)
 
-except:
+else:
+    # HDLRegression is not installed: compile and simulate with ModelSim/Questa
     # Compile
     num_errors += subprocess.call(['vsim', '-c', '-do', 'do ../script/compile_demo.do basic' + ';exit'], stderr=subprocess.PIPE)
     # Run simulation
     num_errors += subprocess.call(['vsim', '-c', '-do', 'do ../script/simulate_demo.do' + ';exit'], stderr=subprocess.PIPE)
 
 # Run the specification coverage python script
-num_errors += subprocess.call(['python', '../script/run_spec_cov.py', '-r', '../demo/basic_usage/req_list_basic_demo.csv', '-p', '../sim/partial_cov_basic_demo.csv', '-s', '../sim/spec_cov_basic_demo.csv'], stderr=subprocess.PIPE)
+if subprocess.call([find_python3_executable(), '../script/run_spec_cov.py', '-r', '../tb/basic_demo/req_list_basic_demo.csv', '-p', '../sim/partial_cov_basic_demo.csv', '-s', '../sim/spec_cov_basic_demo.csv'], stderr=subprocess.PIPE) != 0:
+    num_errors += 1
 
 if num_errors != 0:
     sys.exit(num_errors)

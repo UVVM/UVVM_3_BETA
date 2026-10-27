@@ -27,8 +27,8 @@ use work.adaptations_pkg.all;
 
 package protected_data_buffer_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_data_buffer,
-    c_generic_default => C_DATA_BUFFER_PKG_DEFAULT
+    t_generic_element  => t_data_buffer,
+    GC_GENERIC_DEFAULT => C_DATA_BUFFER_PKG_DEFAULT
   );
 
 --================================================================================================================================

@@ -26,8 +26,8 @@ use uvvm_util.adaptations_pkg.all;
 
 package protected_spec_cov_config_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_spec_cov_config,
-    c_generic_default => C_SPEC_COV_CONFIG_DEFAULT
+    t_generic_element  => t_spec_cov_config,
+    GC_GENERIC_DEFAULT => C_SPEC_COV_CONFIG_DEFAULT
   );
 
 ----------------------------------------------------------------------
@@ -38,8 +38,8 @@ use uvvm_util.adaptations_pkg.all;
 
 package protected_testcase_name_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element => string(1 to C_SPEC_COV_CONFIG_DEFAULT.csv_max_line_length),
-    c_generic_default => (others => NUL)
+    t_generic_element  => string(1 to C_SPEC_COV_CONFIG_DEFAULT.csv_max_line_length),
+    GC_GENERIC_DEFAULT => (others => NUL)
   );
 
 ----------------------------------------------------------------------
@@ -49,8 +49,8 @@ library uvvm_util;
 
 package protected_testcase_passed_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element => boolean,
-    c_generic_default => false
+    t_generic_element  => boolean,
+    GC_GENERIC_DEFAULT => false
   );
 
 ----------------------------------------------------------------------
@@ -60,8 +60,8 @@ library uvvm_util;
 
 package protected_requirement_file_exists_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element => boolean,
-    c_generic_default => false
+    t_generic_element  => boolean,
+    GC_GENERIC_DEFAULT => false
   );
 
 ----------------------------------------------------------------------
@@ -71,9 +71,9 @@ library uvvm_util;
 
 package protected_result_file_exists_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element => boolean,
-    c_generic_default => false
-  );  
+    t_generic_element  => boolean,
+    GC_GENERIC_DEFAULT => false
+  );
 
 ----------------------------------------------------------------------
 -- Protected type: req_cov_initialized
@@ -82,8 +82,8 @@ library uvvm_util;
 
 package protected_req_cov_initialized_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element => boolean,
-    c_generic_default => false
+    t_generic_element  => boolean,
+    GC_GENERIC_DEFAULT => false
   );
 
 --================================================================================================================================
@@ -191,7 +191,7 @@ package spec_cov_pkg is
 
   procedure priv_set_requirement_type(
     constant requirement : string;
-    constant req_type     : t_requirement_type
+    constant req_type    : t_requirement_type
   );
 
   impure function priv_requirement_exists(
@@ -325,8 +325,8 @@ package body spec_cov_pkg is
     );
 
     procedure set_requirement_type(
-        constant index : in natural;
-        constant value : in t_requirement_type
+      constant index : in natural;
+      constant value : in t_requirement_type
     );
 
     procedure set_description(
@@ -364,7 +364,7 @@ package body spec_cov_pkg is
     ) return string;
 
     impure function get_requirement_type(
-        index : natural
+      index : natural
     ) return t_requirement_type;
 
     impure function get_description(
@@ -475,11 +475,11 @@ package body spec_cov_pkg is
     end procedure set_requirement;
 
     procedure set_requirement_type(
-        constant index : in natural;
-        constant value : in t_requirement_type
+      constant index : in natural;
+      constant value : in t_requirement_type
     ) is
     begin
-        priv_requirement_array(index).req_type := value;
+      priv_requirement_array(index).req_type := value;
     end procedure set_requirement_type;
 
     procedure set_description(
@@ -541,7 +541,7 @@ package body spec_cov_pkg is
     end function get_requirement;
 
     impure function get_requirement_type(
-        index : natural
+      index : natural
     ) return t_requirement_type is
     begin
       return priv_requirement_array(index).req_type;
@@ -681,7 +681,7 @@ package body spec_cov_pkg is
     -- Read requirements from CSV file and save to array. TB_ERROR alert will be raised if file is emtpy.
     priv_read_and_parse_req_csv_file(req_list_file);
     if map_list_file /= "" then
-        priv_read_and_parse_map_csv_file(map_list_file);
+      priv_read_and_parse_map_csv_file(map_list_file);
     end if;
 
     -- Initialize PC file (open file and write info/settings to top of file)
@@ -727,7 +727,7 @@ package body spec_cov_pkg is
   begin
     -- Raise TB_ERROR alert if tick_off_req_cov() is called before initialize_req_cov()
     if not priv_req_cov_initialized.get(VOID) then
-        alert(TB_ERROR, "Requirement coverage has not been initialized. Please use initialize_req_cov() before calling tick_off_req_cov().", scope);
+      alert(TB_ERROR, "Requirement coverage has not been initialized. Please use initialize_req_cov() before calling tick_off_req_cov().", scope);
       return;
     end if;
 
@@ -738,9 +738,8 @@ package body spec_cov_pkg is
 
     -- Issue TB_WARNING if reuqirement is a compound requirement (supposed to be tested through sub-requirements)
     if priv_get_requirement_type(requirement) = COMPOUND_REQ then
-        alert(TB_WARNING, "Requirement " & to_string(requirement) & " has been specified for testing through sub-requirements." , C_SCOPE);
+      alert(TB_WARNING, "Requirement " & to_string(requirement) & " has been specified for testing through sub-requirements.", C_SCOPE);
     end if;
-
 
     ---- Check if there were any errors globally or testcase was explicit set to FAIL
     if v_uvvm_status.found_unexpected_simulation_errors_or_worse = 1 then
@@ -800,7 +799,7 @@ package body spec_cov_pkg is
   procedure disable_cond_tick_off_req_cov(
     constant requirement : string
   ) is
-    constant c_requirement_length              : natural := priv_get_requirement_name_length(requirement);
+    constant C_REQUIREMENT_LENGTH              : natural := priv_get_requirement_name_length(requirement);
     variable v_disabled_tick_off_array_element : string(1 to C_SPEC_COV_CONFIG_DEFAULT.csv_max_line_length);
   begin
     -- Check: is requirement already tracked?
@@ -831,7 +830,7 @@ package body spec_cov_pkg is
   procedure enable_cond_tick_off_req_cov(
     constant requirement : string
   ) is
-    constant c_requirement_length : natural := priv_get_requirement_name_length(requirement);
+    constant C_REQUIREMENT_LENGTH : natural := priv_get_requirement_name_length(requirement);
   begin
     -- Check: is requirement not tracked?
     --        method will also check if the requirement exist in the requirement file.
@@ -842,7 +841,7 @@ package body spec_cov_pkg is
       -- find the requirement and wipe it out from conditional tick off array
       for idx in 0 to priv_disabled_tick_off_array.get_length(VOID) - 1 loop
         -- found requirement, wipe the entry and exit
-        if priv_disabled_tick_off_array.get(idx)(1 to c_requirement_length) = to_upper(requirement) then
+        if priv_disabled_tick_off_array.get(idx)(1 to C_REQUIREMENT_LENGTH) = to_upper(requirement) then
           priv_disabled_tick_off_array.set(idx, (others => NUL));
           exit;
         end if;
@@ -901,10 +900,10 @@ package body spec_cov_pkg is
     check_file_open_status(v_file_open_status, file_name);
 
     if v_file_open_status = open_ok then
-        priv_result_file_exists.set(true);
+      priv_result_file_exists.set(true);
     else
-        priv_result_file_exists.set(false);
-        return; -- If PC file couldn't be opened, but simulation is still running, exit procedure before PC file write
+      priv_result_file_exists.set(false);
+      return; -- If PC file couldn't be opened, but simulation is still running, exit procedure before PC file write
     end if;
 
     -- Write info and settings to CSV file for Python post-processing script
@@ -945,7 +944,7 @@ package body spec_cov_pkg is
       if priv_requirements_in_array.get(VOID) >= get_max_requirement_lines(VOID) then -- Too many requirement lines
         alert(TB_FAILURE, "Number of requirement lines in input requirement file(s) exceeds maximum limit set by C_SPEC_COV_CONFIG_DEFAULT in adaptations_pkg.", C_SCOPE);
         exit;
-    
+
       else
         -- Read requirement
         v_requirement := priv_csv_file.read_string;
@@ -1063,8 +1062,6 @@ package body spec_cov_pkg is
             end loop;
           end if;
 
-
-
         -- If the requirement doesn't exist in requirement list, it means that the line is a requirement to sub requirement mapping
         -- line, where the sub-requirements have previously been defined in the requirement list, and the compound requirement has not
         -- previously been defined anywhere.
@@ -1082,7 +1079,6 @@ package body spec_cov_pkg is
 
     priv_csv_file.dispose;
   end procedure priv_read_and_parse_map_csv_file;
-
 
   --
   -- Log CSV readout to terminal
@@ -1122,7 +1118,7 @@ package body spec_cov_pkg is
 
   --
   -- Check if requirement exists, return boolean
-  -- 
+  --
   impure function priv_requirement_exists(
     requirement : string
   ) return boolean is
@@ -1176,14 +1172,14 @@ package body spec_cov_pkg is
   ) return natural is
   begin
     for i in 0 to priv_requirements_in_array.get(VOID) - 1 loop
-        if priv_get_requirement_name_length(priv_requirement_array.get_requirement(i)) = valid_length(requirement) then
-          if to_upper(priv_requirement_array.get_requirement(i)(1 to valid_length(requirement))) = to_upper(requirement(1 to valid_length(requirement))) then
-            return i;
-          end if;
+      if priv_get_requirement_name_length(priv_requirement_array.get_requirement(i)) = valid_length(requirement) then
+        if to_upper(priv_requirement_array.get_requirement(i)(1 to valid_length(requirement))) = to_upper(requirement(1 to valid_length(requirement))) then
+          return i;
         end if;
-      end loop;
-      return 0;
-    end function priv_get_requirement_index;    
+      end if;
+    end loop;
+    return 0;
+  end function priv_get_requirement_index;
 
   --
   -- Get number of tick offs for requirement
@@ -1373,7 +1369,7 @@ package body spec_cov_pkg is
   impure function priv_req_listed_in_disabled_tick_off_array(
     requirement : string
   ) return boolean is
-    constant c_requirement_length : natural := priv_get_requirement_name_length(requirement);
+    constant C_REQUIREMENT_LENGTH : natural := priv_get_requirement_name_length(requirement);
   begin
     -- Check if requirement exists
     if (priv_requirement_exists(requirement) = false) and (priv_requirement_file_exists.get(VOID) = true) then
@@ -1383,7 +1379,7 @@ package body spec_cov_pkg is
     -- Check if requirement is listed in priv_disabled_tick_off_array() array
     for idx in 0 to priv_disabled_tick_off_array.get_length(VOID) - 1 loop
       -- found
-      if priv_disabled_tick_off_array.get(idx)(1 to c_requirement_length) = to_upper(requirement(1 to c_requirement_length)) then
+      if priv_disabled_tick_off_array.get(idx)(1 to C_REQUIREMENT_LENGTH) = to_upper(requirement(1 to C_REQUIREMENT_LENGTH)) then
         return true;
       end if;
     end loop;

@@ -22,8 +22,8 @@
 ----------------------------------------------------------------------
 package protected_boolean_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => boolean,
-    c_generic_default => false
+    t_generic_element  => boolean,
+    GC_GENERIC_DEFAULT => false
   );
 
 ----------------------------------------------------------------------
@@ -31,8 +31,8 @@ package protected_boolean_pkg is new work.protected_generic_types_pkg
 ----------------------------------------------------------------------
 package protected_positive_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => positive,
-    c_generic_default => 1
+    t_generic_element  => positive,
+    GC_GENERIC_DEFAULT => 1
   );
 
 ----------------------------------------------------------------------
@@ -43,8 +43,8 @@ use work.adaptations_pkg.all;
 
 package protected_sync_flag_record_array_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_sync_flag_record_array_constrained,
-    c_generic_default => C_DEFAULT_SYNC_FLAG_RECORD_ARRAY
+    t_generic_element  => t_sync_flag_record_array_constrained,
+    GC_GENERIC_DEFAULT => C_DEFAULT_SYNC_FLAG_RECORD_ARRAY
   );
 
 ----------------------------------------------------------------------
@@ -54,8 +54,8 @@ use work.adaptations_pkg.all;
 
 package protected_msg_id_panel_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_msg_id_panel,
-    c_generic_default => C_MSG_ID_PANEL_DEFAULT
+    t_generic_element  => t_msg_id_panel,
+    GC_GENERIC_DEFAULT => C_MSG_ID_PANEL_DEFAULT
   );
 
 ----------------------------------------------------------------------
@@ -66,8 +66,8 @@ use work.adaptations_pkg.all;
 
 package protected_alert_attention_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_alert_attention,
-    c_generic_default => C_DEFAULT_ALERT_ATTENTION
+    t_generic_element  => t_alert_attention,
+    GC_GENERIC_DEFAULT => C_DEFAULT_ALERT_ATTENTION
   );
 
 ----------------------------------------------------------------------
@@ -78,8 +78,8 @@ use work.adaptations_pkg.all;
 
 package protected_alert_counters_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_alert_counters,
-    c_generic_default => C_DEFAULT_STOP_LIMIT
+    t_generic_element  => t_alert_counters,
+    GC_GENERIC_DEFAULT => C_DEFAULT_STOP_LIMIT
   );
 
 ----------------------------------------------------------------------
@@ -89,8 +89,8 @@ use work.types_pkg.all;
 
 package protected_waveview_log_hdr_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_waveview_log_hdr,
-    c_generic_default => C_WAVEVIEW_LOG_HDR_DEFAULT
+    t_generic_element  => t_waveview_log_hdr,
+    GC_GENERIC_DEFAULT => C_WAVEVIEW_LOG_HDR_DEFAULT
   );
 
 ----------------------------------------------------------------------
@@ -100,8 +100,8 @@ use work.types_pkg.all;
 
 package protected_current_log_hdr_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_current_log_hdr,
-    c_generic_default => C_CURRENT_LOG_HDR_DEFAULT
+    t_generic_element  => t_current_log_hdr,
+    GC_GENERIC_DEFAULT => C_CURRENT_LOG_HDR_DEFAULT
   );
 
 ----------------------------------------------------------------------
@@ -111,8 +111,8 @@ use work.types_pkg.all;
 
 package protected_uvvm_status_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_uvvm_status,
-    c_generic_default => C_UVVM_STATUS_DEFAULT
+    t_generic_element  => t_uvvm_status,
+    GC_GENERIC_DEFAULT => C_UVVM_STATUS_DEFAULT
   );
 
 -----------------------------------------------------------------------
@@ -122,10 +122,9 @@ use work.types_pkg.all;
 
 package protected_deprecate_list_pkg is new work.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_deprecate_list,
-    c_generic_default => (others => (others => ' '))
+    t_generic_element  => t_deprecate_list,
+    GC_GENERIC_DEFAULT => (others => (others => ' '))
   );
-
 
 --================================================================================================================================
 --  Global signals and shared variables package

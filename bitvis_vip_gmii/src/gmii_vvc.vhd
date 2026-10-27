@@ -79,4 +79,4 @@ begin
       gmii_vvc_rx_if => gmii_vvc_rx_if
     );
 
-end struct;
+end architecture struct;

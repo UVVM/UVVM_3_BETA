@@ -15,7 +15,7 @@
 ------------------------------------------------------------------------------------------
 
 context vvc_context is
-  library bitvis_vip_i2c;
+library bitvis_vip_i2c;
   use bitvis_vip_i2c.vvc_transaction_pkg.all;
   use bitvis_vip_i2c.vvc_transaction_shared_variables_pkg.all;
   use bitvis_vip_i2c.vvc_methods_pkg.all;

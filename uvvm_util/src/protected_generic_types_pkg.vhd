@@ -24,9 +24,10 @@ use work.adaptations_pkg.t_channel;
 
 package protected_generic_types_pkg is
 
-  generic(type t_generic_element;
-          c_generic_default  : t_generic_element;
-          c_max_instance_num : natural := 1);
+  generic(
+    type t_generic_element;
+    GC_GENERIC_DEFAULT  : t_generic_element;
+    GC_MAX_INSTANCE_NUM : natural := 1);
 
   type t_generic_array is protected
 
@@ -91,15 +92,15 @@ package body protected_generic_types_pkg is
     constant C_DEFAULT_ARRAY_INDEX : integer   := 0;
     constant C_DEFAULT_VVC_CHANNEL : t_channel := NA;
 
-    type t_queue_is_initialized_array is array (c_max_instance_num - 1 downto ALL_INSTANCES) of boolean;
+    type t_queue_is_initialized_array is array (GC_MAX_INSTANCE_NUM - 1 downto ALL_INSTANCES) of boolean;
     variable priv_queue_is_initialized    : t_queue_is_initialized_array := (others => false);
     variable priv_rx_queue_is_initialized : t_queue_is_initialized_array := (others => false);
     variable priv_tx_queue_is_initialized : t_queue_is_initialized_array := (others => false);
 
     type t_generic_element_array is array (integer range <>) of t_generic_element;
-    variable priv_element           : t_generic_element_array(c_max_instance_num - 1 downto ALL_INSTANCES);
-    variable priv_vvc_rx_ch_element : t_generic_element_array(c_max_instance_num - 1 downto ALL_INSTANCES);
-    variable priv_vvc_tx_ch_element : t_generic_element_array(c_max_instance_num - 1 downto ALL_INSTANCES);
+    variable priv_element           : t_generic_element_array(GC_MAX_INSTANCE_NUM - 1 downto ALL_INSTANCES);
+    variable priv_vvc_rx_ch_element : t_generic_element_array(GC_MAX_INSTANCE_NUM - 1 downto ALL_INSTANCES);
+    variable priv_vvc_tx_ch_element : t_generic_element_array(GC_MAX_INSTANCE_NUM - 1 downto ALL_INSTANCES);
 
     ------------------------------------------------------------
     -- Queue initialization helper methods
@@ -109,7 +110,7 @@ package body protected_generic_types_pkg is
       constant channel : t_channel
     ) return boolean is
     begin
-      if (index < c_max_instance_num) and (index >= ALL_INSTANCES) then
+      if (index < GC_MAX_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
         case channel is
           when RX =>
             return priv_rx_queue_is_initialized(index);
@@ -130,7 +131,7 @@ package body protected_generic_types_pkg is
       constant channel : t_channel
     ) is
     begin
-      if (index < c_max_instance_num) and (index >= ALL_INSTANCES) then
+      if (index < GC_MAX_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
 
         case channel is
           when RX =>
@@ -154,7 +155,7 @@ package body protected_generic_types_pkg is
       constant channel : in t_channel
     ) is
     begin
-      if (index < c_max_instance_num) and (index >= ALL_INSTANCES) then
+      if (index < GC_MAX_INSTANCE_NUM) and (index >= ALL_INSTANCES) then
         initialize_queue(index, channel);
 
         case channel is
@@ -206,9 +207,9 @@ package body protected_generic_types_pkg is
       constant channel : in t_channel
     ) return t_generic_element is
 
-      constant queue_is_initialized : boolean := is_queue_initialized(index, channel);
+      constant C_QUEUE_IS_INITIALIZED : boolean := is_queue_initialized(index, channel);
     begin
-      if (index < c_max_instance_num) and (index >= ALL_INSTANCES) and (queue_is_initialized = true) then
+      if (index < GC_MAX_INSTANCE_NUM) and (index >= ALL_INSTANCES) and (C_QUEUE_IS_INITIALIZED = true) then
         case channel is
           when RX =>
             return priv_vvc_rx_ch_element(index);
@@ -219,7 +220,7 @@ package body protected_generic_types_pkg is
             return priv_element(index);
         end case;
       else
-        return C_GENERIC_DEFAULT;
+        return GC_GENERIC_DEFAULT;
       end if;
     end function get;
 
@@ -252,7 +253,7 @@ package body protected_generic_types_pkg is
   -- Protected type that holds a single, non-array element. v3
   type t_generic is protected body
 
-    variable priv_element : t_generic_element := c_generic_default;
+    variable priv_element : t_generic_element := GC_GENERIC_DEFAULT;
 
     procedure set(
       constant element : in t_generic_element

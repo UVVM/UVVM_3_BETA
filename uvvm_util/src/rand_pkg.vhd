@@ -1274,7 +1274,7 @@ package rand_pkg is
       constant set_of_values : in integer_vector;
       constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
 
-      -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 and newer
     procedure excl_range(
       constant min          : in integer;
       constant max          : in integer;
@@ -1378,7 +1378,6 @@ package rand_pkg is
       constant min          : in time;
       constant max          : in time;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID));
-
 
     procedure add_val_weight_time(
       constant value        : in time;
@@ -1510,30 +1509,6 @@ package rand_pkg is
     impure function get_value(
       constant VOID : t_void)
     return time;
-
-    impure function get_value(
-      constant length : positive)
-    return integer_vector;
-
-    impure function get_value(
-      constant length : positive)
-    return real_vector;
-
-    impure function get_value(
-      constant length : positive)
-    return time_vector;
-
-    impure function get_value(
-      constant length : positive)
-    return signed;
-
-    impure function get_value(
-      constant length : positive)
-    return unsigned;
-
-    impure function get_value(
-      constant length : positive)
-    return std_logic_vector;
 
     ------------------------------------------------------------
     -- Linking Variables (Requires Questa One 2026.1 and newer)
@@ -1876,10 +1851,10 @@ package body rand_pkg is
       alias normalized_weighted_vector : t_range_weight_mode_int_vec(0 to weighted_vector'length-1) is weighted_vector;
       variable v_line                  : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       for i in normalized_weighted_vector'range loop
@@ -1916,10 +1891,10 @@ package body rand_pkg is
       alias normalized_weighted_vector : t_range_weight_mode_real_vec(0 to weighted_vector'length-1) is weighted_vector;
       variable v_line                  : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       for i in normalized_weighted_vector'range loop
@@ -1956,10 +1931,10 @@ package body rand_pkg is
       alias normalized_weighted_vector : t_range_weight_mode_time_vec(0 to weighted_vector'length-1) is weighted_vector;
       variable v_line                  : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       for i in normalized_weighted_vector'range loop
@@ -1997,10 +1972,10 @@ package body rand_pkg is
     return string is
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       for i in 0 to priv_int_constraints.ran_incl'length - 1 loop
@@ -2018,10 +1993,10 @@ package body rand_pkg is
     return string is
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       for i in 0 to priv_real_constraints.ran_incl'length - 1 loop
@@ -2039,10 +2014,10 @@ package body rand_pkg is
     return string is
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       for i in 0 to priv_time_constraints.ran_incl'length - 1 loop
@@ -2062,10 +2037,10 @@ package body rand_pkg is
       variable v_len  : natural;
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       for i in 0 to priv_uns_constraints.ran_incl'length - 1 loop
@@ -2088,10 +2063,10 @@ package body rand_pkg is
       variable v_len  : natural;
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       for i in 0 to priv_sig_constraints.ran_incl'length - 1 loop
@@ -2607,8 +2582,8 @@ package body rand_pkg is
     begin
       priv_seed1 := C_RAND_INIT_SEED_1;
       priv_seed2 := C_RAND_INIT_SEED_2;
-      
-      -- Requires Questa One 2026.1 and newer
+
+      -- Requires Questa One 2026.1 or newer
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
         check_and_initialize_vendor_varid(void);
         vendor_randvar_set_seed(v_vendor_var_id, str);
@@ -2670,7 +2645,7 @@ package body rand_pkg is
       variable v_ret : t_positive_vector(0 to 1);
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
+        check_and_initialize_vendor_varid(VOID);
         vendor_randvar_get_seed_ints(v_vendor_var_id, v_ret(0), v_ret(1));
         return v_ret;
       end if;
@@ -2948,8 +2923,8 @@ package body rand_pkg is
       constant ext_proc_call  : string         := "")
     return integer is
       constant C_LOCAL_CALL          : string      := "rand(RANGE:[" & to_string(min_value) & ":" & to_string(max_value) & "], " &
-        to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
-        to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(cyclic_mode) & ")";
+                                                      to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
+                                                      to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(cyclic_mode) & ")";
       constant C_PREVIOUS_DIST       : t_rand_dist := priv_rand_dist;
       variable v_proc_call           : line;
       variable v_combined_set_values : integer_vector(0 to set_of_values1'length + set_of_values2'length - 1);
@@ -3205,8 +3180,8 @@ package body rand_pkg is
       constant ext_proc_call  : string         := "")
     return real is
       constant C_LOCAL_CALL          : string      := "rand(RANGE:[" & format_real(min_value) & ":" & format_real(max_value) & "], " &
-        to_upper(to_string(specifier1)) & ":" & format_real(set_of_values1) & ", " &
-        to_upper(to_string(specifier2)) & ":" & format_real(set_of_values2) & ")";
+                                                      to_upper(to_string(specifier1)) & ":" & format_real(set_of_values1) & ", " &
+                                                      to_upper(to_string(specifier2)) & ":" & format_real(set_of_values2) & ")";
       constant C_PREVIOUS_DIST       : t_rand_dist := priv_rand_dist;
       variable v_proc_call           : line;
       variable v_combined_set_values : real_vector(0 to set_of_values1'length + set_of_values2'length - 1);
@@ -3391,7 +3366,7 @@ package body rand_pkg is
       constant ext_proc_call   : string         := "")
     return time is
       constant C_LOCAL_CALL       : string  := "rand(RANGE:[" & to_string(min_value, get_time_unit(min_value)) & ":" & to_string(max_value, get_time_unit(max_value)) & "], " &
-        to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & ")";
+                                               to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & ")";
       variable v_proc_call        : line;
       alias normalized_set_values : time_vector(0 to set_of_values'length-1) is set_of_values;
       variable v_gen_new_random   : boolean := true;
@@ -3510,8 +3485,8 @@ package body rand_pkg is
       constant ext_proc_call   : string         := "")
     return time is
       constant C_LOCAL_CALL          : string  := "rand(RANGE:[" & to_string(min_value, get_time_unit(min_value)) & ":" & to_string(max_value, get_time_unit(max_value)) & "], " &
-        to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
-        to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & ")";
+                                                  to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
+                                                  to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & ")";
       variable v_proc_call           : line;
       variable v_combined_set_values : time_vector(0 to set_of_values1'length + set_of_values2'length - 1);
       variable v_gen_new_random      : boolean := true;
@@ -3725,7 +3700,7 @@ package body rand_pkg is
       constant msg_id_panel  : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return integer_vector is
       constant C_LOCAL_CALL     : string      := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value) & ":" & to_string(max_value) & "], " &
-        to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & to_string_if_enabled(uniqueness) & to_string_if_enabled(cyclic_mode) & ")";
+                                                 to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & to_string_if_enabled(uniqueness) & to_string_if_enabled(cyclic_mode) & ")";
       constant C_PREVIOUS_DIST  : t_rand_dist := priv_rand_dist;
       variable v_gen_new_random : boolean     := true;
       variable v_cyclic_mode    : t_cyclic    := cyclic_mode;
@@ -3817,8 +3792,8 @@ package body rand_pkg is
       constant msg_id_panel   : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return integer_vector is
       constant C_LOCAL_CALL     : string      := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value) & ":" & to_string(max_value) & "], " &
-        to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
-        to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(uniqueness) & to_string_if_enabled(cyclic_mode) & ")";
+                                                 to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
+                                                 to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(uniqueness) & to_string_if_enabled(cyclic_mode) & ")";
       constant C_PREVIOUS_DIST  : t_rand_dist := priv_rand_dist;
       variable v_gen_new_random : boolean     := true;
       variable v_cyclic_mode    : t_cyclic    := cyclic_mode;
@@ -3981,7 +3956,7 @@ package body rand_pkg is
       constant msg_id_panel  : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return real_vector is
       constant C_LOCAL_CALL     : string      := "rand(LEN:" & to_string(length) & ", RANGE:[" & format_real(min_value) & ":" & format_real(max_value) & "], " &
-        to_upper(to_string(specifier)) & ":" & format_real(set_of_values) & to_string_if_enabled(uniqueness) & ")";
+                                                 to_upper(to_string(specifier)) & ":" & format_real(set_of_values) & to_string_if_enabled(uniqueness) & ")";
       constant C_PREVIOUS_DIST  : t_rand_dist := priv_rand_dist;
       variable v_gen_new_random : boolean     := true;
       variable v_ret            : real_vector(0 to length - 1);
@@ -4065,8 +4040,8 @@ package body rand_pkg is
       constant msg_id_panel   : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return real_vector is
       constant C_LOCAL_CALL     : string      := "rand(LEN:" & to_string(length) & ", RANGE:[" & format_real(min_value) & ":" & format_real(max_value) & "], " &
-        to_upper(to_string(specifier1)) & ":" & format_real(set_of_values1) & ", " &
-        to_upper(to_string(specifier2)) & ":" & format_real(set_of_values2) & to_string_if_enabled(uniqueness) & ")";
+                                                 to_upper(to_string(specifier1)) & ":" & format_real(set_of_values1) & ", " &
+                                                 to_upper(to_string(specifier2)) & ":" & format_real(set_of_values2) & to_string_if_enabled(uniqueness) & ")";
       constant C_PREVIOUS_DIST  : t_rand_dist := priv_rand_dist;
       variable v_gen_new_random : boolean     := true;
       variable v_ret            : real_vector(0 to length - 1);
@@ -4117,7 +4092,7 @@ package body rand_pkg is
       constant msg_id_panel    : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return time_vector is
       constant C_LOCAL_CALL     : string  := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value, get_time_unit(min_value)) & ":" &
-        to_string(max_value, get_time_unit(max_value)) & "]" & to_string_if_enabled(uniqueness) & ")";
+                                             to_string(max_value, get_time_unit(max_value)) & "]" & to_string_if_enabled(uniqueness) & ")";
       variable v_gen_new_random : boolean := true;
       variable v_ret            : time_vector(0 to length - 1);
     begin
@@ -4235,7 +4210,7 @@ package body rand_pkg is
       constant msg_id_panel    : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return time_vector is
       constant C_LOCAL_CALL     : string  := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value, get_time_unit(min_value)) & ":" &
-        to_string(max_value, get_time_unit(max_value)) & "], " & to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & to_string_if_enabled(uniqueness) & ")";
+                                             to_string(max_value, get_time_unit(max_value)) & "], " & to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & to_string_if_enabled(uniqueness) & ")";
       variable v_gen_new_random : boolean := true;
       variable v_ret            : time_vector(0 to length - 1);
     begin
@@ -4359,8 +4334,8 @@ package body rand_pkg is
       constant msg_id_panel    : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return time_vector is
       constant C_LOCAL_CALL     : string  := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value, get_time_unit(min_value)) & ":" &
-        to_string(max_value, get_time_unit(max_value)) & "], " & to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
-        to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(uniqueness) & ")";
+                                             to_string(max_value, get_time_unit(max_value)) & "], " & to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
+                                             to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(uniqueness) & ")";
       variable v_gen_new_random : boolean := true;
       variable v_ret            : time_vector(0 to length - 1);
     begin
@@ -4620,7 +4595,7 @@ package body rand_pkg is
       constant msg_id_panel  : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return unsigned is
       constant C_LOCAL_CALL : string  := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value) & ":" & to_string(max_value) & "], " &
-        to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & to_string_if_enabled(cyclic_mode) & ")";
+                                         to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & to_string_if_enabled(cyclic_mode) & ")";
       variable v_ret_int    : integer;
       variable v_ret        : unsigned(length - 1 downto 0);
       variable v_check_ok   : boolean := true;
@@ -4683,8 +4658,8 @@ package body rand_pkg is
       constant msg_id_panel   : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return unsigned is
       constant C_LOCAL_CALL : string  := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value) & ":" & to_string(max_value) & "], " &
-        to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
-        to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(cyclic_mode) & ")";
+                                         to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
+                                         to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(cyclic_mode) & ")";
       variable v_ret_int    : integer;
       variable v_ret        : unsigned(length - 1 downto 0);
       variable v_check_ok   : boolean := true;
@@ -4905,7 +4880,7 @@ package body rand_pkg is
       constant msg_id_panel  : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return signed is
       constant C_LOCAL_CALL : string  := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value) & ":" & to_string(max_value) & "], " &
-        to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & to_string_if_enabled(cyclic_mode) & ")";
+                                         to_upper(to_string(specifier)) & ":" & to_string(set_of_values) & to_string_if_enabled(cyclic_mode) & ")";
       variable v_ret        : integer;
       variable v_check_ok   : boolean := true;
     begin
@@ -4966,8 +4941,8 @@ package body rand_pkg is
       constant msg_id_panel   : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return signed is
       constant C_LOCAL_CALL : string  := "rand(LEN:" & to_string(length) & ", RANGE:[" & to_string(min_value) & ":" & to_string(max_value) & "], " &
-        to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
-        to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(cyclic_mode) & ")";
+                                         to_upper(to_string(specifier1)) & ":" & to_string(set_of_values1) & ", " &
+                                         to_upper(to_string(specifier2)) & ":" & to_string(set_of_values2) & to_string_if_enabled(cyclic_mode) & ")";
       variable v_ret        : integer;
       variable v_check_ok   : boolean := true;
     begin
@@ -5803,10 +5778,10 @@ package body rand_pkg is
     return string is
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       if length > 0 then
@@ -5859,10 +5834,10 @@ package body rand_pkg is
     return string is
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       if length > 0 then
@@ -5909,10 +5884,10 @@ package body rand_pkg is
     return string is
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       if length > 0 then
@@ -5958,10 +5933,10 @@ package body rand_pkg is
     return string is
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       write(v_line, string'("LEN:") & to_string(length) & string'(", "));
@@ -5977,10 +5952,10 @@ package body rand_pkg is
     return string is
       variable v_line : line;
       impure function return_and_deallocate return string is
-        constant ret : string := v_line.all;
+        constant C_RET : string := v_line.all;
       begin
         DEALLOCATE(v_line);
-        return ret;
+        return C_RET;
       end function;
     begin
       write(v_line, string'("LEN:") & to_string(length) & string'(", "));
@@ -6504,18 +6479,19 @@ package body rand_pkg is
       priv_int_constraints.val_excl(priv_int_constraints.val_excl'length - 1 - (set_of_values'length - 1) to priv_int_constraints.val_excl'length - 1) := set_of_values;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure excl_range(
       constant min          : in integer;
       constant max          : in integer;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
-        if (C_VENDOR_EXTENSION_IS_ENABLED) then
-          check_and_initialize_vendor_varid(void);
-          vendor_add_exclude_range_int(v_vendor_var_id, min, max, 0);
-        else
-          alert(TB_ERROR, "Procedure excl_range() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        end if;
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_range_int(v_vendor_var_id, min, max, 0);
+      else
+        alert(TB_ERROR, "Procedure excl_range() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
+      end if;
     end procedure;
 
     procedure add_val_weight(
@@ -6567,31 +6543,33 @@ package body rand_pkg is
       priv_int_constraints.weighted(priv_int_constraints.weighted'length - 1) := (min_value, max_value, weight, v_weight_mode);
       priv_int_constraints.weighted_config                                    := true;
     end procedure;
-    
-    -- Requires Questa One 2026.1 and newer
+
+    -- Requires Questa One 2026.1 or newer
     procedure vector_sum_max(
       constant max          : in integer;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
-        if (C_VENDOR_EXTENSION_IS_ENABLED) then
-          check_and_initialize_vendor_varid(void);
-          vendor_add_vector_sum_max(v_vendor_var_id, max);
-        else
-          alert(TB_ERROR, "Procedure vector_sum_max() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        end if;
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_vector_sum_max(v_vendor_var_id, max);
+      else
+        alert(TB_ERROR, "Procedure vector_sum_max() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
+      end if;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure vector_sum_min(
       constant min          : in integer;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
-        if (C_VENDOR_EXTENSION_IS_ENABLED) then
-          check_and_initialize_vendor_varid(void);
-          vendor_add_vector_sum_min(v_vendor_var_id, min);
-        else
-          alert(TB_ERROR, "Procedure vector_sum_min() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        end if;
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_vector_sum_min(v_vendor_var_id, min);
+      else
+        alert(TB_ERROR, "Procedure vector_sum_min() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
+      end if;
     end procedure;
 
     ------------------------------------------------------------
@@ -6603,11 +6581,11 @@ package body rand_pkg is
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
       constant C_LOCAL_CALL : string := "add_range_real([" & format_real(min_value) & ":" & format_real(max_value) & "])";
     begin
-        if (C_VENDOR_EXTENSION_IS_ENABLED) then
-          check_and_initialize_vendor_varid(void);
-          vendor_add_include_range_real(v_vendor_var_id, min_value, max_value, 0);
-          return;
-        end if;
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_include_range_real(v_vendor_var_id, min_value, max_value, 0);
+        return;
+      end if;
       -- Check only real constraints have been configured
       if not (check_configured_constraints("REAL", C_LOCAL_CALL, is_config => true)) then
         return;
@@ -6689,18 +6667,19 @@ package body rand_pkg is
       priv_real_constraints.val_excl(priv_real_constraints.val_excl'length - 1 - (set_of_values'length - 1) to priv_real_constraints.val_excl'length - 1) := set_of_values;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure excl_range_real(
       constant min          : in real;
       constant max          : in real;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
-        if (C_VENDOR_EXTENSION_IS_ENABLED) then
-          check_and_initialize_vendor_varid(void);
-          vendor_add_exclude_range_real(v_vendor_var_id, min, max, 0);
-        else
-          alert(TB_ERROR, "Procedure excl_range_real() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        end if;
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_range_real(v_vendor_var_id, min, max, 0);
+      else
+        alert(TB_ERROR, "Procedure excl_range_real() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
+      end if;
     end procedure;
 
     procedure add_val_weight_real(
@@ -6854,18 +6833,19 @@ package body rand_pkg is
       priv_time_constraints.val_excl(priv_time_constraints.val_excl'length - 1 - (set_of_values'length - 1) to priv_time_constraints.val_excl'length - 1) := set_of_values;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure excl_range_time(
       constant min          : in time;
       constant max          : in time;
       constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID)) is
     begin
-        if (C_VENDOR_EXTENSION_IS_ENABLED) then
-          check_and_initialize_vendor_varid(void);
-          vendor_add_exclude_range_time(v_vendor_var_id, min, max, 0);
-        else
-          alert(TB_ERROR, "Procedure excl_range_time() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        end if;
+      if (C_VENDOR_EXTENSION_IS_ENABLED) then
+        check_and_initialize_vendor_varid(void);
+        vendor_add_exclude_range_time(v_vendor_var_id, min, max, 0);
+      else
+        alert(TB_ERROR, "Procedure excl_range_time() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
+      end if;
     end procedure;
 
     procedure add_val_weight_time(
@@ -7989,171 +7969,79 @@ package body rand_pkg is
       constant msg_id_panel : t_msg_id_panel := shared_msg_id_panel.get(VOID))
     return std_logic_vector is
       variable v_ret : unsigned(length - 1 downto 0);
-      variable vendor_v_ret : std_logic_vector(length - 1 downto 0);
+      variable v_vendor_ret : std_logic_vector(length - 1 downto 0);
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
         check_and_initialize_vendor_varid(void);
-        vendor_randomize_slv(v_vendor_var_id, length, vendor_v_ret);
-        return vendor_v_ret;
+        vendor_randomize_slv(v_vendor_var_id, length, v_vendor_ret);
+        return v_vendor_ret;
       end if;
 
       v_ret := randm(length, msg_id_panel, "slv");
       return std_logic_vector(v_ret);
     end function;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     impure function get_value(
       constant VOID : t_void)
     return integer is
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
+        check_and_initialize_vendor_varid(VOID);
         return vendor_randvar_get_value_int(v_vendor_var_id);
       else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return 0;
       end if;
     end function;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     impure function get_value(
       constant VOID : t_void)
     return real is
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
+        check_and_initialize_vendor_varid(VOID);
         return vendor_randvar_get_value_real(v_vendor_var_id);
       else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return 0.0;
       end if;
     end function;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     impure function get_value(
       constant VOID : t_void)
     return time is
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
+        check_and_initialize_vendor_varid(VOID);
         return vendor_randvar_get_value_time(v_vendor_var_id);
       else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return 0 ns;
       end if;
     end function;
 
-    -- Requires Questa One 2026.1 and newer
-    impure function get_value(
-      constant length : positive)
-    return integer_vector is
-      variable retval : integer_vector(0 to length-1);
-    begin
-      if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
-        vendor_randvar_get_value_int_array(v_vendor_var_id, retval);
-        return retval;
-      else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        return retval;
-      end if;
-    end function;
-
-    -- Requires Questa One 2026.1 and newer
-    impure function get_value(
-      constant length : positive)
-    return real_vector is
-      variable retval : real_vector(0 to length-1);
-    begin
-      if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
-        vendor_randvar_get_value_real_array(v_vendor_var_id, retval);
-        return retval;
-      else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        return retval;
-      end if;
-    end function;
-
-    -- Requires Questa One 2026.1 and newer
-    impure function get_value(
-      constant length : positive)
-    return time_vector is
-      variable retval : time_vector(0 to length-1);
-    begin
-      if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
-        vendor_randvar_get_value_time_array(v_vendor_var_id, retval);
-        return retval;
-      else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        return retval;
-      end if;
-    end function;
-
-    -- Requires Questa One 2026.1 and newer
-    impure function get_value(
-      constant length : positive)
-    return signed is
-      variable retval : signed(length-1 downto 0);
-    begin
-      if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
-        vendor_randvar_get_value_signed(v_vendor_var_id, retval);
-        return retval;
-      else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        return retval;
-      end if;
-    end function;
-
-    -- Requires Questa One 2026.1 and newer
-    impure function get_value(
-      constant length : positive)
-    return unsigned is
-      variable retval : unsigned(length-1 downto 0);
-    begin
-      if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
-        vendor_randvar_get_value_unsigned(v_vendor_var_id, retval);
-        return retval;
-      else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        return retval;
-      end if;
-    end function;
-
-    -- Requires Questa One 2026.1 and newer
-    impure function get_value(
-      constant length : positive)
-    return std_logic_vector is
-      variable retval : std_logic_vector(length-1 downto 0);
-    begin
-      if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
-        vendor_randvar_get_value_slv(v_vendor_var_id, retval);
-        return retval;
-      else
-        alert(TB_ERROR, "Function get_value() is only supported in Questa One 2026.1 and newer", C_SCOPE);
-        return retval;
-      end if;
-    end function;
-
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     impure function create_rand(
       constant VOID : t_void)
     return integer is
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
+        check_and_initialize_vendor_varid(VOID);
         return v_vendor_var_id;
       else
-        alert(TB_ERROR, "Function create_rand() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Function create_rand() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return 0;
       end if;
     end function;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure link(
       constant op   : t_relational_operator;
       constant var2 : integer) is
@@ -8163,12 +8051,13 @@ package body rand_pkg is
         vendor_randvar_add_link(v_vendor_var_id, var2, t_relational_operator'pos(op));
         return;
       else
-        alert(TB_ERROR, "Procedure link() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Procedure link() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return;
       end if;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure link(
       constant arith_op        : t_arithmetic_operator;
       constant var2            : integer;
@@ -8183,35 +8072,37 @@ package body rand_pkg is
       end if;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure unlink(
-      constant var2: integer) is
+      constant var2 : integer) is
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
         check_and_initialize_vendor_varid(void);
         vendor_randvar_delete_link(v_vendor_var_id, var2);
         return;
       else
-        alert(TB_ERROR, "Procedure link() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Procedure link() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return;
       end if;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure unlink(
-      constant VOID: t_void) is
+      constant VOID : t_void) is
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
+        check_and_initialize_vendor_varid(VOID);
         vendor_randvar_delete_link(v_vendor_var_id, -1);
         return;
       else
-        alert(TB_ERROR, "Procedure unlink() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Procedure unlink() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return;
       end if;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure nonzero_bitwise_and(
       constant mask : integer) is
     begin
@@ -8220,12 +8111,13 @@ package body rand_pkg is
         vendor_randvar_nonzero_bitwise_and(v_vendor_var_id, mask);
         return;
       else
-        alert(TB_ERROR, "Procedure nonzero_bitwise_and() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Procedure nonzero_bitwise_and() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return;
       end if;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure zero_bitwise_and(
       constant mask : integer) is
     begin
@@ -8234,12 +8126,13 @@ package body rand_pkg is
         vendor_randvar_zero_bitwise_and(v_vendor_var_id, mask);
         return;
       else
-        alert(TB_ERROR, "Procedure zero_bitwise_and() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Procedure zero_bitwise_and() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return;
       end if;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure force_bits_to(
       constant mask : string) is
     begin
@@ -8248,21 +8141,23 @@ package body rand_pkg is
         vendor_randvar_force_bits_to(v_vendor_var_id, mask);
         return;
       else
-        alert(TB_ERROR, "Procedure force_bits_to() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Procedure force_bits_to() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return;
       end if;
     end procedure;
 
-    -- Requires Questa One 2026.1 and newer
+    -- Requires Questa One 2026.1 or newer
     procedure one_hot(
       constant VOID : t_void) is
     begin
       if (C_VENDOR_EXTENSION_IS_ENABLED) then
-        check_and_initialize_vendor_varid(void);
+        check_and_initialize_vendor_varid(VOID);
         vendor_randvar_one_hot(v_vendor_var_id);
         return;
       else
-        alert(TB_ERROR, "Procedure one_hot() is only supported in Questa One 2026.1 and newer", C_SCOPE);
+        alert(TB_ERROR, "Procedure one_hot() is only supported in Questa One 2026.1 and newer. " & 
+                        "If you are running Questa One, see UVVM documentation for instructions on how to enable support for this procedure", C_SCOPE);
         return;
       end if;
     end procedure;

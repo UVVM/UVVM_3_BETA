@@ -43,7 +43,7 @@ package vvc_cmd_pkg is
     data_array           : t_slv_array(0 to C_VVC_CMD_DATA_MAX_WORDS - 1)(C_VVC_CMD_WORD_MAX_LENGTH - 1 downto 0);
     data_array_length    : natural;
     data_array_word_size : natural;
-    -- Common VVC fields
+    -- Common VVC fields  (Used by td_vvc_framework_common_methods_pkg procedures, and thus mandatory)
     operation            : t_operation;
     proc_call            : string(1 to C_VVC_CMD_STRING_MAX_LENGTH);
     msg                  : string(1 to C_VVC_CMD_STRING_MAX_LENGTH);
@@ -51,9 +51,9 @@ package vvc_cmd_pkg is
     cmd_idx              : natural;
     command_type         : t_immediate_or_queued;
     msg_id               : t_msg_id;
-    gen_integer_array    : t_integer_array(0 to 1); -- Increase array length if needed
-    gen_boolean          : boolean;     -- Generic boolean
-    timeout              : time;
+    gen_integer_array    : integer_vector(0 to 1);
+    gen_boolean          : boolean; -- DEPRECATED: will be removed in v3
+    timeout              : time;    -- DEPRECATED: will be removed in v3
     alert_level          : t_alert_level;
     delay                : time;
     quietness            : t_quietness;
@@ -61,6 +61,7 @@ package vvc_cmd_pkg is
   end record;
 
   constant C_VVC_CMD_DEFAULT : t_vvc_cmd_record := (
+    -- VVC dedicated fields
     channel_value        => (others => '0'),
     data_array           => (others => (others => '0')),
     data_array_length    => 0,
@@ -84,7 +85,7 @@ package vvc_cmd_pkg is
 
   --==========================================================================================
   -- t_vvc_result, t_vvc_result_queue_element, t_vvc_response and shared_vvc_response :
-  -- 
+  --
   -- - Used for storing the result of a BFM procedure called by the VVC,
   --   so that the result can be transported from the VVC to for example a sequencer via
   --   fetch_result() as described in uvvm_vvc_framework/Common_VVC_Methods QuickRef.
@@ -139,7 +140,7 @@ package body vvc_cmd_pkg is
   ) return string is
   begin
     return to_string(result.data_array'length) & " Symbols";
-  end;
+  end function;
 
 end package body vvc_cmd_pkg;
 
@@ -155,9 +156,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_vvc_cmd_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_vvc_cmd_record,
-    c_generic_default  => C_VVC_CMD_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_vvc_cmd_record,
+    GC_GENERIC_DEFAULT  => C_VVC_CMD_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 ----------------------------------------------------------------------
@@ -169,9 +170,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_vvc_response_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_vvc_response,
-    c_generic_default  => C_VVC_RESPONSE_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_vvc_response,
+    GC_GENERIC_DEFAULT  => C_VVC_RESPONSE_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 ----------------------------------------------------------------------
@@ -183,9 +184,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_vvc_last_received_cmd_idx_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => integer,
-    c_generic_default  => -1,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => integer,
+    GC_GENERIC_DEFAULT  => -1,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 --================================================================================================================================

@@ -104,6 +104,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#clearing-a-coverpoint">Clearing a coverpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#questa-one-extended-features">Questa One Extended Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enabling-extended-features-for-questa-one">Enabling extended features for Questa One</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auto-sampling-of-coverage">Auto-sampling of coverage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui-coverage-view-and-report-generation">GUI coverage view and report generation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#saving-functional-coverage-data-to-ucdb-database-file">Saving Functional Coverage data to UCDB database file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#viewing-functional-coverage-in-gui-mode">Viewing Functional Coverage in GUI mode</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#additional-info">Additional info</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#func-cov-pkg">func_cov_pkg</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="func_cov_pkg_t_coverpoint.html">t_coverpoint (protected)</a></li>
@@ -116,6 +126,7 @@
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vvc_framework.html">VVC Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_apb.html">External VIP APB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
@@ -136,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fusesoc.html">FuseSoC support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 
@@ -630,6 +642,11 @@ in a bin has reached the minimum coverage, the bin will be marked as covered.</p
 <p class="admonition-title">Important</p>
 <p>It is NOT recommended to add more bins to a given coverpoint after it has been sampled, since the new bins will be missing any
 previous sampled coverage. A TB_WARNING alert is generated whenever this occurs.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Questa One v.2026.1 and newer adds support for enabling automatic sampling of coverpoints.
+See <a class="reference internal" href="#questa-func-cov"><span class="std std-ref">Questa One Extended Features</span></a></p>
 </div>
 <section id="overlapping-bins">
 <h3>Overlapping bins<a class="headerlink" href="#overlapping-bins" title="Link to this heading"></a></h3>
@@ -1310,6 +1327,53 @@ the testcases for the given coverpoint.</p></li>
 <section id="clearing-a-coverpoint">
 <h2>Clearing a coverpoint<a class="headerlink" href="#clearing-a-coverpoint" title="Link to this heading"></a></h2>
 <p>A coverpoint’s complete model, configuration and counters can be reset with <code class="docutils literal notranslate"><span class="pre">delete_coverpoint()</span></code>.</p>
+</section>
+<section id="questa-one-extended-features">
+<span id="questa-func-cov"></span><h2>Questa One Extended Features<a class="headerlink" href="#questa-one-extended-features" title="Link to this heading"></a></h2>
+<p>Questa One v.2026.1 and newer supports some extended features for UVVM Functional Coverage. This includes automatic coverpoint
+sampling, UCDB database write support and GUI view of coverpoint coverage.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The functionality described in this section is only supported in Questa One v.2026.1 and newer</p>
+</div>
+<section id="enabling-extended-features-for-questa-one">
+<h3>Enabling extended features for Questa One<a class="headerlink" href="#enabling-extended-features-for-questa-one" title="Link to this heading"></a></h3>
+<p>See <a class="reference internal" href="uvvm_getting_started.html#questa-enabling"><span class="std std-ref">Getting Started - Questa One Extended Features</span></a> for instructions on how to enable the extended
+functionality.</p>
+</section>
+<section id="auto-sampling-of-coverage">
+<h3>Auto-sampling of coverage<a class="headerlink" href="#auto-sampling-of-coverage" title="Link to this heading"></a></h3>
+<p>Auto-sampling allows for coverpoint data to be sampled automatically (without needing to call the <code class="docutils literal notranslate"><span class="pre">sample_coverage()</span></code> method) by
+defining a target signal or variable to be sampled, and a trigger signal which will trigger the sampling. Auto-sampling is enabled for
+a coverpoint by calling the method <code class="docutils literal notranslate"><span class="pre">enable_auto_sampling(target,</span> <span class="pre">trigger)</span></code>. When auto-sampling is enabled, the value indicated by
+<code class="docutils literal notranslate"><span class="pre">target</span></code> will be sampled to the coverpoint any time the <code class="docutils literal notranslate"><span class="pre">trigger</span></code> signal changes. <code class="docutils literal notranslate"><span class="pre">target</span></code> can be either a signal or a variable,
+while <code class="docutils literal notranslate"><span class="pre">trigger</span></code> must be a signal.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The overall coverage methods <code class="docutils literal notranslate"><span class="pre">fc_get_overall_coverage()</span></code>, <code class="docutils literal notranslate"><span class="pre">fc_overall_coverage_completed()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">fc_report_overall_coverage()</span></code> do not support auto-sampled coverpoints. It is recommended to instead retreive coverage status for
+each coverpoint by using the t_coverpoint methods <code class="docutils literal notranslate"><span class="pre">get_coverage()</span></code>, <code class="docutils literal notranslate"><span class="pre">report_coverage()</span></code> and <code class="docutils literal notranslate"><span class="pre">coverage_completed()</span></code></p>
+</div>
+</section>
+<section id="gui-coverage-view-and-report-generation">
+<h3>GUI coverage view and report generation<a class="headerlink" href="#gui-coverage-view-and-report-generation" title="Link to this heading"></a></h3>
+<p>Coverage can be viewed in the Coverpoint GUI view of Questa One or Questa Visualizer by saving coverage to a .ucdb file after
+simulation has been run. This also enables UVVM Functional Coverage data to be included in the coverage reports generated by
+Questa.</p>
+<section id="saving-functional-coverage-data-to-ucdb-database-file">
+<h4>Saving Functional Coverage data to UCDB database file<a class="headerlink" href="#saving-functional-coverage-data-to-ucdb-database-file" title="Link to this heading"></a></h4>
+<p>Ensure that the extended features have been enabled by following the steps described above TODO:link.
+After running the simulation, save the coverage data to a UCDB database file by either:
+a. Questa tcl command line: call <strong>coverage save &lt;filename&gt;.ucdb</strong>, where &lt;filename&gt; is the desired name for the UCDB file.
+b. In Questa GUI, select menu option <strong>Tools-&gt;Coverage save</strong>.</p>
+</section>
+<section id="viewing-functional-coverage-in-gui-mode">
+<h4>Viewing Functional Coverage in GUI mode<a class="headerlink" href="#viewing-functional-coverage-in-gui-mode" title="Link to this heading"></a></h4>
+<p>To view Functional Coverage data saved to a UCDB file as described in the previous step, use tcl command <strong>vsim -viewcov
+&lt;filename&gt;.ucdb</strong> or menu option <strong>Open-&gt;&lt;filename&gt;.ucdb</strong>. To open the Coverpoint view, select menu option
+<strong>View-&gt;Coverage-&gt;Covergroups</strong>.</p>
+</section>
+</section>
 </section>
 <section id="additional-info">
 <h2>Additional info<a class="headerlink" href="#additional-info" title="Link to this heading"></a></h2>

@@ -49,6 +49,10 @@ architecture func of uvvm_demo_tb is
   constant C_CLK_PERIOD : time := 10 ns;
   constant C_BIT_PERIOD : time := 16 * C_CLK_PERIOD;
 
+  -- UART frame width (default 8 keeps the demo TB on the legacy width).
+  constant C_DATA_WIDTH         : integer range 5 to 9 := 8;
+  constant C_ADDR_WIDTH         : integer              := 3;
+
   -- Predefined SBI addresses
   constant C_ADDR_RX_DATA       : unsigned(2 downto 0) := "000";
   constant C_ADDR_RX_DATA_VALID : unsigned(2 downto 0) := "001";
@@ -86,6 +90,8 @@ begin
     generic map(
       GC_CLK_PERIOD                => C_CLK_PERIOD,
       GC_BIT_PERIOD                => C_BIT_PERIOD,
+      GC_DATA_WIDTH                => C_DATA_WIDTH,
+      GC_ADDR_WIDTH                => C_ADDR_WIDTH,
       GC_ADDR_RX_DATA              => C_ADDR_RX_DATA,
       GC_ADDR_RX_DATA_VALID        => C_ADDR_RX_DATA_VALID,
       GC_ADDR_TX_DATA              => C_ADDR_TX_DATA,
@@ -97,7 +103,7 @@ begin
   -- PROCESS: p_main
   ------------------------------------------------
   p_main : process
-    variable v_data       : std_logic_vector(7 downto 0);
+    variable v_data       : std_logic_vector(C_DATA_WIDTH - 1 downto 0);
     variable v_vvc_config : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
 
     -- Description:
@@ -187,10 +193,10 @@ begin
       shared_uart_vvc_config.set(v_vvc_config, 1, TX);
 
       -- Print report of Scoreboard counters
-      SBI_VVC_SB.report_counters(VOID);
+      sbi_vvc_sb.report_counters(VOID);
 
       -- Empty SB for next test
-      SBI_VVC_SB.reset("Empty SB for next test");
+      sbi_vvc_sb.reset("Empty SB for next test");
 
       -- Add small delay before next test
       wait for 3 * C_BIT_PERIOD;
@@ -232,10 +238,10 @@ begin
       await_completion(SBI_VVCT, 1, 13 * C_BIT_PERIOD);
 
       -- Print report of Scoreboard counters
-      SBI_VVC_SB.report_counters(VOID);
+      sbi_vvc_sb.report_counters(VOID);
 
       -- Empty SBI SB for next test
-      SBI_VVC_SB.reset("Empty SB for next test");
+      sbi_vvc_sb.reset("Empty SB for next test");
 
       -- Add small delay before next test
       wait for 3 * C_BIT_PERIOD;
@@ -278,7 +284,7 @@ begin
       -- The bit rate checker settings are changed during the 6 bytes to test various settings.
       log(ID_SEQUENCER, "\nSBI Write 6 bytes to DUT, UART Receive bytes from DUT. Changing protocol checker min_period during sequence.\n", C_SCOPE);
       for idx in 1 to 6 loop
-        v_data := std_logic_vector(to_unsigned(idx + 16#50#, 8)); -- + x50 to get more edges
+        v_data := std_logic_vector(to_unsigned(idx + 16#50#, v_data'length)); -- + x50 to get more edges
 
         v_vvc_config := shared_uart_vvc_config.get(1, RX);
         if idx = 3 then
@@ -300,10 +306,10 @@ begin
       end loop;
 
       -- Print report of Scoreboard counters
-      UART_VVC_SB.report_counters(VOID);
+      uart_vvc_sb.report_counters(VOID);
 
       -- Empty SB for next test
-      UART_VVC_SB.reset("Empty SB for next test");
+      uart_vvc_sb.reset("Empty SB for next test");
 
       -- Add small delay before next test
       wait for 3 * C_BIT_PERIOD;
@@ -338,7 +344,7 @@ begin
       log(ID_SEQUENCER, "\nSBI Write 3 bytes to DUT, UART Receive 5 bytes from DUT. No activity watchdog timeout.\n", C_SCOPE);
       -- Activate VVCs with write and receive activity.
       for idx in 1 to 3 loop
-        v_data := std_logic_vector(to_unsigned(idx + 16#50#, 8)); -- + x50 to get more edges
+        v_data := std_logic_vector(to_unsigned(idx + 16#50#, v_data'length)); -- + x50 to get more edges
 
         sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data, "DUT TX DATA");
         uart_receive(UART_VVCT, 1, RX, TO_SB, "UART TX");
@@ -353,7 +359,7 @@ begin
       log(ID_SEQUENCER, "\nSBI Write 3 bytes to DUT, UART Receive 5 bytes from DUT. No activity watchdog timeout.\n", C_SCOPE);
       -- Activate VVCs with write and receive activity.
       for idx in 1 to 3 loop
-        v_data := std_logic_vector(to_unsigned(idx + 16#50#, 8)); -- + x50 to get more edges
+        v_data := std_logic_vector(to_unsigned(idx + 16#50#, v_data'length)); -- + x50 to get more edges
 
         sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data, "DUT TX DATA");
         uart_receive(UART_VVCT, 1, RX, TO_SB, "UART TX");
@@ -361,10 +367,10 @@ begin
       end loop;
 
       -- Print report of Scoreboard counters
-      UART_VVC_SB.report_counters(VOID);
+      uart_vvc_sb.report_counters(VOID);
 
       -- Empty SB for next test
-      UART_VVC_SB.reset("Empty SB for next test");
+      uart_vvc_sb.reset("Empty SB for next test");
 
       -- Add small delay before next test
       wait for 3 * C_BIT_PERIOD;
@@ -447,31 +453,31 @@ begin
     --
     --   1. UART RX VVC is configured with an alert of severity.
     --   2. SBI VVC will send 1 byte to the DUT and UART RX VVC will expect the same data.
-    --   3. Unwanted activity detection will not be triggered (normal data transmission).
+    --   3. Unwanted transaction detection will not be triggered (normal data transmission).
     --   4. SBI VVC will send 1 byte to the DUT and UART RX VVC will not expect any data.
-    --   5. Unwanted activity detection will be triggered (unexpected data transmission).
+    --   5. Unwanted transaction detection will be triggered (unexpected data transmission).
     --   6. Step 1 to 5 is repeated for different alerts of severity.
     --
-    procedure test_unwanted_activity_detection(void : t_void) is
+    procedure test_unwanted_transaction_detection(void : t_void) is
       variable v_alert_level         : t_alert_level;
     begin
-      log(ID_LOG_HDR_XL, "Test unwanted activity detection.\n\n" & "This test demonstrates configuration and usage of the unwanted activity detection.", C_SCOPE);
+      log(ID_LOG_HDR_XL, "Test unwanted transaction detection.\n\n" & "This test demonstrates configuration and usage of the unwanted transaction detection.", C_SCOPE);
 
-      -- This will test the unwanted activity detection with different alerts of severity.
+      -- This will test the unwanted transaction detection with different alerts of severity.
       -- Normal data transmission and unexpected data transmission are tested in each alert configuration.
       for i in 0 to 2 loop
-        -- Configure the alert of severity for unwanted activity detection
+        -- Configure the alert of severity for unwanted transaction detection
         if i = 0 then
-          v_alert_level := C_UART_VVC_CONFIG_DEFAULT.unwanted_activity_severity;
+          v_alert_level := ERROR;
         elsif i = 1 then
           v_alert_level := FAILURE;
         else
           v_alert_level := NO_ALERT;
         end if;
 
-        log(ID_SEQUENCER, "Configure unwanted activity severity to " & to_upper(to_string(v_alert_level)) & ".", C_SCOPE);
+        log(ID_SEQUENCER, "Configure unwanted transaction severity to " & to_upper(to_string(v_alert_level)) & ".", C_SCOPE);
         v_vvc_config := shared_uart_vvc_config.get(1, RX);
-        v_vvc_config.unwanted_activity_severity := v_alert_level;
+        v_vvc_config.unwanted_transaction_severity := (others => v_alert_level);
         shared_uart_vvc_config.set(v_vvc_config, 1, RX);
 
         -- Normal data transmission
@@ -497,11 +503,11 @@ begin
       end loop;
 
       -- Empty SB for next test
-      UART_VVC_SB.reset("Empty SB for next test");
+      uart_vvc_sb.reset("Empty SB for next test");
 
       -- Add small delay before next test
       wait for 3 * C_BIT_PERIOD;
-    end procedure test_unwanted_activity_detection;
+    end procedure test_unwanted_transaction_detection;
 
     variable v_local_uart_monitor_config : t_uart_monitor_config;
 
@@ -576,7 +582,7 @@ begin
     test_protocol_checker(VOID);
     test_activity_watchdog(VOID);
     test_general_watchdog(VOID);
-    test_unwanted_activity_detection(VOID);
+    test_unwanted_transaction_detection(VOID);
 
     -----------------------------------------------------------------------------
     -- Ending the simulation

@@ -791,6 +791,11 @@ simulation.
 The simulation will be stopped using ``std.env.stop(1)``, unless C_USE_STD_STOP_ON_ALERT_STOP_LIMIT in adaptations_pkg is set to 
 false, in which case it will be stopped using ``failure``.
 
+UVVM alerts are not VHDL reports, so by default they are not reflected in the simulator's own test status (e.g. TESTSTATUS in
+Questa/Modelsim). Set C_REPORT_ALERTS_TO_SIMULATOR in adaptations_pkg to true to also issue a VHDL report for every regarded alert,
+with severity ``warning`` for WARNING/TB_WARNING, ``error`` for ERROR/TB_ERROR and ``failure`` for FAILURE/TB_FAILURE. Note that some
+simulators (e.g. NVC and GHDL) stop on a VHDL severity ``error`` or ``failure`` by default, regardless of the UVVM stop limits.
+
 set_alert_file_name()
 ----------------------------------------------------------------------------------------------------------------------------------
 Sets the alert file name. To ensure that the entire log transcript is written to a single file, this should be called prior to any 
@@ -1300,6 +1305,28 @@ These shared variables are natural, read only types.
 * shared_uvvm_status.mismatch_on_expected_simulation_errors_or_worse
     | Status is '0' on success and '1' on failure.
     | The variable is set when there is a mismatch between the expected and the actual ERROR or FAILURE alerts.
+
+* shared_uvvm_status.simulation_status
+    | Status is '2' until report_alert_counters(FINAL) is called, i.e. the simulation has not completed.
+    | After report_alert_counters(FINAL) the status is '0' when the simulation passed and '1' when it failed, using the
+      same conclusion as the one printed by report_alert_counters(FINAL). It is also updated for alerts after that call.
+    | This makes it possible to use a single value as the exit code of a simulation.
+
+    shared_uvvm_status is a protected type. In VHDL the status is read with ``shared_uvvm_status.get(VOID).simulation_status``.
+
+    In Questa/ModelSim the status can be read from a simulation script using the protected type's internal element:
+
+    .. code-block:: tcl
+
+        run -all
+        exit -code [examine -radix decimal /global_signals_and_shared_variables_pkg/shared_uvvm_status.priv_element.simulation_status]
+
+    In simulators which use the status of ``std.env.stop()`` as exit code (e.g. NVC and GHDL), the testbench can end with:
+
+    .. code-block::
+
+        report_alert_counters(FINAL);
+        std.env.stop(shared_uvvm_status.get(VOID).simulation_status);
 
 
 .. _basic_randomization:

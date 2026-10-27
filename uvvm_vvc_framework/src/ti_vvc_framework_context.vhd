@@ -15,7 +15,7 @@
 ------------------------------------------------------------------------------------------
 
 context ti_vvc_framework_context is
-  library uvvm_vvc_framework;
+library uvvm_vvc_framework;
   use uvvm_vvc_framework.ti_vvc_framework_support_pkg.all;
   use uvvm_vvc_framework.ti_protected_types_pkg.all;
 end context;

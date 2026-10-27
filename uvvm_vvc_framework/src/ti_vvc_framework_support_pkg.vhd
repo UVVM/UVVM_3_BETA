@@ -1,4 +1,4 @@
---==============================v_ki==================================================================================================
+--================================================================================================================================
 -- Copyright 2024 UVVM
 -- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 and in the provided LICENSE.TXT.
@@ -25,9 +25,9 @@ use uvvm_util.adaptations_pkg.all;
 
 package protected_vvc_broadcast_cmd_record_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_vvc_broadcast_cmd_record,
-    c_generic_default  => C_VVC_BROADCAST_CMD_DEFAULT,
-    c_max_instance_num => 1 -- The shared variable only uses ALL_INSTANCES which is covered by this max instance number
+    t_generic_element   => t_vvc_broadcast_cmd_record,
+    GC_GENERIC_DEFAULT  => C_VVC_BROADCAST_CMD_DEFAULT,
+    GC_MAX_INSTANCE_NUM => 1 -- The shared variable only uses ALL_INSTANCES which is covered by this max instance number
   );
 
 ----------------------------------------------------------------------
@@ -38,10 +38,9 @@ use uvvm_util.types_pkg.all;
 
 package protected_uvvm_state_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element => t_uvvm_state,
-    c_generic_default => IDLE
+    t_generic_element  => t_uvvm_state,
+    GC_GENERIC_DEFAULT => IDLE
   );
-
 
 --================================================================================================================================
 --  TI VVC framework support package
@@ -64,7 +63,7 @@ package ti_vvc_framework_support_pkg is
   ------------------------------------------------------------------------
   -- Common support types for UVVM
   ------------------------------------------------------------------------
-  type t_immediate_or_queued is (NO_command_type, IMMEDIATE, QUEUED);
+  type t_immediate_or_queued is (NO_COMMAND_TYPE, IMMEDIATE, QUEUED);
 
   type t_flag_record is record
     set       : std_logic;
@@ -275,15 +274,15 @@ package ti_vvc_framework_support_pkg is
   -------------------------------------------
   -- Awaits completion of any or all VVCs in the list, a specific cmd_idx or until timeout.
   procedure await_completion(
-    constant vvc_select   : in t_vvc_select;
-    variable vvc_list     : inout t_vvc_list;
-    constant wanted_idx   : in integer;
-    constant timeout      : in time;
-    constant list_action  : in t_list_action  := CLEAR_LIST;
-    constant msg          : in string         := "";
-    constant scope        : in string         := C_VVC_CMD_SCOPE_DEFAULT;
-    constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID);
-    constant ext_proc_call : in string        := ""
+    constant vvc_select    : in t_vvc_select;
+    variable vvc_list      : inout t_vvc_list;
+    constant wanted_idx    : in integer;
+    constant timeout       : in time;
+    constant list_action   : in t_list_action  := CLEAR_LIST;
+    constant msg           : in string         := "";
+    constant scope         : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID);
+    constant ext_proc_call : in string         := ""
   );
 
   -- Overload without vvc_select, using ALL_OF
@@ -327,10 +326,10 @@ package ti_vvc_framework_support_pkg is
   );
 
   -- ============================================================================
-  -- Unwanted Activity Detection
+  -- Unwanted Transaction Detection
   -- ============================================================================
-  -- Checks for unwanted activity and issues an alert of severity
-  procedure check_unwanted_activity(
+  -- Checks for unwanted transaction and issues an alert of severity
+  procedure check_unwanted_transaction(
     signal   tracked_signal : std_logic;
     constant alert_level    : t_alert_level;
     constant signal_name    : string;
@@ -338,7 +337,7 @@ package ti_vvc_framework_support_pkg is
   );
 
   -- Overload for std_logic_vector signal
-  procedure check_unwanted_activity(
+  procedure check_unwanted_transaction(
     signal   tracked_signal : std_logic_vector;
     constant alert_level    : t_alert_level;
     constant signal_name    : string;
@@ -493,12 +492,9 @@ package body ti_vvc_framework_support_pkg is
     variable v_timestamp    : time;
     variable v_line         : line;
   begin
-    -- Wait until all the enabled scoreboards have no pending data or a timeout occurs
-    v_timestamp    := now;
-    await_sb_completion(timeout, alert_level, sb_poll_time, NO_REPORT, NO_REPORT, scope, msg_id_panel, C_NAME);
-    v_elapsed_time := v_elapsed_time + (now - v_timestamp);
-
-    -- Sanity checks (alerts are generated in await_sb_completion)
+    -- Sanity checks
+    check_value(timeout > 0 ns, TB_FAILURE, "timeout must be greater than 0", scope, ID_NEVER, msg_id_panel, C_NAME);
+    check_value(sb_poll_time > 0 ns, TB_FAILURE, "sb_poll_time must be greater than 0", scope, ID_NEVER, msg_id_panel, C_NAME);
     if timeout <= 0 ns or sb_poll_time <= 0 ns then
       return;
     end if;
@@ -520,7 +516,7 @@ package body ti_vvc_framework_support_pkg is
       end loop;
     end if;
 
-    -- Print success/fail log message
+    -- Print VVC success/fail log message
     if v_elapsed_time >= timeout and not(shared_vvc_activity_register.priv_are_all_vvc_inactive(void)) then
       for idx in 0 to shared_vvc_activity_register.priv_get_num_registered_vvcs(void) - 1 loop
         if shared_vvc_activity_register.priv_get_vvc_activity(idx) = ACTIVE then
@@ -534,8 +530,15 @@ package body ti_vvc_framework_support_pkg is
       else
         log(ID_AWAIT_UVVM_COMPLETION, C_NAME & " => OK. All VVCs are inactive. Condition occurred after " & to_string(v_elapsed_time, get_time_unit(v_elapsed_time)), scope, msg_id_panel);
       end if;
+    end if;
 
-      -- Print reports
+    -- Wait until all the enabled scoreboards have no pending data or a timeout occurs
+    v_timestamp    := now;
+    await_sb_completion(timeout, alert_level, sb_poll_time, NO_REPORT, NO_REPORT, scope, msg_id_panel, C_NAME);
+    v_elapsed_time := v_elapsed_time + (now - v_timestamp);
+
+    -- Print reports
+    if v_elapsed_time < timeout then
       if print_sbs = REPORT_SCOREBOARDS then
         report_scoreboards(void);
       end if;
@@ -548,6 +551,7 @@ package body ti_vvc_framework_support_pkg is
         report_alert_counters(FINAL);
       end if;
     end if;
+
     DEALLOCATE(v_line);
   end procedure;
 
@@ -556,7 +560,7 @@ package body ti_vvc_framework_support_pkg is
   ) return string is
   begin
     return C_CMD_IDX_PREFIX & to_string(command_idx) & C_CMD_IDX_SUFFIX;
-  end;
+  end function;
 
   procedure enable_log_msg(
     signal   VVC_BROADCAST : inout std_logic;
@@ -806,15 +810,15 @@ package body ti_vvc_framework_support_pkg is
   end function;
 
   procedure await_completion(
-    constant vvc_select   : in t_vvc_select;
-    variable vvc_list     : inout t_vvc_list;
-    constant wanted_idx   : in integer;
-    constant timeout      : in time;
-    constant list_action  : in t_list_action  := CLEAR_LIST;
-    constant msg          : in string         := "";
-    constant scope        : in string         := C_VVC_CMD_SCOPE_DEFAULT;
-    constant msg_id_panel : in t_msg_id_panel := shared_msg_id_panel.get(VOID);
-    constant ext_proc_call : in string        := ""
+    constant vvc_select    : in t_vvc_select;
+    variable vvc_list      : inout t_vvc_list;
+    constant wanted_idx    : in integer;
+    constant timeout       : in time;
+    constant list_action   : in t_list_action  := CLEAR_LIST;
+    constant msg           : in string         := "";
+    constant scope         : in string         := C_VVC_CMD_SCOPE_DEFAULT;
+    constant msg_id_panel  : in t_msg_id_panel := shared_msg_id_panel.get(VOID);
+    constant ext_proc_call : in string         := ""
   ) is
     constant C_PROC_NAME                    : string                                      := "await_completion";
     constant C_VVC_LIST                     : string                                      := vvc_list.priv_get_vvc_list;
@@ -823,7 +827,7 @@ package body ti_vvc_framework_support_pkg is
     constant C_PROC_CALL_SHORT              : string                                      := C_PROC_NAME & "(" & to_upper(to_string(vvc_select)) & "," & to_string(timeout, ns) & ")";
     constant C_INDEX_NOT_FOUND              : integer                                     := -1;
     constant C_VVC_LIST_LENGTH              : natural                                     := vvc_list.priv_get_num_vvc_in_list;
-    variable v_vvc_idx_in_activity_register : t_integer_array(0 to C_MAX_TB_VVC_NUM)      := (others => -1);
+    variable v_vvc_idx_in_activity_register : integer_vector(0 to C_MAX_TB_VVC_NUM)       := (others => -1);
     variable v_num_vvc_instances            : natural                                     := 0;
     variable v_tot_vvc_instances            : natural range 0 to C_MAX_TB_VVC_NUM         := 0;
     variable v_vvc_logged                   : std_logic_vector(0 to C_MAX_TB_VVC_NUM - 1) := (others => '0');
@@ -1042,10 +1046,10 @@ package body ti_vvc_framework_support_pkg is
   end procedure activity_watchdog;
 
   -- ============================================================================
-  -- Unwanted Activity Detection
+  -- Unwanted Transaction Detection
   -- ============================================================================
   -------------------------------------------------------------------------------
-  procedure check_unwanted_activity(
+  procedure check_unwanted_transaction(
     signal   tracked_signal : std_logic;
     constant alert_level    : t_alert_level;
     constant signal_name    : string;
@@ -1062,22 +1066,22 @@ package body ti_vvc_framework_support_pkg is
            (v_last_value = 'X' and tracked_signal = '0') or
            (v_last_value = 'X' and tracked_signal = '1')) then
       if tracked_signal'event then
-        alert(alert_level, "Unwanted activity detected. " & signal_name & " changed from " &
+        alert(alert_level, "Unwanted transaction detected. " & signal_name & " changed from " &
           to_string(tracked_signal'last_value) & " to " & to_string(tracked_signal), scope);
       end if;
     end if;
   end procedure;
 
-  procedure check_unwanted_activity(
+  procedure check_unwanted_transaction(
     signal   tracked_signal : std_logic_vector;
     constant alert_level    : t_alert_level;
     constant signal_name    : string;
     constant scope          : string
   ) is
-    variable v_is_unwanted_activity : boolean := false;
+    variable v_is_unwanted_transaction : boolean := false;
     variable v_last_value           : std_logic_vector(tracked_signal'range) := tracked_signal'last_value;
   begin
-    -- Loop through each bit in the vector and check for unwanted activity
+    -- Loop through each bit in the vector and check for unwanted transaction
     for i in 0 to tracked_signal'length - 1 loop
       -- Exclude signal transitions from 'U', 'L' to/from '0', 'H' to/from '1', 'X' to '0'/'1'
       if not (v_last_value(i) = 'U' or
@@ -1087,13 +1091,13 @@ package body ti_vvc_framework_support_pkg is
              (v_last_value(i) = '1' and tracked_signal(i) = 'H') or
              (v_last_value(i) = 'X' and tracked_signal(i) = '0') or
              (v_last_value(i) = 'X' and tracked_signal(i) = '1')) then
-        v_is_unwanted_activity := true;
+        v_is_unwanted_transaction := true;
       end if;
     end loop;
 
-    if v_is_unwanted_activity then
+    if v_is_unwanted_transaction then
       if tracked_signal'event then
-        alert(alert_level, "Unwanted activity detected. " & signal_name & " changed from " &
+        alert(alert_level, "Unwanted transaction detected. " & signal_name & " changed from " &
           to_string(tracked_signal'last_value, HEX, KEEP_LEADING_0, INCL_RADIX) & " to " & to_string(tracked_signal, HEX, KEEP_LEADING_0, INCL_RADIX), scope);
       end if;
     end if;

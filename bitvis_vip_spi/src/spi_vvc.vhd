@@ -68,10 +68,11 @@ architecture behave of spi_vvc is
   constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX);
   constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
-  signal executor_is_busy      : boolean := false;
-  signal queue_is_increasing   : boolean := false;
-  signal last_cmd_idx_executed : natural := 0;
-  signal terminate_current_cmd : t_flag_record;
+  signal executor_is_busy                   : boolean := false;
+  signal queue_is_increasing                : boolean := false;
+  signal last_cmd_idx_executed              : natural := 0;
+  signal terminate_current_cmd              : t_flag_record;
+  signal entry_num_in_vvc_activity_register : integer;
 
   -- Instantiation of the element dedicated Queue
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
@@ -79,8 +80,6 @@ architecture behave of spi_vvc is
 
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_spi_vvc_transaction_trigger(GC_INSTANCE_IDX);
-  -- VVC Activity
-  signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -134,7 +133,7 @@ begin
   -- Command interpreter
   -- - Interpret, decode and acknowledge commands from the central sequencer
   --===============================================================================================
-  cmd_interpreter : process
+  p_cmd_interpreter : process is
     variable v_local_vvc_cmd : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
     variable v_msg_id_panel  : t_msg_id_panel;
     variable v_vvc_status    : t_vvc_status;
@@ -219,7 +218,7 @@ begin
   -- Command executor
   -- - Fetch and execute the commands
   --===============================================================================================
-  cmd_executor : process
+  p_cmd_executor : process is
     constant C_EXECUTOR_ID                           : natural                                                                   := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
     variable v_result                                : t_slv_array(0 to C_VVC_CMD_MAX_WORDS - 1)(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
@@ -243,10 +242,10 @@ begin
     work.td_vvc_entity_support_pkg.initialize_executor(terminate_current_cmd);
 
     -- Setup SPI scoreboard
-    SPI_VVC_SB.set_scope("SPI_VVC_SB");
-    SPI_VVC_SB.enable(GC_INSTANCE_IDX, "SPI VVC SB Enabled");
-    SPI_VVC_SB.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
-    SPI_VVC_SB.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
+    spi_vvc_sb.set_scope("SPI_VVC_SB");
+    spi_vvc_sb.enable(GC_INSTANCE_IDX, "SPI VVC SB Enabled");
+    spi_vvc_sb.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
+    spi_vvc_sb.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
 
     loop
 
@@ -330,7 +329,7 @@ begin
               -- Request SB check result
               if v_cmd.data_routing = TO_SB then
                 -- call SB check_received
-                SPI_VVC_SB.check_received(GC_INSTANCE_IDX, pad_spi_sb(v_result(i)(GC_DATA_WIDTH - 1 downto 0)));
+                spi_vvc_sb.check_received(GC_INSTANCE_IDX, pad_spi_sb(v_result(i)(GC_DATA_WIDTH - 1 downto 0)));
               else
                 work.td_vvc_entity_support_pkg.store_result(result_queue => result_queue,
                                                             cmd_idx      => v_cmd.cmd_idx,
@@ -446,7 +445,7 @@ begin
               -- Request SB check result
               if v_cmd.data_routing = TO_SB then
                 -- call SB check_received
-                SPI_VVC_SB.check_received(GC_INSTANCE_IDX, pad_spi_sb(v_result(i)(GC_DATA_WIDTH - 1 downto 0)));
+                spi_vvc_sb.check_received(GC_INSTANCE_IDX, pad_spi_sb(v_result(i)(GC_DATA_WIDTH - 1 downto 0)));
               else
                 work.td_vvc_entity_support_pkg.store_result(result_queue => result_queue,
                                                             cmd_idx      => v_cmd.cmd_idx,
@@ -532,7 +531,7 @@ begin
               -- Request SB check result
               if v_cmd.data_routing = TO_SB then
                 -- call SB check_received
-                SPI_VVC_SB.check_received(GC_INSTANCE_IDX, pad_spi_sb(v_result(i)(GC_DATA_WIDTH - 1 downto 0)));
+                spi_vvc_sb.check_received(GC_INSTANCE_IDX, pad_spi_sb(v_result(i)(GC_DATA_WIDTH - 1 downto 0)));
               else
                 work.td_vvc_entity_support_pkg.store_result(result_queue => result_queue,
                                                             cmd_idx      => v_cmd.cmd_idx,
@@ -652,7 +651,7 @@ begin
               -- Request SB check result
               if v_cmd.data_routing = TO_SB then
                 -- call SB check_received
-                SPI_VVC_SB.check_received(GC_INSTANCE_IDX, pad_spi_sb(v_result(i)(GC_DATA_WIDTH - 1 downto 0)));
+                spi_vvc_sb.check_received(GC_INSTANCE_IDX, pad_spi_sb(v_result(i)(GC_DATA_WIDTH - 1 downto 0)));
               else
                 work.td_vvc_entity_support_pkg.store_result(result_queue => result_queue,
                                                             cmd_idx      => v_cmd.cmd_idx,
@@ -748,10 +747,10 @@ begin
   --===============================================================================================
 
   --===============================================================================================
-  -- Unwanted activity detection
-  -- - Monitors unwanted activity from the DUT
+  -- Unwanted transaction detection
+  -- - Monitors unwanted transaction from the DUT
   --===============================================================================================
-  p_unwanted_activity : process
+  p_unwanted_transaction : process is
     variable v_vvc_config : t_vvc_config;
   begin
     -- Add a delay to allow the VVC to be registered in the activity register
@@ -775,29 +774,30 @@ begin
         wait on spi_vvc_if.ss_n, spi_vvc_if.sclk, spi_vvc_if.mosi, global_trigger_vvc_activity_register;
       end if;
 
-      -- Check the changes on the DUT outputs only when the vvc is inactive
-      if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
-        v_vvc_config := get_vvc_config(VOID);
+      v_vvc_config := get_vvc_config(VOID);
+      if v_vvc_config.unwanted_transaction_checking_enabled = true then
+        -- Check the changes on the DUT outputs only when the vvc is inactive
+        if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
+          if GC_MASTER_MODE then
+            check_unwanted_transaction(spi_vvc_if.miso, v_vvc_config.unwanted_transaction_severity.miso, "miso", C_SCOPE);
+          else
+            -- Skip checking the changes if the ss_n signal goes high within the sclk_to_ss_n period after the last sclk
+            if not (rising_edge(spi_vvc_if.ss_n) and global_trigger_vvc_activity_register'last_event <= (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit)) then
+              check_unwanted_transaction(spi_vvc_if.ss_n, v_vvc_config.unwanted_transaction_severity.ss_n, "ss_n", C_SCOPE);
+            end if;
 
-        if GC_MASTER_MODE then
-          check_unwanted_activity(spi_vvc_if.miso, v_vvc_config.unwanted_activity_severity, "miso", C_SCOPE);
-        else
-          -- Skip checking the changes if the ss_n signal goes high within the sclk_to_ss_n period after the last sclk
-          if not (rising_edge(spi_vvc_if.ss_n) and global_trigger_vvc_activity_register'last_event <= (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit)) then
-            check_unwanted_activity(spi_vvc_if.ss_n, v_vvc_config.unwanted_activity_severity, "ss_n", C_SCOPE);
+            -- Skip checking the changes if the mosi signal goes to 'Z' within the sclk_to_ss_n period after the last sclk
+            if not (spi_vvc_if.mosi = 'Z' and global_trigger_vvc_activity_register'last_event <= (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit)) then
+              check_unwanted_transaction(spi_vvc_if.mosi, v_vvc_config.unwanted_transaction_severity.mosi, "mosi", C_SCOPE);
+            end if;
+
+            check_unwanted_transaction(spi_vvc_if.sclk, v_vvc_config.unwanted_transaction_severity.sclk, "sclk", C_SCOPE);
           end if;
-
-          -- Skip checking the changes if the mosi signal goes to 'Z' within the sclk_to_ss_n period after the last sclk
-          if not (spi_vvc_if.mosi = 'Z' and global_trigger_vvc_activity_register'last_event <= (v_vvc_config.bfm_config.sclk_to_ss_n - minimum(v_vvc_config.bfm_config.spi_bit_time/2, v_vvc_config.bfm_config.ss_n_to_sclk) + std.env.resolution_limit)) then
-            check_unwanted_activity(spi_vvc_if.mosi, v_vvc_config.unwanted_activity_severity, "mosi", C_SCOPE);
-          end if;
-
-          check_unwanted_activity(spi_vvc_if.sclk, v_vvc_config.unwanted_activity_severity, "sclk", C_SCOPE);
         end if;
       end if;
     end loop;
-  end process p_unwanted_activity;
-  --===============================================================================================
+  end process p_unwanted_transaction;
+--===============================================================================================
 
-end behave;
+end architecture behave;
 

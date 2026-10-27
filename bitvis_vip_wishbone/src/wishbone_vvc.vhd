@@ -73,11 +73,12 @@ architecture behave of wishbone_vvc is
   constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX);
   constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
-  signal executor_is_busy      : boolean := false;
-  signal queue_is_increasing   : boolean := false;
-  signal last_cmd_idx_executed : natural := 0;
-  signal terminate_current_cmd : t_flag_record;
-  signal clock_period          : time;
+  signal executor_is_busy                   : boolean := false;
+  signal queue_is_increasing                : boolean := false;
+  signal last_cmd_idx_executed              : natural := 0;
+  signal terminate_current_cmd              : t_flag_record;
+  signal entry_num_in_vvc_activity_register : integer;
+  signal clock_period                       : time;
 
   -- Instantiation of the element dedicated Queue
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
@@ -85,8 +86,6 @@ architecture behave of wishbone_vvc is
 
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_wishbone_vvc_transaction_trigger(GC_INSTANCE_IDX);
-  -- VVC Activity
-  signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -140,7 +139,7 @@ begin
   -- Command interpreter
   -- - Interpret, decode and acknowledge commands from the central sequencer
   --========================================================================================================================
-  cmd_interpreter : process
+  p_cmd_interpreter : process is
     variable v_local_vvc_cmd : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
     variable v_msg_id_panel  : t_msg_id_panel;
     variable v_vvc_status    : t_vvc_status;
@@ -226,7 +225,7 @@ begin
   -- Command executor
   -- - Fetch and execute the commands
   --========================================================================================================================
-  cmd_executor : process
+  p_cmd_executor : process is
     constant C_EXECUTOR_ID                           : natural                                      := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
     variable v_read_data                             : std_logic_vector(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
@@ -246,10 +245,10 @@ begin
     initialize_executor(terminate_current_cmd);
 
     -- Setup WISHBONE scoreboard
-    WISHBONE_VVC_SB.set_scope("WISHBONE_VVC_SB");
-    WISHBONE_VVC_SB.enable(GC_INSTANCE_IDX, "WISHBONE VVC SB Enabled");
-    WISHBONE_VVC_SB.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
-    WISHBONE_VVC_SB.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
+    wishbone_vvc_sb.set_scope("WISHBONE_VVC_SB");
+    wishbone_vvc_sb.enable(GC_INSTANCE_IDX, "WISHBONE VVC SB Enabled");
+    wishbone_vvc_sb.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
+    wishbone_vvc_sb.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
 
     loop
 
@@ -338,7 +337,7 @@ begin
           -- Request SB check result
           if v_cmd.data_routing = TO_SB then
             -- call SB check_received
-            WISHBONE_VVC_SB.check_received(GC_INSTANCE_IDX, pad_wishbone_sb(v_read_data(GC_DATA_WIDTH - 1 downto 0)));
+            wishbone_vvc_sb.check_received(GC_INSTANCE_IDX, pad_wishbone_sb(v_read_data(GC_DATA_WIDTH - 1 downto 0)));
           else
             -- Store the result
             work.td_vvc_entity_support_pkg.store_result(result_queue => result_queue,
@@ -423,7 +422,7 @@ begin
   -- Clock period
   -- - Finds the clock period
   --===============================================================================================
-  p_clock_period : process
+  p_clock_period : process is
   begin
     wait until rising_edge(clk);
     clock_period <= now;
@@ -434,10 +433,10 @@ begin
   --===============================================================================================
 
   --========================================================================================================================
-  -- Unwanted activity detection
-  -- - Monitors unwanted activity from the DUT
+  -- Unwanted transaction detection
+  -- - Monitors unwanted transaction from the DUT
   --========================================================================================================================
-  p_unwanted_activity : process
+  p_unwanted_transaction : process is
     variable v_vvc_config : t_vvc_config;
   begin
     -- Add a delay to allow the VVC to be registered in the activity register
@@ -457,18 +456,20 @@ begin
 
       wait on wishbone_vvc_master_if.dat_i, wishbone_vvc_master_if.ack_i, global_trigger_vvc_activity_register;
 
-      -- Check the changes on the DUT outputs only when the vvc is inactive
-      if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
-        -- Skip checking the changes if the acknowledge signal goes low within one clock period after the VVC becomes inactive
-        if not (wishbone_vvc_master_if.ack_i = '0' and global_trigger_vvc_activity_register'last_event < clock_period) then
-          v_vvc_config := get_vvc_config(VOID);
-          check_unwanted_activity(wishbone_vvc_master_if.ack_i, v_vvc_config.unwanted_activity_severity, "ack_i", C_SCOPE);
-          check_unwanted_activity(wishbone_vvc_master_if.dat_i, v_vvc_config.unwanted_activity_severity, "dat_i", C_SCOPE);
+      v_vvc_config := get_vvc_config(VOID);
+      if v_vvc_config.unwanted_transaction_checking_enabled = true then
+        -- Check the changes on the DUT outputs only when the vvc is inactive
+        if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
+          -- Skip checking the changes if the acknowledge signal goes low within one clock period after the VVC becomes inactive
+          if not (wishbone_vvc_master_if.ack_i = '0' and global_trigger_vvc_activity_register'last_event < clock_period) then
+            check_unwanted_transaction(wishbone_vvc_master_if.dat_i, v_vvc_config.unwanted_transaction_severity.dat_i, "dat_i", C_SCOPE);
+            check_unwanted_transaction(wishbone_vvc_master_if.ack_i, v_vvc_config.unwanted_transaction_severity.ack_i, "ack_i", C_SCOPE);
+          end if;
         end if;
       end if;
     end loop;
-  end process p_unwanted_activity;
-  --========================================================================================================================
+  end process p_unwanted_transaction;
+--========================================================================================================================
 
 end architecture behave;
 

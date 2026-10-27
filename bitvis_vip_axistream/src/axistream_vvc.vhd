@@ -55,7 +55,7 @@ entity axistream_vvc is
     GC_RESULT_QUEUE_COUNT_MAX                : natural                := C_RESULT_QUEUE_COUNT_MAX;
     GC_RESULT_QUEUE_COUNT_THRESHOLD          : natural                := C_RESULT_QUEUE_COUNT_THRESHOLD;
     GC_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY : t_alert_level          := C_RESULT_QUEUE_COUNT_THRESHOLD_SEVERITY
-    );
+  );
   port(
     clk              : in    std_logic;
     axistream_vvc_if : inout t_axistream_if := init_axistream_if_signals(GC_VVC_IS_MASTER, GC_DATA_WIDTH, GC_USER_WIDTH, GC_ID_WIDTH, GC_DEST_WIDTH, GC_AXISTREAM_BFM_CONFIG)
@@ -72,11 +72,12 @@ architecture behave of axistream_vvc is
   constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX);
   constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
-  signal executor_is_busy      : boolean := false;
-  signal queue_is_increasing   : boolean := false;
-  signal last_cmd_idx_executed : natural := 0;
-  signal terminate_current_cmd : t_flag_record;
-  signal clock_period          : time;
+  signal executor_is_busy                   : boolean := false;
+  signal queue_is_increasing                : boolean := false;
+  signal last_cmd_idx_executed              : natural := 0;
+  signal terminate_current_cmd              : t_flag_record;
+  signal entry_num_in_vvc_activity_register : integer;
+  signal clock_period                       : time;
 
   -- Instantiation of the element dedicated Queue
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
@@ -84,8 +85,6 @@ architecture behave of axistream_vvc is
 
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_axistream_vvc_transaction_trigger(GC_INSTANCE_IDX);
-  -- VVC Activity 
-  signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -139,7 +138,7 @@ begin
   -- Command interpreter
   -- - Interpret, decode and acknowledge commands from the central sequencer
   --========================================================================================================================
-  cmd_interpreter : process
+  p_cmd_interpreter : process is
     variable v_local_vvc_cmd : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
     variable v_msg_id_panel  : t_msg_id_panel;
     variable v_vvc_status    : t_vvc_status;
@@ -225,7 +224,7 @@ begin
   -- Command executor
   -- - Fetch and execute the commands
   --========================================================================================================================
-  cmd_executor : process
+  p_cmd_executor : process is
     constant C_EXECUTOR_ID                           : natural := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
     variable v_result                                : t_vvc_result; -- See vvc_cmd_pkg
@@ -425,7 +424,7 @@ begin
   -- Clock period
   -- - Finds the clock period
   --===============================================================================================
-  p_clock_period : process
+  p_clock_period : process is
   begin
     wait until rising_edge(clk);
     clock_period <= now;
@@ -436,11 +435,11 @@ begin
   --===============================================================================================
 
   --========================================================================================================================
-  -- Unwanted activity detection
-  -- - Monitors unwanted activity from the DUT
+  -- Unwanted transaction detection
+  -- - Monitors unwanted transaction from the DUT
   --========================================================================================================================
-  g_unwanted_activity : if not GC_VVC_IS_MASTER generate
-    p_unwanted_activity : process
+  g_unwanted_transaction : if not GC_VVC_IS_MASTER generate
+    p_unwanted_transaction : process is
       variable v_vvc_config : t_vvc_config;
     begin
       -- Add a delay to allow the VVC to be registered in the activity register
@@ -463,25 +462,27 @@ begin
                 axistream_vvc_if.tvalid, axistream_vvc_if.tlast, axistream_vvc_if.tstrb,
                 axistream_vvc_if.tid, axistream_vvc_if.tdest, global_trigger_vvc_activity_register;
 
-        -- Check the changes on the DUT outputs only when the vvc is inactive
-        if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
-          v_vvc_config := get_vvc_config(VOID);
-          -- Skip checking the changes if the tvalid signal goes low within one clock period after the VVC becomes inactive
-          if not (falling_edge(axistream_vvc_if.tvalid) and global_trigger_vvc_activity_register'last_event < clock_period) then
-            check_unwanted_activity(axistream_vvc_if.tvalid, v_vvc_config.unwanted_activity_severity, "tvalid", C_SCOPE);
-            check_unwanted_activity(axistream_vvc_if.tdata, v_vvc_config.unwanted_activity_severity, "tdata", C_SCOPE);
-            check_unwanted_activity(axistream_vvc_if.tkeep, v_vvc_config.unwanted_activity_severity, "tkeep", C_SCOPE);
-            check_unwanted_activity(axistream_vvc_if.tuser, v_vvc_config.unwanted_activity_severity, "tuser", C_SCOPE);
-            check_unwanted_activity(axistream_vvc_if.tlast, v_vvc_config.unwanted_activity_severity, "tlast", C_SCOPE);
-            check_unwanted_activity(axistream_vvc_if.tstrb, v_vvc_config.unwanted_activity_severity, "tstrb", C_SCOPE);
-            check_unwanted_activity(axistream_vvc_if.tid, v_vvc_config.unwanted_activity_severity, "tid", C_SCOPE);
-            check_unwanted_activity(axistream_vvc_if.tdest, v_vvc_config.unwanted_activity_severity, "tdest", C_SCOPE);
+        v_vvc_config := get_vvc_config(VOID);
+        if v_vvc_config.unwanted_transaction_checking_enabled = true then
+          -- Check the changes on the DUT outputs only when the vvc is inactive
+          if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
+            -- Skip checking the changes if the tvalid signal goes low within one clock period after the VVC becomes inactive
+            if not (falling_edge(axistream_vvc_if.tvalid) and global_trigger_vvc_activity_register'last_event < clock_period) then
+              check_unwanted_transaction(axistream_vvc_if.tvalid, v_vvc_config.unwanted_transaction_severity.tvalid, "tvalid", C_SCOPE);
+              check_unwanted_transaction(axistream_vvc_if.tdata, v_vvc_config.unwanted_transaction_severity.tdata, "tdata", C_SCOPE);
+              check_unwanted_transaction(axistream_vvc_if.tkeep, v_vvc_config.unwanted_transaction_severity.tkeep, "tkeep", C_SCOPE);
+              check_unwanted_transaction(axistream_vvc_if.tuser, v_vvc_config.unwanted_transaction_severity.tuser, "tuser", C_SCOPE);
+              check_unwanted_transaction(axistream_vvc_if.tlast, v_vvc_config.unwanted_transaction_severity.tlast, "tlast", C_SCOPE);
+              check_unwanted_transaction(axistream_vvc_if.tstrb, v_vvc_config.unwanted_transaction_severity.tstrb, "tstrb", C_SCOPE);
+              check_unwanted_transaction(axistream_vvc_if.tid, v_vvc_config.unwanted_transaction_severity.tid, "tid", C_SCOPE);
+              check_unwanted_transaction(axistream_vvc_if.tdest, v_vvc_config.unwanted_transaction_severity.tdest, "tdest", C_SCOPE);
+            end if;
           end if;
         end if;
       end loop;
-    end process p_unwanted_activity;
-  end generate g_unwanted_activity;
-  --========================================================================================================================
+    end process p_unwanted_transaction;
+  end generate g_unwanted_transaction;
+--========================================================================================================================
 
-end behave;
+end architecture behave;
 

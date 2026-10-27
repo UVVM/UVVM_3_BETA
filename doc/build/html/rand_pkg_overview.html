@@ -73,6 +73,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#configuration-report">Configuration report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#clearing-configuration">Clearing configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#questa-one-extended-features">Questa One extended features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#additional-constraints-for-multi-method-approach">Additional constraints for multi-method approach</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linking-of-variables">Linking of variables</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#additional-info">Additional info</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rand-pkg">rand_pkg</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="rand_pkg_t_rand.html">t_rand (protected)</a></li>
@@ -85,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vvc_framework.html">VVC Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_apb.html">External VIP APB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
@@ -105,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fusesoc.html">FuseSoC support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 
@@ -748,6 +755,60 @@ The maximum length of the name is determined by C_RAND_MAX_NAME_LENGTH defined i
 <section id="clearing-configuration">
 <h2>Clearing configuration<a class="headerlink" href="#clearing-configuration" title="Link to this heading"></a></h2>
 <p>To clear the complete configuration in the random generator use the <code class="docutils literal notranslate"><span class="pre">clear_config()</span></code> procedure.</p>
+</section>
+<section id="questa-one-extended-features">
+<span id="questa-rand"></span><h2>Questa One extended features<a class="headerlink" href="#questa-one-extended-features" title="Link to this heading"></a></h2>
+<p>Questa One v. 2026.1 and newer offers support for some extended functionality in UVVM Randomization.</p>
+<p>See <a class="reference internal" href="uvvm_getting_started.html#questa-enabling"><span class="std std-ref">Getting Started - Questa One Extended Features</span></a> for information about how to enable the extended functionality.</p>
+<section id="additional-constraints-for-multi-method-approach">
+<h3>Additional constraints for multi-method approach<a class="headerlink" href="#additional-constraints-for-multi-method-approach" title="Link to this heading"></a></h3>
+<p>The Questa One extended features adds support for a set of additional constraint methods for UVVM Enhanced Randomization. See
+<a class="reference internal" href="rand_pkg_t_rand.html#questa-rand-methods"><span class="std std-ref">Questa One randomization methods</span></a> for description of these methods.</p>
+</section>
+<section id="linking-of-variables">
+<h3>Linking of variables<a class="headerlink" href="#linking-of-variables" title="Link to this heading"></a></h3>
+<p>Linking of variables allows for the definition of a relationship between two randomized variables. For instance, a link constrain
+between randomized variables <em>v1</em> and <em>v2</em> can be set so that the value of <em>v1</em> is always greater than the value of <em>v2</em>.</p>
+<p>The linking relationship is added to the constraint set of one of the randomized variables. When this variable is randomized through a
+call to randm(), a randomized value for the other (linked) variable is automatically generated at the same time. This linked value is
+stored in the randomization (<em>t_rand</em>) object of the linked variable, and can be fetched using the get_value() method.</p>
+<p>Say that we want to generate two randomized integers, v_integer_v1 and v_integer_v2, and we always want v_integer_v1 to be larger than
+v_integer_v2. This is done by first defining a t_rand object for each of the randomized integers.</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="k">variable</span><span class="w"> </span><span class="n">v_rand_v1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">t_rand</span><span class="p">;</span>
+<span class="k">variable</span><span class="w"> </span><span class="n">v_rand_v2</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">t_rand</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Optionally, we can apply other constraints, e.g. range constraints, to each of these t_rand objects:</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">v_rand_v1</span><span class="p">.</span><span class="n">add_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span><span class="w"> </span><span class="c1">-- Constrain v1 to range 0-10</span>
+<span class="n">v_rand_v2</span><span class="p">.</span><span class="n">add_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span><span class="w">  </span><span class="c1">-- Constrain v2 to range 0-5</span>
+</pre></div>
+</div>
+<p>Now, we want to define a link between the two variables, saying that <em>v1 &gt; v2</em>. This linking needs to be done through a reference
+handle to one of the t_rand objects. Through this handle, other t_rand objects can trigger the genereation of a linked randomized value
+inside the referenced object. We define a randomization handle for v_rand_v2, and use this handle to add a relationship constraint to
+v_rand_v1.</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">v_handle_v2</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">v_rand_v2</span><span class="p">.</span><span class="n">create_rand</span><span class="p">(</span><span class="n">VOID</span><span class="p">);</span><span class="w"> </span><span class="c1">-- Create randomization handle for v_rand_v2.</span>
+<span class="n">v_rand_v1</span><span class="p">.</span><span class="n">link</span><span class="p">(</span><span class="n">GT</span><span class="p">,</span><span class="w"> </span><span class="n">v_handle_v2</span><span class="p">);</span><span class="w">            </span><span class="c1">-- Creates relational link to v_rand_v2 in constraint set of v_rand_v1</span>
+</pre></div>
+</div>
+<p>Now that a link to v2 has been added in v_rand_v1, calling v_rand_v1.randm() will result in the generation of two randomized values,
+v1 and v2. These values satisfy the condition v1 &gt; v2, in addition to meeting the individual constraints defined in v_rand_v1 and
+v_rand_v2, respectively. Value v1 is returned by the v_rand_v1.randm() call. Subsequently calling v_rand_v2.get_value() will return
+value v2.</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">--------------------------------------------------------------------------------------------------------------------</span>
+<span class="c1">-- Full example: v1 &gt; v2</span>
+<span class="c1">-- Generates two random variables v1 and v2, where the value of v1 is always greater than the value of v2</span>
+<span class="c1">-- my_rand_v1 and my_rand_v2 are randomization objects of type t_rand.</span>
+<span class="c1">--------------------------------------------------------------------------------------------------------------------</span>
+<span class="n">my_rand_v1</span><span class="p">.</span><span class="n">add_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span><span class="w"> </span><span class="c1">-- Constrain v1 to range 0-10</span>
+<span class="n">my_rand_v2</span><span class="p">.</span><span class="n">add_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span><span class="w">  </span><span class="c1">-- constrain v2 to range 0-5</span>
+<span class="n">v_link_handle_v2</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">v_rand_v2</span><span class="p">.</span><span class="n">create_rand</span><span class="p">(</span><span class="n">VOID</span><span class="p">);</span><span class="w"> </span><span class="c1">-- Create randomization handle to v_rand_v2</span>
+<span class="n">v_rand_v1</span><span class="p">.</span><span class="n">link</span><span class="p">(</span><span class="n">GT</span><span class="p">,</span><span class="w"> </span><span class="n">v_link_handle_v2</span><span class="p">);</span><span class="w">  </span><span class="c1">-- Add v1 &gt; v2 as link constraint to v_rand_v1</span>
+<span class="n">v_integer_v1</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">v_rand_v1</span><span class="p">.</span><span class="n">randm</span><span class="p">();</span><span class="w">     </span><span class="c1">-- Get value v1</span>
+<span class="n">v_integer_v2</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">v_rand_v2</span><span class="p">.</span><span class="n">get_value</span><span class="p">();</span><span class="w"> </span><span class="c1">-- Get value v2</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="additional-info">
 <h2>Additional info<a class="headerlink" href="#additional-info" title="Link to this heading"></a></h2>

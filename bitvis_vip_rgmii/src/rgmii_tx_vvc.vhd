@@ -61,10 +61,11 @@ architecture behave of rgmii_tx_vvc is
   constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX, C_CHANNEL);
   constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, C_CHANNEL);
 
-  signal executor_is_busy      : boolean := false;
-  signal queue_is_increasing   : boolean := false;
-  signal last_cmd_idx_executed : natural := 0;
-  signal terminate_current_cmd : t_flag_record;
+  signal executor_is_busy                   : boolean := false;
+  signal queue_is_increasing                : boolean := false;
+  signal last_cmd_idx_executed              : natural := 0;
+  signal terminate_current_cmd              : t_flag_record;
+  signal entry_num_in_vvc_activity_register : integer;
 
   -- Instantiation of the element dedicated executor
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
@@ -72,8 +73,6 @@ architecture behave of rgmii_tx_vvc is
 
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_rgmii_vvc_transaction_trigger(C_CHANNEL, GC_INSTANCE_IDX);
-  -- VVC Activity 
-  signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -127,7 +126,7 @@ begin
   -- Command interpreter
   -- - Interpret, decode and acknowledge commands from the central sequencer
   --==========================================================================================
-  cmd_interpreter : process
+  p_cmd_interpreter : process is
     variable v_local_vvc_cmd : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
     variable v_msg_id_panel  : t_msg_id_panel;
     variable v_vvc_status    : t_vvc_status;
@@ -212,7 +211,7 @@ begin
   -- Command executor
   -- - Fetch and execute the commands
   --==========================================================================================
-  cmd_executor : process
+  p_cmd_executor : process is
     constant C_EXECUTOR_ID                           : natural := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
     variable v_timestamp_start_of_current_bfm_access : time    := 0 ns;
@@ -249,7 +248,7 @@ begin
       v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Check if command is a BFM access
-      v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay 
+      v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay
       if v_cmd.operation = WRITE then
         v_command_is_bfm_access := true;
       else
@@ -334,6 +333,6 @@ begin
   -- - Handles the termination request record (sets and resets terminate flag on request)
   --==========================================================================================
   cmd_terminator : uvvm_vvc_framework.ti_vvc_framework_support_pkg.flag_handler(terminate_current_cmd); -- flag: is_active, set, reset
-  --==========================================================================================
+--==========================================================================================
 
-end behave;
+end architecture behave;

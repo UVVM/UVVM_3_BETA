@@ -205,8 +205,8 @@ begin
     -- Wait for UVVM to finish initialization
     await_uvvm_initialization(VOID);
 
-    v_vvc_config                             := shared_uart_vvc_config.get(3, RX);
-    v_vvc_config.unwanted_activity_severity  := NO_ALERT; -- Unwanted activity errors due to transmission without receive commands
+    v_vvc_config                                       := shared_uart_vvc_config.get(3, RX);
+    v_vvc_config.unwanted_transaction_checking_enabled := false; -- Unwanted transaction errors due to transmission without receive commands
     shared_uart_vvc_config.set(v_vvc_config, 3, RX);
 
     log(ID_LOG_HDR, "Starting simulation using several sequencers", C_SCOPE_MAIN);
@@ -1276,7 +1276,7 @@ begin
     check_all_vvc_inactive(VOID);
 
     log(ID_LOG_HDR, "Check that pending data in SB will result in WARNING", C_SCOPE_L1);
-    UART_VVC_SB.add_expected(5, x"55");
+    uart_vvc_sb.add_expected(5, 9x"055");
     increment_expected_alerts(WARNING, 1, scope => C_SCOPE_L1);
     await_uvvm_completion(1 ns, WARNING, 1 us, NO_REPORT, NO_REPORT, NO_REPORT, C_SCOPE_L1); -- Should throw an alert since the RX-SB has pending data
     sbi_write(C_ADDR_TX_DATA, x"55", "TX_DATA");

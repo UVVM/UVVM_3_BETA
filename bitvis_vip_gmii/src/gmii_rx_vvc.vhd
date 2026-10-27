@@ -64,11 +64,12 @@ architecture behave of gmii_rx_vvc is
   constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX, C_CHANNEL);
   constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, C_CHANNEL);
 
-  signal executor_is_busy      : boolean := false;
-  signal queue_is_increasing   : boolean := false;
-  signal last_cmd_idx_executed : natural := 0;
-  signal terminate_current_cmd : t_flag_record;
-  signal clock_period          : time;
+  signal executor_is_busy                   : boolean := false;
+  signal queue_is_increasing                : boolean := false;
+  signal last_cmd_idx_executed              : natural := 0;
+  signal terminate_current_cmd              : t_flag_record;
+  signal entry_num_in_vvc_activity_register : integer;
+  signal clock_period                       : time;
 
   -- Instantiation of the element dedicated executor
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
@@ -76,8 +77,6 @@ architecture behave of gmii_rx_vvc is
 
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_gmii_vvc_transaction_trigger(C_CHANNEL, GC_INSTANCE_IDX);
-  -- VVC Activity 
-  signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -131,7 +130,7 @@ begin
   -- Command interpreter
   -- - Interpret, decode and acknowledge commands from the central sequencer
   --==========================================================================================
-  cmd_interpreter : process
+  p_cmd_interpreter : process is
     variable v_local_vvc_cmd : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
     variable v_msg_id_panel  : t_msg_id_panel;
     variable v_vvc_status    : t_vvc_status;
@@ -217,7 +216,7 @@ begin
   -- Command executor
   -- - Fetch and execute the commands
   --==========================================================================================
-  cmd_executor : process
+  p_cmd_executor : process is
     constant C_EXECUTOR_ID                           : natural := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
     variable v_result                                : t_vvc_result; -- See vvc_cmd_pkg
@@ -235,10 +234,10 @@ begin
     work.td_vvc_entity_support_pkg.initialize_executor(terminate_current_cmd);
 
     -- Setup GMII scoreboard
-    GMII_VVC_SB.set_scope("GMII_VVC_SB");
-    GMII_VVC_SB.enable(GC_INSTANCE_IDX, "GMII VVC SB Enabled");
-    GMII_VVC_SB.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
-    GMII_VVC_SB.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
+    gmii_vvc_sb.set_scope("GMII_VVC_SB");
+    gmii_vvc_sb.enable(GC_INSTANCE_IDX, "GMII VVC SB Enabled");
+    gmii_vvc_sb.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
+    gmii_vvc_sb.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
 
     loop
 
@@ -261,7 +260,7 @@ begin
       v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Check if command is a BFM access
-      v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay 
+      v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay
       if v_cmd.operation = READ or v_cmd.operation = EXPECT then
         v_command_is_bfm_access := true;
       else
@@ -291,7 +290,7 @@ begin
           set_global_vvc_transaction_info(vvc_transaction_info_trigger, shared_gmii_vvc_transaction_info, GC_INSTANCE_IDX, C_CHANNEL, v_cmd, v_vvc_config, IN_PROGRESS, C_SCOPE);
 
           -- Call the corresponding procedure in the BFM package.
-          gmii_read(data_array   => v_result.data_array(0 to v_cmd.num_bytes_read - 1),
+          gmii_read(data_array   => v_result.data_array(0 to v_cmd.data_array_length - 1),
                     data_len     => v_result.data_array_length,
                     msg          => format_msg(v_cmd),
                     gmii_rx_if   => gmii_vvc_rx_if,
@@ -303,7 +302,7 @@ begin
           if v_cmd.data_routing = TO_SB then
             -- call SB check_received
             for i in 0 to v_result.data_array_length - 1 loop
-              GMII_VVC_SB.check_received(GC_INSTANCE_IDX, v_result.data_array(i));
+              gmii_vvc_sb.check_received(GC_INSTANCE_IDX, v_result.data_array(i));
             end loop;
           else
             -- Store the result
@@ -381,7 +380,7 @@ begin
   -- Clock period
   -- - Finds the clock period
   --===============================================================================================
-  p_clock_period : process
+  p_clock_period : process is
   begin
     wait until rising_edge(gmii_vvc_rx_if.rxclk);
     clock_period <= now;
@@ -392,10 +391,10 @@ begin
   --===============================================================================================
 
   --==========================================================================================
-  -- Unwanted activity detection
-  -- - Monitors unwanted activity from the DUT
+  -- Unwanted transaction detection
+  -- - Monitors unwanted transaction from the DUT
   --==========================================================================================
-  p_unwanted_activity : process
+  p_unwanted_transaction : process is
     variable v_vvc_config : t_vvc_config;
   begin
     -- Add a delay to allow the VVC to be registered in the activity register
@@ -415,17 +414,19 @@ begin
 
       wait on gmii_vvc_rx_if.rxd, gmii_vvc_rx_if.rxdv, global_trigger_vvc_activity_register;
 
-      -- Check the changes on the DUT outputs only when the vvc is inactive
-      if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
-        -- Skip checking the changes if the rxdv signal goes low within one clock period after the VVC becomes inactive
-        if not (falling_edge(gmii_vvc_rx_if.rxdv) and global_trigger_vvc_activity_register'last_event < clock_period) then
-          v_vvc_config := get_vvc_config(VOID);
-          check_unwanted_activity(gmii_vvc_rx_if.rxdv, v_vvc_config.unwanted_activity_severity, "rxdv", C_SCOPE);
-          check_unwanted_activity(gmii_vvc_rx_if.rxd, v_vvc_config.unwanted_activity_severity, "rxd", C_SCOPE);
+      v_vvc_config := get_vvc_config(VOID);
+      if v_vvc_config.unwanted_transaction_checking_enabled = true then
+        -- Check the changes on the DUT outputs only when the vvc is inactive
+        if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
+          -- Skip checking the changes if the rxdv signal goes low within one clock period after the VVC becomes inactive
+          if not (falling_edge(gmii_vvc_rx_if.rxdv) and global_trigger_vvc_activity_register'last_event < clock_period) then
+            check_unwanted_transaction(gmii_vvc_rx_if.rxdv, v_vvc_config.unwanted_transaction_severity.rxdv, "rxdv", C_SCOPE);
+            check_unwanted_transaction(gmii_vvc_rx_if.rxd, v_vvc_config.unwanted_transaction_severity.rxd, "rxd", C_SCOPE);
+          end if;
         end if;
       end if;
     end loop;
-  end process p_unwanted_activity;
-  --==========================================================================================
+  end process p_unwanted_transaction;
+--==========================================================================================
 
-end behave;
+end architecture behave;

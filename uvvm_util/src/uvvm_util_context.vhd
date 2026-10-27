@@ -15,10 +15,10 @@
 ------------------------------------------------------------------------------------------
 
 context uvvm_util_context is
-  library uvvm_util;
+library uvvm_util;
   use uvvm_util.types_pkg.all;
   use uvvm_util.global_signals_and_shared_variables_pkg.all;
-  --use uvvm_util.global_signals_and_shared_variables_pkg.protected_msg_id_panel_pkg.all; -- v3
+    --use uvvm_util.global_signals_and_shared_variables_pkg.protected_msg_id_panel_pkg.all; -- v3
   use uvvm_util.hierarchy_linked_list_pkg.all;
   use uvvm_util.string_methods_pkg.all;
   use uvvm_util.adaptations_pkg.all;

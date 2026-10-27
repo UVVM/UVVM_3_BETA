@@ -69,6 +69,8 @@ package vvc_transaction_pkg is
     operation          : t_operation;
     channel_value      : std_logic_vector(C_VVC_CMD_CHAN_MAX_LENGTH - 1 downto 0);
     data_array         : t_slv_array(0 to C_VVC_CMD_DATA_MAX_WORDS - 1)(C_VVC_CMD_WORD_MAX_LENGTH - 1 downto 0);
+    num_words          : natural;
+    word_length        : natural;
     vvc_meta           : t_vvc_meta;
     transaction_status : t_transaction_status;
   end record;
@@ -77,6 +79,8 @@ package vvc_transaction_pkg is
     operation          => NO_OPERATION,
     channel_value      => (others => '0'),
     data_array         => (others => (others => '0')),
+    num_words          => 0,
+    word_length        => 0,
     vvc_meta           => C_VVC_META_DEFAULT,
     transaction_status => INACTIVE
   );
@@ -92,7 +96,7 @@ package vvc_transaction_pkg is
 
   -- Global transaction info trigger signal
   type t_avalon_st_transaction_trigger_array is array (natural range <>) of std_logic;
-  signal global_avalon_st_vvc_transaction_trigger : t_avalon_st_transaction_trigger_array(0 to C_VVC_MAX_INSTANCE_NUM - 1) := (others => '0');
+  signal global_avalon_st_vvc_transaction_trigger : t_avalon_st_transaction_trigger_array(0 to C_VVC_MAX_INSTANCE_NUM - 1) := (others => 'Z');
 
 end package vvc_transaction_pkg;
 
@@ -107,9 +111,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_transaction_group_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_transaction_group,
-    c_generic_default  => C_TRANSACTION_GROUP_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_transaction_group,
+    GC_GENERIC_DEFAULT  => C_TRANSACTION_GROUP_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 --================================================================================================================================

@@ -27,6 +27,7 @@ use bitvis_vip_sbi.sbi_bfm_pkg.all;
 library bitvis_vip_uart;
 
 library bitvis_uart;
+use bitvis_uart.uart_pif_pkg.all;
 
 -- Test case entity
 entity uart_vvc_th is
@@ -34,6 +35,11 @@ end entity;
 
 -- Test case architecture
 architecture struct of uart_vvc_th is
+
+  -- DUT CPU bus is fixed at the maximum supported UART frame width.
+  -- The per-run UART data width is set by the TB sequencer via the
+  -- NUM_DATA_BITS register and the BFM config.
+  constant C_DUT_BUS_WIDTH : natural := C_UART_MAX_DATA_WIDTH;
 
   -- DSP interface and general control signals
   signal clk  : std_logic := '0';
@@ -43,15 +49,16 @@ architecture struct of uart_vvc_th is
   signal addr  : unsigned(2 downto 0);
   signal wr    : std_logic;
   signal rd    : std_logic;
-  signal wdata : std_logic_vector(7 downto 0);
-  signal rdata : std_logic_vector(7 downto 0);
+  signal wdata : std_logic_vector(8 downto 0);
+  signal rdata : std_logic_vector(8 downto 0);
   signal ready : std_logic;
 
   signal uart_vvc_rx : std_logic;
   signal uart_vvc_tx : std_logic;
 
-  constant C_CLK_PERIOD : time := 10 ns; -- 100 MHz
-  constant C_CLK_JITTER : time := 0.2 ns;
+  constant C_CLK_PERIOD  : time    := 10 ns; -- 100 MHz
+  constant C_CLK_JITTER  : time    := 0.2 ns;
+  constant C_DATA_WIDTH  : integer := 9;
 
   constant C_SBI_BFM_CONFIG : t_sbi_bfm_config := (
     max_wait_cycles            => 10000000,
@@ -79,6 +86,7 @@ begin
   -----------------------------------------------------------------------------
   i_uart : entity bitvis_uart.uart
     generic map(
+      GC_DATA_WIDTH                => C_DUT_BUS_WIDTH,
       GC_MIN_EQUAL_SAMPLES_PER_BIT => 9
     )
     port map(
@@ -99,8 +107,8 @@ begin
 
   i1_sbi_vvc : entity bitvis_vip_sbi.sbi_vvc
     generic map(
-      GC_ADDR_WIDTH   => 3,             -- integer := 8;
-      GC_DATA_WIDTH   => 8,             -- integer := 32;
+      GC_ADDR_WIDTH   => 3,
+      GC_DATA_WIDTH   => C_DATA_WIDTH,
       GC_INSTANCE_IDX => 1,
       GC_SBI_CONFIG   => C_SBI_BFM_CONFIG
     )
@@ -115,8 +123,14 @@ begin
       sbi_vvc_master_if.rdata => rdata  -- in std_logic_vector(GC_DATA_WIDTH-1 downto 0)
     );
 
+  -- GC_DATA_WIDTH sizes the executor's v_normalised_data array (static); it must be the
+  -- MAX width ever exercised by the TB. Runtime num_data_bits (any value 5..9) is always
+  -- valid as long as it stays <= GC_DATA_WIDTH. The TB explicitly resets num_data_bits
+  -- to 8 before the legacy 8-bit section so the constructor's GC_DATA_WIDTH-init does
+  -- not bleed into those tests.
   i1_uart_vvc : entity bitvis_vip_uart.uart_vvc
     generic map(
+      GC_DATA_WIDTH   => C_DATA_WIDTH,
       GC_INSTANCE_IDX => 1
     )
     port map(

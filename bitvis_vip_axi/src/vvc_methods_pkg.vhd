@@ -45,18 +45,47 @@ package vvc_methods_support_pkg is
     inter_bfm_delay_violation_severity => WARNING
   );
 
+  -- Record for configuring the severity of unwanted transaction detection for each monitored DUT output
+  type t_axi_unwanted_transaction is record
+    bvalid : t_alert_level;
+    bid    : t_alert_level;
+    bresp  : t_alert_level;
+    buser  : t_alert_level;
+    rvalid : t_alert_level;
+    rid    : t_alert_level;
+    rdata  : t_alert_level;
+    rresp  : t_alert_level;
+    rlast  : t_alert_level;
+    ruser  : t_alert_level;
+  end record t_axi_unwanted_transaction;
+
+  constant C_AXI_UNWANTED_TRANSACTION : t_axi_unwanted_transaction := (
+    bvalid => ERROR,
+    bid    => NO_ALERT,
+    bresp  => NO_ALERT,
+    buser  => NO_ALERT,
+    rvalid => ERROR,
+    rid    => NO_ALERT,
+    rdata  => NO_ALERT,
+    rresp  => NO_ALERT,
+    rlast  => NO_ALERT,
+    ruser  => NO_ALERT
+  );
+
   type t_vvc_config is record
-    inter_bfm_delay                  : t_inter_bfm_delay; -- Minimum delay between BFM accesses from the VVC. If parameter delay_type is set to NO_DELAY, BFM accesses will be back to back, i.e. no delay.
-    bfm_config                       : t_bfm_config;      -- Configuration for the BFM. See BFM quick reference.
-    force_single_pending_transaction : boolean;           -- Waits until the previous transaction is completed before starting the next one
-    unwanted_activity_severity       : t_alert_level;     -- Severity of alert to be initiated if unwanted activity on the DUT outputs is detected
+    inter_bfm_delay                       : t_inter_bfm_delay; -- Minimum delay between BFM accesses from the VVC. If parameter delay_type is set to NO_DELAY, BFM accesses will be back to back, i.e. no delay.
+    bfm_config                            : t_bfm_config;      -- Configuration for the BFM. See BFM quick reference.
+    force_single_pending_transaction      : boolean;           -- Waits until the previous transaction is completed before starting the next one
+    unwanted_transaction_checking_enabled : boolean; -- Enable unwanted transaction checking
+    unwanted_transaction_severity         : t_axi_unwanted_transaction; -- Severity of alert to be initiated if unwanted transaction on the DUT outputs is detected
   end record;
 
   constant C_AXI_VVC_CONFIG_DEFAULT : t_vvc_config := (
-    inter_bfm_delay                  => C_AXI_INTER_BFM_DELAY_DEFAULT,
-    bfm_config                       => C_AXI_BFM_CONFIG_DEFAULT,
-    force_single_pending_transaction => false,
-    unwanted_activity_severity       => C_UNWANTED_ACTIVITY_SEVERITY
+    inter_bfm_delay                       => C_AXI_INTER_BFM_DELAY_DEFAULT,
+    bfm_config                            => C_AXI_BFM_CONFIG_DEFAULT,
+    force_single_pending_transaction      => false,
+    unwanted_transaction_checking_enabled => C_UNWANTED_TRANSACTION_CHECKING_DEFAULT,
+    unwanted_transaction_severity         => C_AXI_UNWANTED_TRANSACTION
   );
 
   type t_vvc_status is record
@@ -85,9 +114,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_vvc_status_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_vvc_status,
-    c_generic_default  => C_VVC_STATUS_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_vvc_status,
+    GC_GENERIC_DEFAULT  => C_VVC_STATUS_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 ----------------------------------------------------------------------
@@ -99,9 +128,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_vvc_config_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_vvc_config,
-    c_generic_default  => C_AXI_VVC_CONFIG_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_vvc_config,
+    GC_GENERIC_DEFAULT  => C_AXI_VVC_CONFIG_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 ----------------------------------------------------------------------
@@ -114,9 +143,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_msg_id_panel_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_msg_id_panel,
-    c_generic_default  => C_VVC_MSG_ID_PANEL_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_msg_id_panel,
+    GC_GENERIC_DEFAULT  => C_VVC_MSG_ID_PANEL_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 --================================================================================================================================
@@ -149,14 +178,14 @@ package vvc_methods_pkg is
   shared variable shared_axi_vvc_status       : work.protected_vvc_status_pkg.t_generic_array;
   shared variable shared_axi_vvc_config       : work.protected_vvc_config_pkg.t_generic_array;
   shared variable shared_axi_vvc_msg_id_panel : work.protected_msg_id_panel_pkg.t_generic_array;
-  shared variable AXI_VVC_SB                  : t_generic_sb;
+  shared variable axi_vvc_sb                  : t_generic_sb;
 
   alias shared_vvc_status       is shared_axi_vvc_status;       -- This alias is for internal use in the VVC
   alias shared_vvc_config       is shared_axi_vvc_config;       -- This alias is for internal use in the VVC
   alias shared_vvc_msg_id_panel is shared_axi_vvc_msg_id_panel; -- This alias is for internal use in the VVC
 
   --==========================================================================================
-  -- Methods dedicated to this VVC 
+  -- Methods dedicated to this VVC
   -- - These procedures are called from the testbench in order for the VVC to execute
   --   BFM calls towards the given interface. The VVC interpreter will queue these calls
   --   and then the VVC executor will fetch the commands from the queue and handle the
@@ -365,9 +394,9 @@ package body vvc_methods_pkg is
     constant scope               : in string                       := C_VVC_CMD_SCOPE_DEFAULT;
     constant parent_msg_id_panel : in t_msg_id_panel               := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
   ) is
-    constant proc_name : string := get_procedure_name_from_instance_name(vvc_instance_idx'instance_name);
-    constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ", " & to_string(awaddr, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
+    constant C_PROC_NAME : string := get_procedure_name_from_instance_name(vvc_instance_idx'instance_name);
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
+                                     & ", " & to_string(awaddr, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
     variable v_local_vvc_cmd        : t_vvc_cmd_record := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_normalised_awid      : std_logic_vector(v_local_vvc_cmd.id'length - 1 downto 0);
     variable v_normalised_awaddr    : unsigned(v_local_vvc_cmd.addr'length - 1 downto 0);
@@ -409,7 +438,7 @@ package body vvc_methods_pkg is
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
-    set_general_target_and_command_fields(VVCT, vvc_instance_idx, proc_call, msg, QUEUED, WRITE);
+    set_general_target_and_command_fields(VVCT, vvc_instance_idx, C_PROC_CALL, msg, QUEUED, WRITE);
 
     -- v3
     v_local_vvc_cmd                     := shared_vvc_cmd.get(vvc_instance_idx);
@@ -457,9 +486,9 @@ package body vvc_methods_pkg is
     constant scope               : in string                       := C_VVC_CMD_SCOPE_DEFAULT;
     constant parent_msg_id_panel : in t_msg_id_panel               := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
   ) is
-    constant proc_name : string := get_procedure_name_from_instance_name(vvc_instance_idx'instance_name);
-    constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ", " & to_string(araddr, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
+    constant C_PROC_NAME         : string := get_procedure_name_from_instance_name(vvc_instance_idx'instance_name);
+    constant C_PROC_CALL         : string := C_PROC_NAME & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
+                                             & ", " & to_string(araddr, HEX, KEEP_LEADING_0, INCL_RADIX) & ", " & to_upper(to_string(data_routing)) & ")";
     variable v_local_vvc_cmd     : t_vvc_cmd_record := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_normalised_arid   : std_logic_vector(v_local_vvc_cmd.id'length - 1 downto 0);
     variable v_normalised_araddr : unsigned(v_local_vvc_cmd.addr'length - 1 downto 0);
@@ -481,7 +510,7 @@ package body vvc_methods_pkg is
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
-    set_general_target_and_command_fields(VVCT, vvc_instance_idx, proc_call, msg, QUEUED, READ);
+    set_general_target_and_command_fields(VVCT, vvc_instance_idx, C_PROC_CALL, msg, QUEUED, READ);
 
     -- v3
     v_local_vvc_cmd                     := shared_vvc_cmd.get(vvc_instance_idx);
@@ -528,9 +557,9 @@ package body vvc_methods_pkg is
     constant scope               : in string                       := C_VVC_CMD_SCOPE_DEFAULT;
     constant parent_msg_id_panel : in t_msg_id_panel               := C_UNUSED_MSG_ID_PANEL -- Only intended for usage by parent HVVCs
   ) is
-    constant proc_name : string := get_procedure_name_from_instance_name(vvc_instance_idx'instance_name);
-    constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ", " & to_string(araddr, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
+    constant C_PROC_NAME : string := get_procedure_name_from_instance_name(vvc_instance_idx'instance_name);
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
+                                     & ", " & to_string(araddr, HEX, KEEP_LEADING_0, INCL_RADIX) & ")";
     variable v_local_vvc_cmd     : t_vvc_cmd_record                                          := shared_vvc_cmd.get(vvc_instance_idx);
     variable v_normalised_arid   : std_logic_vector(v_local_vvc_cmd.id'length - 1 downto 0);
     variable v_normalised_araddr : unsigned(v_local_vvc_cmd.addr'length - 1 downto 0);
@@ -572,7 +601,7 @@ package body vvc_methods_pkg is
     -- Create command by setting common global 'VVCT' signal record and dedicated VVC 'shared_vvc_cmd' record
     -- locking semaphore in set_general_target_and_command_fields to gain exclusive right to VVCT and shared_vvc_cmd
     -- semaphore gets unlocked in await_cmd_from_sequencer of the targeted VVC
-    set_general_target_and_command_fields(VVCT, vvc_instance_idx, proc_call, msg, QUEUED, CHECK);
+    set_general_target_and_command_fields(VVCT, vvc_instance_idx, C_PROC_CALL, msg, QUEUED, CHECK);
 
     -- v3
     v_local_vvc_cmd                     := shared_vvc_cmd.get(vvc_instance_idx);

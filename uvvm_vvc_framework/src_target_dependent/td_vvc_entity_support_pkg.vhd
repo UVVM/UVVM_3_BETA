@@ -113,7 +113,7 @@ package td_vvc_entity_support_pkg is
   -- Initialises the VVC interpreter
   -- - Clears terminate_current_cmd.set to '0'
   procedure initialize_interpreter(
-    signal terminate_current_cmd      : out t_flag_record
+    signal terminate_current_cmd : out t_flag_record
   );
 
   -------------------------------------------
@@ -320,20 +320,20 @@ package body td_vvc_entity_support_pkg is
     instance_idx : integer;
     channel      : t_channel
   ) return t_vvc_labels is
-    variable vvc_labels : t_vvc_labels;
+    variable v_vvc_labels : t_vvc_labels;
   begin
-    vvc_labels.vvc_name     := pad_string(vvc_name, NUL, vvc_labels.vvc_name'length);
-    vvc_labels.instance_idx := instance_idx;
-    vvc_labels.channel      := channel;
-    return vvc_labels;
-  end;
+    v_vvc_labels.vvc_name     := pad_string(vvc_name, NUL, v_vvc_labels.vvc_name'length);
+    v_vvc_labels.instance_idx := instance_idx;
+    v_vvc_labels.channel      := channel;
+    return v_vvc_labels;
+  end function;
 
   impure function format_msg(
     command : t_vvc_cmd_record
   ) return string is
   begin
     return add_msg_delimiter(to_string(command.msg)) & " " & format_command_idx(command);
-  end;
+  end function;
 
   procedure vvc_constructor(
     constant scope                                 : in string;
@@ -432,7 +432,7 @@ package body td_vvc_entity_support_pkg is
   end procedure vvc_constructor;
 
   procedure initialize_interpreter(
-    signal terminate_current_cmd      : out t_flag_record
+    signal terminate_current_cmd : out t_flag_record
   ) is
   begin
     terminate_current_cmd <= (set => '0', reset => 'Z', is_active => 'Z'); -- Initialise to avoid undefineds. This process is driving param 1 only.
@@ -464,7 +464,7 @@ package body td_vvc_entity_support_pkg is
     variable output_vvc_cmd  : out t_vvc_cmd_record
   ) is
     variable v_was_broadcast                : boolean                                := false;
-    variable v_vvc_idx_in_activity_register : t_integer_array(0 to C_MAX_TB_VVC_NUM) := (others => -1);
+    variable v_vvc_idx_in_activity_register : integer_vector(0 to C_MAX_TB_VVC_NUM)  := (others => -1);
     variable v_num_vvc_instances            : natural range 0 to C_MAX_TB_VVC_NUM    := 0;
     variable v_vvc_instance_idx             : integer                                := vvc_labels.instance_idx;
     variable v_vvc_channel                  : t_channel                              := vvc_labels.channel;
@@ -588,7 +588,7 @@ package body td_vvc_entity_support_pkg is
     log(ID_IMMEDIATE_CMD, "Flushing command queue" & format_command_idx(v_local_vvc_cmd), to_string(scope), msg_id_panel);
     command_queue.flush(VOID);
     vvc_status.pending_cmd_cnt := command_queue.get_count(VOID);
-  end;
+  end procedure;
 
   procedure interpreter_terminate_current_command(
     constant command               : in t_vvc_cmd_record;
@@ -830,7 +830,7 @@ package body td_vvc_entity_support_pkg is
       when FLUSH_COMMAND_QUEUE       => return IMMEDIATE;
       when TERMINATE_CURRENT_COMMAND => return IMMEDIATE;
       when INSERT_DELAY              => return QUEUED;
-      when others                    => return NO_command_type;
+      when others                    => return NO_COMMAND_TYPE;
     end case;
   end function;
 

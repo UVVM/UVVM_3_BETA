@@ -40,7 +40,7 @@ package vvc_transaction_pkg is
     INSERT_DELAY,
     TERMINATE_CURRENT_COMMAND,
     -- VVC local
-    SET, GET, CHECK, CHECK_STABLE, EXPECT, EXPECT_STABLE
+    SET, GET, CHECK, CHECK_STABLE, EXPECT, EXPECT_STABLE, PULSE
   );
 
   -- Constants for the maximum sizes to use in this VVC. Can be modified in adaptations_pkg.
@@ -67,6 +67,7 @@ package vvc_transaction_pkg is
     operation          : t_operation;
     data               : std_logic_vector(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
     data_exp           : std_logic_vector(C_VVC_CMD_DATA_MAX_LENGTH - 1 downto 0);
+    pulse_duration     : time;
     vvc_meta           : t_vvc_meta;
     transaction_status : t_transaction_status;
   end record;
@@ -75,6 +76,7 @@ package vvc_transaction_pkg is
     operation          => NO_OPERATION,
     data               => (others => '0'),
     data_exp           => (others => '0'),
+    pulse_duration     => 0 ns,
     vvc_meta           => C_VVC_META_DEFAULT,
     transaction_status => INACTIVE
   );
@@ -90,7 +92,7 @@ package vvc_transaction_pkg is
 
   -- Global transaction info trigger signal
   type t_gpio_transaction_trigger_array is array (natural range <>) of std_logic;
-  signal global_gpio_vvc_transaction_trigger : t_gpio_transaction_trigger_array(0 to C_VVC_MAX_INSTANCE_NUM - 1) := (others => '0');
+  signal global_gpio_vvc_transaction_trigger : t_gpio_transaction_trigger_array(0 to C_VVC_MAX_INSTANCE_NUM - 1) := (others => 'Z');
 
 end package vvc_transaction_pkg;
 
@@ -105,9 +107,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_transaction_group_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_transaction_group,
-    c_generic_default  => C_TRANSACTION_GROUP_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_transaction_group,
+    GC_GENERIC_DEFAULT  => C_TRANSACTION_GROUP_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 --================================================================================================================================

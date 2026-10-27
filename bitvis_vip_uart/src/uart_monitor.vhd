@@ -59,14 +59,14 @@ architecture behave of uart_monitor is
   signal rx_i : std_logic;
 
   procedure monitor_uart_line(
-    constant operation         : in t_operation;
-    constant C_LOG_PREFIX      : in string;
-    constant instance_idx      : in natural;
-    constant channel           : in t_channel;
+    constant operation           : in t_operation;
+    constant log_prefix          : in string;
+    constant instance_idx        : in natural;
+    constant channel             : in t_channel;
     signal   transaction_trigger : inout std_logic;
-    variable transaction_info  : inout work.protected_transaction_group_pkg.t_generic_array;
+    variable transaction_info    : inout work.protected_transaction_group_pkg.t_generic_array;
     signal   uart_line           : in std_logic
-    --variable monitor_config      : in t_uart_monitor_config -- v3 edited out
+  --variable monitor_config      : in t_uart_monitor_config -- v3 edited out
   ) is
     --alias interface_config       : t_uart_interface_config is monitor_config.interface_config;
     variable v_data              : std_logic_vector(C_MAX_BITS_IN_DATA - 1 downto 0) := (others => '0');
@@ -111,7 +111,7 @@ architecture behave of uart_monitor is
         end if;
 
         -- Start bit registered and transaction is active
-        log(ID_FRAME_INITIATE, C_LOG_PREFIX & "Start bit detected", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
+        log(ID_FRAME_INITIATE, log_prefix & "Start bit detected", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
         v_transaction_info                       := transaction_info.get(instance_idx, channel);
         v_transaction_info.bt.transaction_status := IN_PROGRESS;
         transaction_info.set(v_transaction_info, instance_idx, channel);
@@ -120,7 +120,7 @@ architecture behave of uart_monitor is
         wait for shared_uart_monitor_config.get(instance_idx, channel).interface_config.bit_time;
       else
         -- Second stop bit interpreted as start bit transaction is active
-        log(ID_FRAME_INITIATE, C_LOG_PREFIX & "Second stop bit interpreted as start bit.", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
+        log(ID_FRAME_INITIATE, log_prefix & "Second stop bit interpreted as start bit.", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
         v_transaction_info                       := transaction_info.get(instance_idx, channel);
         v_transaction_info.bt.transaction_status := IN_PROGRESS;
         transaction_info.set(v_transaction_info, instance_idx, channel);
@@ -171,9 +171,9 @@ architecture behave of uart_monitor is
 
       -- Determine legal transaction
       if v_parity_error or or(v_stop_bit_error) then
-        log(ID_MONITOR, C_LOG_PREFIX & "Non-legal transaction detected: parity_error: " & to_string(v_parity_error) & "; stop_bit_error: " & to_string(or(v_stop_bit_error)) & ".", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
+        log(ID_MONITOR, log_prefix & "Non-legal transaction detected: parity_error: " & to_string(v_parity_error) & "; stop_bit_error: " & to_string(or(v_stop_bit_error)) & ".", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
       else
-        log(ID_MONITOR, C_LOG_PREFIX & "Legal transaction completed.", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
+        log(ID_MONITOR, log_prefix & "Legal transaction completed.", shared_uart_monitor_config.get(instance_idx, channel).scope_name, shared_uart_monitor_config.get(instance_idx, channel).msg_id_panel);
       end if;
 
       -- Update transaction

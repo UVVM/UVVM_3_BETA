@@ -44,6 +44,10 @@ entity uvvm_demo_th is
     -- Clock and bit period settings
     GC_CLK_PERIOD                : time                 := 10 ns;
     GC_BIT_PERIOD                : time                 := 16 * GC_CLK_PERIOD;
+    -- UART serial-frame width (number of data bits per UART transmission)
+    GC_DATA_WIDTH                : natural              := 8;
+    -- DUT CPU-bus address width
+    GC_ADDR_WIDTH                : natural              := 3;
     -- DUT addresses
     GC_ADDR_RX_DATA              : unsigned(2 downto 0) := "000";
     GC_ADDR_RX_DATA_VALID        : unsigned(2 downto 0) := "001";
@@ -63,9 +67,10 @@ architecture struct of uvvm_demo_th is
   constant C_UART_RX_VVC   : natural := 1;
   constant C_CLOCK_GEN_VVC : natural := 1;
 
-  -- UART if
-  constant C_DATA_WIDTH : natural := 8;
-  constant C_ADDR_WIDTH : natural := 3;
+  -- UART frame width (configurable, default = legacy 8-bit) and DUT bus width (fixed at max payload).
+  constant C_DATA_WIDTH    : natural := GC_DATA_WIDTH;
+  constant C_ADDR_WIDTH    : natural := GC_ADDR_WIDTH;
+  constant C_DUT_BUS_WIDTH : natural := 9;
 
   -- Clock and reset signals
   signal clk  : std_logic := '0';
@@ -76,8 +81,8 @@ architecture struct of uvvm_demo_th is
   signal addr  : unsigned(2 downto 0);
   signal wr    : std_logic;
   signal rd    : std_logic;
-  signal wdata : std_logic_vector(7 downto 0);
-  signal rdata : std_logic_vector(7 downto 0);
+  signal wdata : std_logic_vector(C_DUT_BUS_WIDTH - 1 downto 0);
+  signal rdata : std_logic_vector(C_DUT_BUS_WIDTH - 1 downto 0);
   signal ready : std_logic;
 
   -- UART VVC signals
@@ -87,7 +92,7 @@ architecture struct of uvvm_demo_th is
   -- UART Monitor
   constant C_UART_MONITOR_INTERFACE_CONFIG : t_uart_interface_config := (
     bit_time      => GC_BIT_PERIOD,
-    num_data_bits => 8,
+    num_data_bits => C_DATA_WIDTH,
     parity        => PARITY_ODD,
     num_stop_bits => STOP_BITS_ONE
   );
@@ -110,6 +115,9 @@ begin
   -- Instantiate DUT
   -----------------------------------------------------------------------------
   i_uart : entity bitvis_uart.uart
+    generic map (
+      GC_DATA_WIDTH => C_DUT_BUS_WIDTH
+    )
     port map(
       -- DSP interface and general control signals
       clk   => clk,
@@ -132,7 +140,7 @@ begin
   i1_sbi_vvc : entity bitvis_vip_sbi.sbi_vvc
     generic map(
       GC_ADDR_WIDTH   => C_ADDR_WIDTH,
-      GC_DATA_WIDTH   => C_DATA_WIDTH,
+      GC_DATA_WIDTH   => C_DUT_BUS_WIDTH,
       GC_INSTANCE_IDX => C_SBI_VVC
     )
     port map(
@@ -151,7 +159,8 @@ begin
   -----------------------------------------------------------------------------
   i1_uart_vvc : entity bitvis_vip_uart.uart_vvc
     generic map(
-      GC_INSTANCE_IDX => 1
+      GC_INSTANCE_IDX => 1,
+      GC_DATA_WIDTH   => C_DATA_WIDTH
     )
     port map(
       uart_vvc_rx => uart_vvc_rx,
@@ -221,7 +230,7 @@ begin
 
         if v_sbi_vvc_transaction_info.bt.operation = WRITE and v_sbi_vvc_transaction_info.bt.transaction_status = IN_PROGRESS then
           -- add to UART scoreboard
-          UART_VVC_SB.add_expected(v_sbi_vvc_transaction_info.bt.data(C_DATA_WIDTH - 1 downto 0));
+          uart_vvc_sb.add_expected(v_sbi_vvc_transaction_info.bt.data(C_DUT_BUS_WIDTH - 1 downto 0));
         end if;
       end if;
 
@@ -243,7 +252,7 @@ begin
           -- Check if transaction is intended valid / free of error
           if (v_uart_vvc_transaction_info.bt.error_info.parity_bit_error = false) and (v_uart_vvc_transaction_info.bt.error_info.stop_bit_error = false) then
             -- Add to SBI scoreboard
-            SBI_VVC_SB.add_expected(pad_sbi_sb(v_uart_vvc_transaction_info.bt.data(C_DATA_WIDTH - 1 downto 0)));
+            sbi_vvc_sb.add_expected(pad_sbi_sb(v_uart_vvc_transaction_info.bt.data(C_DUT_BUS_WIDTH - 1 downto 0)));
             -- Wait for UART Transmit to finish before SBI VVC start
             insert_delay(SBI_VVCT, 1, 12 * GC_BIT_PERIOD, "Wait for UART TX to finish");
             -- Request SBI Read

@@ -15,7 +15,7 @@
 ---------------------------------------------------------------------------------------------
 
 context vvc_context is
-  library bitvis_vip_ethernet;
+library bitvis_vip_ethernet;
   use bitvis_vip_ethernet.support_pkg.all;
   use bitvis_vip_ethernet.vvc_transaction_pkg.all;
   use bitvis_vip_ethernet.vvc_transaction_shared_variables_pkg.all;

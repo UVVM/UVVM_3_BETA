@@ -47,6 +47,7 @@ architecture func of axilite_vvc_tb is
   signal clk       : std_logic := '0';
   signal areset    : std_logic := '0';
   signal clock_ena : boolean   := false;
+  signal transaction_info_trigger_seen : boolean := false;
 
   -- signals
   -- The axilite interface is gathered in one record, so procedures that use the
@@ -83,6 +84,13 @@ begin
 
   i_ti_uvvm_engine : entity uvvm_vvc_framework.ti_uvvm_engine;
 
+  p_transaction_info_trigger : process
+  begin
+    wait until global_axilite_vvc_transaction_trigger(1) = '1';
+    transaction_info_trigger_seen <= true;
+    wait;
+  end process p_transaction_info_trigger;
+
   -- Set up clock generator
   p_clock : clock_generator(clk, clock_ena, C_CLK_PERIOD, "Axilite CLK");
 
@@ -98,7 +106,7 @@ begin
     variable v_data          : work.vvc_cmd_pkg.t_vvc_result;
     variable v_vvc_config    : bitvis_vip_axilite.vvc_methods_support_pkg.t_vvc_config;
     variable v_vvc_list      : t_vvc_list;
-    variable v_alert_level   : t_alert_level;
+    variable v_alert_config  : t_axilite_unwanted_transaction;
 
     -- DUT ports towards VVC interface
     constant C_NUM_VVC_SIGNALS : natural := 5;
@@ -107,21 +115,58 @@ begin
     alias dut_rdata  is << signal i_test_harness.i_axilite_slave_1.S_AXI_RDATA  : std_logic_vector >>;
     alias dut_rresp  is << signal i_test_harness.i_axilite_slave_1.S_AXI_RRESP  : std_logic_vector >>;
     alias dut_rvalid is << signal i_test_harness.i_axilite_slave_1.S_AXI_RVALID : std_logic >>;
+    -- Used to make the VVC time out
+    alias dut_awready is << signal i_test_harness.i_axilite_slave_1.S_AXI_AWREADY : std_logic >>;
+    alias dut_wready  is << signal i_test_harness.i_axilite_slave_1.S_AXI_WREADY  : std_logic >>;
+    alias dut_arready is << signal i_test_harness.i_axilite_slave_1.S_AXI_ARREADY : std_logic >>;
 
     -- Toggles all the signals in the VVC interface and checks that the expected alerts are generated
     procedure toggle_vvc_if (
-      constant alert_level : in t_alert_level
+      constant alert_config : in t_axilite_unwanted_transaction
     ) is
-      variable v_num_expected_alerts : natural;
-      variable v_rand                : t_rand;
+      -- Alert counter array including NO_ALERT (ignored in checks) for easier indexing
+      type t_alert_counters_arr is array(t_alert_level) of natural;
+      variable v_expected_alert_counters : t_alert_counters_arr;
+      variable v_rand                    : t_rand;
     begin
-      -- Number of total expected alerts: (number of signals tested individually + number of signals tested together) x 1 toggle
-      if alert_level /= NO_ALERT then
-        increment_expected_alerts_and_stop_limit(alert_level, (C_NUM_VVC_SIGNALS + C_NUM_VVC_SIGNALS) * 2);
+      -- Populate local alert counters
+      for alert_level in v_expected_alert_counters'range loop
+        v_expected_alert_counters(alert_level) := get_alert_counter(alert_level);
+      end loop;
+      -- Each pass toggles one signal, except pass 0 which toggles all five at once. That gives
+      -- (5 individually + 5 together) alerts per toggle direction, so two per pass except pass 0.
+      if alert_config.bresp /= NO_ALERT then
+        increment_expected_alerts_and_stop_limit(alert_config.bresp, 4);
       end if;
+      if alert_config.bvalid /= NO_ALERT then
+        increment_expected_alerts_and_stop_limit(alert_config.bvalid, 4);
+      end if;
+      if alert_config.rdata /= NO_ALERT then
+        increment_expected_alerts_and_stop_limit(alert_config.rdata, 4);
+      end if;
+      if alert_config.rresp /= NO_ALERT then
+        increment_expected_alerts_and_stop_limit(alert_config.rresp, 4);
+      end if;
+      if alert_config.rvalid /= NO_ALERT then
+        increment_expected_alerts_and_stop_limit(alert_config.rvalid, 4);
+      end if;
+      -- Pass 0 forces all five signals at once; passes 1-5 force one signal each. Both must
+      -- raise unwanted transaction alerts, because the VVC is not driving a transaction here.
       for i in 0 to C_NUM_VVC_SIGNALS loop
+        -- Update expected alert counters
+        case i is
+          when 0 => v_expected_alert_counters(alert_config.bresp)  := v_expected_alert_counters(alert_config.bresp)  + 1;
+                    v_expected_alert_counters(alert_config.bvalid) := v_expected_alert_counters(alert_config.bvalid) + 1;
+                    v_expected_alert_counters(alert_config.rdata)  := v_expected_alert_counters(alert_config.rdata) + 1;
+                    v_expected_alert_counters(alert_config.rresp)  := v_expected_alert_counters(alert_config.rresp)  + 1;
+                    v_expected_alert_counters(alert_config.rvalid) := v_expected_alert_counters(alert_config.rvalid) + 1;
+          when 1 => v_expected_alert_counters(alert_config.bresp)  := v_expected_alert_counters(alert_config.bresp) + 1;
+          when 2 => v_expected_alert_counters(alert_config.bvalid) := v_expected_alert_counters(alert_config.bvalid) + 1;
+          when 3 => v_expected_alert_counters(alert_config.rdata)  := v_expected_alert_counters(alert_config.rdata) + 1;
+          when 4 => v_expected_alert_counters(alert_config.rresp)  := v_expected_alert_counters(alert_config.rresp) + 1;
+          when 5 => v_expected_alert_counters(alert_config.rvalid) := v_expected_alert_counters(alert_config.rvalid) + 1;
+        end case;
         -- Force new value
-        v_num_expected_alerts := get_alert_counter(alert_level);
         case i is
           when 0 => dut_bresp  <= force not dut_bresp;
                     dut_bvalid <= force not dut_bvalid;
@@ -135,12 +180,26 @@ begin
           when 5 => dut_rvalid <= force not dut_rvalid;
         end case;
         wait for v_rand.rand(ONLY, (C_LOG_TIME_BASE, C_LOG_TIME_BASE * 5, C_LOG_TIME_BASE * 10)); -- Hold the value a random time
-        v_num_expected_alerts := 0 when alert_level = NO_ALERT else
-                                 v_num_expected_alerts + C_NUM_VVC_SIGNALS when i = 0 else
-                                 v_num_expected_alerts + 1;
-        check_value(get_alert_counter(alert_level), v_num_expected_alerts, TB_NOTE, "Unwanted activity alert was expected", C_SCOPE, ID_NEVER);
+        -- Loop through all error levels (except NO_ALERT) and check with expected
+        for alert_level in v_expected_alert_counters(NOTE to t_alert_level'right)'range loop
+          check_value(get_alert_counter(alert_level), v_expected_alert_counters(alert_level), TB_NOTE, "Unwanted transaction alert was expected", C_SCOPE, ID_NEVER);
+        end loop;
+        -- Release the force and check the alert count again, to catch a spurious extra alert
+        -- from the release itself.
+        -- Update expected alert counters
+        case i is
+          when 0 => v_expected_alert_counters(alert_config.bresp)  := v_expected_alert_counters(alert_config.bresp)  + 1;
+                    v_expected_alert_counters(alert_config.bvalid) := v_expected_alert_counters(alert_config.bvalid) + 1;
+                    v_expected_alert_counters(alert_config.rdata)  := v_expected_alert_counters(alert_config.rdata) + 1;
+                    v_expected_alert_counters(alert_config.rresp)  := v_expected_alert_counters(alert_config.rresp)  + 1;
+                    v_expected_alert_counters(alert_config.rvalid) := v_expected_alert_counters(alert_config.rvalid) + 1;
+          when 1 => v_expected_alert_counters(alert_config.bresp)  := v_expected_alert_counters(alert_config.bresp) + 1;
+          when 2 => v_expected_alert_counters(alert_config.bvalid) := v_expected_alert_counters(alert_config.bvalid) + 1;
+          when 3 => v_expected_alert_counters(alert_config.rdata)  := v_expected_alert_counters(alert_config.rdata) + 1;
+          when 4 => v_expected_alert_counters(alert_config.rresp)  := v_expected_alert_counters(alert_config.rresp) + 1;
+          when 5 => v_expected_alert_counters(alert_config.rvalid) := v_expected_alert_counters(alert_config.rvalid) + 1;
+        end case;
         -- Set back original value
-        v_num_expected_alerts := get_alert_counter(alert_level);
         case i is
           when 0 => dut_bresp  <= release;
                     dut_bvalid <= release;
@@ -155,11 +214,11 @@ begin
         end case;
         wait for 0 ns; -- Wait two delta cycles so that the alert is triggered
         wait for 0 ns;
-        v_num_expected_alerts := 0 when alert_level = NO_ALERT else
-                                 v_num_expected_alerts + C_NUM_VVC_SIGNALS when i = 0 else
-                                 v_num_expected_alerts + 1;
         wait for 0 ns; -- Wait another cycle to allow signals to propagate before checking them - Needed for Riviera Pro
-        check_value(get_alert_counter(alert_level), v_num_expected_alerts, TB_NOTE, "Unwanted activity alert was expected", C_SCOPE, ID_NEVER);
+        -- Loop through all error levels (except NO_ALERT) and check with expected
+        for alert_level in v_expected_alert_counters(NOTE to t_alert_level'right)'range loop
+          check_value(get_alert_counter(alert_level), v_expected_alert_counters(alert_level), TB_NOTE, "Unwanted transaction alert was expected", C_SCOPE, ID_NEVER);
+        end loop;
       end loop;
     end procedure;
 
@@ -211,6 +270,7 @@ begin
     axilite_write(AXILITE_VVCT, 1, x"6000", x"54321", "Write"); -- rw reg
 
     await_completion(AXILITE_VVCT, 1, 1000 ns);
+    check_value(transaction_info_trigger_seen, ERROR, "AXI-Lite transaction information trigger was not asserted", C_SCOPE, ID_NEVER);
 
     -- Read from VVC 1
     axilite_read(AXILITE_VVCT, 1, x"3000", ""); -- just do a read
@@ -276,8 +336,7 @@ begin
     axilite_write(AXILITE_VVCT, 1, x"2000", x"efbeef", "Write"); -- op1
     axilite_write(AXILITE_VVCT, 1, x"3000", x"beef", "Write"); -- op2
     axilite_write(AXILITE_VVCT, 1, x"6000", x"54321", "Write"); -- rw reg
-    AXILITE_VVC_SB.add_expected(1, pad_axilite_sb(x"54321"));
-
+    axilite_vvc_sb.add_expected(1, pad_axilite_sb(x"54321"));
     await_completion(AXILITE_VVCT, 1, 1000 ns);
 
     -- Read from VVC 1
@@ -292,7 +351,7 @@ begin
     axilite_write(AXILITE_VVCT, 2, x"0030", x"beef", "Write"); -- op2
     axilite_write(AXILITE_VVCT, 2, x"0040", x"54321", "Write"); -- op3
     axilite_write(AXILITE_VVCT, 2, x"0060", x"f00b0", "Write"); -- rw reg
-    AXILITE_VVC_SB.add_expected(2, pad_axilite_sb(x"f00b0"));
+    axilite_vvc_sb.add_expected(2, pad_axilite_sb(x"f00b0"));
 
     -- Read from VVC 2
     axilite_read(AXILITE_VVCT, 2, x"0040", ""); -- just do a read
@@ -300,7 +359,7 @@ begin
     axilite_read(AXILITE_VVCT, 2, x"0060", TO_SB, "Read data and send to SB"); -- do another read - should see this data
     await_completion(AXILITE_VVCT, 2, 1000 ns);
 
-    AXILITE_VVC_SB.report_counters(ALL_INSTANCES);
+    axilite_vvc_sb.report_counters(ALL_INSTANCES);
 
     log(ID_LOG_HDR, "Test of timeout of check", C_SCOPE);
 
@@ -506,20 +565,100 @@ begin
     check_value_in_range(now - v_timestamp, v_measured_time * 1.8, v_measured_time * 2.2, ERROR, "Checking that it takes longer time to force a single pending transaction");
 
     ------------------------------------------------------------------------------------------------------------------------------
-    log(ID_LOG_HDR, "Testing Unwanted Activity Detection in VVC", C_SCOPE);
+    log(ID_LOG_HDR, "Testing that the channels are released after a timeout", C_SCOPE);
     ------------------------------------------------------------------------------------------------------------------------------
-    for i in 0 to 2 loop
+    v_vvc_config                                     := shared_axilite_vvc_config.get(1);
+    v_vvc_config.bfm_config.max_wait_cycles          := 10;
+    v_vvc_config.bfm_config.max_wait_cycles_severity := ERROR;
+    -- Forcing the slave signals and resetting the slave would trigger unwanted transaction alerts
+    v_vvc_config.unwanted_transaction_severity       := (others => NO_ALERT);
+    shared_axilite_vvc_config.set(v_vvc_config, 1);
+
+    log(ID_SEQUENCER, "Timeout waiting for AWREADY", C_SCOPE);
+    increment_expected_alerts_and_stop_limit(ERROR, 1, "Expecting timeout waiting for AWREADY", C_SCOPE);
+    dut_awready <= force '0';
+    axilite_write(AXILITE_VVCT, 1, x"6000", x"11111111", "Write with AWREADY held low");
+    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    dut_awready <= release;
+    wait until rising_edge(clk);
+    check_value(axilite_if_1.write_address_channel.awvalid, '0', ERROR, "Checking that AWVALID is released", C_SCOPE);
+    gen_pulse(areset, C_CLK_PERIOD, "Resetting the slave to clear the transfers it accepted while the signal was forced");
+
+    log(ID_SEQUENCER, "Timeout waiting for WREADY", C_SCOPE);
+    increment_expected_alerts_and_stop_limit(ERROR, 1, "Expecting timeout waiting for WREADY", C_SCOPE);
+    dut_wready <= force '0';
+    axilite_write(AXILITE_VVCT, 1, x"6000", x"11111111", "Write with WREADY held low");
+    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    dut_wready <= release;
+    wait until rising_edge(clk);
+    check_value(axilite_if_1.write_data_channel.wvalid, '0', ERROR, "Checking that WVALID is released", C_SCOPE);
+    gen_pulse(areset, C_CLK_PERIOD, "Resetting the slave to clear the transfers it accepted while the signal was forced");
+
+    log(ID_SEQUENCER, "Timeout waiting for BVALID", C_SCOPE);
+    increment_expected_alerts_and_stop_limit(ERROR, 1, "Expecting timeout waiting for BVALID", C_SCOPE);
+    dut_bvalid <= force '0';
+    axilite_write(AXILITE_VVCT, 1, x"6000", x"11111111", "Write with BVALID held low");
+    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    dut_bvalid <= release;
+    wait until rising_edge(clk);
+    check_value(axilite_if_1.write_response_channel.bready, '0', ERROR, "Checking that BREADY is released", C_SCOPE);
+    gen_pulse(areset, C_CLK_PERIOD, "Resetting the slave to clear the transfers it accepted while the signal was forced");
+
+    log(ID_SEQUENCER, "Timeout waiting for ARREADY", C_SCOPE);
+    increment_expected_alerts_and_stop_limit(ERROR, 1, "Expecting timeout waiting for ARREADY", C_SCOPE);
+    dut_arready <= force '0';
+    axilite_read(AXILITE_VVCT, 1, x"6000", "Read with ARREADY held low");
+    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    dut_arready <= release;
+    wait until rising_edge(clk);
+    check_value(axilite_if_1.read_address_channel.arvalid, '0', ERROR, "Checking that ARVALID is released", C_SCOPE);
+    gen_pulse(areset, C_CLK_PERIOD, "Resetting the slave to clear the transfers it accepted while the signal was forced");
+
+    log(ID_SEQUENCER, "Timeout waiting for RVALID", C_SCOPE);
+    increment_expected_alerts_and_stop_limit(ERROR, 1, "Expecting timeout waiting for RVALID", C_SCOPE);
+    dut_rvalid <= force '0';
+    axilite_read(AXILITE_VVCT, 1, x"6000", "Read with RVALID held low");
+    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    dut_rvalid <= release;
+    wait until rising_edge(clk);
+    check_value(axilite_if_1.read_data_channel.rready, '0', ERROR, "Checking that RREADY is released", C_SCOPE);
+    gen_pulse(areset, C_CLK_PERIOD, "Resetting the slave to clear the transfers it accepted while the signal was forced");
+
+    log(ID_SEQUENCER, "Checking that the bus works after the timeouts", C_SCOPE);
+    axilite_write(AXILITE_VVCT, 1, x"6000", x"22222222", "Write after the timeouts");
+    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    axilite_check(AXILITE_VVCT, 1, x"6000", x"22222222", "Check after the timeouts");
+    await_completion(AXILITE_VVCT, 1, 1000 ns);
+    v_vvc_config                                     := shared_axilite_vvc_config.get(1);
+    v_vvc_config.bfm_config.max_wait_cycles          := C_AXILITE_BFM_CONFIG_DEFAULT.max_wait_cycles;
+    v_vvc_config.bfm_config.max_wait_cycles_severity := C_AXILITE_BFM_CONFIG_DEFAULT.max_wait_cycles_severity;
+    v_vvc_config.unwanted_transaction_severity       := C_AXILITE_VVC_CONFIG_DEFAULT.unwanted_transaction_severity;
+    shared_axilite_vvc_config.set(v_vvc_config, 1);
+
+    ------------------------------------------------------------------------------------------------------------------------------
+    log(ID_LOG_HDR, "Testing Unwanted Transaction Detection in VVC", C_SCOPE);
+    ------------------------------------------------------------------------------------------------------------------------------
+    for i in 0 to 4 loop
       -- Test different alert severity configurations
       if i = 0 then
-        v_alert_level := C_AXILITE_VVC_CONFIG_DEFAULT.unwanted_activity_severity;
+        log(ID_SEQUENCER, "Setting unwanted_transaction_severity to default");
+        v_alert_config := C_AXILITE_VVC_CONFIG_DEFAULT.unwanted_transaction_severity;
       elsif i = 1 then
-        v_alert_level := FAILURE;
+        log(ID_SEQUENCER, "Setting unwanted_transaction_severity to ERROR");
+        v_alert_config := (others => ERROR);
+      elsif i = 2 then
+        log(ID_SEQUENCER, "Setting unwanted_transaction_severity to FAILURE");
+        v_alert_config := (others => FAILURE);
+      elsif i = 3 then
+        log(ID_SEQUENCER, "Setting unwanted_transaction_severity to NO_ALERT");
+        v_alert_config := (others => NO_ALERT);
       else
-        v_alert_level := NO_ALERT;
+        log(ID_SEQUENCER, "Setting unwanted_transaction_severity to different values");
+        v_alert_config := (FAILURE, others => ERROR);
       end if;
-      log(ID_SEQUENCER, "Setting unwanted_activity_severity to " & to_upper(to_string(v_alert_level)), C_SCOPE);
-      v_vvc_config                            := shared_axilite_vvc_config.get(1);
-      v_vvc_config.unwanted_activity_severity := v_alert_level;
+      
+      v_vvc_config                               := shared_axilite_vvc_config.get(1);
+      v_vvc_config.unwanted_transaction_severity := v_alert_config;
       shared_axilite_vvc_config.set(v_vvc_config, 1);
 
       log(ID_SEQUENCER, "Testing normal data transmission", C_SCOPE);
@@ -535,7 +674,7 @@ begin
       end if;
 
       log(ID_SEQUENCER, "Testing unexpected data transmission", C_SCOPE);
-      toggle_vvc_if(v_alert_level);
+      toggle_vvc_if(v_alert_config);
     end loop;
 
     -----------------------------------------------------------------------------

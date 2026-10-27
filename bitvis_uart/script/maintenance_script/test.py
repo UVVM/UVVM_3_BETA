@@ -52,6 +52,23 @@ hr.add_files("../../../bitvis_uart/src/*.vhd", "bitvis_uart")
 hr.add_files("../../../bitvis_uart/tb/maintenance_tb/*.vhd", "bitvis_uart")
 hr.add_files("../../../bitvis_uart/tb/*.vhd", "bitvis_uart")
 
+# Setup BFM TB test generics: sweep UART data width 5..9
+for width in (5, 6, 7, 8, 9):
+    hr.add_generics(entity="uart_bfm_tb", generics=["GC_DATA_WIDTH", width])
+
+# Sweep UART data width 5..9 across the VVC TBs.
+#
+# Note: uart_vvc_demo_tb is in the sweep here because its body only exercises
+# the BFM/VVC public path -- transmit, expect, receive, simultaneous TX/RX,
+# skew, inter-bfm delay -- and has no width-specific p_model logic, no RNG
+# sequence, and no hand-tabulated alert counts. The bitvis_vip_uart demo TB
+# (uvvm_demo_tb) is deliberately excluded from its own sweep (see that VIP's
+# test.py) because its scoreboard model and randomisation are tuned to 8-bit
+# and would require width-keyed workarounds to pass at other widths.
+for entity in ("uart_vvc_demo_tb", "uart_vvc_tb"):
+    for width in (5, 6, 7, 8, 9):
+        hr.add_generics(entity=entity, generics=["GC_DATA_WIDTH", width])
+
 # Set simulator name and options
 sim_options = None
 simulator_name = hr.settings.get_simulator_name()
@@ -69,6 +86,7 @@ num_passing_tests = hr.get_num_pass_tests()
 # No tests run error
 if num_passing_tests == 0:
     sys.exit(1)
+
 # Remove output only if OK
 if hr.check_run_results(exp_fail=0) is True:
     cleanup('Removing simulation output')
@@ -80,7 +98,7 @@ if simulator_name == "MODELSIM" or simulator_name == "RIVIERA-PRO":
     if ret_code == 0:
         print("TCL script test completed")
         if hr.check_run_results(exp_fail=0) is True:
-            cleanup('Removing simulation output\n')
+            cleanup('Removing simulation output')
     else:
         print(ret_txt)
         num_failing_tests += 1

@@ -15,7 +15,7 @@
 ---------------------------------------------------------------------------------------------
 
 context vvc_context is
-  library bitvis_vip_rgmii;
+library bitvis_vip_rgmii;
   use bitvis_vip_rgmii.vvc_transaction_pkg.all;
   use bitvis_vip_rgmii.vvc_transaction_shared_variables_pkg.all;
   use bitvis_vip_rgmii.vvc_methods_pkg.all;

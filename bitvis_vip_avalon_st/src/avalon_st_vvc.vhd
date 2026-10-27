@@ -48,7 +48,6 @@ entity avalon_st_vvc is
     GC_EMPTY_WIDTH                           : integer                := 1;
     GC_INSTANCE_IDX                          : natural;
     GC_AVALON_ST_BFM_CONFIG                  : t_avalon_st_bfm_config := C_AVALON_ST_BFM_CONFIG_DEFAULT;
-    -- Common VVC fields
     GC_CMD_QUEUE_COUNT_MAX                   : natural                := C_CMD_QUEUE_COUNT_MAX;
     GC_CMD_QUEUE_COUNT_THRESHOLD             : natural                := C_CMD_QUEUE_COUNT_THRESHOLD;
     GC_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY    : t_alert_level          := C_CMD_QUEUE_COUNT_THRESHOLD_SEVERITY;
@@ -69,11 +68,15 @@ architecture behave of avalon_st_vvc is
   constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX);
   constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
-  signal executor_is_busy      : boolean := false;
-  signal queue_is_increasing   : boolean := false;
-  signal last_cmd_idx_executed : natural := 0;
-  signal terminate_current_cmd : t_flag_record;
-  signal clock_period          : time;
+  signal executor_is_busy                   : boolean := false;
+  signal queue_is_increasing                : boolean := false;
+  signal last_cmd_idx_executed              : natural := 0;
+  signal terminate_current_cmd              : t_flag_record;
+  signal entry_num_in_vvc_activity_register : integer;
+  signal clock_period                       : time;
+  signal ready_delayed_sr                   : std_logic_vector(8 downto 0) := (others => '0');
+  signal ready_delayed_idx                  : integer := 0;
+  signal ready_delayed                      : std_logic;
 
   -- Instantiation of the element dedicated executor
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
@@ -81,8 +84,6 @@ architecture behave of avalon_st_vvc is
 
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_avalon_st_vvc_transaction_trigger(GC_INSTANCE_IDX);
-  -- VVC Activity 
-  signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -136,7 +137,7 @@ begin
   -- Command interpreter
   -- - Interpret, decode and acknowledge commands from the central sequencer
   --==========================================================================================
-  cmd_interpreter : process
+  p_cmd_interpreter : process is
     variable v_local_vvc_cmd : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
     variable v_msg_id_panel  : t_msg_id_panel;
     variable v_vvc_status    : t_vvc_status;
@@ -222,7 +223,7 @@ begin
   -- Command executor
   -- - Fetch and execute the commands
   --==========================================================================================
-  cmd_executor : process
+  p_cmd_executor : process is
     constant C_EXECUTOR_ID                           : natural := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
     variable v_result                                : t_vvc_result; -- See vvc_cmd_pkg
@@ -233,6 +234,7 @@ begin
     variable v_prev_command_was_bfm_access           : boolean      := false;
     variable v_data_array_ptr                        : t_slv_array_ptr;
     variable v_msg_id_panel                          : t_msg_id_panel;
+    variable v_num_words                             : natural;
     variable v_vvc_config                            : t_vvc_config := get_vvc_config(VOID);
 
   begin
@@ -261,7 +263,7 @@ begin
       v_msg_id_panel := get_msg_id_panel(v_cmd, get_msg_id_panel(VOID));
 
       -- Check if command is a BFM access
-      v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay 
+      v_prev_command_was_bfm_access := v_command_is_bfm_access; -- save for inter_bfm_delay
       if v_cmd.operation = TRANSMIT or v_cmd.operation = RECEIVE or v_cmd.operation = EXPECT then
         v_command_is_bfm_access := true;
       else
@@ -296,11 +298,14 @@ begin
             for i in 0 to v_cmd.data_array_length - 1 loop
               v_data_array_ptr(i) := v_cmd.data_array(i)(v_cmd.data_array_word_size - 1 downto 0);
             end loop;
+            ready_delayed_idx <= v_vvc_config.ready_latency - 1; -- For TX, we use a ready sample with one cycle less delay to update the valid signal ahead of time
             avalon_st_transmit(channel_value => v_cmd.channel_value(GC_CHANNEL_WIDTH - 1 downto 0),
                                data_array    => v_data_array_ptr.all,
                                msg           => format_msg(v_cmd),
                                clk           => clk,
                                avalon_st_if  => avalon_st_vvc_if,
+                               ready_delayed => ready_delayed,
+                               ready_latency => v_vvc_config.ready_latency,
                                scope         => C_SCOPE,
                                msg_id_panel  => v_msg_id_panel,
                                config        => v_vvc_config.bfm_config);
@@ -319,18 +324,33 @@ begin
 
             -- Call the corresponding procedure in the BFM package.
             v_data_array_ptr              := new t_slv_array(0 to v_cmd.data_array_length-1)(v_cmd.data_array_word_size-1 downto 0);
+            ready_delayed_idx <= v_vvc_config.ready_latency;
             avalon_st_receive(channel_value => v_result.channel_value(GC_CHANNEL_WIDTH - 1 downto 0),
                               data_array    => v_data_array_ptr.all,
+                              num_words     => v_num_words,
                               msg           => format_msg(v_cmd),
                               clk           => clk,
                               avalon_st_if  => avalon_st_vvc_if,
+                              ready_delayed => ready_delayed,
+                              ready_latency => v_vvc_config.ready_latency,
                               scope         => C_SCOPE,
                               msg_id_panel  => v_msg_id_panel,
                               config        => v_vvc_config.bfm_config);
-            for i in 0 to v_cmd.data_array_length - 1 loop
-              v_result.data_array(i)(v_cmd.data_array_word_size - 1 downto 0) := v_data_array_ptr(i);
-            end loop;
-            v_result.data_array_length    := v_cmd.data_array_length;
+
+            -- MAX LENGTH + 1 signifies packet transfer with unknown packet size. In this case, return number of received words to v_result.
+            if v_cmd.data_array_length = C_VVC_CMD_DATA_MAX_WORDS + 1 then
+
+              -- Iterate through the length of received packet, given by v_num_words.
+              for i in 0 to v_num_words -1 loop
+                v_result.data_array(i)(v_cmd.data_array_word_size - 1 downto 0) := v_data_array_ptr(i);
+              end loop;
+              v_result.data_array_length  := v_num_words;
+            else
+              for i in 0 to v_cmd.data_array_length - 1 loop
+                v_result.data_array(i)(v_cmd.data_array_word_size - 1 downto 0) := v_data_array_ptr(i);
+              end loop;
+              v_result.data_array_length    := v_cmd.data_array_length;
+            end if;
             v_result.data_array_word_size := v_cmd.data_array_word_size;
             deallocate(v_data_array_ptr);
 
@@ -361,15 +381,18 @@ begin
             for i in 0 to v_cmd.data_array_length - 1 loop
               v_data_array_ptr(i) := v_cmd.data_array(i)(v_cmd.data_array_word_size - 1 downto 0);
             end loop;
-            avalon_st_expect(channel_exp  => v_cmd.channel_value(GC_CHANNEL_WIDTH - 1 downto 0),
-                             data_exp     => v_data_array_ptr.all,
-                             msg          => format_msg(v_cmd),
-                             clk          => clk,
-                             avalon_st_if => avalon_st_vvc_if,
-                             alert_level  => v_cmd.alert_level,
-                             scope        => C_SCOPE,
-                             msg_id_panel => v_msg_id_panel,
-                             config       => v_vvc_config.bfm_config);
+            ready_delayed_idx <= v_vvc_config.ready_latency;
+            avalon_st_expect(channel_exp   => v_cmd.channel_value(GC_CHANNEL_WIDTH - 1 downto 0),
+                             data_exp      => v_data_array_ptr.all,
+                             msg           => format_msg(v_cmd),
+                             clk           => clk,
+                             avalon_st_if  => avalon_st_vvc_if,
+                             ready_delayed => ready_delayed,
+                             ready_latency => v_vvc_config.ready_latency,
+                             alert_level   => v_cmd.alert_level,
+                             scope         => C_SCOPE,
+                             msg_id_panel  => v_msg_id_panel,
+                             config        => v_vvc_config.bfm_config);
             deallocate(v_data_array_ptr);
 
             -- Update vvc transaction info
@@ -424,11 +447,11 @@ begin
   cmd_terminator : uvvm_vvc_framework.ti_vvc_framework_support_pkg.flag_handler(terminate_current_cmd); -- flag: is_active, set, reset
   --==========================================================================================
 
-  --===============================================================================================
+  --==========================================================================================
   -- Clock period
   -- - Finds the clock period
-  --===============================================================================================
-  p_clock_period : process
+  --==========================================================================================
+  p_clock_period : process is
   begin
     wait until rising_edge(clk);
     clock_period <= now;
@@ -436,14 +459,51 @@ begin
     clock_period <= now - clock_period;
     wait;
   end process;
-  --===============================================================================================
+  --==========================================================================================
 
   --==========================================================================================
-  -- Unwanted activity detection
-  -- - Monitors unwanted activity from the DUT
+  -- Ready latency
+  -- - When ready_latency is configured, this process samples the ready signal into a shift
+  --   register during every clock cycle.
   --==========================================================================================
-  g_unwanted_activity : if not GC_VVC_IS_MASTER generate
-    p_unwanted_activity : process
+  p_ready_latency : process is
+    variable v_vvc_config : t_vvc_config;
+  begin
+    -- Wait until the clock period is calculated
+    while clock_period < 1 ns loop
+      wait on clock_period;
+    end loop;
+
+    loop
+      -- Sample the ready signal right before the rising edge of the clock.
+      -- This is to ensure ready_delayed is updated before it is sampled in the BFM procedures.
+      wait_until_given_time_before_rising_edge(clk, std.env.resolution_limit, clock_period);
+      v_vvc_config := get_vvc_config(VOID);
+      if v_vvc_config.ready_latency > 0 then
+        ready_delayed_sr <= ready_delayed_sr(ready_delayed_sr'high - 1 downto 0) & avalon_st_vvc_if.ready;
+      end if;
+      wait until rising_edge(clk);
+    end loop;
+  end process;
+
+  p_ready_delayed : process(all) is
+    variable v_vvc_config : t_vvc_config;
+  begin
+    v_vvc_config := get_vvc_config(VOID);
+    if v_vvc_config.ready_latency = 0 then
+      ready_delayed <= avalon_st_vvc_if.ready;
+    else
+      ready_delayed <= ready_delayed_sr(ready_delayed_idx);
+    end if;
+  end process;
+  --==========================================================================================
+
+  --==========================================================================================
+  -- Unwanted transaction detection
+  -- - Monitors unwanted transactions from the DUT
+  --==========================================================================================
+  g_unwanted_transaction : if not GC_VVC_IS_MASTER generate
+    p_unwanted_transaction : process is
       variable v_vvc_config : t_vvc_config;
     begin
       -- Add a delay to allow the VVC to be registered in the activity register
@@ -465,23 +525,25 @@ begin
         wait on avalon_st_vvc_if.channel, avalon_st_vvc_if.data, avalon_st_vvc_if.data_error, avalon_st_vvc_if.valid,
                 avalon_st_vvc_if.empty, avalon_st_vvc_if.end_of_packet, avalon_st_vvc_if.start_of_packet, global_trigger_vvc_activity_register;
 
-        -- Check the changes on the DUT outputs only when the vvc is inactive
-        if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
-          -- Skip checking the changes if the valid signal goes low within one clock period after the VVC becomes inactive
-          if not (falling_edge(avalon_st_vvc_if.valid) and global_trigger_vvc_activity_register'last_event < clock_period) then
-            v_vvc_config := get_vvc_config(VOID);
-            check_unwanted_activity(avalon_st_vvc_if.valid, v_vvc_config.unwanted_activity_severity, "valid", C_SCOPE);
-            check_unwanted_activity(avalon_st_vvc_if.channel, v_vvc_config.unwanted_activity_severity, "channel", C_SCOPE);
-            check_unwanted_activity(avalon_st_vvc_if.data, v_vvc_config.unwanted_activity_severity, "data", C_SCOPE);
-            check_unwanted_activity(avalon_st_vvc_if.data_error, v_vvc_config.unwanted_activity_severity, "data_error", C_SCOPE);
-            check_unwanted_activity(avalon_st_vvc_if.empty, v_vvc_config.unwanted_activity_severity, "empty", C_SCOPE);
-            check_unwanted_activity(avalon_st_vvc_if.end_of_packet, v_vvc_config.unwanted_activity_severity, "end_of_packet", C_SCOPE);
+        v_vvc_config := get_vvc_config(VOID);
+        if v_vvc_config.unwanted_transaction_checking_enabled = true then
+          -- Check the changes on the DUT outputs only when the vvc is inactive
+          if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
+            -- Skip checking the changes if the valid signal goes low within one clock period after the VVC becomes inactive
+            if not (falling_edge(avalon_st_vvc_if.valid) and global_trigger_vvc_activity_register'last_event < clock_period) then
+              check_unwanted_transaction(avalon_st_vvc_if.valid, v_vvc_config.unwanted_transaction_severity.valid, "valid", C_SCOPE);
+              check_unwanted_transaction(avalon_st_vvc_if.channel, v_vvc_config.unwanted_transaction_severity.channel, "channel", C_SCOPE);
+              check_unwanted_transaction(avalon_st_vvc_if.data, v_vvc_config.unwanted_transaction_severity.data, "data", C_SCOPE);
+              check_unwanted_transaction(avalon_st_vvc_if.data_error, v_vvc_config.unwanted_transaction_severity.data_error, "data_error", C_SCOPE);
+              check_unwanted_transaction(avalon_st_vvc_if.empty, v_vvc_config.unwanted_transaction_severity.empty, "empty", C_SCOPE);
+              check_unwanted_transaction(avalon_st_vvc_if.end_of_packet, v_vvc_config.unwanted_transaction_severity.end_of_packet, "end_of_packet", C_SCOPE);
+            end if;
+            check_unwanted_transaction(avalon_st_vvc_if.start_of_packet, v_vvc_config.unwanted_transaction_severity.start_of_packet, "start_of_packet", C_SCOPE);
           end if;
-          check_unwanted_activity(avalon_st_vvc_if.start_of_packet, v_vvc_config.unwanted_activity_severity, "start_of_packet", C_SCOPE);
         end if;
       end loop;
-    end process p_unwanted_activity;
-  end generate g_unwanted_activity;
-  --==========================================================================================
+    end process p_unwanted_transaction;
+  end generate g_unwanted_transaction;
+--==========================================================================================
 
-end behave;
+end architecture behave;

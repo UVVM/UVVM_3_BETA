@@ -68,7 +68,6 @@ begin
   assert (sbi_vvc_master_if.addr'length = GC_ADDR_WIDTH) report "sbi_vvc_master_if.addr'length =/ GC_ADDR_WIDTH" severity failure;
   assert (sbi_vvc_master_if.wdata'length = GC_DATA_WIDTH) report "sbi_vvc_master_if.wdata'length =/ GC_DATA_WIDTH" severity failure;
   assert (sbi_vvc_master_if.rdata'length = GC_DATA_WIDTH) report "sbi_vvc_master_if.rdata'length =/ GC_DATA_WIDTH" severity failure;
-
 end entity sbi_vvc;
 
 --=================================================================================================
@@ -79,10 +78,11 @@ architecture behave of sbi_vvc is
   constant C_SCOPE      : string       := get_scope_for_log(C_VVC_NAME, GC_INSTANCE_IDX);
   constant C_VVC_LABELS : t_vvc_labels := assign_vvc_labels(C_VVC_NAME, GC_INSTANCE_IDX, NA);
 
-  signal executor_is_busy      : boolean := false;
-  signal queue_is_increasing   : boolean := false;
-  signal last_cmd_idx_executed : natural := 0;
-  signal terminate_current_cmd : t_flag_record;
+  signal executor_is_busy                   : boolean := false;
+  signal queue_is_increasing                : boolean := false;
+  signal last_cmd_idx_executed              : natural := 0;
+  signal terminate_current_cmd              : t_flag_record;
+  signal entry_num_in_vvc_activity_register : integer;
 
   -- Instantiation of the element dedicated Queue
   shared variable command_queue : work.td_cmd_queue_pkg.t_generic_queue;
@@ -91,8 +91,6 @@ architecture behave of sbi_vvc is
   -- Transaction info
   alias vvc_transaction_info_trigger        : std_logic is global_sbi_vvc_transaction_trigger(GC_INSTANCE_IDX);
   --alias vvc_transaction_info                : t_transaction_group is shared_sbi_vvc_transaction_info(GC_INSTANCE_IDX); -- v3
-  -- VVC Activity 
-  signal entry_num_in_vvc_activity_register : integer;
 
   impure function get_vvc_config(
     constant void : t_void
@@ -146,7 +144,7 @@ begin
   -- Command interpreter
   -- - Interpret, decode and acknowledge commands from the central sequencer
   --===============================================================================================
-  cmd_interpreter : process
+  p_cmd_interpreter : process is
     variable v_local_vvc_cmd : t_vvc_cmd_record := C_VVC_CMD_DEFAULT;
     variable v_msg_id_panel  : t_msg_id_panel;
     variable v_vvc_status    : t_vvc_status; -- v3
@@ -231,7 +229,7 @@ begin
   -- Command executor
   -- - Fetch and execute the commands
   --===============================================================================================
-  cmd_executor : process
+  p_cmd_executor : process is
     constant C_EXECUTOR_ID                           : natural                                      := 0;
     variable v_cmd                                   : t_vvc_cmd_record;
     variable v_read_data                             : t_vvc_result; -- See vvc_cmd_pkg
@@ -252,10 +250,10 @@ begin
     work.td_vvc_entity_support_pkg.initialize_executor(terminate_current_cmd);
 
     -- Setup SBI scoreboard
-    SBI_VVC_SB.set_scope("SBI_VVC_SB");
-    SBI_VVC_SB.enable(GC_INSTANCE_IDX, "SBI VVC SB Enabled");
-    SBI_VVC_SB.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
-    SBI_VVC_SB.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
+    sbi_vvc_sb.set_scope("SBI_VVC_SB");
+    sbi_vvc_sb.enable(GC_INSTANCE_IDX, "SBI VVC SB Enabled");
+    sbi_vvc_sb.config(GC_INSTANCE_IDX, C_SB_CONFIG_DEFAULT);
+    sbi_vvc_sb.enable_log_msg(GC_INSTANCE_IDX, ID_DATA);
 
     -- Set the randomization seeds
     set_rand_seeds(C_SCOPE, v_seeds(0), v_seeds(1));
@@ -370,7 +368,7 @@ begin
           -- Request SB check result
           if v_cmd.data_routing = TO_SB then
             -- call SB check_received
-            SBI_VVC_SB.check_received(GC_INSTANCE_IDX, pad_sbi_sb(v_read_data(GC_DATA_WIDTH - 1 downto 0)));
+            sbi_vvc_sb.check_received(GC_INSTANCE_IDX, pad_sbi_sb(v_read_data(GC_DATA_WIDTH - 1 downto 0)));
           else
             work.td_vvc_entity_support_pkg.store_result(result_queue => result_queue,
                                                         cmd_idx      => v_cmd.cmd_idx,
@@ -474,10 +472,10 @@ begin
   --===============================================================================================
 
   --===============================================================================================
-  -- Unwanted activity detection
-  -- - Monitors unwanted activity from the DUT
+  -- Unwanted transaction detection
+  -- - Monitors unwanted transaction from the DUT
   --===============================================================================================
-  p_unwanted_activity : process
+  p_unwanted_transaction : process is
     variable v_vvc_config : t_vvc_config;
   begin
     -- Add a delay to allow the VVC to be registered in the activity register
@@ -498,14 +496,16 @@ begin
       -- The ready signal is not monitored. See SBI VVC QuickRef.
       wait on sbi_vvc_master_if.rdata, global_trigger_vvc_activity_register;
 
-      -- Check the changes on the DUT outputs only when the vvc is inactive
-      if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
-        v_vvc_config := get_vvc_config(VOID);
-        check_unwanted_activity(sbi_vvc_master_if.rdata, v_vvc_config.unwanted_activity_severity, "rdata", C_SCOPE);
+      v_vvc_config := get_vvc_config(VOID);
+      if v_vvc_config.unwanted_transaction_checking_enabled = true then
+        -- Check the changes on the DUT outputs only when the vvc is inactive
+        if shared_vvc_activity_register.priv_get_vvc_activity(entry_num_in_vvc_activity_register) = INACTIVE then
+          check_unwanted_transaction(sbi_vvc_master_if.rdata, v_vvc_config.unwanted_transaction_severity.rdata, "rdata", C_SCOPE);
+        end if;
       end if;
     end loop;
-  end process p_unwanted_activity;
-  --===============================================================================================
+  end process p_unwanted_transaction;
+--===============================================================================================
 
-end behave;
+end architecture behave;
 

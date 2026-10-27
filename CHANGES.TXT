@@ -9,13 +9,76 @@ CHANGES.TXT in each module's sub-directory.
 
 ----------------------------------------------------------------------
 
+
+v3.0 BETA 2026.10.27
+--------------------
+- Fixed a fatal error in await_sb_completion() when waiting for a sb_poll_time equal or greater than the timeout.
+- Fixed AXI documentation typo.
+- Improved code formatting of src files to be consistent with regards to prefixes, casing, indentation, etc.
+- Print data_routing and randomisation parameters in corresponding VVC procedures.
+- Fixed typos in string_methods_pkg.vhd. From pull request by user JHertz5.
+- Fixed source path display error in compile-scripts.
+- Updated await_uvvm_completion() to check first that scoreboards are empty and then VVCs are inactive.
+- Moved bitvis_vip_spec_cov demo folders under its tb folder.
+- Added a python script "copy_td_files_to_vips.py" which copies all the necessary files under each <vip>/src/vvc_framework_td folder,
+  this was requested since Vivado can't compile the same file in different libraries.
+- Added initial version of APB VIP. From pull request by user mikkelmi2.
+- Removed duplicate component_list.txt file under the release folder.
+- Removed unused testbench.py script under the script folder.
+- Extended randomization and functional coverage functionality for Questa One.
+- Fixed the incorrect component order in component_list.txt, which caused compile_all.sh to fail
+- Added gpio_pulse functionality to GPIO VVC.
+- Added range normalization in SPI BFM.
+- Added data_hold_time field to I2C BFM config for configurable SDA hold time after SCL falls (data + ACK).
+- Extended bitvis_vip_uart and bitvis_uart to support 5-9 bit data widths.
+- Added generic GC_DATA_WIDTH for configurable data width to bitvis_uart.
+- Added t_bit_order type to types_pkg.
+- Added bit_order to SPI BFM config.
+- Added ready latency configuration in Avalon-ST and updated the Avalon-ST documentation.
+- Added missing fields for the data_array length in the transaction info record in Avalon-ST, GMII and RGMII.
+- Fixed the decoding of the response signal in the Avalon-MM BFM (RESERVED, SLAVEERROR and DECODEERROR were mixed up).
+- Changed the VVC transaction info trigger default value from '0' to 'Z' in all VVCs and the VVC generator to fix multiple
+  executor-issue and ensure consistent implementation.
+- Changed definition of array types in AXI-Stream BFM for compatibility with other UVVM functions.
+- Added support for avalon_st_receive() with unknown data lengths for packet transfers.
+- Fixed functional coverage bins with ranges wider than 2^31-1 in func_cov_pkg.
+- Added .gitattributes to normalize line endings (LF for shell scripts and Makefiles, CRLF for .bat files).
+- Added C_AVALON_ST_BFM_MAX_DATA_WORDS to adaptations_pkg. C_AVALON_ST_VVC_CMD_DATA_MAX_WORDS now defaults to this value.
+- Specification Coverage: run_spec_cov.py now returns 0 for complete compliant coverage, 1 for technical failures,
+  2 for non-compliant requirements, and 3 for incomplete coverage or warnings. Error-specific exit codes 7-28 are removed.
+- Replaced t_boolean_array and t_integer_array with the VHDL-2008 types boolean_vector and integer_vector.
+- Added C_REPORT_ALERTS_TO_SIMULATOR to adaptations_pkg to report UVVM alerts to the simulator's test status.
+- Fixed a fatal error with hierarchical alerts enabled when set_alert_stop_limit(), increment_expected_alerts() or
+  another alert hierarchy procedure was called before the first log or alert.
+- Removed the outdated ghdl_compile_all_and_simulate.sh scripts from bitvis_uart, bitvis_irqc and bitvis_vip_uart.
+  Use compile_all_and_simulate.sh with ghdl as simulator instead.
+- Fixed multisim.sh failing when the target directory has more than one missing level.
+- Added simulation_status to shared_uvvm_status in uvvm_util, giving a single pass/fail/not completed simulation status.
+- Fixed Specification Coverage demo scripts hiding errors by falling back to ModelSim/Questa on any error.
+- Fixed removed generic queue elements keeping the rest of the queue reachable on garbage-collecting simulators such
+  as nvc, which could exhaust the heap. From pull request by user bwandl98.
+- Renamed 'unwanted activity' to 'unwanted transaction' to better reflect functionality.
+- Changed unwanted_transaction_severity (unwanted_activity_severity) configuration from t_alert_level to record
+  to allow setting unwanted transaction severity separately for each monitored signal.
+- Added unwanted_transaction_checking_enabled configuration to allow disabling of the feature.
+- Fixed the AXI VVC looping forever on an RVALID timeout or after a response with an unexpected RID/BID.
+  From pull request by user FPonGitHub.
+- Fixed the AXI and AXI-Lite BFMs and VVCs leaving the channel signals asserted after a timeout.
+  From pull request by user EMAZAC.
+- Fixed the AXI VVC checking the ID and data of a response that was never received after a BVALID or RVALID timeout.
+- Added random clock jitter to the clock generator VVC with GC_CLOCK_MAX_JITTER and set_clock_max_jitter().
+  From pull request by user sindrekvam.
+- Added FuseSoC core files for all UVVM libraries and script/generate_fusesoc_cores.py to generate them.
+  From pull request by user ChristianJacobsen.
+
+
 v3.0 BETA 2025.11.28
 --------------------
 - Changed spec cov requirement tickoff log text from "Logging requirement" to "Ticking off requirement".
 - Moved spec cov section to a more correct location in adaptations_pkg.
 - Set ready default value from config in init_avalon_st_if_signals function.
 - Added handling of BOM character (utf-8-sig encoding) when parsing req/map files in run_spec_cov.py and spec_cov_pkg.
-- Changed name of C_MAX_CYCLES to C_WINDOW_ASSERTIONS_MAX_CYCLES in adaptations_pkg and removed double definition of C_MAX_CYCLES 
+- Changed name of C_MAX_CYCLES to C_WINDOW_ASSERTIONS_MAX_CYCLES in adaptations_pkg and removed double definition of C_MAX_CYCLES
   in uvvm_assertions_pkg.
 - Added C_WINDOW_ASSERTIONS_MAX_CYCLES range guard to trigger->trigger (sl) overload as well as more pipeline numbering in log (uvvm_assertions_pkg).
 - Added two uses of window assertions to UVVM assertions demo tb.
@@ -33,7 +96,7 @@ v3.0 BETA 2025.11.28
 - Replaced shared buffer between instances of t_data_queue to avoid overwritting data between data fifo and data stack.
 - Added Sigasi project (requires Sigasi 2025.3.1 or later). Fixed a bug in compile_src.do when the UVVM repository was checked
   out in a directory containing spaces. From pull request by user lievenlemiengre.
-- Fixed spec cov testcase status for partial coverage files with no requirement tickoffs. 
+- Fixed spec cov testcase status for partial coverage files with no requirement tickoffs.
 - Moved shared_default_log_destination to string_methods_pkg and added a constant to set the default value in adaptations_pkg.
 - Added missing deprecate() calls to some functions and procedures.
 - Changed deprecate message from log message to tb_note alert.
@@ -57,7 +120,7 @@ v3.0 BETA 2025.11.28
 - Added comments to alert_hierarchy_pkg procedures which are for internal use. Updated hierarchical alerts documentation.
 - Minor changes to formatting in log messages across most log messages (changed add_msg_delimiter behaviour among others).
 - Documentation updates: Reorganized Utility Library and VVC framework sections. Updated multi-channel VVC examples, shared variables
-  and global signals section and VVC Implementation Guide section. Renamed and reorganized VVC Framework Essential Mechanisms section. 
+  and global signals section and VVC Implementation Guide section. Renamed and reorganized VVC Framework Essential Mechanisms section.
   Added info regarding logging and verbosity control. Added links to different sections in the UVVM intro section.
 - Updated vvc_generator to replace the GC_CHANNEL generic for a constant C_CHANNEL inside the VVC.
 - Use normalized value alias in string_contains_char and to_string functions.
@@ -106,7 +169,7 @@ v3.0 BETA 2025.04.04
 - Changed default names for log and alert files to UVVM_Log.txt and UVVM_Alert.txt
 - SPI VIP: Fixed bug where slave BFM exited too late for multi-word transfers in some configurations.
 - Updated vvc_generator.py with fixes for runtime errors in the VVCs.
-- Spec cov: New output formats, added support for compound reqs in req list. 
+- Spec cov: New output formats, added support for compound reqs in req list.
 - Fixed set_rand_seeds(string) procedure being dependent on previous seed values.
 - Spec cov: Alert TB_FAILURE if number of input requirements exceeds configured limit.
 - Updated vvc_generator.py to add missing delta cycle needed to update the last_cmd_idx_executed when not using transaction info.
@@ -257,7 +320,7 @@ v3.0 BETA 2023.09.04
 - Added filter for (vcom-1246) warning in test.py and TCL compile scripts.
 - Added bitvis_uart and bitvis_irqc to uvvm/script/component_list.txt.
 - Renamed C_SCOPE to C_BFM_SCOPE in BFM package.
-- Updated vvc_framework.rst documentation for further explanation of common types 
+- Updated vvc_framework.rst documentation for further explanation of common types
   and usage of t_vvc_result.
 - Fixed incorrect librart use clause in td_entity_support_pkg.
 - Updated scripts for proper handling of errors during compilation/simulation

@@ -190,6 +190,7 @@
 <li class="toctree-l1"><a class="reference internal" href="optimized_rand.html">Optimized Randomization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uvvm_assertions.html">UVVM Assertions (BETA)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vvc_framework.html">VVC Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vip_apb.html">External VIP APB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_mm.html">Bitvis VIP Avalon-MM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_avalon_st.html">Bitvis VIP Avalon-ST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_axi.html">Bitvis VIP AXI4</a></li>
@@ -210,6 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="vip_uart.html">Bitvis VIP UART</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vip_wishbone.html">Bitvis VIP Wishbone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool_compatibility.html">Tool Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fusesoc.html">FuseSoC support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 
@@ -1585,6 +1587,10 @@ type is encountered, the simulation will be stopped and the user will be prompte
 simulation.</p>
 <p>The simulation will be stopped using <code class="docutils literal notranslate"><span class="pre">std.env.stop(1)</span></code>, unless C_USE_STD_STOP_ON_ALERT_STOP_LIMIT in adaptations_pkg is set to
 false, in which case it will be stopped using <code class="docutils literal notranslate"><span class="pre">failure</span></code>.</p>
+<p>UVVM alerts are not VHDL reports, so by default they are not reflected in the simulator’s own test status (e.g. TESTSTATUS in
+Questa/Modelsim). Set C_REPORT_ALERTS_TO_SIMULATOR in adaptations_pkg to true to also issue a VHDL report for every regarded alert,
+with severity <code class="docutils literal notranslate"><span class="pre">warning</span></code> for WARNING/TB_WARNING, <code class="docutils literal notranslate"><span class="pre">error</span></code> for ERROR/TB_ERROR and <code class="docutils literal notranslate"><span class="pre">failure</span></code> for FAILURE/TB_FAILURE. Note that some
+simulators (e.g. NVC and GHDL) stop on a VHDL severity <code class="docutils literal notranslate"><span class="pre">error</span></code> or <code class="docutils literal notranslate"><span class="pre">failure</span></code> by default, regardless of the UVVM stop limits.</p>
 <section id="set-alert-file-name">
 <h4>set_alert_file_name()<a class="headerlink" href="#set-alert-file-name" title="Link to this heading"></a></h4>
 <p>Sets the alert file name. To ensure that the entire log transcript is written to a single file, this should be called prior to any
@@ -2396,6 +2402,27 @@ at the end</p></td>
 <dt>shared_uvvm_status.mismatch_on_expected_simulation_errors_or_worse</dt><dd><div class="line-block">
 <div class="line">Status is ‘0’ on success and ‘1’ on failure.</div>
 <div class="line">The variable is set when there is a mismatch between the expected and the actual ERROR or FAILURE alerts.</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>shared_uvvm_status.simulation_status</dt><dd><div class="line-block">
+<div class="line">Status is ‘2’ until report_alert_counters(FINAL) is called, i.e. the simulation has not completed.</div>
+<div class="line">After report_alert_counters(FINAL) the status is ‘0’ when the simulation passed and ‘1’ when it failed, using the
+same conclusion as the one printed by report_alert_counters(FINAL). It is also updated for alerts after that call.</div>
+<div class="line">This makes it possible to use a single value as the exit code of a simulation.</div>
+</div>
+<p>shared_uvvm_status is a protected type. In VHDL the status is read with <code class="docutils literal notranslate"><span class="pre">shared_uvvm_status.get(VOID).simulation_status</span></code>.</p>
+<p>In Questa/ModelSim the status can be read from a simulation script using the protected type’s internal element:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">run</span><span class="w"> </span><span class="o">-</span>all
+<span class="nb">exit</span><span class="w"> </span><span class="o">-</span>code<span class="w"> </span><span class="k">[</span><span class="nv">examine</span><span class="w"> </span><span class="o">-</span>radix<span class="w"> </span>decimal<span class="w"> </span><span class="o">/</span>global_signals_and_shared_variables_pkg<span class="o">/</span>shared_uvvm_status.priv_element.simulation_status<span class="k">]</span>
+</pre></div>
+</div>
+<p>In simulators which use the status of <code class="docutils literal notranslate"><span class="pre">std.env.stop()</span></code> as exit code (e.g. NVC and GHDL), the testbench can end with:</p>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="n">report_alert_counters</span><span class="p">(</span><span class="n">FINAL</span><span class="p">);</span>
+<span class="nn">std.env</span><span class="p">.</span><span class="n">stop</span><span class="p">(</span><span class="n">shared_uvvm_status</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">VOID</span><span class="p">).</span><span class="n">simulation_status</span><span class="p">);</span>
+</pre></div>
 </div>
 </dd>
 </dl>

@@ -33,7 +33,6 @@ package types_pkg is
 
   -- Array types
   type t_natural_array is array (natural range <>) of natural;
-  type t_integer_array is array (natural range <>) of integer;
   type t_slv_array is array (natural range <>) of std_logic_vector;
   type t_slv_array_ptr is access t_slv_array;
   type t_signed_array is array (natural range <>) of signed;
@@ -93,7 +92,8 @@ package types_pkg is
   type t_from_point_in_time is (FROM_NOW, FROM_LAST_EVENT);
   type t_match_strictness is (MATCH_STD, MATCH_STD_INCL_Z, MATCH_EXACT, MATCH_STD_INCL_ZXUW);
   type t_quietness is (NON_QUIET, QUIET);
-  type t_justify_center is (center); -- Addition to the standard left, side
+  type t_justify_center is (CENTER); -- Addition to the standard left, side
+  type t_bit_order is (MSB_FIRST, LSB_FIRST);
   type t_byte_endianness is (LOWER_BYTE_LEFT, LOWER_BYTE_RIGHT, LOWER_WORD_LEFT, LOWER_WORD_RIGHT);
   alias t_word_endianness is t_byte_endianness;
   type t_relational_operator is (LT, GT, EQ, LE, GE, NE);
@@ -133,12 +133,14 @@ package types_pkg is
     found_unexpected_simulation_errors_or_worse       : natural range 0 to 1; -- simulation end status: 0=no unexpected, 1=unexpected
     mismatch_on_expected_simulation_warnings_or_worse : natural range 0 to 1; -- simulation status: 0=no mismatch, 1=mismatch
     mismatch_on_expected_simulation_errors_or_worse   : natural range 0 to 1; -- simulation status: 0=no mismatch, 1=mismatch
+    simulation_status                                 : natural range 0 to 2; -- 0=passed, 1=failed, 2=not completed (report_alert_counters(FINAL) not called yet)
   end record t_uvvm_status;
   constant C_UVVM_STATUS_DEFAULT : t_uvvm_status := (
     found_unexpected_simulation_warnings_or_worse     => 0,
     found_unexpected_simulation_errors_or_worse       => 0,
     mismatch_on_expected_simulation_warnings_or_worse => 0,
-    mismatch_on_expected_simulation_errors_or_worse   => 0
+    mismatch_on_expected_simulation_errors_or_worse   => 0,
+    simulation_status                                 => 2
   );
 
   -- These values are used to indicate outdated sub-programs
@@ -151,8 +153,7 @@ package types_pkg is
   type t_test_status is (NA, PASS, FAIL);
   type t_extent_tickoff is (LIST_SINGLE_TICKOFF, LIST_EVERY_TICKOFF);
   type t_spec_cov_config is record
-    missing_req_label_severity    : t_alert_level; -- Alert level used when the tick_off_req_cov() procedure does not find the specified
-                                                   -- requirement label in the requirement list.
+    missing_req_label_severity    : t_alert_level; -- Alert level used when the tick_off_req_cov() procedure does not find the specified requirement label in the requirement list.
     compound_req_tickoff_severity : t_alert_level; -- Alert level used when tickoff is performed on a requirement that has sub requirements.
     csv_delimiter                 : character;     -- Character used as delimiter in the CSV files. Default is ",".
     max_requirement_lines         : natural;       -- Maximum number of requirement lines in the req list file used in initialize_req_cov().

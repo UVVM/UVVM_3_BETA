@@ -23,7 +23,7 @@ use uvvm_util.adaptations_pkg.all;
 
 package monitor_cmd_support_pkg is
 
-  constant C_MAX_BITS_IN_DATA : positive := 8;
+  constant C_MAX_BITS_IN_DATA : positive := 9;
 
   --==========================================================================================
   -- t_uart_interface_config
@@ -31,7 +31,7 @@ package monitor_cmd_support_pkg is
   --==========================================================================================
   type t_uart_interface_config is record
     bit_time      : time;
-    num_data_bits : positive range 7 to 8;
+    num_data_bits : positive range 5 to C_MAX_BITS_IN_DATA;
     parity        : t_parity;
     num_stop_bits : t_stop_bits;
   end record t_uart_interface_config;
@@ -80,9 +80,9 @@ use work.vvc_transaction_pkg.all;
 
 package protected_uart_monitor_config_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_uart_monitor_config,
-    c_generic_default  => C_UART_MONITOR_CONFIG_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_uart_monitor_config,
+    GC_GENERIC_DEFAULT  => C_UART_MONITOR_CONFIG_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 --================================================================================================================================
@@ -141,7 +141,7 @@ package monitor_cmd_pkg is
   );
 
   procedure set_uart_monitor_config_num_data_bits(
-    constant num_data_bits : in positive range 7 to 8;
+    constant num_data_bits : in positive range 5 to C_MAX_BITS_IN_DATA;
     constant index         : in integer;
     constant channel       : in t_channel
   );
@@ -214,7 +214,7 @@ package body monitor_cmd_pkg is
   end procedure set_uart_monitor_config_bit_time;
 
   procedure set_uart_monitor_config_num_data_bits(
-    constant num_data_bits : in positive range 7 to 8;
+    constant num_data_bits : in positive range 5 to C_MAX_BITS_IN_DATA;
     constant index         : in integer;
     constant channel       : in t_channel
   ) is

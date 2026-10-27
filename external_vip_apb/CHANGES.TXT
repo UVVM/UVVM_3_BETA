@@ -1,0 +1,7 @@
+External VIP APB - Overview on Versions and Changes
+==============================================================
+
+v1.0.0
+----------
+Released: 20XX-XX-XX
+- Initial version of APB VIP in UVVM V3.

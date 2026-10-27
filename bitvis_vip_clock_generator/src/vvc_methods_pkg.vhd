@@ -44,7 +44,8 @@ package vvc_methods_support_pkg is
     bfm_config      : t_bfm_config;      -- Configuration for the BFM. See BFM quick reference.
     clock_name      : string(1 to 30);
     clock_period    : time;
-    clock_high_time : time;
+    clock_high_time  : time;
+    clock_max_jitter : time;
   end record;
 
   constant C_CLOCK_GENERATOR_VVC_CONFIG_DEFAULT : t_vvc_config := (
@@ -52,7 +53,8 @@ package vvc_methods_support_pkg is
     bfm_config      => C_VOID_BFM_CONFIG,
     clock_name      => ("Set clock name", others => NUL),
     clock_period    => 10 ns,
-    clock_high_time => 5 ns
+    clock_high_time  => 5 ns,
+    clock_max_jitter => 0 ns
   );
 
   type t_vvc_status is record
@@ -81,9 +83,9 @@ use work.vvc_cmd_pkg.all;
 
 package protected_vvc_status_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_vvc_status,
-    c_generic_default  => C_VVC_STATUS_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_vvc_status,
+    GC_GENERIC_DEFAULT  => C_VVC_STATUS_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 ----------------------------------------------------------------------
@@ -95,9 +97,9 @@ use work.vvc_cmd_pkg.all;
 
 package protected_vvc_config_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_vvc_config,
-    c_generic_default  => C_CLOCK_GENERATOR_VVC_CONFIG_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_vvc_config,
+    GC_GENERIC_DEFAULT  => C_CLOCK_GENERATOR_VVC_CONFIG_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 ----------------------------------------------------------------------
@@ -110,9 +112,9 @@ use work.vvc_cmd_pkg.all;
 
 package protected_msg_id_panel_pkg is new uvvm_util.protected_generic_types_pkg
   generic map(
-    t_generic_element  => t_msg_id_panel,
-    c_generic_default  => C_VVC_MSG_ID_PANEL_DEFAULT,
-    c_max_instance_num => C_VVC_MAX_INSTANCE_NUM
+    t_generic_element   => t_msg_id_panel,
+    GC_GENERIC_DEFAULT  => C_VVC_MSG_ID_PANEL_DEFAULT,
+    GC_MAX_INSTANCE_NUM => C_VVC_MAX_INSTANCE_NUM
   );
 
 --================================================================================================================================
@@ -185,6 +187,14 @@ package vvc_methods_pkg is
     constant scope            : in string := C_VVC_CMD_SCOPE_DEFAULT
   );
 
+  procedure set_clock_max_jitter(
+    signal   VVCT             : inout t_vvc_target_record;
+    constant vvc_instance_idx : in integer;
+    constant clock_max_jitter : in time;
+    constant msg              : in string;
+    constant scope            : in string := C_VVC_CMD_SCOPE_DEFAULT
+  );
+
 end package vvc_methods_pkg;
 
 package body vvc_methods_pkg is
@@ -199,11 +209,11 @@ package body vvc_methods_pkg is
     constant msg              : in string;
     constant scope            : in string := C_VVC_CMD_SCOPE_DEFAULT
   ) is
-    constant proc_name : string := "start_clock";
-    constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ")";
+    constant C_PROC_NAME : string := "start_clock";
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
+                                     & ")";
   begin
-    set_general_target_and_command_fields(VVCT, vvc_instance_idx, proc_call, msg, QUEUED, START_CLOCK);
+    set_general_target_and_command_fields(VVCT, vvc_instance_idx, C_PROC_CALL, msg, QUEUED, START_CLOCK);
     send_command_to_vvc(VVCT, scope => scope);
   end procedure start_clock;
 
@@ -213,11 +223,11 @@ package body vvc_methods_pkg is
     constant msg              : in string;
     constant scope            : in string := C_VVC_CMD_SCOPE_DEFAULT
   ) is
-    constant proc_name : string := "stop_clock";
-    constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ")";
+    constant C_PROC_NAME : string := "stop_clock";
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
+                                     & ")";
   begin
-    set_general_target_and_command_fields(VVCT, vvc_instance_idx, proc_call, msg, QUEUED, STOP_CLOCK);
+    set_general_target_and_command_fields(VVCT, vvc_instance_idx, C_PROC_CALL, msg, QUEUED, STOP_CLOCK);
     send_command_to_vvc(VVCT, scope => scope);
   end procedure stop_clock;
 
@@ -228,12 +238,12 @@ package body vvc_methods_pkg is
     constant msg              : in string;
     constant scope            : in string := C_VVC_CMD_SCOPE_DEFAULT
   ) is
-    constant proc_name : string := "set_clock_period";
-    constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ", " & to_string(clock_period) & ")";
+    constant C_PROC_NAME : string := "set_clock_period";
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
+                                     & ", " & to_string(clock_period) & ")";
     variable v_local_vvc_cmd : t_vvc_cmd_record := shared_vvc_cmd.get(vvc_instance_idx); -- v3
   begin
-    set_general_target_and_command_fields(VVCT, vvc_instance_idx, proc_call, msg, QUEUED, SET_CLOCK_PERIOD);
+    set_general_target_and_command_fields(VVCT, vvc_instance_idx, C_PROC_CALL, msg, QUEUED, SET_CLOCK_PERIOD);
 
     -- v3
     v_local_vvc_cmd              := shared_vvc_cmd.get(vvc_instance_idx);
@@ -250,12 +260,12 @@ package body vvc_methods_pkg is
     constant msg              : in string;
     constant scope            : in string := C_VVC_CMD_SCOPE_DEFAULT
   ) is
-    constant proc_name : string := "set_clock_high_time";
-    constant proc_call : string := proc_name & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
-                                   & ", " & to_string(clock_high_time) & ")";
+    constant C_PROC_NAME : string := "set_clock_high_time";
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
+                                     & ", " & to_string(clock_high_time) & ")";
     variable v_local_vvc_cmd : t_vvc_cmd_record := shared_vvc_cmd.get(vvc_instance_idx); -- v3
   begin
-    set_general_target_and_command_fields(VVCT, vvc_instance_idx, proc_call, msg, QUEUED, SET_CLOCK_HIGH_TIME);
+    set_general_target_and_command_fields(VVCT, vvc_instance_idx, C_PROC_CALL, msg, QUEUED, SET_CLOCK_HIGH_TIME);
 
     -- v3
     v_local_vvc_cmd                 := shared_vvc_cmd.get(vvc_instance_idx);
@@ -264,5 +274,27 @@ package body vvc_methods_pkg is
 
     send_command_to_vvc(VVCT, scope => scope);
   end procedure set_clock_high_time;
+
+  procedure set_clock_max_jitter(
+    signal   VVCT             : inout t_vvc_target_record;
+    constant vvc_instance_idx : in integer;
+    constant clock_max_jitter : in time;
+    constant msg              : in string;
+    constant scope            : in string := C_VVC_CMD_SCOPE_DEFAULT
+  ) is
+    constant C_PROC_NAME : string := "set_clock_max_jitter";
+    constant C_PROC_CALL : string := C_PROC_NAME & "(" & to_string(VVCT, vvc_instance_idx) -- First part common for all
+                                     & ", " & to_string(clock_max_jitter) & ")";
+    variable v_local_vvc_cmd : t_vvc_cmd_record := shared_vvc_cmd.get(vvc_instance_idx); -- v3
+  begin
+    set_general_target_and_command_fields(VVCT, vvc_instance_idx, C_PROC_CALL, msg, QUEUED, SET_CLOCK_MAX_JITTER);
+
+    -- v3
+    v_local_vvc_cmd                  := shared_vvc_cmd.get(vvc_instance_idx);
+    v_local_vvc_cmd.clock_max_jitter := clock_max_jitter;
+    shared_vvc_cmd.set(v_local_vvc_cmd, vvc_instance_idx);
+
+    send_command_to_vvc(VVCT, scope => scope);
+  end procedure set_clock_max_jitter;
 
 end package body vvc_methods_pkg;

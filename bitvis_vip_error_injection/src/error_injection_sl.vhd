@@ -34,7 +34,7 @@ architecture behave of error_injection_sl is
 
 begin
 
-  error_injector_slv : entity work.error_injection_slv
+  i_error_injector_slv : entity work.error_injection_slv
     generic map(
       GC_START_TIME   => GC_START_TIME,
       GC_INSTANCE_IDX => GC_INSTANCE_IDX
@@ -44,4 +44,4 @@ begin
       ei_out(0) => ei_out
     );
 
-end behave;
+end architecture behave;

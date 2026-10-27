@@ -1333,7 +1333,7 @@ package methods_pkg is
     constant value_type   : string         := "t_u_array"
   );
 
-  -- 
+  --
   -- Check_value_in_range
   impure function check_value_in_range(
     constant value        : integer;
@@ -3144,7 +3144,7 @@ package methods_pkg is
 
   -----------------------------------------------------
   -- Adjustable Clock Generator Procedures
-  -----------------------------------------------------  
+  -----------------------------------------------------
   procedure adjustable_clock_generator(
     signal   clock_signal          : inout std_logic;
     signal   clock_ena             : in boolean;
@@ -3936,6 +3936,7 @@ package body methods_pkg is
           tee_and_keep_line(ALERT_FILE, v_info); -- Write to file, while keeping the line contents
           write_line_to_log_destination(v_info);
           deallocate(v_info);
+          report_alert_to_simulator(alert_level);
 
           -- 6. Stop simulation if stop-limit is reached for number of this alert
           if (get_alert_stop_limit(alert_level) /= 0) then
@@ -4050,6 +4051,7 @@ package body methods_pkg is
   procedure report_alert_counters(
     constant order : in t_order
   ) is
+    variable v_uvvm_status : t_uvvm_status;
   begin
     initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
     if not C_ENABLE_HIERARCHICAL_ALERTS then
@@ -4057,7 +4059,12 @@ package body methods_pkg is
     else
       print_hierarchical_log(order);
     end if;
-
+    -- Same conclusion as printed above: passed when there is no mismatch on serious alerts
+    if order = FINAL then
+      v_uvvm_status                   := shared_uvvm_status.get(VOID);
+      v_uvvm_status.simulation_status := v_uvvm_status.mismatch_on_expected_simulation_errors_or_worse;
+      shared_uvvm_status.set(v_uvvm_status);
+    end if;
   end procedure;
 
   -- This version (with the t_void argument) is kept for backwards compatibility
@@ -4220,8 +4227,8 @@ package body methods_pkg is
     number      : natural     := 1
   ) is
     variable v_uvvm_status              : t_uvvm_status := shared_uvvm_status.get(VOID);
-    type alert_array is array (1 to 6) of t_alert_level;
-    constant C_ALERT_CHECK_ARRAY : alert_array   := (warning, TB_WARNING, error, TB_ERROR, failure, TB_FAILURE);
+    type t_alert_array is array (1 to 6) of t_alert_level;
+    constant C_ALERT_CHECK_ARRAY : t_alert_array := (warning, TB_WARNING, error, TB_ERROR, failure, TB_FAILURE);
     alias found_unexpected_simulation_warnings_or_worse is v_uvvm_status.found_unexpected_simulation_warnings_or_worse;
     alias found_unexpected_simulation_errors_or_worse is v_uvvm_status.found_unexpected_simulation_errors_or_worse;
     alias mismatch_on_expected_simulation_warnings_or_worse is v_uvvm_status.mismatch_on_expected_simulation_warnings_or_worse;
@@ -4264,6 +4271,11 @@ package body methods_pkg is
           shared_uvvm_status.set(v_uvvm_status);
         end loop;
 
+        -- Keep the simulation status up to date for alerts after report_alert_counters(FINAL)
+        if v_uvvm_status.simulation_status /= 2 then
+          v_uvvm_status.simulation_status := mismatch_on_expected_simulation_errors_or_worse;
+          shared_uvvm_status.set(v_uvvm_status);
+        end if;
       end if;
     end if;
   end procedure;
@@ -4302,7 +4314,7 @@ package body methods_pkg is
     constant C_PREFIX : string := C_LOG_PREFIX & "     ";
     variable v_line   : line;
   begin
-    initialize_util(VOID); -- Only executed the first time called. Ensures that the log and alert files are open.
+    initialize_util(void); -- Only executed the first time called. Ensures that the log and alert files are open.
     -- Print report header
     write(v_line, LF & fill_string('=', (C_LOG_LINE_WIDTH - C_PREFIX'length)) & LF);
     write(v_line, timestamp_header(now, justify("*** SUMMARY OF SCOREBOARDS***", LEFT, C_LOG_LINE_WIDTH - C_PREFIX'length, SKIP_LEADING_SPACE, DISALLOW_TRUNCATE)) & LF);
@@ -5291,7 +5303,7 @@ package body methods_pkg is
     constant msg_id_panel : t_msg_id_panel := shared_msg_id_panel.get(VOID);
     constant caller_name  : string         := "check_value"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking     
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, error, msg, scope, msg_id, msg_id_panel, caller_name);
     return v_check_ok;
@@ -5306,7 +5318,7 @@ package body methods_pkg is
     constant msg_id_panel : t_msg_id_panel := shared_msg_id_panel.get(VOID);
     constant caller_name  : string         := "check_value"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking     
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, error, msg, scope, msg_id, msg_id_panel, caller_name);
     return v_check_ok;
@@ -5321,7 +5333,7 @@ package body methods_pkg is
     constant msg_id_panel : t_msg_id_panel := shared_msg_id_panel.get(VOID);
     constant caller_name  : string         := "check_value"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking     
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, error, msg, scope, msg_id, msg_id_panel, caller_name);
     return v_check_ok;
@@ -5340,7 +5352,7 @@ package body methods_pkg is
     constant caller_name      : string         := "check_value";
     constant value_type       : string         := "t_slv_array"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking      
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, match_strictness, error, msg, scope, radix, format, msg_id, msg_id_panel, caller_name, value_type);
     return v_check_ok;
@@ -5358,7 +5370,7 @@ package body methods_pkg is
     constant caller_name  : string         := "check_value";
     constant value_type   : string         := "t_slv_array"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking      
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, MATCH_STD, error, msg, scope, radix, format, msg_id, msg_id_panel, caller_name, value_type);
     return v_check_ok;
@@ -5377,7 +5389,7 @@ package body methods_pkg is
     constant caller_name      : string         := "check_value";
     constant value_type       : string         := "t_s_array"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking      
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, match_strictness, error, msg, scope, radix, format, msg_id, msg_id_panel, caller_name, value_type);
     return v_check_ok;
@@ -5395,7 +5407,7 @@ package body methods_pkg is
     constant caller_name  : string         := "check_value";
     constant value_type   : string         := "t_s_array"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking      
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, MATCH_STD, error, msg, scope, radix, format, msg_id, msg_id_panel, caller_name, value_type);
     return v_check_ok;
@@ -5414,7 +5426,7 @@ package body methods_pkg is
     constant caller_name      : string         := "check_value";
     constant value_type       : string         := "t_u_array"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking      
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, match_strictness, error, msg, scope, radix, format, msg_id, msg_id_panel, caller_name, value_type);
     return v_check_ok;
@@ -5432,7 +5444,7 @@ package body methods_pkg is
     constant caller_name  : string         := "check_value";
     constant value_type   : string         := "t_u_array"
   ) return boolean is
-    variable v_check_ok : boolean := true; -- as default prior to checking      
+    variable v_check_ok : boolean := true; -- as default prior to checking
   begin
     v_check_ok := check_value(value, exp, MATCH_STD, error, msg, scope, radix, format, msg_id, msg_id_panel, caller_name, value_type);
     return v_check_ok;
@@ -7348,7 +7360,7 @@ package body methods_pkg is
     for i in 1 to C_STR_LEN / 2 loop
       seed1 := (seed1 + char_to_ascii(str(i)) * 128) mod C_MAX_POS;
     end loop;
-      seed2 := (seed2 + seed1) mod C_MAX_POS;
+    seed2 := (seed2 + seed1) mod C_MAX_POS;
     for i in C_STR_LEN / 2 + 1 to C_STR_LEN loop
       seed2 := (seed2 + char_to_ascii(str(i)) * 128) mod C_MAX_POS;
     end loop;
@@ -8266,7 +8278,7 @@ package body methods_pkg is
 
   -- Await Change to Value
   -- Wait until target to change (regardless of value) and then wait until it changes to the expected value
-  -- Unlike await_value, this procedure is a non fall-through procedure and requires the signal to change before it can check the value  
+  -- Unlike await_value, this procedure is a non fall-through procedure and requires the signal to change before it can check the value
 
   -- main std_logic version (cannot be sendt into std_logic_vector bc of signal)
   procedure await_change_to_value(
@@ -8452,8 +8464,8 @@ package body methods_pkg is
 
   -- main boolean version
   procedure await_change_to_value(
-    signal   target    : boolean;
-    constant exp_value : boolean;
+    signal   target       : boolean;
+    constant exp_value    : boolean;
     -- match_strictness does not apply to boolean (and will result in an error if used on boolean)
     constant min_time     : time;
     constant max_time     : time;
@@ -9558,6 +9570,7 @@ package body methods_pkg is
     variable v_elapsed_time : time   := 0 ns;
     variable v_line         : line;
     variable v_proc_call    : line;
+    variable v_timed_out    : boolean := false;
   begin
     -- Called directly from sequencer
     if ext_proc_call = "" then
@@ -9577,7 +9590,10 @@ package body methods_pkg is
 
     -- Wait until the scoreboards are empty or a timeout occurs
     loop
-      if check_sb_completion(TB_ERROR, ext_proc_call => v_proc_call.all) or v_elapsed_time >= timeout then
+      if check_sb_completion(TB_ERROR, ext_proc_call => v_proc_call.all) then
+        exit;
+      elsif v_elapsed_time >= timeout then
+        v_timed_out := true;
         exit;
       else
         wait for sb_poll_time;
@@ -9586,7 +9602,7 @@ package body methods_pkg is
     end loop;
 
     -- Print success/fail log message
-    if v_elapsed_time >= timeout then
+    if v_timed_out then
       for idx in 0 to shared_sb_activity_register.get_num_registered_sb(void) - 1 loop
         if shared_sb_activity_register.is_enabled(idx) and shared_sb_activity_register.get_sb_element_cnt(idx) > 0 then
           write(v_line, "  " & to_string(shared_sb_activity_register.get_sb_name(idx)) & "," & to_string(shared_sb_activity_register.get_sb_instance(idx)) & LF);

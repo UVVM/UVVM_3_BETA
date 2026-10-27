@@ -32,11 +32,15 @@ context bitvis_vip_uart.vvc_context;
 
 use work.uart_transaction_sb_pkg.all;
 use work.monitor_cmd_pkg.all;
+-- C_MAX_BITS_IN_DATA is declared in monitor_cmd_support_pkg; the context above
+-- does not re-export it. Explicit use required.
+use work.monitor_cmd_support_pkg.all;
 
 --hdlregression:tb
 entity uart_monitor_tb is
   generic(
-    GC_TESTCASE : string := "UVVM"
+    GC_TESTCASE   : string                := "UVVM";
+    GC_DATA_WIDTH : natural range 5 to 9  := 8
   );
 end entity;
 
@@ -45,15 +49,36 @@ architecture func of uart_monitor_tb is
   constant C_CLK_PERIOD : time := 10 ns;
   constant C_BIT_PERIOD : time := 16 * C_CLK_PERIOD; -- default in design and BFM
 
+  -- start bit + GC_DATA_WIDTH data bits + parity + stop bit = N+3 bit periods.
+  constant C_TIME_OF_ONE_UART_TX : time := (GC_DATA_WIDTH + 3) * C_BIT_PERIOD;
+
+  -- await_completion timeout for one UART frame: frame time + 2 bit periods margin.
+  constant C_FRAME_TIMEOUT       : time := C_TIME_OF_ONE_UART_TX + 2 * C_BIT_PERIOD;
+
   constant C_SCOPE : string := C_TB_SCOPE_DEFAULT;
 
   constant C_ADDR_RX_DATA       : unsigned(3 downto 0) := x"0";
   constant C_ADDR_RX_DATA_VALID : unsigned(3 downto 0) := x"1";
   constant C_ADDR_TX_DATA       : unsigned(3 downto 0) := x"2";
   constant C_ADDR_TX_READY      : unsigned(3 downto 0) := x"3";
+  constant C_ADDR_NUM_DATA_BITS : unsigned(3 downto 0) := x"4";
 
   shared variable tx_uart_monitor_sb : work.uart_transaction_sb_pkg.t_generic_sb;
   shared variable rx_uart_monitor_sb : work.uart_transaction_sb_pkg.t_generic_sb;
+
+  -- Width-mask a natural to GC_DATA_WIDTH bits. For uart_transmit/expect/receive payloads.
+  function uart_data(value : natural) return std_logic_vector is
+  begin
+    return std_logic_vector(to_unsigned(value mod (2 ** GC_DATA_WIDTH), GC_DATA_WIDTH));
+  end function;
+
+  -- Zero-extend a GC_DATA_WIDTH payload to C_MAX_BITS_IN_DATA for the SBI bus image.
+  -- Only the vector overload is defined; every call site here already has the payload
+  -- vector in hand, and an unused natural overload trips GHDL --warn-unused.
+  function sbi_data(data : std_logic_vector) return std_logic_vector is
+  begin
+    return std_logic_vector(resize(unsigned(data), C_MAX_BITS_IN_DATA));
+  end function;
 
 begin
 
@@ -68,15 +93,20 @@ begin
   -- PROCESS: p_main
   ------------------------------------------------
   p_main : process
-    -- Helper variables
-    variable v_data_tx            : std_logic_vector(7 downto 0);
-    variable v_data_rx            : std_logic_vector(7 downto 0);
-    variable v_uart_transaction   : t_uart_transaction;
-    variable v_vvc_config         : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
+    -- Helper variables. v_data_tx / v_data_rx are the C_MAX_BITS_IN_DATA (=9) SBI compare
+    -- image. v_payload_tx / v_payload_rx are the GC_DATA_WIDTH-bit UART-frame payload
+    -- that feeds the UART procedures and is zero-extended into the 9-bit SBI image to
+    -- match the DUT's RX_DATA register.
+    variable v_data_tx          : std_logic_vector(C_MAX_BITS_IN_DATA - 1 downto 0);
+    variable v_data_rx          : std_logic_vector(C_MAX_BITS_IN_DATA - 1 downto 0);
+    variable v_payload_tx       : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
+    variable v_payload_rx       : std_logic_vector(GC_DATA_WIDTH - 1 downto 0);
+    variable v_uart_transaction : t_uart_transaction;
+    variable v_vvc_config       : bitvis_vip_uart.vvc_methods_support_pkg.t_vvc_config;
 
     function get_uart_transaction_info(
       constant operation        : in t_uart_operation;
-      constant data             : in std_logic_vector(7 downto 0);
+      constant data             : in std_logic_vector(C_MAX_BITS_IN_DATA - 1 downto 0);
       constant parity_bit_error : in boolean := false;
       constant stop_bit_error   : in boolean := false
     ) return t_uart_transaction is
@@ -90,10 +120,9 @@ begin
     end function get_uart_transaction_info;
 
   begin
-    -- To avoid that log files from different test cases (run in separate
-    -- simulations) overwrite each other.
-    set_log_file_name(GC_TESTCASE & "_Log.txt");
-    set_alert_file_name(GC_TESTCASE & "_Alert.txt");
+    -- Per-width log/alert file names so matrix entries do not overwrite each other.
+    set_log_file_name(GC_TESTCASE & "_" & to_string(GC_DATA_WIDTH) & "bit_Log.txt");
+    set_alert_file_name(GC_TESTCASE & "_" & to_string(GC_DATA_WIDTH) & "bit_Alert.txt");
 
     await_uvvm_initialization(VOID);
 
@@ -133,13 +162,23 @@ begin
 
     log(ID_LOG_HDR, "Configure UART VVC 1", C_SCOPE);
     ------------------------------------------------------------
-    v_vvc_config                     := shared_uart_vvc_config.get(1, TX);
-    v_vvc_config.bfm_config.bit_time := C_BIT_PERIOD;
+    -- Apply GC_DATA_WIDTH to the VVC bfm_config. TH passes GC_DATA_WIDTH=9 to
+    -- the executor so the static arrays are sized to MAX; runtime num_data_bits
+    -- is driven by the matrix-selected GC_DATA_WIDTH.
+    v_vvc_config                          := shared_uart_vvc_config.get(1, TX);
+    v_vvc_config.bfm_config.bit_time      := C_BIT_PERIOD;
+    v_vvc_config.bfm_config.num_data_bits := GC_DATA_WIDTH;
     shared_uart_vvc_config.set(v_vvc_config, 1, TX);
 
-    v_vvc_config                     := shared_uart_vvc_config.get(1, RX);
-    v_vvc_config.bfm_config.bit_time := C_BIT_PERIOD;
+    v_vvc_config                          := shared_uart_vvc_config.get(1, RX);
+    v_vvc_config.bfm_config.bit_time      := C_BIT_PERIOD;
+    v_vvc_config.bfm_config.num_data_bits := GC_DATA_WIDTH;
     shared_uart_vvc_config.set(v_vvc_config, 1, RX);
+
+    -- Apply GC_DATA_WIDTH to the UART monitor as well so it decodes frames at
+    -- the matrix-selected width.
+    set_uart_monitor_config_num_data_bits(GC_DATA_WIDTH, 1, TX);
+    set_uart_monitor_config_num_data_bits(GC_DATA_WIDTH, 1, RX);
 
     log(ID_LOG_HDR, "Start Test of UART VIP", C_SCOPE);
     ------------------------------------------------------------
@@ -147,21 +186,31 @@ begin
     log("Wait 10 clock period for reset to be turned off");
     wait for (10 * C_CLK_PERIOD);       -- for reset to be turned off
 
+    -- Apply GC_DATA_WIDTH to DUT (NUM_DATA_BITS register) so DUT framing matches.
+    sbi_write(SBI_VVCT, 1, C_ADDR_NUM_DATA_BITS,
+              std_logic_vector(to_unsigned(GC_DATA_WIDTH, C_MAX_BITS_IN_DATA)),
+              "NUM_DATA_BITS = " & to_string(GC_DATA_WIDTH));
+    await_completion(SBI_VVCT, 1, C_FRAME_TIMEOUT);
+
     log(ID_LOG_HDR, "Check register defaults ", C_SCOPE);
     ------------------------------------------------------------
-    sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, x"00", "RX_DATA default", ERROR);
-    sbi_check(SBI_VVCT, 1, C_ADDR_TX_READY, x"01", "TX_READY default", ERROR);
-    sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA_VALID, x"00", "RX_DATA_VALID default", ERROR);
+    sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, sbi_data(uart_data(16#00#)), "RX_DATA default", ERROR);
+    sbi_check(SBI_VVCT, 1, C_ADDR_TX_READY, sbi_data(uart_data(16#01#)), "TX_READY default", ERROR);
+    sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA_VALID, sbi_data(uart_data(16#00#)), "RX_DATA_VALID default", ERROR);
     await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
 
     log(ID_LOG_HDR, "Sending on TX", C_SCOPE);
     ------------------------------------------------------------
+    -- Pattern: i (4 bits) in upper nibble and lower nibble. UART payload is
+    -- truncated to GC_DATA_WIDTH bits, then zero-extended to the 9-bit SBI
+    -- compare image to match the DUT's RX_DATA register.
     for i in 0 to 15 loop
-      v_data_tx          := std_logic_vector(to_unsigned(i, 4)) & std_logic_vector(to_unsigned(i, 4));
+      v_payload_tx       := uart_data(i * 16 + i);
+      v_data_tx          := sbi_data(v_payload_tx);
       v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
+      uart_transmit(UART_VVCT, 1, TX, v_payload_tx, "Sending " & to_string(v_payload_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, TX, C_FRAME_TIMEOUT);
       wait for 200 ns;                  -- margin
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
@@ -170,12 +219,13 @@ begin
     log(ID_LOG_HDR, "Sending on RX", C_SCOPE);
     ------------------------------------------------------------
     for i in 15 downto 0 loop
-      v_data_rx          := std_logic_vector(to_unsigned(i, 4)) & std_logic_vector(to_unsigned(i, 4));
+      v_payload_rx       := uart_data(i * 16 + i);
+      v_data_rx          := sbi_data(v_payload_rx);
       v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx);
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+      uart_expect(UART_VVCT, 1, RX, v_payload_rx, "Expecting " & to_string(v_payload_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, RX, C_FRAME_TIMEOUT);
     end loop;
     wait for 200 ns;                    -- margin
 
@@ -187,16 +237,18 @@ begin
     log(ID_LOG_HDR, "Sending on both TX and RX simultaneously", C_SCOPE);
     ------------------------------------------------------------
     for i in 0 to 15 loop
-      v_data_tx          := std_logic_vector(to_unsigned(i, 4)) & std_logic_vector(to_unsigned(15 - i, 4));
+      v_payload_tx       := uart_data(i * 16 + (15 - i));
+      v_data_tx          := sbi_data(v_payload_tx);
       v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      v_data_rx          := std_logic_vector(to_unsigned(15 - i, 4)) & std_logic_vector(to_unsigned(i, 4));
+      v_payload_rx       := uart_data((15 - i) * 16 + i);
+      v_data_rx          := sbi_data(v_payload_rx);
       v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx);
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, ALL_CHANNELS, 13 * C_BIT_PERIOD);
+      uart_expect(UART_VVCT, 1, RX, v_payload_rx, "Expecting " & to_string(v_payload_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_transmit(UART_VVCT, 1, TX, v_payload_tx, "Sending " & to_string(v_payload_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, ALL_CHANNELS, C_FRAME_TIMEOUT);
       wait for 200 ns;                  -- margin
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
@@ -222,16 +274,18 @@ begin
     log(ID_LOG_HDR, "Sending on both TX and RX simultaneously", C_SCOPE);
     ------------------------------------------------------------
     for i in 0 to 15 loop
-      v_data_rx          := std_logic_vector(to_unsigned(15 - i, 4)) & std_logic_vector(to_unsigned(i, 4));
+      v_payload_rx       := uart_data((15 - i) * 16 + i);
+      v_data_rx          := sbi_data(v_payload_rx);
       v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx, true, false);
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
-      v_data_tx          := std_logic_vector(to_unsigned(i, 4)) & std_logic_vector(to_unsigned(15 - i, 4));
+      v_payload_tx       := uart_data(i * 16 + (15 - i));
+      v_data_tx          := sbi_data(v_payload_tx);
       v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx, true, false);
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, ALL_CHANNELS, 13 * C_BIT_PERIOD);
+      uart_expect(UART_VVCT, 1, RX, v_payload_rx, "Expecting " & to_string(v_payload_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      uart_transmit(UART_VVCT, 1, TX, v_payload_tx, "Sending " & to_string(v_payload_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, ALL_CHANNELS, C_FRAME_TIMEOUT);
       wait for 200 ns;                  -- margin
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
       await_completion(SBI_VVCT, 1, 10 * C_CLK_PERIOD);
@@ -248,7 +302,8 @@ begin
     log(ID_LOG_HDR, "Sending on TX", C_SCOPE);
     ------------------------------------------------------------
     for i in 0 to 15 loop
-      v_data_tx := random(8);
+      v_payload_tx := random(GC_DATA_WIDTH);
+      v_data_tx    := sbi_data(v_payload_tx);
       if i < 15 then
         v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx, false, true);
       else
@@ -256,8 +311,8 @@ begin
         v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       end if;
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
+      uart_transmit(UART_VVCT, 1, TX, v_payload_tx, "Sending " & to_string(v_payload_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, TX, C_FRAME_TIMEOUT);
       insert_delay(SBI_VVCT, 1, 200 ns);
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, to_string(i) & ": check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
     end loop;
@@ -267,7 +322,8 @@ begin
     log(ID_LOG_HDR, "Sending on RX", C_SCOPE);
     ------------------------------------------------------------
     for i in 0 to 15 loop
-      v_data_rx := random(8);
+      v_payload_rx := random(GC_DATA_WIDTH);
+      v_data_rx    := sbi_data(v_payload_rx);
       if i < 15 then
         v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx, false, true);
       else
@@ -276,8 +332,8 @@ begin
       end if;
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+      uart_expect(UART_VVCT, 1, RX, v_payload_rx, "Expecting " & to_string(v_payload_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, RX, C_FRAME_TIMEOUT);
     end loop;
     wait for 1 us;                      -- margin
 
@@ -289,7 +345,8 @@ begin
     log(ID_LOG_HDR, "Sending on TX", C_SCOPE);
     ------------------------------------------------------------
     for i in 0 to 15 loop
-      v_data_tx := random(8);
+      v_payload_tx := random(GC_DATA_WIDTH);
+      v_data_tx    := sbi_data(v_payload_tx);
       if i < 15 then
         v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx, false, true);
       else
@@ -297,8 +354,8 @@ begin
         v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       end if;
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
+      uart_transmit(UART_VVCT, 1, TX, v_payload_tx, "Sending " & to_string(v_payload_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, TX, C_FRAME_TIMEOUT);
       insert_delay(SBI_VVCT, 1, 200 ns);
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, to_string(i) & ": check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
     end loop;
@@ -308,7 +365,8 @@ begin
     log(ID_LOG_HDR, "Sending on RX", C_SCOPE);
     ------------------------------------------------------------
     for i in 0 to 15 loop
-      v_data_rx := random(8);
+      v_payload_rx := random(GC_DATA_WIDTH);
+      v_data_rx    := sbi_data(v_payload_rx);
       if i < 15 then
         v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx, false, true);
       else
@@ -317,8 +375,8 @@ begin
       end if;
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+      uart_expect(UART_VVCT, 1, RX, v_payload_rx, "Expecting " & to_string(v_payload_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, RX, C_FRAME_TIMEOUT);
     end loop;
     wait for 200 ns;                    -- margin
 
@@ -330,11 +388,12 @@ begin
     log(ID_LOG_HDR, "Sending on TX", C_SCOPE);
     ------------------------------------------------------------
     for i in 0 to 15 loop
-      v_data_tx          := random(8);
+      v_payload_tx       := random(GC_DATA_WIDTH);
+      v_data_tx          := sbi_data(v_payload_tx);
       v_uart_transaction := get_uart_transaction_info(TRANSMIT, v_data_tx);
       tx_uart_monitor_sb.add_expected(v_uart_transaction);
-      uart_transmit(UART_VVCT, 1, TX, v_data_tx, "Sending " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, TX, 13 * C_BIT_PERIOD);
+      uart_transmit(UART_VVCT, 1, TX, v_payload_tx, "Sending " & to_string(v_payload_tx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, TX, C_FRAME_TIMEOUT);
       insert_delay(SBI_VVCT, 1, 200 ns);
       sbi_check(SBI_VVCT, 1, C_ADDR_RX_DATA, v_data_tx, "check " & to_string(v_data_tx, HEX, KEEP_LEADING_0, INCL_RADIX), ERROR);
     end loop;
@@ -344,12 +403,13 @@ begin
     log(ID_LOG_HDR, "Sending on RX", C_SCOPE);
     ------------------------------------------------------------
     for i in 0 to 15 loop
-      v_data_rx          := random(8);
+      v_payload_rx       := random(GC_DATA_WIDTH);
+      v_data_rx          := sbi_data(v_payload_rx);
       v_uart_transaction := get_uart_transaction_info(RECEIVE, v_data_rx);
       rx_uart_monitor_sb.add_expected(v_uart_transaction);
       sbi_write(SBI_VVCT, 1, C_ADDR_TX_DATA, v_data_rx, "Sending " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      uart_expect(UART_VVCT, 1, RX, v_data_rx, "Expecting " & to_string(v_data_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
-      await_completion(UART_VVCT, 1, RX, 13 * C_BIT_PERIOD);
+      uart_expect(UART_VVCT, 1, RX, v_payload_rx, "Expecting " & to_string(v_payload_rx, HEX, KEEP_LEADING_0, INCL_RADIX));
+      await_completion(UART_VVCT, 1, RX, C_FRAME_TIMEOUT);
     end loop;
     wait for 200 ns;                    -- margin
 
